@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{3B9D145C-5B99-4209-9183-2F6B2E1700AD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{FABBD061-7E69-4818-A8A6-122E1EC79804}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.UI.MVC", "UI\SciMaterials.UI.MVC\SciMaterials.UI.MVC.csproj", "{36D45824-FB3C-4B0A-AE2D-DBCA61F36819}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.API", "UI\SciMaterials.API\SciMaterials.API.csproj", "{1C47353B-768D-42A1-9442-507C9B2498E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,13 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{36D45824-FB3C-4B0A-AE2D-DBCA61F36819} = {3B9D145C-5B99-4209-9183-2F6B2E1700AD}
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C47353B-768D-42A1-9442-507C9B2498E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C47353B-768D-42A1-9442-507C9B2498E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C47353B-768D-42A1-9442-507C9B2498E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C47353B-768D-42A1-9442-507C9B2498E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F2A2A316-0109-4831-BE6F-BE4250B08027}
+	GlobalSection(NestedProjects) = preSolution
+		{1C47353B-768D-42A1-9442-507C9B2498E6} = {FABBD061-7E69-4818-A8A6-122E1EC79804}
 	EndGlobalSection
 EndGlobal
