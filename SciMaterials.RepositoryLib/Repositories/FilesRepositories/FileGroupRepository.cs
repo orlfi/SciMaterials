@@ -32,35 +32,35 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Add)}");
+        _logger.Debug($"{nameof(FileRepository.Add)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(FileGroup entity)
+    public async Task AddAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.AddAsync)}");
+        _logger.Debug($"{nameof(FileRepository.AddAsync)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Delete)}");
+        _logger.Debug($"{nameof(FileRepository.Delete)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.DeleteAsync)}");
+        _logger.Debug($"{nameof(FileRepository.DeleteAsync)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<FileGroup> GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAll)}");
+        _logger.Debug($"{nameof(FileRepository.GetAll)}");
 
 
 
@@ -69,9 +69,9 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<FileGroup>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<FileGroup>> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAllAsync)}");
+        _logger.Debug($"{nameof(FileRepository.GetAllAsync)}");
 
 
 
@@ -82,7 +82,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public FileGroup GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetById)}");
+        _logger.Debug($"{nameof(FileRepository.GetById)}");
 
 
 
@@ -91,9 +91,9 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<FileGroup> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<FileGroup> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetByIdAsync)}");
+        _logger.Debug($"{nameof(FileRepository.GetByIdAsync)}");
 
 
 
@@ -104,13 +104,13 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Update)}");
+        _logger.Debug($"{nameof(FileRepository.Update)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(FileGroup entity)
+    public async Task UpdateAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.UpdateAsync)}");
+        _logger.Debug($"{nameof(FileRepository.UpdateAsync)}");
     }
 }

@@ -35,7 +35,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(User entity)
+    public async Task AddAsync(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.AddAsync)}");
     }
@@ -49,7 +49,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(UserRepository.DeleteAsync)}");
     }
@@ -67,7 +67,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<User>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<User>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(UserRepository.GetAllAsync)}");
 
@@ -89,7 +89,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<User> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<User> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(UserRepository.GetByIdAsync)}");
 
@@ -107,7 +107,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(User entity)
+    public async Task UpdateAsync(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.UpdateAsync)}");
     }

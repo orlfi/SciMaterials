@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -36,7 +37,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Tag entity)
+    public async Task AddAsync(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.AddAsync)}");
     }
@@ -50,7 +51,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(TagRepository.DeleteAsync)}");
     }
@@ -68,7 +69,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Tag>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Tag>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetAllAsync)}");
 
@@ -90,7 +91,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Tag> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Tag> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetByIdAsync)}");
 
@@ -108,7 +109,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Tag entity)
+    public async Task UpdateAsync(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.UpdateAsync)}");
     }

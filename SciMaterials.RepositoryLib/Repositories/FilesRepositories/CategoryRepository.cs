@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CategorysRepositories;
@@ -33,35 +34,35 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Add)}");
+        _logger.Debug($"{nameof(FileRepository.Add)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Category entity)
+    public async Task AddAsync(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.AddAsync)}");
+        _logger.Debug($"{nameof(FileRepository.AddAsync)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Delete)}");
+        _logger.Debug($"{nameof(FileRepository.Delete)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(CategoryRepository.DeleteAsync)}");
+        _logger.Debug($"{nameof(FileRepository.DeleteAsync)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<Category> GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetAll)}");
+        _logger.Debug($"{nameof(FileRepository.GetAll)}");
 
 
 
@@ -70,9 +71,9 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Category>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Category>> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetAllAsync)}");
+        _logger.Debug($"{nameof(FileRepository.GetAllAsync)}");
 
 
 
@@ -83,7 +84,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public Category GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetById)}");
+        _logger.Debug($"{nameof(FileRepository.GetById)}");
 
 
 
@@ -92,9 +93,9 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Category> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Category> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetByIdAsync)}");
+        _logger.Debug($"{nameof(FileRepository.GetByIdAsync)}");
 
 
 
@@ -105,13 +106,13 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Update)}");
+        _logger.Debug($"{nameof(FileRepository.Update)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Category entity)
+    public async Task UpdateAsync(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.UpdateAsync)}");
+        _logger.Debug($"{nameof(FileRepository.UpdateAsync)}");
     }
 }

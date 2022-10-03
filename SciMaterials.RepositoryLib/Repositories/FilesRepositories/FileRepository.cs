@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 using File = SciMaterials.DAL.Models.File;
@@ -38,7 +39,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(File entity)
+    public async Task AddAsync(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.AddAsync)}");
     }
@@ -52,7 +53,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(FileRepository.DeleteAsync)}");
     }
@@ -70,7 +71,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<File>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<File>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileRepository.GetAllAsync)}");
 
@@ -92,7 +93,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<File> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<File> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileRepository.GetByIdAsync)}");
 
@@ -110,7 +111,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(File entity)
+    public async Task UpdateAsync(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.UpdateAsync)}");
     }

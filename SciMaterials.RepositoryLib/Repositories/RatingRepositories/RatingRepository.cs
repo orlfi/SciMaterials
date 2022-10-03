@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.RatingRepositories;
@@ -37,7 +38,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Rating entity)
+    public async Task AddAsync(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.AddAsync)}");
     }
@@ -51,7 +52,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(RatingRepository.DeleteAsync)}");
     }
@@ -69,7 +70,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Rating>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Rating>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(RatingRepository.GetAllAsync)}");
 
@@ -91,7 +92,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Rating> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Rating> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(RatingRepository.GetByIdAsync)}");
 
@@ -109,7 +110,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Rating entity)
+    public async Task UpdateAsync(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.UpdateAsync)}");
     }

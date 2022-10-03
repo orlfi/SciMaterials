@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.ContentTypesRepositories;
@@ -32,35 +33,35 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.Add)}");
+        _logger.Debug($"{nameof(FileRepository.Add)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(ContentType entity)
+    public async Task AddAsync(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.AddAsync)}");
+        _logger.Debug($"{nameof(FileRepository.AddAsync)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.Delete)}");
+        _logger.Debug($"{nameof(FileRepository.Delete)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.DeleteAsync)}");
+        _logger.Debug($"{nameof(FileRepository.DeleteAsync)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<ContentType> GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetAll)}");
+        _logger.Debug($"{nameof(FileRepository.GetAll)}");
 
 
 
@@ -69,9 +70,9 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<ContentType>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<ContentType>> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetAllAsync)}");
+        _logger.Debug($"{nameof(FileRepository.GetAllAsync)}");
 
 
 
@@ -82,7 +83,7 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public ContentType GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetById)}");
+        _logger.Debug($"{nameof(FileRepository.GetById)}");
 
 
 
@@ -91,9 +92,9 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<ContentType> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<ContentType> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetByIdAsync)}");
+        _logger.Debug($"{nameof(FileRepository.GetByIdAsync)}");
 
 
 
@@ -104,13 +105,13 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.Update)}");
+        _logger.Debug($"{nameof(FileRepository.Update)}");
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(ContentType entity)
+    public async Task UpdateAsync(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.UpdateAsync)}");
+        _logger.Debug($"{nameof(FileRepository.UpdateAsync)}");
     }
 }
