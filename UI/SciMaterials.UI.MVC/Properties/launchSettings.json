@@ -8,10 +8,20 @@
     }
   },
   "profiles": {
-    "SciMaterials.UI.MVC": {
+    "Default": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
+      "applicationUrl": "http://localhost:5185",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "MVC": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "mvc",
       "applicationUrl": "http://localhost:5185",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
