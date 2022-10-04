@@ -1,4 +1,4 @@
-﻿namespace SciMaterials.DAL.Models;
+﻿namespace SciMaterials.Domain;
 
 public partial class Rating
 {

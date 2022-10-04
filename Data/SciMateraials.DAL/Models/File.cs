@@ -1,6 +1,6 @@
-﻿using SciMaterials.Domain.Base;
+﻿using SciMaterials.DAL.Models.Base;
 
-namespace SciMaterials.Domain;
+namespace SciMaterials.DAL.Models;
 
 public class File : Resource
 {
