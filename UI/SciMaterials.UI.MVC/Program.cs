@@ -1,10 +1,13 @@
+using SciMaterials.UI.MVC.API.Configuration;
 using SciMaterials.UI.MVC.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.Limits.MaxRequestBodySize = builder.Configuration.GetValue<long>("MaxFileSize");
+    var apiSettings = builder.Configuration.GetSection(ApiSettings.SectionName);
+    var fileSize = apiSettings.GetValue<long>("MaxFileSize");
+    serverOptions.Limits.MaxRequestBodySize = apiSettings.GetValue<long>("MaxFileSize");
 });
 
 // Add services to the container.

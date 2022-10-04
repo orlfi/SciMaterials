@@ -4,6 +4,7 @@ using SciMaterials.UI.MVC.API.Models;
 using SciMaterials.UI.MVC.API.Data.Interfaces;
 using SciMaterials.UI.MVC.API.Services.Interfaces;
 using SciMaterials.UI.MVC.API.Configuration.Interfaces;
+using SciMaterials.Domain.Core;
 
 namespace SciMaterials.UI.MVC.Services;
 
@@ -26,13 +27,13 @@ public class FileService : IFileService<Guid>
             throw new ArgumentNullException(nameof(apiSettings.BasePath));
     }
 
-    public IEnumerable<FileModel> GetAll()
+    public Result<IEnumerable<FileModel>> GetAll()
     {
-        var result = _fileRepository.GetAll();
+        var result = _fileRepository.GetAll().ToList();
         return result;
     }
 
-    public FileModel GetById(Guid id)
+    public Result<FileModel> GetById(Guid id)
     {
         var model = _fileRepository.GetById(id);
 
@@ -42,7 +43,7 @@ public class FileService : IFileService<Guid>
         return model;
     }
 
-    public FileModel GetByHash(string hash)
+    public Result<FileModel> GetByHash(string hash)
     {
         var model = _fileRepository.GetByHash(hash);
 
@@ -57,7 +58,7 @@ public class FileService : IFileService<Guid>
         return _fileStore.OpenRead(readFromPath);
     }
 
-    public async Task<FileModel> UploadAsync(Stream sourceStream, string fileName, string contentType, CancellationToken cancellationToken = default)
+    public async Task<Result<FileModel>> UploadAsync(Stream sourceStream, string fileName, string contentType, CancellationToken cancellationToken = default)
     {
         var fileNameWithExension = Path.GetFileName(fileName);
         var fileModel = _fileRepository.GetByName(fileNameWithExension);

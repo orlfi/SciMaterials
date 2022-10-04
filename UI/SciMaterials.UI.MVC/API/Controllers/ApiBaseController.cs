@@ -9,6 +9,6 @@ namespace SciMaterials.UI.MVC.API.Controllers
     {
         private ILogger<T> _loggerInstance;
 
-        // protected ILogger<T> _logger => _loggerInstance ??= HttpContent.RequestServices.GetService<ILogger<T>>();
+        protected ILogger<T> _logger => _loggerInstance ??= HttpContext.RequestServices.GetService<ILogger<T>>();
     }
 }

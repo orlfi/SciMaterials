@@ -34,12 +34,13 @@ public static class ServicesExtensions
 
     public static IServiceCollection ConfigureApiServices(this IServiceCollection services, IConfiguration config)
     {
-        services.Configure<ApiSettings>(config.GetSection(ApiSettings.SectionName));
+        var apiSettings = config.GetSection(ApiSettings.SectionName);
+        services.Configure<ApiSettings>(apiSettings);
         services.AddSingleton<IApiSettings, ApiSettings>(s => s.GetRequiredService<IOptions<ApiSettings>>().Value);
 
         services.Configure<FormOptions>(options =>
         {
-            options.MultipartBodyLengthLimit = config.GetValue<long>("MaxFileSize"); ;
+            options.MultipartBodyLengthLimit = apiSettings.GetValue<long>("MaxFileSize"); ;
         });
 
         return services;
