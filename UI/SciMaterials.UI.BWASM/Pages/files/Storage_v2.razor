@@ -1,25 +1,22 @@
 ﻿@page "/storagev2"
 @using System.Net.Http.Json
+@inject NavigationManager NavigationManager
 @inject HttpClient httpClient
 
 <MudGrid Spacing="@spacing" Justify="Justify.FlexStart">
     @foreach (var id in Ids)
     {
         <MudItem xs="3">
-            <MudCard>
-                <MudCardMedia Image="#" Height="200"/>
-                <MudCardContent>
-                    <MudText Typo="Typo.h5">File #@id</MudText>
-                    <MudText Typo="Typo.body2">1. Some text #@id</MudText>
-                    <MudText Typo="Typo.body2">2. Some text #@id</MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary">
-                        <MudLink Href="@($"/filedetails/{id}")">Learn More</MudLink>
-                    </MudButton>
-                </MudCardActions>
-            </MudCard>
+            <MudButton Class="rounded-xl px-1 py-1" Variant="Variant.Text" Color="Color.Primary" OnClick="()=>FileDetailsUrl(id)">
+                <MudCard Class="rounded-xl">
+                    <MudCardMedia Image="#" Height="200" Style="@($"background:#D0F2FF;")" />
+                    <MudCardContent>
+                        <MudText Typo="Typo.h5" Align="Align.Start">File #@id</MudText>
+                        <MudChip Color="Color.Primary">Tag #1</MudChip>
+                        <MudChip Color="Color.Secondary">Tag #2</MudChip>
+                    </MudCardContent>
+                </MudCard>
+            </MudButton>
         </MudItem>
     }
 
@@ -34,5 +31,10 @@
     {
     
         Ids = Enumerable.Range(1, 10);
+    }
+
+    private void FileDetailsUrl(int id)
+    {
+        NavigationManager.NavigateTo($"/filedetails/{id}");
     }
 }
