@@ -1,0 +1,383 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace SciMaterials.PostgresqlMigrations.Migrations
+{
+    public partial class SqlServerMigration : Migration
+    {
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ContentTypes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ContentTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileGroups",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileGroups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FileGroups_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FileGroups_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommentsFileGroups",
+                columns: table => new
+                {
+                    CommentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FileGroupId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentsFileGroups", x => new { x.CommentId, x.FileGroupId });
+                    table.ForeignKey(
+                        name: "comments_files_groups_comment_id_fk",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "comments_files_groups_file_group_id_fk",
+                        column: x => x.FileGroupId,
+                        principalTable: "FileGroups",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileGroupTag",
+                columns: table => new
+                {
+                    FileGroupsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TagsId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileGroupTag", x => new { x.FileGroupsId, x.TagsId });
+                    table.ForeignKey(
+                        name: "FK_FileGroupTag_FileGroups_FileGroupsId",
+                        column: x => x.FileGroupsId,
+                        principalTable: "FileGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FileGroupTag_Tags_TagsId",
+                        column: x => x.TagsId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Files",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: true),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    ContentTypeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    FileGroupId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Files", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Files_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Files_ContentTypes_ContentTypeId",
+                        column: x => x.ContentTypeId,
+                        principalTable: "ContentTypes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Files_FileGroups_FileGroupId",
+                        column: x => x.FileGroupId,
+                        principalTable: "FileGroups",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Files_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommentsFiles",
+                columns: table => new
+                {
+                    CommentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FileId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentsFiles", x => new { x.CommentId, x.FileId });
+                    table.ForeignKey(
+                        name: "comments_files_comment_id_fk",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "comments_files_file_id_fk",
+                        column: x => x.FileId,
+                        principalTable: "Files",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FileTag",
+                columns: table => new
+                {
+                    FilesId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TagsId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FileTag", x => new { x.FilesId, x.TagsId });
+                    table.ForeignKey(
+                        name: "FK_FileTag_Files_FilesId",
+                        column: x => x.FilesId,
+                        principalTable: "Files",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FileTag_Tags_TagsId",
+                        column: x => x.TagsId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
+                {
+                    FileId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RatingValue = table.Column<int>(type: "integer", nullable: false),
+                    FileGroupId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => new { x.FileId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_Ratings_FileGroups_FileGroupId",
+                        column: x => x.FileGroupId,
+                        principalTable: "FileGroups",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "ratings_file_id_fk",
+                        column: x => x.FileId,
+                        principalTable: "Files",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "ratings_user_id_fk",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_OwnerId",
+                table: "Comments",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentsFileGroups_FileGroupId",
+                table: "CommentsFileGroups",
+                column: "FileGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentsFiles_FileId",
+                table: "CommentsFiles",
+                column: "FileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileGroups_CategoryId",
+                table: "FileGroups",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileGroups_OwnerId",
+                table: "FileGroups",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileGroupTag_TagsId",
+                table: "FileGroupTag",
+                column: "TagsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_CategoryId",
+                table: "Files",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_ContentTypeId",
+                table: "Files",
+                column: "ContentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_FileGroupId",
+                table: "Files",
+                column: "FileGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Files_OwnerId",
+                table: "Files",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FileTag_TagsId",
+                table: "FileTag",
+                column: "TagsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_FileGroupId",
+                table: "Ratings",
+                column: "FileGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_UserId",
+                table: "Ratings",
+                column: "UserId");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "CommentsFileGroups");
+
+            migrationBuilder.DropTable(
+                name: "CommentsFiles");
+
+            migrationBuilder.DropTable(
+                name: "FileGroupTag");
+
+            migrationBuilder.DropTable(
+                name: "FileTag");
+
+            migrationBuilder.DropTable(
+                name: "Ratings");
+
+            migrationBuilder.DropTable(
+                name: "Comments");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
+
+            migrationBuilder.DropTable(
+                name: "Files");
+
+            migrationBuilder.DropTable(
+                name: "ContentTypes");
+
+            migrationBuilder.DropTable(
+                name: "FileGroups");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+        }
+    }
+}
