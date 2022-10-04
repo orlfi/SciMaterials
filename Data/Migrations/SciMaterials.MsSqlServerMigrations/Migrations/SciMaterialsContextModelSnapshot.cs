@@ -22,36 +22,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("CommentsFileGroups", b =>
-                {
-                    b.Property<Guid>("CommentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FileGroupId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CommentId", "FileGroupId");
-
-                    b.HasIndex("FileGroupId");
-
-                    b.ToTable("CommentsFileGroups");
-                });
-
-            modelBuilder.Entity("CommentsFiles", b =>
-                {
-                    b.Property<Guid>("CommentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("FileId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CommentId", "FileId");
-
-                    b.HasIndex("FileId");
-
-                    b.ToTable("CommentsFiles");
-                });
-
             modelBuilder.Entity("FileGroupTag", b =>
                 {
                     b.Property<Guid>("FileGroupsId")
@@ -109,7 +79,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
             modelBuilder.Entity("SciMaterials.DAL.Models.Comment", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -121,13 +90,18 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ResourceId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("ResourceId");
+
+                    b.HasIndex(new[] { "OwnerId" }, "IX_Comments_OwnerId");
 
                     b.ToTable("Comments");
                 });
@@ -290,36 +264,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CommentsFileGroups", b =>
-                {
-                    b.HasOne("SciMaterials.DAL.Models.Comment", null)
-                        .WithMany()
-                        .HasForeignKey("CommentId")
-                        .IsRequired()
-                        .HasConstraintName("comments_files_groups_comment_id_fk");
-
-                    b.HasOne("SciMaterials.DAL.Models.FileGroup", null)
-                        .WithMany()
-                        .HasForeignKey("FileGroupId")
-                        .IsRequired()
-                        .HasConstraintName("comments_files_groups_file_group_id_fk");
-                });
-
-            modelBuilder.Entity("CommentsFiles", b =>
-                {
-                    b.HasOne("SciMaterials.DAL.Models.Comment", null)
-                        .WithMany()
-                        .HasForeignKey("CommentId")
-                        .IsRequired()
-                        .HasConstraintName("comments_files_comment_id_fk");
-
-                    b.HasOne("SciMaterials.DAL.Models.File", null)
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .IsRequired()
-                        .HasConstraintName("comments_files_file_id_fk");
-                });
-
             modelBuilder.Entity("FileGroupTag", b =>
                 {
                     b.HasOne("SciMaterials.DAL.Models.FileGroup", null)
@@ -357,6 +301,22 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SciMaterials.DAL.Models.File", "FileResource")
+                        .WithMany("Comments")
+                        .HasForeignKey("ResourceId")
+                        .IsRequired()
+                        .HasConstraintName("comments_files_resourseId_fk");
+
+                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroupResource")
+                        .WithMany("Comments")
+                        .HasForeignKey("ResourceId")
+                        .IsRequired()
+                        .HasConstraintName("comments_file_groups_resourseId_fk");
+
+                    b.Navigation("FileGroupResource");
+
+                    b.Navigation("FileResource");
 
                     b.Navigation("Owner");
                 });
@@ -446,11 +406,15 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Files");
 
                     b.Navigation("Ratings");
