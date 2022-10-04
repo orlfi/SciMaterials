@@ -1,5 +1,6 @@
 ﻿#region usings
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SciMaterials.DAL.Contexts;
@@ -13,7 +14,15 @@ static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilde
 
 static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
 {
-    services.AddDbContext<SciMaterialsContext>(options => options.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=SciMaterials;Integrated Security=True"));
+    var defaultProvider = context.Configuration.GetValue<string>("DefaultProvider");
+    services.AddDbContext<SciMaterialsContext>(options => _ = defaultProvider switch
+    {
+        "SqlServer" => options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection"),
+            x => x.MigrationsAssembly("SciMaterials.MsSqlServerMigrations")),
+        "PostgreSql" => options.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=SciMaterials;Integrated Security=True",
+                x => x.MigrationsAssembly("SciMaterials.MsSqlServerMigrations")),
+        _ => throw new Exception("Не задана БД по умолчанию")
+    });
     services.AddTransient<IDbInitializer, DbInitializer>();
 }
 

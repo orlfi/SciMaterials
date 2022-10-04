@@ -8,15 +8,13 @@ public class Comment : BaseModel
     public Guid OwnerId { get; set; }
     public string Text { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public Guid ResourceId { get; set; }
 
     public User Owner { get; set; } = null!;
-
-    public ICollection<File> Files { get; set; }
-    public ICollection<FileGroup> FileGroups { get; set; }
+    public File FileResource { get; set; } = null!;
+    public FileGroup FileGroupResource { get; set; } = null!;
 
     public Comment()
     {
-        Files = new HashSet<File>();
-        FileGroups = new HashSet<FileGroup>();
     }
 }
