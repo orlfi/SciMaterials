@@ -23,29 +23,29 @@ namespace SciMaterials.DAL.Contexts
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Comment>(entity =>
-            {
-                entity.HasIndex(e => e.OwnerId, "IX_Comments_OwnerId");
+            // modelBuilder.Entity<Comment>(entity =>
+            // {
+            //     entity.HasIndex(e => e.OwnerId, "IX_Comments_OwnerId");
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+            //     entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.HasOne(d => d.Owner)
-                    .WithMany(p => p.Comments)
-                    .HasForeignKey(d => d.OwnerId);
+            //     entity.HasOne(d => d.Owner)
+            //         .WithMany(p => p.Comments)
+            //         .HasForeignKey(d => d.OwnerId);
 
-                entity.HasOne(d => d.FileResource)
-                    .WithMany(p => p.Comments)
-                    .HasForeignKey(d => d.ResourceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("comments_files_resourseId_fk");
+            //     entity.HasOne(d => d.FileResource)
+            //         .WithMany(p => p.Comments)
+            //         .HasForeignKey(d => d.ResourceId)
+            //         .OnDelete(DeleteBehavior.ClientSetNull)
+            //         .HasConstraintName("comments_files_resourseId_fk");
 
-                entity.HasOne(d => d.FileGroupResource)
-                    .WithMany(p => p.Comments)
-                    .HasForeignKey(d => d.ResourceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("comments_file_groups_resourseId_fk");
+            //     entity.HasOne(d => d.FileGroupResource)
+            //         .WithMany(p => p.Comments)
+            //         .HasForeignKey(d => d.ResourceId)
+            //         .OnDelete(DeleteBehavior.ClientSetNull)
+            //         .HasConstraintName("comments_file_groups_resourseId_fk");
 
-            });
+            // });
             modelBuilder.Entity<Rating>(entity =>
             {
                 entity.HasKey(e => new { e.FileId, e.UserId });
