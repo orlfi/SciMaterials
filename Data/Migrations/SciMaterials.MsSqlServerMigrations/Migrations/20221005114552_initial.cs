@@ -70,22 +70,39 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileGroups", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FileGroups_Categories_CategoryId",
-                        column: x => x.CategoryId,
+                        name: "FK_FileGroups_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryFileGroup",
+                columns: table => new
+                {
+                    CategoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileGroupsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryFileGroup", x => new { x.CategoriesId, x.FileGroupsId });
+                    table.ForeignKey(
+                        name: "FK_CategoryFileGroup_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FileGroups_Users_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Users",
+                        name: "FK_CategoryFileGroup_FileGroups_FileGroupsId",
+                        column: x => x.FileGroupsId,
+                        principalTable: "FileGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -127,18 +144,11 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Files_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Files_ContentTypes_ContentTypeId",
                         column: x => x.ContentTypeId,
@@ -153,6 +163,30 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         name: "FK_Files_Users_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryFile",
+                columns: table => new
+                {
+                    CategoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FilesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryFile", x => new { x.CategoriesId, x.FilesId });
+                    table.ForeignKey(
+                        name: "FK_CategoryFile_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryFile_Files_FilesId",
+                        column: x => x.FilesId,
+                        principalTable: "Files",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -244,6 +278,16 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CategoryFile_FilesId",
+                table: "CategoryFile",
+                column: "FilesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryFileGroup_FileGroupsId",
+                table: "CategoryFileGroup",
+                column: "FileGroupsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_FileGroupId",
                 table: "Comments",
                 column: "FileGroupId");
@@ -259,11 +303,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FileGroups_CategoryId",
-                table: "FileGroups",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_FileGroups_OwnerId",
                 table: "FileGroups",
                 column: "OwnerId");
@@ -272,11 +311,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 name: "IX_FileGroupTag_TagsId",
                 table: "FileGroupTag",
                 column: "TagsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Files_CategoryId",
-                table: "Files",
-                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Files_ContentTypeId",
@@ -312,6 +346,12 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CategoryFile");
+
+            migrationBuilder.DropTable(
+                name: "CategoryFileGroup");
+
+            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -324,6 +364,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 name: "Ratings");
 
             migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
                 name: "Tags");
 
             migrationBuilder.DropTable(
@@ -334,9 +377,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
             migrationBuilder.DropTable(
                 name: "FileGroups");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Users");
