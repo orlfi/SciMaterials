@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-            var defaultProvider = context.Configuration.GetValue("Provider", "SqlServer");
+            var defaultProvider = context.Configuration["DbProvider"];
 
             services.AddDbContext<SciMaterialsContext>(options => _ = defaultProvider switch
             {
