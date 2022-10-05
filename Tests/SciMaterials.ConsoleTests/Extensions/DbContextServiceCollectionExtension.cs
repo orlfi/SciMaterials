@@ -9,9 +9,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddContextMultipleProviders(this IServiceCollection services, HostBuilderContext context)
         {
-            AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-            var defaultProvider = context.Configuration.GetValue("Provider", "SqlServer");
+            var defaultProvider = context.Configuration.GetValue("Provider", "PostgreSQL");
 
             services.AddDbContext<SciMaterialsContext>(options => _ = defaultProvider switch
             {
