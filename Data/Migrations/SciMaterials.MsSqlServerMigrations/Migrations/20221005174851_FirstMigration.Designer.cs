@@ -12,8 +12,8 @@ using SciMaterials.DAL.Contexts;
 namespace SciMaterials.MsSqlServerMigrations.Migrations
 {
     [DbContext(typeof(SciMaterialsContext))]
-    [Migration("20221004193250_SqlServerMigration")]
-    partial class SqlServerMigration
+    [Migration("20221005174851_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,36 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("CategoryFile", b =>
+                {
+                    b.Property<Guid>("CategoriesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FilesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CategoriesId", "FilesId");
+
+                    b.HasIndex("FilesId");
+
+                    b.ToTable("CategoryFile");
+                });
+
+            modelBuilder.Entity("CategoryFileGroup", b =>
+                {
+                    b.Property<Guid>("CategoriesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FileGroupsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CategoriesId", "FileGroupsId");
+
+                    b.HasIndex("FileGroupsId");
+
+                    b.ToTable("CategoryFileGroup");
+                });
 
             modelBuilder.Entity("FileGroupTag", b =>
                 {
@@ -81,18 +111,22 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
             modelBuilder.Entity("SciMaterials.DAL.Models.Comment", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("FileGroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FileId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ResourceId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
@@ -101,9 +135,11 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ResourceId");
+                    b.HasIndex("FileGroupId");
 
-                    b.HasIndex(new[] { "OwnerId" }, "IX_Comments_OwnerId");
+                    b.HasIndex("FileId");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Comments");
                 });
@@ -127,9 +163,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ContentTypeId")
@@ -163,8 +196,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("ContentTypeId");
 
                     b.HasIndex("FileGroupId");
@@ -178,9 +209,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -201,8 +229,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("OwnerId");
 
@@ -266,6 +292,36 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CategoryFile", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SciMaterials.DAL.Models.File", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CategoryFileGroup", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SciMaterials.DAL.Models.FileGroup", null)
+                        .WithMany()
+                        .HasForeignKey("FileGroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FileGroupTag", b =>
                 {
                     b.HasOne("SciMaterials.DAL.Models.FileGroup", null)
@@ -298,39 +354,29 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Comment", b =>
                 {
+                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
+                        .WithMany("Comments")
+                        .HasForeignKey("FileGroupId");
+
+                    b.HasOne("SciMaterials.DAL.Models.File", "File")
+                        .WithMany("Comments")
+                        .HasForeignKey("FileId");
+
                     b.HasOne("SciMaterials.DAL.Models.User", "Owner")
                         .WithMany("Comments")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SciMaterials.DAL.Models.File", "FileResource")
-                        .WithMany("Comments")
-                        .HasForeignKey("ResourceId")
-                        .IsRequired()
-                        .HasConstraintName("comments_files_resourseId_fk");
+                    b.Navigation("File");
 
-                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroupResource")
-                        .WithMany("Comments")
-                        .HasForeignKey("ResourceId")
-                        .IsRequired()
-                        .HasConstraintName("comments_file_groups_resourseId_fk");
-
-                    b.Navigation("FileGroupResource");
-
-                    b.Navigation("FileResource");
+                    b.Navigation("FileGroup");
 
                     b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
-                    b.HasOne("SciMaterials.DAL.Models.Category", "Category")
-                        .WithMany("Files")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SciMaterials.DAL.Models.ContentType", "ContentType")
                         .WithMany("Files")
                         .HasForeignKey("ContentTypeId");
@@ -345,8 +391,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
                     b.Navigation("ContentType");
 
                     b.Navigation("FileGroup");
@@ -356,19 +400,11 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
                 {
-                    b.HasOne("SciMaterials.DAL.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SciMaterials.DAL.Models.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("Owner");
                 });
@@ -394,11 +430,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Navigation("File");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SciMaterials.DAL.Models.Category", b =>
-                {
-                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.ContentType", b =>

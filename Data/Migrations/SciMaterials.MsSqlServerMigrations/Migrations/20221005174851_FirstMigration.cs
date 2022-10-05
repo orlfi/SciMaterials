@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SciMaterials.PostgresqlMigrations.Migrations
+namespace SciMaterials.MsSqlServerMigrations.Migrations
 {
-    public partial class PostgreSQLMigration : Migration
+    public partial class FirstMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,11 +13,11 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,8 +28,8 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "ContentTypes",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,8 +40,8 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,9 +52,9 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,23 +65,16 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "FileGroups",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FileGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FileGroups_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_FileGroups_Users_OwnerId",
                         column: x => x.OwnerId,
@@ -91,11 +84,35 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryFileGroup",
+                columns: table => new
+                {
+                    CategoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FileGroupsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryFileGroup", x => new { x.CategoriesId, x.FileGroupsId });
+                    table.ForeignKey(
+                        name: "FK_CategoryFileGroup_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryFileGroup_FileGroups_FileGroupsId",
+                        column: x => x.FileGroupsId,
+                        principalTable: "FileGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FileGroupTag",
                 columns: table => new
                 {
-                    FileGroupsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TagsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    FileGroupsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TagsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -118,27 +135,20 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "Files",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Size = table.Column<long>(type: "bigint", nullable: false),
-                    ContentTypeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    FileGroupId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ContentTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FileGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Files_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Files_ContentTypes_ContentTypeId",
                         column: x => x.ContentTypeId,
@@ -158,27 +168,52 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryFile",
+                columns: table => new
+                {
+                    CategoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FilesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryFile", x => new { x.CategoriesId, x.FilesId });
+                    table.ForeignKey(
+                        name: "FK_CategoryFile_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CategoryFile_Files_FilesId",
+                        column: x => x.FilesId,
+                        principalTable: "Files",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ResourceId = table.Column<Guid>(type: "uuid", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FileId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FileGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "comments_file_groups_resourseId_fk",
-                        column: x => x.ResourceId,
+                        name: "FK_Comments_FileGroups_FileGroupId",
+                        column: x => x.FileGroupId,
                         principalTable: "FileGroups",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "comments_files_resourseId_fk",
-                        column: x => x.ResourceId,
+                        name: "FK_Comments_Files_FileId",
+                        column: x => x.FileId,
                         principalTable: "Files",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -193,8 +228,8 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "FileTag",
                 columns: table => new
                 {
-                    FilesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    TagsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    FilesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TagsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -217,10 +252,10 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "Ratings",
                 columns: table => new
                 {
-                    FileId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RatingValue = table.Column<int>(type: "integer", nullable: false),
-                    FileGroupId = table.Column<Guid>(type: "uuid", nullable: true)
+                    FileId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RatingValue = table.Column<int>(type: "int", nullable: false),
+                    FileGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -243,19 +278,29 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CategoryFile_FilesId",
+                table: "CategoryFile",
+                column: "FilesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryFileGroup_FileGroupsId",
+                table: "CategoryFileGroup",
+                column: "FileGroupsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_FileGroupId",
+                table: "Comments",
+                column: "FileGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_FileId",
+                table: "Comments",
+                column: "FileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_OwnerId",
                 table: "Comments",
                 column: "OwnerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comments_ResourceId",
-                table: "Comments",
-                column: "ResourceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FileGroups_CategoryId",
-                table: "FileGroups",
-                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FileGroups_OwnerId",
@@ -266,11 +311,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "IX_FileGroupTag_TagsId",
                 table: "FileGroupTag",
                 column: "TagsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Files_CategoryId",
-                table: "Files",
-                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Files_ContentTypeId",
@@ -306,6 +346,12 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CategoryFile");
+
+            migrationBuilder.DropTable(
+                name: "CategoryFileGroup");
+
+            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
@@ -318,6 +364,9 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 name: "Ratings");
 
             migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
                 name: "Tags");
 
             migrationBuilder.DropTable(
@@ -328,9 +377,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
 
             migrationBuilder.DropTable(
                 name: "FileGroups");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Users");

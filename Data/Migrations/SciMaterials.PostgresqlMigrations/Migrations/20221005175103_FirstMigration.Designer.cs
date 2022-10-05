@@ -12,8 +12,8 @@ using SciMaterials.DAL.Contexts;
 namespace SciMaterials.PostgresqlMigrations.Migrations
 {
     [DbContext(typeof(SciMaterialsContext))]
-    [Migration("20221004193824_PostgreSQLMigration")]
-    partial class PostgreSQLMigration
+    [Migration("20221005175103_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,36 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("CategoryFile", b =>
+                {
+                    b.Property<Guid>("CategoriesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FilesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CategoriesId", "FilesId");
+
+                    b.HasIndex("FilesId");
+
+                    b.ToTable("CategoryFile");
+                });
+
+            modelBuilder.Entity("CategoryFileGroup", b =>
+                {
+                    b.Property<Guid>("CategoriesId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FileGroupsId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CategoriesId", "FileGroupsId");
+
+                    b.HasIndex("FileGroupsId");
+
+                    b.ToTable("CategoryFileGroup");
+                });
 
             modelBuilder.Entity("FileGroupTag", b =>
                 {
@@ -61,7 +91,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -81,18 +111,22 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
             modelBuilder.Entity("SciMaterials.DAL.Models.Comment", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid?>("FileGroupId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("FileId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ResourceId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Text")
@@ -101,9 +135,11 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ResourceId");
+                    b.HasIndex("FileGroupId");
 
-                    b.HasIndex(new[] { "OwnerId" }, "IX_Comments_OwnerId");
+                    b.HasIndex("FileId");
+
+                    b.HasIndex("OwnerId");
 
                     b.ToTable("Comments");
                 });
@@ -129,14 +165,11 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("ContentTypeId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -163,8 +196,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("ContentTypeId");
 
                     b.HasIndex("FileGroupId");
@@ -180,11 +211,8 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -201,8 +229,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("OwnerId");
 
@@ -266,6 +292,36 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("CategoryFile", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SciMaterials.DAL.Models.File", null)
+                        .WithMany()
+                        .HasForeignKey("FilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CategoryFileGroup", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SciMaterials.DAL.Models.FileGroup", null)
+                        .WithMany()
+                        .HasForeignKey("FileGroupsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("FileGroupTag", b =>
                 {
                     b.HasOne("SciMaterials.DAL.Models.FileGroup", null)
@@ -298,39 +354,29 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Comment", b =>
                 {
+                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
+                        .WithMany("Comments")
+                        .HasForeignKey("FileGroupId");
+
+                    b.HasOne("SciMaterials.DAL.Models.File", "File")
+                        .WithMany("Comments")
+                        .HasForeignKey("FileId");
+
                     b.HasOne("SciMaterials.DAL.Models.User", "Owner")
                         .WithMany("Comments")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SciMaterials.DAL.Models.File", "FileResource")
-                        .WithMany("Comments")
-                        .HasForeignKey("ResourceId")
-                        .IsRequired()
-                        .HasConstraintName("comments_files_resourseId_fk");
+                    b.Navigation("File");
 
-                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroupResource")
-                        .WithMany("Comments")
-                        .HasForeignKey("ResourceId")
-                        .IsRequired()
-                        .HasConstraintName("comments_file_groups_resourseId_fk");
-
-                    b.Navigation("FileGroupResource");
-
-                    b.Navigation("FileResource");
+                    b.Navigation("FileGroup");
 
                     b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
-                    b.HasOne("SciMaterials.DAL.Models.Category", "Category")
-                        .WithMany("Files")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SciMaterials.DAL.Models.ContentType", "ContentType")
                         .WithMany("Files")
                         .HasForeignKey("ContentTypeId");
@@ -345,8 +391,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
-
                     b.Navigation("ContentType");
 
                     b.Navigation("FileGroup");
@@ -356,19 +400,11 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
                 {
-                    b.HasOne("SciMaterials.DAL.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SciMaterials.DAL.Models.User", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("Owner");
                 });
@@ -394,11 +430,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                     b.Navigation("File");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SciMaterials.DAL.Models.Category", b =>
-                {
-                    b.Navigation("Files");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.ContentType", b =>
