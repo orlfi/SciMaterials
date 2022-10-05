@@ -1,6 +1,6 @@
-﻿namespace SciMaterials.DAL.Models;
+namespace SciMaterials.DAL.Models;
 
-public class Rating
+public partial class Rating
 {
     public Guid FileId { get; set; }
     public Guid UserId { get; set; }

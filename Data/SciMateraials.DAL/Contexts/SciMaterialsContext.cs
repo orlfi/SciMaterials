@@ -22,7 +22,7 @@ namespace SciMaterials.DAL.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            
             modelBuilder.Entity<Comment>(entity =>
             {
                 entity.HasIndex(e => e.OwnerId, "IX_Comments_OwnerId");
@@ -46,7 +46,7 @@ namespace SciMaterials.DAL.Contexts
                     .HasConstraintName("comments_file_groups_resourseId_fk");
 
             });
-
+            
             modelBuilder.Entity<Rating>(entity =>
             {
                 entity.HasKey(e => new { e.FileId, e.UserId });

@@ -31,7 +31,7 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
                     throw;
                 }
             }
-
+          
             if (!await db.ContentTypes.AnyAsync(cancel))
             {
                 try
