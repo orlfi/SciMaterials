@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
-namespace SciMaterials.DAL.AUTH.InitializationDb;
+namespace SciMaterials.DAL.InitializationDb.Implementation;
 
 public static class AuthDbInitializer
 {
@@ -16,9 +16,8 @@ public static class AuthDbInitializer
         RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
     {
-        var adminSettings = configuration.GetSection("AdminSettings");
-        string adminEmail = adminSettings["login"];
-        string adminPassword = adminSettings["password"];
+        string superAdminEmail = configuration.GetSection("SuperAdminSettings:Login").Value;
+        string superAdminPassword = configuration.GetSection("SuperAdminSettings:Password").Value;
         
         //Роль админа
         if (await roleManager.FindByNameAsync("admin") is null)
@@ -33,15 +32,15 @@ public static class AuthDbInitializer
         }
         
         //Супер админ
-        if (await userManager.FindByNameAsync(adminEmail) is null)
+        if (await userManager.FindByNameAsync(superAdminEmail) is null)
         {
             var superAdmin = new IdentityUser()
             {
-                Email = adminEmail, 
-                UserName = adminEmail
+                Email = superAdminEmail, 
+                UserName = superAdminEmail
             };
             
-            var identityResult = await userManager.CreateAsync(superAdmin, adminPassword);
+            var identityResult = await userManager.CreateAsync(superAdmin, superAdminPassword);
                 
             if (identityResult.Succeeded)
             {

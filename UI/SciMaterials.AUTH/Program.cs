@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using SciMaterials.Auth.Registrations;
-using SciMaterials.DAL.AUTH.Context;
-using SciMaterials.DAL.AUTH.InitializationDb;
+using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.InitializationDb.Implementation;
 
 namespace SciMaterials.Auth;
 
@@ -28,7 +28,7 @@ public class Program
             options.Password.RequireUppercase = false; //требуются ли символя в верхнем регистре
             options.Password.RequireDigit = false; //требуются ли применять цифры в пароле
         })
-        .AddEntityFrameworkStores<AuthDbContext>()
+        .AddEntityFrameworkStores<SciMaterialsAuthDbContext>()
         .AddDefaultTokenProviders();
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
