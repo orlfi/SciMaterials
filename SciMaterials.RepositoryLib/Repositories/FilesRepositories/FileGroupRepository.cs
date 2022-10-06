@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
 
@@ -13,13 +14,13 @@ public interface IFileGroupRepository : IRepository<FileGroup> { }
 public class FileGroupRepository : IFileGroupRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public FileGroupRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -33,13 +34,19 @@ public class FileGroupRepository : IFileGroupRepository
     public void Add(FileGroup entity)
     {
         _logger.Debug($"{nameof(FileGroupRepository.Add)}");
+
+        if (entity is null) return;
+        _context.FileGroups.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(FileGroup entity)
+    public async Task AddAsync(FileGroup entity)
     {
         _logger.Debug($"{nameof(FileGroupRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.FileGroups.AddAsync(entity);
     }
 
     ///
@@ -47,13 +54,21 @@ public class FileGroupRepository : IFileGroupRepository
     public void Delete(Guid id)
     {
         _logger.Debug($"{nameof(FileGroupRepository.Delete)}");
+
+        var FileGroupDb = _context.FileGroups.FirstOrDefault(c => c.Id == id);
+        if (FileGroupDb is null) return;
+        _context.FileGroups.Remove(FileGroupDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(FileGroupRepository.DeleteAsync)}");
+
+        var FileGroupDb = await _context.FileGroups.FirstOrDefaultAsync(c => c.Id == id);
+        if (FileGroupDb is null) return;
+        _context.FileGroups.Remove(FileGroupDb!);
     }
 
     ///
@@ -62,20 +77,52 @@ public class FileGroupRepository : IFileGroupRepository
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetAll)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.FileGroups
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.FileGroups
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<FileGroup>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<FileGroup>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.FileGroups
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.FileGroups
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .ToListAsync();
     }
 
     ///
@@ -84,20 +131,56 @@ public class FileGroupRepository : IFileGroupRepository
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.FileGroups
+                .Where(c => c.Id == id)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.FileGroups
+                .Where(c => c.Id == id)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .FirstOrDefault()!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<FileGroup> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<FileGroup> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.FileGroups
+                .Where(c => c.Id == id)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.FileGroups
+                .Where(c => c.Id == id)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Category)
+                .Include(fg => fg.Owner)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -105,12 +188,46 @@ public class FileGroupRepository : IFileGroupRepository
     public void Update(FileGroup entity)
     {
         _logger.Debug($"{nameof(FileGroupRepository.Update)}");
+
+        if (entity is null) return;
+        var FileGroupDb = GetById(entity.Id, false);
+
+        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb);
+        _context.FileGroups.Update(FileGroupDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(FileGroup entity)
+    public async Task UpdateAsync(FileGroup entity)
     {
         _logger.Debug($"{nameof(FileGroupRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var FileGroupDb = await GetByIdAsync(entity.Id, false);
+
+        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb);
+        _context.FileGroups.Update(FileGroupDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private FileGroup UpdateCurrentEnity(FileGroup sourse, FileGroup recipient)
+    {
+        recipient.Description = sourse.Description;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.Files = sourse.Files;
+        recipient.Name = sourse.Name;
+        recipient.Owner = sourse.Owner;
+        recipient.OwnerId = sourse.OwnerId;
+        recipient.Category = sourse.Category;
+        recipient.CategoryId = sourse.CategoryId;
+        recipient.Tags = sourse.Tags;
+        recipient.Ratings = sourse.Ratings;
+        recipient.Comments = sourse.Comments;
+        recipient.Title = sourse.Title;
+
+        return recipient;
     }
 }

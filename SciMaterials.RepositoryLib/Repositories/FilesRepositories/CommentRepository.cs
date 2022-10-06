@@ -1,8 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CommentsRepositories;
+using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CommentsRepositories;
@@ -14,13 +15,13 @@ public interface ICommentRepository : IRepository<Comment> { }
 public class CommentRepository : ICommentRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public CommentRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -34,13 +35,19 @@ public class CommentRepository : ICommentRepository
     public void Add(Comment entity)
     {
         _logger.Debug($"{nameof(CommentRepository.Add)}");
+
+        if (entity is null) return;
+        _context.Comments.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Comment entity)
+    public async Task AddAsync(Comment entity)
     {
         _logger.Debug($"{nameof(CommentRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.Comments.AddAsync(entity);
     }
 
     ///
@@ -48,13 +55,21 @@ public class CommentRepository : ICommentRepository
     public void Delete(Guid id)
     {
         _logger.Debug($"{nameof(CommentRepository.Delete)}");
+
+        var categoryDb = _context.Comments.FirstOrDefault(c => c.Id == id);
+        if (categoryDb is null) return;
+        _context.Comments.Remove(categoryDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(CommentRepository.DeleteAsync)}");
+
+        var categoryDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
+        if (categoryDb is null) return;
+        _context.Comments.Remove(categoryDb!);
     }
 
     ///
@@ -63,20 +78,36 @@ public class CommentRepository : ICommentRepository
     {
         _logger.Debug($"{nameof(CommentRepository.GetAll)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Comments
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.Comments
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Comment>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Comment>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CommentRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.Comments
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.Comments
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .ToListAsync();
     }
 
     ///
@@ -85,20 +116,40 @@ public class CommentRepository : ICommentRepository
     {
         _logger.Debug($"{nameof(CommentRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Comments
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Comments
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .FirstOrDefault()!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Comment> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Comment> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CommentRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.Comments
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Comments
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -106,12 +157,43 @@ public class CommentRepository : ICommentRepository
     public void Update(Comment entity)
     {
         _logger.Debug($"{nameof(CommentRepository.Update)}");
+
+        if (entity is null) return;
+        var categoryDb = GetById(entity.Id, false);
+
+        categoryDb = UpdateCurrentEnity(entity, categoryDb);
+        _context.Comments.Update(categoryDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Comment entity)
+    public async Task UpdateAsync(Comment entity)
     {
         _logger.Debug($"{nameof(CommentRepository.UpdateAsync)}");
+
+        _logger.Debug($"{nameof(CommentRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var categoryDb = await GetByIdAsync(entity.Id, false);
+
+        categoryDb = UpdateCurrentEnity(entity, categoryDb);
+        _context.Comments.Update(categoryDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private Comment UpdateCurrentEnity(Comment sourse, Comment recipient)
+    {
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.Files = sourse.Files;
+        recipient.ParentId = sourse.ParentId;
+        recipient.Text = sourse.Text;
+        recipient.FileGroups = sourse.FileGroups;
+        recipient.Owner = sourse.Owner;
+        recipient.OwnerId = sourse.OwnerId;
+
+        return recipient;
     }
 }

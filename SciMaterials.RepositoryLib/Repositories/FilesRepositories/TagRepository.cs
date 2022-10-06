@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
 
@@ -13,13 +14,13 @@ public interface ITagRepository : IRepository<Tag> { }
 public class TagRepository : ITagRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public TagRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -33,13 +34,19 @@ public class TagRepository : ITagRepository
     public void Add(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.Add)}");
+
+        if (entity is null) return;
+        _context.Tags.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Tag entity)
+    public async Task AddAsync(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.Tags.AddAsync(entity);
     }
 
     ///
@@ -47,13 +54,21 @@ public class TagRepository : ITagRepository
     public void Delete(Guid id)
     {
         _logger.Debug($"{nameof(TagRepository.Delete)}");
+
+        var TagDb = _context.Tags.FirstOrDefault(c => c.Id == id);
+        if (TagDb is null) return;
+        _context.Tags.Remove(TagDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(TagRepository.DeleteAsync)}");
+
+        var TagDb = await _context.Tags.FirstOrDefaultAsync(c => c.Id == id);
+        if (TagDb is null) return;
+        _context.Tags.Remove(TagDb!);
     }
 
     ///
@@ -62,20 +77,36 @@ public class TagRepository : ITagRepository
     {
         _logger.Debug($"{nameof(TagRepository.GetAll)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Tags
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.Tags
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Tag>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Tag>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.Tags
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.Tags
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .ToListAsync();
     }
 
     ///
@@ -84,20 +115,40 @@ public class TagRepository : ITagRepository
     {
         _logger.Debug($"{nameof(TagRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Tags
+                .Where(c => c.Id == id)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Tags
+                .Where(c => c.Id == id)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .FirstOrDefault()!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Tag> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Tag> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.Tags
+                .Where(c => c.Id == id)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Tags
+                .Where(c => c.Id == id)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -105,12 +156,37 @@ public class TagRepository : ITagRepository
     public void Update(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.Update)}");
+
+        if (entity is null) return;
+        var TagDb = GetById(entity.Id, false);
+
+        TagDb = UpdateCurrentEnity(entity, TagDb);
+        _context.Tags.Update(TagDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Tag entity)
+    public async Task UpdateAsync(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var TagDb = await GetByIdAsync(entity.Id, false);
+
+        TagDb = UpdateCurrentEnity(entity, TagDb);
+        _context.Tags.Update(TagDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private Tag UpdateCurrentEnity(Tag sourse, Tag recipient)
+    {
+        recipient.Files = sourse.Files;
+        recipient.Name = sourse.Name;
+        recipient.FileGroups = sourse.FileGroups;
+
+        return recipient;
     }
 }

@@ -22,7 +22,7 @@ public interface IRepository<T> where T : class
 
     /// <summary> Добавить экзепляр модели в БД. Асинхронный. </summary>
     /// <param name="entity"> Добавляемый экземпляр. </param>
-    void AddAsync(T entity);
+    Task AddAsync(T entity);
 
     /// <summary> Обновить экземпляр модели. </summary>
     /// <param name="entity"> Экземпляр с новыми данными. </param>
@@ -30,7 +30,7 @@ public interface IRepository<T> where T : class
 
     /// <summary> Обновить экземпляр модели. Асинхронный. </summary>
     /// <param name="entity"> Экземпляр с новыми данными. </param>
-    void UpdateAsync(T entity);
+    Task UpdateAsync(T entity);
 
     /// <summary> Удалить экземпляр модели из БД. </summary>
     /// <param name="id"> Id удаляемого экземпляра. </param>
@@ -38,7 +38,7 @@ public interface IRepository<T> where T : class
 
     /// <summary> Удалить экземпляр модели из БД. Асинхронный. </summary>
     /// <param name="id"> Id удаляемого экземпляра. </param>
-    void DeleteAsync(Guid id);
+    Task DeleteAsync(Guid id);
 
     /// <summary> Получить список всех экзепляров из БД. </summary>
     /// <param name="disableTracking"> Отключить отслеживание изменений. </param>

@@ -1,7 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CategorysRepositories;
@@ -14,13 +16,13 @@ public interface ICategoryRepository : IRepository<Category> { }
 public class CategoryRepository : ICategoryRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public CategoryRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -34,13 +36,19 @@ public class CategoryRepository : ICategoryRepository
     public void Add(Category entity)
     {
         _logger.Debug($"{nameof(CategoryRepository.Add)}");
+
+        if (entity is null) return;
+        _context.Categories.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Category entity)
+    public async Task AddAsync(Category entity)
     {
         _logger.Debug($"{nameof(CategoryRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.Categories.AddAsync(entity);
     }
 
     ///
@@ -48,13 +56,21 @@ public class CategoryRepository : ICategoryRepository
     public void Delete(Guid id)
     {
         _logger.Debug($"{nameof(CategoryRepository.Delete)}");
+
+        var categoryDb = _context.Categories.FirstOrDefault(c => c.Id == id);
+        if (categoryDb is null) return;
+        _context.Categories.Remove(categoryDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(CategoryRepository.DeleteAsync)}");
+
+        var categoryDb = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        if (categoryDb is null) return;
+        _context.Categories.Remove(categoryDb!);
     }
 
     ///
@@ -63,20 +79,32 @@ public class CategoryRepository : ICategoryRepository
     {
         _logger.Debug($"{nameof(CategoryRepository.GetAll)}");
 
-
-
-        return null!;
+        if(disableTracking)
+            return _context.Categories
+                .Include(c => c.Files)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.Categories
+                .Include(c => c.Files)
+                .ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Category>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Category>> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CategoryRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.Categories
+                .Include(c => c.Files)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.Categories
+                .Include(c => c.Files)
+                .ToListAsync();
     }
 
     ///
@@ -85,20 +113,36 @@ public class CategoryRepository : ICategoryRepository
     {
         _logger.Debug($"{nameof(CategoryRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Categories
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Categories
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .FirstOrDefault()!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Category> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Category> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CategoryRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.Categories
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Categories
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -106,12 +150,39 @@ public class CategoryRepository : ICategoryRepository
     public void Update(Category entity)
     {
         _logger.Debug($"{nameof(CategoryRepository.Update)}");
+
+        if (entity is null) return;
+        var categoryDb = GetById(entity.Id, false);
+
+        categoryDb = UpdateCurrentEnity(entity, categoryDb);
+        _context.Categories.Update(categoryDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Category entity)
+    public async Task UpdateAsync(Category entity)
     {
         _logger.Debug($"{nameof(CategoryRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var categoryDb = await GetByIdAsync(entity.Id, false);
+
+        categoryDb = UpdateCurrentEnity(entity, categoryDb);
+        _context.Categories.Update(categoryDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private Category UpdateCurrentEnity(Category sourse, Category recipient)
+    {
+        recipient.Description = sourse.Description;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.Files = sourse.Files;
+        recipient.ParentId = sourse.ParentId;
+        recipient.Name = sourse.Name;
+
+        return recipient;
     }
 }
