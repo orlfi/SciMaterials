@@ -235,21 +235,27 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
                 {
-                    b.Property<Guid>("FileId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FileGroupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("FileId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("RatingValue")
                         .HasColumnType("int");
 
-                    b.HasKey("FileId", "UserId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("FileGroupId");
+
+                    b.HasIndex("FileId");
 
                     b.HasIndex("UserId");
 
@@ -409,23 +415,23 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
                 {
-                    b.HasOne("SciMaterials.DAL.Models.FileGroup", null)
+                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
                         .WithMany("Ratings")
                         .HasForeignKey("FileGroupId");
 
                     b.HasOne("SciMaterials.DAL.Models.File", "File")
                         .WithMany("Ratings")
-                        .HasForeignKey("FileId")
-                        .IsRequired()
-                        .HasConstraintName("ratings_file_id_fk");
+                        .HasForeignKey("FileId");
 
                     b.HasOne("SciMaterials.DAL.Models.User", "User")
                         .WithMany("Ratings")
                         .HasForeignKey("UserId")
-                        .IsRequired()
-                        .HasConstraintName("ratings_user_id_fk");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("File");
+
+                    b.Navigation("FileGroup");
 
                     b.Navigation("User");
                 });
