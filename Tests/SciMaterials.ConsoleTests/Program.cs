@@ -22,7 +22,7 @@ using IHost host = CreateHostBuilder(args).Build();
 await using (var scope = host.Services.CreateAsyncScope())
 {
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    await dbInitializer.InitializeDbAsync();
+    await dbInitializer.InitializeDbAsync(removeAtStart: true);
 }
 
 Console.WriteLine("Press any key to exit...");
