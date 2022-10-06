@@ -1,6 +1,8 @@
+using SciMaterials.DAL.Models.Base;
+
 namespace SciMaterials.DAL.Models;
 
-public partial class Rating
+public partial class Rating : BaseModel
 {
     public Guid FileId { get; set; }
     public Guid UserId { get; set; }
