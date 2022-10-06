@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.DAL.Repositories.CommentsRepositories;
@@ -96,14 +97,14 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     private void Initialise()
     {
-        _repositories!.Add(typeof(User), new UserRepository(_context, _logger));
-        _repositories!.Add(typeof(File), new FileRepository(_context, _logger));
-        _repositories!.Add(typeof(Category), new CategoryRepository(_context, _logger));
-        _repositories!.Add(typeof(Comment), new CommentRepository(_context, _logger));
-        _repositories!.Add(typeof(ContentType), new ContentTypeRepository(_context, _logger));
-        _repositories!.Add(typeof(FileGroup), new ContentTypeRepository(_context, _logger));
-        _repositories!.Add(typeof(Rating), new ContentTypeRepository(_context, _logger));
-        _repositories!.Add(typeof(Tag), new ContentTypeRepository(_context, _logger));
+        _repositories!.Add(typeof(User), new UserRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(File), new FileRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(ContentType), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(FileGroup), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Rating), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Tag), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
     }
 
     #region Dispose

@@ -57,7 +57,8 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.Delete)}");
 
-        var RatingDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        var RatingDb = _context.Ratings.FirstOrDefault(c => c.FileId == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
@@ -68,7 +69,8 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.DeleteAsync)}");
 
-        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.FileId == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
@@ -117,16 +119,17 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetById)}");
 
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
         if (disableTracking)
             return _context.Ratings
-                .Where(c => c.Id == id)
+                .Where(c => c.FileId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
             return _context.Ratings
-                .Where(c => c.Id == id)
+                .Where(c => c.FileId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .FirstOrDefault()!;
@@ -138,16 +141,17 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetByIdAsync)}");
 
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
         if (disableTracking)
             return (await _context.Ratings
-                .Where(c => c.Id == id)
+                .Where(c => c.FileId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
             return (await _context.Ratings
-                .Where(c => c.Id == id)
+                .Where(c => c.FileId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync())!;
@@ -159,8 +163,9 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.Update)}");
 
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
         if (entity is null) return;
-        var RatingDb = GetById(entity.Id, false);
+        var RatingDb = GetById(entity.FileId, false);
 
         RatingDb = UpdateCurrentEnity(entity, RatingDb);
         _context.Ratings.Update(RatingDb);
@@ -172,8 +177,9 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.UpdateAsync)}");
 
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
         if (entity is null) return;
-        var RatingDb = await GetByIdAsync(entity.Id, false);
+        var RatingDb = await GetByIdAsync(entity.FileId, false);
 
         RatingDb = UpdateCurrentEnity(entity, RatingDb);
         _context.Ratings.Update(RatingDb);
