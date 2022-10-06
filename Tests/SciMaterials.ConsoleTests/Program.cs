@@ -1,19 +1,19 @@
-﻿#region usings
-using Microsoft.EntityFrameworkCore;
+#region usings
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Implementation;
 using SciMaterials.DAL.InitializationDb.Interfaces;
+using SciMaterials.DAL.Models;
 #endregion
 
 static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
-    .ConfigureServices(ConfigureServices);
-
+    .ConfigureServices(ConfigureServices)
+    .ConfigureAppConfiguration(app => app.AddJsonFile("appsettings.json"));
 
 static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
 {
-    services.AddDbContext<SciMaterialsContext>(options => options.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=SciMaterials;Integrated Security=True"));
+    services.AddContextMultipleProviders(context);
     services.AddTransient<IDbInitializer, DbInitializer>();
 }
 
@@ -21,8 +21,8 @@ using IHost host = CreateHostBuilder(args).Build();
 
 await using (var scope = host.Services.CreateAsyncScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    await db.InitializeDbAsync();
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+    await dbInitializer.InitializeDbAsync();
 }
 
 Console.WriteLine("Press any key to exit...");

@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SciMaterials.MVC</title>
+
+    @await Html.PartialAsync("Partial/_Styles")
+</head>
+<body>
+    @await Html.PartialAsync("Partial/_Header")
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    @await Html.PartialAsync("Partial/_Footer")
+
+    @await Html.PartialAsync("Partial/_Scripts")
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

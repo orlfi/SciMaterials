@@ -6,18 +6,20 @@ public class Resource : NamedModel
     public string? Description { get; set; }
     public Guid OwnerId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Guid CategoryId { get; set; }
-    public Category Category { get; set; } = null!;
+    // public Guid CategoryId { get; set; }
+    // public Category Category { get; set; } = null!;
     public User Owner { get; set; } = null!;
 
     public ICollection<Comment> Comments { get; set; }
     public ICollection<Tag> Tags { get; set; }
+    public ICollection<Category> Categories { get; set; }
     public ICollection<Rating> Ratings { get; set; }
 
     public Resource()
     {
         Comments = new HashSet<Comment>();
         Tags = new HashSet<Tag>();
+        Categories = new HashSet<Category>();
         Ratings = new HashSet<Rating>();
     }
 }

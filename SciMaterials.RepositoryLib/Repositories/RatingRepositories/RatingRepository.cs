@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog;
+using NLog
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.FilesRepositories;

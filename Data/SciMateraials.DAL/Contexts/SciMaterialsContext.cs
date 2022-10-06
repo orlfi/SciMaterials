@@ -22,56 +22,7 @@ namespace SciMaterials.DAL.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Comment>(entity =>
-            {
-                entity.HasMany(d => d.Files)
-                    .WithMany(p => p.Comments)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "CommentsFiles",
-                        l => l.HasOne<Models.File>()
-                            .WithMany()
-                            .HasForeignKey("FileId")
-                            .OnDelete(DeleteBehavior.ClientSetNull)
-                            .HasConstraintName("comments_files_file_id_fk"),
-                        r => r.HasOne<Comment>()
-                            .WithMany()
-                            .HasForeignKey("CommentId")
-                            .OnDelete(DeleteBehavior.ClientSetNull)
-                            .HasConstraintName("comments_files_comment_id_fk"),
-                        j =>
-                        {
-                            j.HasKey("CommentId", "FileId");
-
-                            j.IndexerProperty<Guid>("CommentId");
-
-                            j.IndexerProperty<Guid>("FileId");
-                        });
-
-                entity.HasMany(d => d.FileGroups)
-                    .WithMany(p => p.Comments)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "CommentsFileGroups",
-                        l => l.HasOne<FileGroup>()
-                            .WithMany()
-                            .HasForeignKey("FileGroupId")
-                            .OnDelete(DeleteBehavior.ClientSetNull)
-                            .HasConstraintName("comments_files_groups_file_group_id_fk"),
-                        r => r.HasOne<Comment>()
-                            .WithMany()
-                            .HasForeignKey("CommentId")
-                            .OnDelete(DeleteBehavior.ClientSetNull)
-                            .HasConstraintName("comments_files_groups_comment_id_fk"),
-                        j =>
-                        {
-                            j.HasKey("CommentId", "FileGroupId");
-
-                            j.IndexerProperty<Guid>("CommentId");
-
-                            j.IndexerProperty<Guid>("FileGroupId");
-                        });
-            });
-
+            
             modelBuilder.Entity<Rating>(entity =>
             {
                 entity.HasKey(e => new { e.FileId, e.UserId });

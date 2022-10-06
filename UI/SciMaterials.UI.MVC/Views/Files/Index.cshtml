@@ -1,0 +1,35 @@
+﻿@{
+
+    ViewData["Title"] = "Файлы";
+}
+
+@model FileUploadViewModel
+@{
+
+    ViewData["Title"] = "Index";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4>Загрузка файлов</h4>
+<hr />
+@if (ViewBag.Message != null)
+
+{
+    <div class="alert alert-success alert-dismissible" style="margin-top:20px">
+        @ViewBag.Message
+    </div>
+
+}
+
+<form method="post" enctype="multipart/form-data" action="/api/files/Upload">
+
+    <div class="form-group mb-3">
+        <input class="form-control" type="file" name="file" required />
+    </div>
+
+    <div class="form-group mb-3">
+        <label class="form-label" asp-for="Description">Описание</label>
+        <input class="form-control" asp-for="Description" />
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Загрузить</button>
+</form>
