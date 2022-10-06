@@ -22,23 +22,6 @@ namespace SciMaterials.DAL.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
-            modelBuilder.Entity<Rating>(entity =>
-            {
-                entity.HasKey(e => new { e.FileId, e.UserId });
-
-                entity.HasOne(d => d.File)
-                    .WithMany(p => p.Ratings)
-                    .HasForeignKey(d => d.FileId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ratings_file_id_fk");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Ratings)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ratings_user_id_fk");
-            });
         }
     }
 }
