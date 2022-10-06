@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.FilesRepositories;
 
 namespace SciMaterials.Data.Repositories.UserRepositories;
 
@@ -11,13 +13,13 @@ public interface IUserRepository : IRepository<User> { }
 public class UserRepository : IUserRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public UserRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -31,6 +33,9 @@ public class UserRepository : IUserRepository
     public void Add(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.Add)}");
+
+        if (entity is null) return;
+        _context.Users.Add(entity);
     }
 
     ///
@@ -38,6 +43,9 @@ public class UserRepository : IUserRepository
     public async Task AddAsync(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.Users.AddAsync(entity);
     }
 
     ///
@@ -45,6 +53,10 @@ public class UserRepository : IUserRepository
     public void Delete(Guid id)
     {
         _logger.Debug($"{nameof(UserRepository.Delete)}");
+
+        var UserDb = _context.Users.FirstOrDefault(c => c.Id == id);
+        if (UserDb is null) return;
+        _context.Users.Remove(UserDb!);
     }
 
     ///
@@ -52,6 +64,10 @@ public class UserRepository : IUserRepository
     public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(UserRepository.DeleteAsync)}");
+
+        var UserDb = await _context.Users.FirstOrDefaultAsync(c => c.Id == id);
+        if (UserDb is null) return;
+        _context.Users.Remove(UserDb!);
     }
 
     ///
@@ -60,9 +76,15 @@ public class UserRepository : IUserRepository
     {
         _logger.Debug($"{nameof(UserRepository.GetAll)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Users
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.Users.ToList();
     }
 
     ///
@@ -71,9 +93,19 @@ public class UserRepository : IUserRepository
     {
         _logger.Debug($"{nameof(UserRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.Users
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.Users
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .ToListAsync();
     }
 
     ///
@@ -82,9 +114,21 @@ public class UserRepository : IUserRepository
     {
         _logger.Debug($"{nameof(UserRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Users
+                .Where(c => c.Id == id)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Users
+                .Where(c => c.Id == id)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .FirstOrDefault()!;
     }
 
     ///
@@ -93,9 +137,21 @@ public class UserRepository : IUserRepository
     {
         _logger.Debug($"{nameof(UserRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.Users
+                .Where(c => c.Id == id)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Users
+                .Where(c => c.Id == id)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -103,6 +159,12 @@ public class UserRepository : IUserRepository
     public void Update(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.Update)}");
+
+        if (entity is null) return;
+        var UserDb = GetById(entity.Id, false);
+
+        UserDb = UpdateCurrentEnity(entity, UserDb);
+        _context.Users.Update(UserDb);
     }
 
     ///
@@ -110,5 +172,26 @@ public class UserRepository : IUserRepository
     public async Task UpdateAsync(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var UserDb = await GetByIdAsync(entity.Id, false);
+
+        UserDb = UpdateCurrentEnity(entity, UserDb);
+        _context.Users.Update(UserDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private User UpdateCurrentEnity(User sourse, User recipient)
+    {
+        recipient.Files = sourse.Files;
+        recipient.Name = sourse.Name;
+        recipient.Comments = sourse.Comments;
+        recipient.Email = sourse.Email;
+        recipient.Ratings = sourse.Ratings;
+
+        return recipient;
     }
 }

@@ -3,7 +3,7 @@ using SciMaterials.DAL.Models;
 
 namespace SciMaterials.DAL.Contexts
 {
-    public class SciMaterialsContext : DbContext
+    public class SciMaterialsContext : DbContext, ISciMaterialsContext
     {
         public SciMaterialsContext(DbContextOptions<SciMaterialsContext> options)
             : base(options)

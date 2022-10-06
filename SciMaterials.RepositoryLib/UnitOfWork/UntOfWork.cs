@@ -10,6 +10,7 @@ using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.Repositories;
 using SciMaterials.Data.Repositories.UserRepositories;
+using System;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Data.UnitOfWork;
@@ -20,7 +21,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     private readonly TContext _context;
 
     private bool disposed;
-    private Dictionary<string, object>? _repositories;
+    private Dictionary<Type, object>? _repositories = new Dictionary<Type, object>();
 
     /// <summary> ctor. </summary>
     /// <param name="logger"></param>
@@ -43,43 +44,10 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         _logger.Debug($"{nameof(UnitOfWork)} >>> {nameof(GetRepository)}.");
 
         if (_repositories == null)
-            _repositories = new Dictionary<string, object>();
+            _repositories = new Dictionary<Type, object>();
 
-        var type = nameof(T);
+        var type = typeof(T);
 
-        if (!_repositories.ContainsKey(type))
-        {
-            switch (type)
-            {
-                case nameof(User):
-                    _repositories.Add(type, new UserRepository(_context, _logger));
-                    break;
-                case nameof(File):
-                    _repositories.Add(type, new FileRepository(_context, _logger));
-                    break;
-                case nameof(Category):
-                    _repositories.Add(type, new CategoryRepository(_context, _logger));
-                    break;
-                case nameof(Comment):
-                    _repositories.Add(type, new CommentRepository(_context, _logger));
-                    break;
-                case nameof(ContentType):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                case nameof(FileGroup):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                case nameof(Rating):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                case nameof(Tag):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                default:
-                    _logger.Error($"Ошибка при попытке создания экземпляра репозитория для {nameof(T)}.");
-                    break;
-            }
-        }
         return (IRepository<T>)_repositories[type];
     }
 
@@ -124,6 +92,18 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     public Task<IDbContextTransaction> BeginTransactionAsync(bool useIfExists = false)
     {
         throw new NotImplementedException();
+    }
+
+    private void Initialise()
+    {
+        _repositories!.Add(typeof(User), new UserRepository(_context, _logger));
+        _repositories!.Add(typeof(File), new FileRepository(_context, _logger));
+        _repositories!.Add(typeof(Category), new CategoryRepository(_context, _logger));
+        _repositories!.Add(typeof(Comment), new CommentRepository(_context, _logger));
+        _repositories!.Add(typeof(ContentType), new ContentTypeRepository(_context, _logger));
+        _repositories!.Add(typeof(FileGroup), new ContentTypeRepository(_context, _logger));
+        _repositories!.Add(typeof(Rating), new ContentTypeRepository(_context, _logger));
+        _repositories!.Add(typeof(Tag), new ContentTypeRepository(_context, _logger));
     }
 
     #region Dispose

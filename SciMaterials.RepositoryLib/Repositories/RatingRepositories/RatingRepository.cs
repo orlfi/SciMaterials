@@ -1,7 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.RatingRepositories;
@@ -14,13 +16,13 @@ public interface IRatingRepository : IRepository<Rating> { }
 public class RatingRepository : IRatingRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public RatingRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -34,6 +36,9 @@ public class RatingRepository : IRatingRepository
     public void Add(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.Add)}");
+
+        if (entity is null) return;
+        _context.Ratings.Add(entity);
     }
 
     ///
@@ -41,6 +46,9 @@ public class RatingRepository : IRatingRepository
     public async Task AddAsync(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.Ratings.AddAsync(entity);
     }
 
     ///
@@ -48,6 +56,10 @@ public class RatingRepository : IRatingRepository
     public void Delete(Guid id)
     {
         _logger.Debug($"{nameof(RatingRepository.Delete)}");
+
+        var RatingDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
+        if (RatingDb is null) return;
+        _context.Ratings.Remove(RatingDb!);
     }
 
     ///
@@ -55,6 +67,10 @@ public class RatingRepository : IRatingRepository
     public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(RatingRepository.DeleteAsync)}");
+
+        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
+        if (RatingDb is null) return;
+        _context.Ratings.Remove(RatingDb!);
     }
 
     ///
@@ -63,9 +79,17 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetAll)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Ratings
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.Ratings
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .ToList();
     }
 
     ///
@@ -74,9 +98,17 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.Ratings
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.Ratings
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .ToListAsync();
     }
 
     ///
@@ -85,9 +117,19 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Ratings
+                .Where(c => c.Id == id)
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Ratings
+                .Where(c => c.Id == id)
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .FirstOrDefault()!;
     }
 
     ///
@@ -96,9 +138,19 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.Ratings
+                .Where(c => c.Id == id)
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Ratings
+                .Where(c => c.Id == id)
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -106,6 +158,12 @@ public class RatingRepository : IRatingRepository
     public void Update(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.Update)}");
+
+        if (entity is null) return;
+        var RatingDb = GetById(entity.Id, false);
+
+        RatingDb = UpdateCurrentEnity(entity, RatingDb);
+        _context.Ratings.Update(RatingDb);
     }
 
     ///
@@ -113,5 +171,26 @@ public class RatingRepository : IRatingRepository
     public async Task UpdateAsync(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var RatingDb = await GetByIdAsync(entity.Id, false);
+
+        RatingDb = UpdateCurrentEnity(entity, RatingDb);
+        _context.Ratings.Update(RatingDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private Rating UpdateCurrentEnity(Rating sourse, Rating recipient)
+    {
+        recipient.File = sourse.File;
+        recipient.FileId = sourse.FileId;
+        recipient.RatingValue = sourse.RatingValue;
+        recipient.User = sourse.User;
+        recipient.UserId = sourse.UserId;
+
+        return recipient;
     }
 }

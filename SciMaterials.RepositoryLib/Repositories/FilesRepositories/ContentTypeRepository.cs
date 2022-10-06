@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
@@ -14,13 +15,13 @@ public interface IContentTypeRepository : IRepository<ContentType> { }
 public class ContentTypeRepository : IContentTypeRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public ContentTypeRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -33,85 +34,151 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(ContentType entity)
     {
-        _logger.Debug($"{nameof(FileRepository.Add)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.Add)}");
+
+        if (entity is null) return;
+        _context.ContentTypes.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(ContentType entity)
     {
-        _logger.Debug($"{nameof(FileRepository.AddAsync)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.ContentTypes.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(FileRepository.Delete)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.Delete)}");
+
+        var ContentTypeDb = _context.ContentTypes.FirstOrDefault(c => c.Id == id);
+        if (ContentTypeDb is null) return;
+        _context.ContentTypes.Remove(ContentTypeDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(FileRepository.DeleteAsync)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.DeleteAsync)}");
+
+        var ContentTypeDb = await _context.ContentTypes.FirstOrDefaultAsync(c => c.Id == id);
+        if (ContentTypeDb is null) return;
+        _context.ContentTypes.Remove(ContentTypeDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<ContentType> GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileRepository.GetAll)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.GetAll)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.ContentTypes
+                .Include(ct => ct.Files)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.ContentTypes
+                .Include(ct => ct.Files)
+                .ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<ContentType>> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileRepository.GetAllAsync)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.ContentTypes
+                .Include(ct => ct.Files)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.ContentTypes
+                .Include(ct => ct.Files)
+                .ToListAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public ContentType GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileRepository.GetById)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.ContentTypes
+                .Where(c => c.Id == id)
+                .Include(ct => ct.Files)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.ContentTypes
+                .Where(c => c.Id == id)
+                .Include(ct => ct.Files)
+                .FirstOrDefault()!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<ContentType> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileRepository.GetByIdAsync)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.ContentTypes
+                .Where(c => c.Id == id)
+                .Include(ct => ct.Files)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.ContentTypes
+                .Where(c => c.Id == id)
+                .Include(ct => ct.Files)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(ContentType entity)
     {
-        _logger.Debug($"{nameof(FileRepository.Update)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.Update)}");
+
+        if (entity is null) return;
+        var ContentTypeDb = GetById(entity.Id, false);
+
+        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb);
+        _context.ContentTypes.Update(ContentTypeDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(ContentType entity)
     {
-        _logger.Debug($"{nameof(FileRepository.UpdateAsync)}");
+        _logger.Debug($"{nameof(ContentTypeRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var ContentTypeDb = await GetByIdAsync(entity.Id, false);
+
+        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb);
+        _context.ContentTypes.Update(ContentTypeDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private ContentType UpdateCurrentEnity(ContentType sourse, ContentType recipient)
+    {
+        recipient.Files = sourse.Files;
+        recipient.Name = sourse.Name;
+
+        return recipient;
     }
 }

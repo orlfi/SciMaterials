@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
@@ -15,13 +16,13 @@ public interface IFileRepository : IRepository<File> { }
 public class FileRepository : IFileRepository
 {
     private readonly ILogger _logger;
-    private readonly DbContext _context;
+    private readonly ISciMaterialsContext _context;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public FileRepository(
-        DbContext context,
+        ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
@@ -35,6 +36,9 @@ public class FileRepository : IFileRepository
     public void Add(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.Add)}");
+
+        if (entity is null) return;
+        _context.Files.Add(entity);
     }
 
     ///
@@ -42,6 +46,9 @@ public class FileRepository : IFileRepository
     public async Task AddAsync(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.AddAsync)}");
+
+        if (entity is null) return;
+        await _context.Files.AddAsync(entity);
     }
 
     ///
@@ -49,6 +56,10 @@ public class FileRepository : IFileRepository
     public void Delete(Guid id)
     {
         _logger.Debug($"{nameof(FileRepository.Delete)}");
+
+        var FileDb = _context.Files.FirstOrDefault(c => c.Id == id);
+        if (FileDb is null) return;
+        _context.Files.Remove(FileDb!);
     }
 
     ///
@@ -56,6 +67,10 @@ public class FileRepository : IFileRepository
     public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(FileRepository.DeleteAsync)}");
+
+        var FileDb = await _context.Files.FirstOrDefaultAsync(c => c.Id == id);
+        if (FileDb is null) return;
+        _context.Files.Remove(FileDb!);
     }
 
     ///
@@ -64,9 +79,27 @@ public class FileRepository : IFileRepository
     {
         _logger.Debug($"{nameof(FileRepository.GetAll)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Files
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .ToList();
+        else
+            return _context.Files
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .ToList();
     }
 
     ///
@@ -75,9 +108,27 @@ public class FileRepository : IFileRepository
     {
         _logger.Debug($"{nameof(FileRepository.GetAllAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return await _context.Files
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .ToListAsync();
+        else
+            return await _context.Files
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .ToListAsync();
     }
 
     ///
@@ -86,9 +137,29 @@ public class FileRepository : IFileRepository
     {
         _logger.Debug($"{nameof(FileRepository.GetById)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return _context.Files
+                .Where(c => c.Id == id)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Files
+                .Where(c => c.Id == id)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .FirstOrDefault()!;
     }
 
     ///
@@ -97,9 +168,29 @@ public class FileRepository : IFileRepository
     {
         _logger.Debug($"{nameof(FileRepository.GetByIdAsync)}");
 
-
-
-        return null!;
+        if (disableTracking)
+            return (await _context.Files
+                .Where(c => c.Id == id)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Files
+                .Where(c => c.Id == id)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Category)
+                .Include(f => f.Owner)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -107,6 +198,12 @@ public class FileRepository : IFileRepository
     public void Update(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.Update)}");
+
+        if (entity is null) return;
+        var FileDb = GetById(entity.Id, false);
+
+        FileDb = UpdateCurrentEnity(entity, FileDb);
+        _context.Files.Update(FileDb);
     }
 
     ///
@@ -114,5 +211,38 @@ public class FileRepository : IFileRepository
     public async Task UpdateAsync(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.UpdateAsync)}");
+
+        if (entity is null) return;
+        var FileDb = await GetByIdAsync(entity.Id, false);
+
+        FileDb = UpdateCurrentEnity(entity, FileDb);
+        _context.Files.Update(FileDb);
+    }
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private File UpdateCurrentEnity(File sourse, File recipient)
+    {
+        recipient.Description = sourse.Description;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.Name = sourse.Name;
+        recipient.Url = sourse.Url;
+        recipient.Size = sourse.Size;
+        recipient.ContentTypeId = sourse.ContentTypeId;
+        recipient.FileGroupId = sourse.FileGroupId;
+        recipient.ContentType = sourse.ContentType;
+        recipient.FileGroup = sourse.FileGroup;
+        recipient.Category = sourse.Category;
+        recipient.CategoryId = sourse.CategoryId;
+        recipient.Comments = sourse.Comments;
+        recipient.Owner = sourse.Owner;
+        recipient.OwnerId = sourse.OwnerId;
+        recipient.Ratings = sourse.Ratings;
+        recipient.Tags = sourse.Tags;
+        recipient.Title = sourse.Title;
+
+        return recipient;
     }
 }
