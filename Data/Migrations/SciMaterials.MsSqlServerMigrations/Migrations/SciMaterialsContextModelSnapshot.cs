@@ -82,6 +82,38 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.ToTable("FileTag");
                 });
 
+            modelBuilder.Entity("SciMaterials.DAL.Models.Author", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Authors");
+                });
+
             modelBuilder.Entity("SciMaterials.DAL.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -112,6 +144,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -119,9 +154,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FileId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ParentId")
@@ -133,11 +165,11 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
                     b.HasIndex("FileGroupId");
 
                     b.HasIndex("FileId");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Comments");
                 });
@@ -147,6 +179,10 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -161,6 +197,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("ContentTypeId")
@@ -179,9 +218,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
@@ -194,11 +230,11 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
                     b.HasIndex("ContentTypeId");
 
                     b.HasIndex("FileGroupId");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Files");
                 });
@@ -207,6 +243,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -219,16 +258,13 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("FileGroups");
                 });
@@ -237,6 +273,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AuthorId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("FileGroupId")
@@ -248,16 +287,13 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Property<int>("RatingValue")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("FileGroupId");
 
                     b.HasIndex("FileId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Ratings");
                 });
@@ -282,14 +318,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -356,8 +384,25 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SciMaterials.DAL.Models.Author", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SciMaterials.DAL.Models.Comment", b =>
                 {
+                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
+                        .WithMany("Comments")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
                         .WithMany("Comments")
                         .HasForeignKey("FileGroupId");
@@ -366,21 +411,21 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .WithMany("Comments")
                         .HasForeignKey("FileId");
 
-                    b.HasOne("SciMaterials.DAL.Models.User", "Owner")
-                        .WithMany("Comments")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Author");
 
                     b.Navigation("File");
 
                     b.Navigation("FileGroup");
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
+                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
+                        .WithMany("Files")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SciMaterials.DAL.Models.ContentType", "ContentType")
                         .WithMany("Files")
                         .HasForeignKey("ContentTypeId");
@@ -389,32 +434,32 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .WithMany("Files")
                         .HasForeignKey("FileGroupId");
 
-                    b.HasOne("SciMaterials.DAL.Models.User", "Owner")
-                        .WithMany("Files")
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Author");
 
                     b.Navigation("ContentType");
 
                     b.Navigation("FileGroup");
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
                 {
-                    b.HasOne("SciMaterials.DAL.Models.User", "Owner")
+                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
                         .WithMany()
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
                 {
+                    b.HasOne("SciMaterials.DAL.Models.Author", "User")
+                        .WithMany("Ratings")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
                         .WithMany("Ratings")
                         .HasForeignKey("FileGroupId");
@@ -423,17 +468,20 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .WithMany("Ratings")
                         .HasForeignKey("FileId");
 
-                    b.HasOne("SciMaterials.DAL.Models.User", "User")
-                        .WithMany("Ratings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("File");
 
                     b.Navigation("FileGroup");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SciMaterials.DAL.Models.Author", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Files");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.ContentType", b =>
@@ -449,15 +497,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Files");
-
-                    b.Navigation("Ratings");
-                });
-
-            modelBuilder.Entity("SciMaterials.DAL.Models.User", b =>
                 {
                     b.Navigation("Comments");
 
