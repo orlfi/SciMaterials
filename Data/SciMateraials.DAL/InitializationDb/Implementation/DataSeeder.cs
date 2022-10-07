@@ -17,11 +17,11 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
         {
             await using var transaction = await db.Database.BeginTransactionAsync(cancel).ConfigureAwait(false);
 
-            if (!await db.Users.AnyAsync(cancel))
+            if (!await db.Authors.AnyAsync(cancel))
             {
                 try
                 {
-                    await db.Users.AddRangeAsync(JsonConvert.DeserializeObject<List<User>>(Encoding.UTF8.GetString(Resources.Users))!, cancel)
+                    await db.Authors.AddRangeAsync(JsonConvert.DeserializeObject<List<Author>>(Encoding.UTF8.GetString(Resources.Authors))!, cancel)
                         .ConfigureAwait(false);
                     await db.SaveChangesAsync(cancel).ConfigureAwait(false);
                 }
