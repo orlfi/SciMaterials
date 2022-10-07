@@ -18,6 +18,8 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
 
         public async Task<bool> DeleteDbAsync(CancellationToken cancel = default)
         {
+            _logger.LogInformation("Deleting a database...");
+
             cancel.ThrowIfCancellationRequested();
 
             try
@@ -27,18 +29,20 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
             }
             catch (OperationCanceledException e)
             {
-                _logger.LogError("Interrupting an operation when deleting a database", e.Message);
+                _logger.LogError(e,"Interrupting an operation when deleting a database");
                 throw;
             }
             catch (Exception e)
             {
-                _logger.LogError("Error during database initialization", e.Message);
+                _logger.LogError(e, "Error during database initialization");
                 throw;
             }
         }
 
         public async Task InitializeDbAsync(bool removeAtStart = false, CancellationToken cancel = default)
         {
+            _logger.LogInformation("Database initialization...");
+
             cancel.ThrowIfCancellationRequested();
 
             try
@@ -56,12 +60,12 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
             }
             catch (OperationCanceledException e)
             {
-                _logger.LogError("Interrupting an operation when deleting a database", e.Message);
+                _logger.LogError(e, "Interrupting an operation when deleting a database");
                 throw;
             }
             catch (Exception e)
             {
-                _logger.LogError("Error during database initialization", e.Message);
+                _logger.LogError(e, "Error during database initialization");
                 throw;
             }
         }

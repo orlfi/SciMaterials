@@ -139,5 +139,15 @@ namespace SciMaterials.DAL.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Users {
+            get {
+                object obj = ResourceManager.GetObject("Users", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

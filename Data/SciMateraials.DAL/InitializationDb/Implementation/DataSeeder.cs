@@ -17,6 +17,21 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
         {
             await using var transaction = await db.Database.BeginTransactionAsync(cancel).ConfigureAwait(false);
 
+            if (!await db.Users.AnyAsync(cancel))
+            {
+                try
+                {
+                    await db.Users.AddRangeAsync(JsonConvert.DeserializeObject<List<User>>(Encoding.UTF8.GetString(Resources.Users))!, cancel)
+                        .ConfigureAwait(false);
+                    await db.SaveChangesAsync(cancel).ConfigureAwait(false);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Error loading data Authors", e.Message);
+                    throw;
+                }
+            }
+
             if (!await db.Authors.AnyAsync(cancel))
             {
                 try
@@ -27,7 +42,7 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
                 }
                 catch (Exception e)
                 {
-                    Debug.WriteLine("Error loading data Users", e.Message);
+                    Debug.WriteLine("Error loading data Authors", e.Message);
                     throw;
                 }
             }

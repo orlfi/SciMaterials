@@ -4,9 +4,9 @@ public class Resource : NamedModel
 {
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public Guid OwnerId { get; set; }
+    public Guid AuthorId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Author Owner { get; set; } = null!;
+    public Author Author { get; set; } = null!;
 
     public ICollection<Comment> Comments { get; set; }
     public ICollection<Tag> Tags { get; set; }
