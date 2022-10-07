@@ -1,11 +1,8 @@
-﻿<MudNavMenu Color="Color.Warning" Bordered="true">
+﻿<MudNavMenu Color="Color.Info" Class="mx-4 mt-10">
     <MudSpacer />
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavGroup Title="Storages" Expanded="true">
-        <MudNavLink Href="storagev1" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Storage v1</MudNavLink>
-        <MudNavLink Href="storagev2" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Storage v2</MudNavLink>
-    </MudNavGroup>
-    <MudNavLink Href="mvc" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Wifi">MVC</MudNavLink>
+    <MudNavLink Class="rounded-lg" Href="dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+    <MudNavLink Class="rounded-lg" Href="users" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Users</MudNavLink>
+    <MudNavLink Class="rounded-lg" Href="storage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.FolderOpen">Files</MudNavLink>
 </MudNavMenu>
 @code {
     private MudTheme Theme = new MudTheme();
