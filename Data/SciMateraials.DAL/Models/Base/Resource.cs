@@ -6,7 +6,7 @@ public class Resource : NamedModel
     public string? Description { get; set; }
     public Guid OwnerId { get; set; }
     public DateTime CreatedAt { get; set; }
-    public User Owner { get; set; } = null!;
+    public Author Owner { get; set; } = null!;
 
     public ICollection<Comment> Comments { get; set; }
     public ICollection<Tag> Tags { get; set; }
