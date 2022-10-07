@@ -16,7 +16,8 @@ namespace SciMaterials.DAL.Contexts
         public virtual DbSet<Models.File> Files { get; set; } = null!;
         public virtual DbSet<FileGroup> FileGroups { get; set; } = null!;
         public virtual DbSet<Tag> Tags { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<Author> Authors { get; set; } = null!;
+        public DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Rating> Ratings { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

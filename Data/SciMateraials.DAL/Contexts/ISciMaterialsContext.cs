@@ -12,6 +12,7 @@ namespace SciMaterials.DAL.Contexts
         DbSet<Models.File> Files { get; set; }
         DbSet<Rating> Ratings { get; set; }
         DbSet<Tag> Tags { get; set; }
+        DbSet<Author> Authors { get; set; }
         DbSet<User> Users { get; set; }
     }
 }
