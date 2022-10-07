@@ -63,6 +63,16 @@ namespace SciMaterials.DAL.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Authors {
+            get {
+                object obj = ResourceManager.GetObject("Authors", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] Categories {
             get {
                 object obj = ResourceManager.GetObject("Categories", resourceCulture);
@@ -126,16 +136,6 @@ namespace SciMaterials.DAL.Properties {
         internal static byte[] Tags {
             get {
                 object obj = ResourceManager.GetObject("Tags", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] Users {
-            get {
-                object obj = ResourceManager.GetObject("Users", resourceCulture);
                 return ((byte[])(obj));
             }
         }
