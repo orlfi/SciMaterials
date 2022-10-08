@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog
+using NLog;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.FilesRepositories;
@@ -57,8 +57,8 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.Delete)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
-        var RatingDb = _context.Ratings.FirstOrDefault(c => c.FileId == id);
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
+        var RatingDb = _context.Ratings.FirstOrDefault(c => c.AuthorId == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
@@ -69,8 +69,8 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.DeleteAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
-        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.FileId == id);
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
+        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.AuthorId == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
@@ -119,17 +119,17 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetById)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
             return _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
             return _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .FirstOrDefault()!;
@@ -141,17 +141,17 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.GetByIdAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
             return (await _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
             return (await _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync())!;
@@ -163,9 +163,9 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.Update)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;
-        var RatingDb = GetById(entity.FileId, false);
+        var RatingDb = GetById(entity.AuthorId, false);
 
         RatingDb = UpdateCurrentEnity(entity, RatingDb);
         _context.Ratings.Update(RatingDb);
@@ -177,9 +177,9 @@ public class RatingRepository : IRatingRepository
     {
         _logger.Debug($"{nameof(RatingRepository.UpdateAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;
-        var RatingDb = await GetByIdAsync(entity.FileId, false);
+        var RatingDb = await GetByIdAsync(entity.AuthorId, false);
 
         RatingDb = UpdateCurrentEnity(entity, RatingDb);
         _context.Ratings.Update(RatingDb);
@@ -195,7 +195,7 @@ public class RatingRepository : IRatingRepository
         recipient.FileId = sourse.FileId;
         recipient.RatingValue = sourse.RatingValue;
         recipient.User = sourse.User;
-        recipient.UserId = sourse.UserId;
+        recipient.AuthorId = sourse.AuthorId;
 
         return recipient;
     }

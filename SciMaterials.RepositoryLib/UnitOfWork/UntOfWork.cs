@@ -10,8 +10,7 @@ using SciMaterials.DAL.Repositories.ContentTypesRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.Repositories;
-using SciMaterials.Data.Repositories.UserRepositories;
-using System;
+using SciMaterials.Data.Repositories.AuthorRepositories;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Data.UnitOfWork;
@@ -36,6 +35,8 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         _logger.Debug($"Логгер встроен в {nameof(UnitOfWork)}.");
 
         _context = context ?? throw new ArgumentException(nameof(context));
+
+        Initialise();
     }
 
     ///
@@ -97,7 +98,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     private void Initialise()
     {
-        _repositories!.Add(typeof(User), new UserRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(User), new AuthorRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(File), new FileRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));

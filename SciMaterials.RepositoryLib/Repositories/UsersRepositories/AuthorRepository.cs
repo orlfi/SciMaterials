@@ -2,15 +2,14 @@
 using NLog;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.FilesRepositories;
 
-namespace SciMaterials.Data.Repositories.UserRepositories;
+namespace SciMaterials.Data.Repositories.AuthorRepositories;
 
-/// <summary> Интерфейс репозитория для <see cref="User"/>. </summary>
-public interface IUserRepository : IRepository<User> { }
+/// <summary> Интерфейс репозитория для <see cref="Author"/>. </summary>
+public interface IAuthorRepository : IRepository<Author> { }
 
-/// <summary> Репозиторий для <see cref="User"/>. </summary>
-public class UserRepository : IUserRepository
+/// <summary> Репозиторий для <see cref="Author"/>. </summary>
+public class AuthorRepository : IAuthorRepository
 {
     private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
@@ -18,90 +17,90 @@ public class UserRepository : IUserRepository
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
-    public UserRepository(
+    public AuthorRepository(
         ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(UserRepository)}");
+        _logger.Debug($"Логгер встроен в {nameof(AuthorRepository)}");
 
         _context = context;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Add"/>
-    public void Add(User entity)
+    public void Add(Author entity)
     {
-        _logger.Debug($"{nameof(UserRepository.Add)}");
+        _logger.Debug($"{nameof(AuthorRepository.Add)}");
 
         if (entity is null) return;
-        _context.Users.Add(entity);
+        _context.Authors.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public async Task AddAsync(User entity)
+    public async Task AddAsync(Author entity)
     {
-        _logger.Debug($"{nameof(UserRepository.AddAsync)}");
+        _logger.Debug($"{nameof(AuthorRepository.AddAsync)}");
 
         if (entity is null) return;
-        await _context.Users.AddAsync(entity);
+        await _context.Authors.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(UserRepository.Delete)}");
+        _logger.Debug($"{nameof(AuthorRepository.Delete)}");
 
-        var UserDb = _context.Users.FirstOrDefault(c => c.Id == id);
-        if (UserDb is null) return;
-        _context.Users.Remove(UserDb!);
+        var AuthorDb = _context.Authors.FirstOrDefault(c => c.Id == id);
+        if (AuthorDb is null) return;
+        _context.Authors.Remove(AuthorDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(UserRepository.DeleteAsync)}");
+        _logger.Debug($"{nameof(AuthorRepository.DeleteAsync)}");
 
-        var UserDb = await _context.Users.FirstOrDefaultAsync(c => c.Id == id);
-        if (UserDb is null) return;
-        _context.Users.Remove(UserDb!);
+        var AuthorDb = await _context.Authors.FirstOrDefaultAsync(c => c.Id == id);
+        if (AuthorDb is null) return;
+        _context.Authors.Remove(AuthorDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<User> GetAll(bool disableTracking = true)
+    public List<Author> GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetAll)}");
+        _logger.Debug($"{nameof(AuthorRepository.GetAll)}");
 
         if (disableTracking)
-            return _context.Users
+            return _context.Authors
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .AsNoTracking()
                 .ToList();
         else
-            return _context.Users.ToList();
+            return _context.Authors.ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<User>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Author>> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetAllAsync)}");
+        _logger.Debug($"{nameof(AuthorRepository.GetAllAsync)}");
 
         if (disableTracking)
-            return await _context.Users
+            return await _context.Authors
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .AsNoTracking()
                 .ToListAsync();
         else
-            return await _context.Users
+            return await _context.Authors
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
@@ -110,12 +109,12 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public User GetById(Guid id, bool disableTracking = true)
+    public Author GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetById)}");
+        _logger.Debug($"{nameof(AuthorRepository.GetById)}");
 
         if (disableTracking)
-            return _context.Users
+            return _context.Authors
                 .Where(c => c.Id == id)
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
@@ -123,7 +122,7 @@ public class UserRepository : IUserRepository
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
-            return _context.Users
+            return _context.Authors
                 .Where(c => c.Id == id)
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
@@ -133,12 +132,12 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<User> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Author> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetByIdAsync)}");
+        _logger.Debug($"{nameof(AuthorRepository.GetByIdAsync)}");
 
         if (disableTracking)
-            return (await _context.Users
+            return (await _context.Authors
                 .Where(c => c.Id == id)
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
@@ -146,7 +145,7 @@ public class UserRepository : IUserRepository
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
-            return (await _context.Users
+            return (await _context.Authors
                 .Where(c => c.Id == id)
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
@@ -156,35 +155,35 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
-    public void Update(User entity)
+    public void Update(Author entity)
     {
-        _logger.Debug($"{nameof(UserRepository.Update)}");
+        _logger.Debug($"{nameof(AuthorRepository.Update)}");
 
         if (entity is null) return;
-        var UserDb = GetById(entity.Id, false);
+        var AuthorDb = GetById(entity.Id, false);
 
-        UserDb = UpdateCurrentEnity(entity, UserDb);
-        _context.Users.Update(UserDb);
+        AuthorDb = UpdateCurrentEnity(entity, AuthorDb);
+        _context.Authors.Update(AuthorDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public async Task UpdateAsync(User entity)
+    public async Task UpdateAsync(Author entity)
     {
-        _logger.Debug($"{nameof(UserRepository.UpdateAsync)}");
+        _logger.Debug($"{nameof(AuthorRepository.UpdateAsync)}");
 
         if (entity is null) return;
-        var UserDb = await GetByIdAsync(entity.Id, false);
+        var AuthorDb = await GetByIdAsync(entity.Id, false);
 
-        UserDb = UpdateCurrentEnity(entity, UserDb);
-        _context.Users.Update(UserDb);
+        AuthorDb = UpdateCurrentEnity(entity, AuthorDb);
+        _context.Authors.Update(AuthorDb);
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private User UpdateCurrentEnity(User sourse, User recipient)
+    private Author UpdateCurrentEnity(Author sourse, Author recipient)
     {
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CommentsRepositories;
@@ -80,14 +79,14 @@ public class CommentRepository : ICommentRepository
 
         if (disableTracking)
             return _context.Comments
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .AsNoTracking()
                 .ToList();
         else
             return _context.Comments
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .ToList();
     }
 
@@ -99,14 +98,14 @@ public class CommentRepository : ICommentRepository
 
         if (disableTracking)
             return await _context.Comments
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .AsNoTracking()
                 .ToListAsync();
         else
             return await _context.Comments
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .ToListAsync();
     }
 
@@ -119,15 +118,15 @@ public class CommentRepository : ICommentRepository
         if (disableTracking)
             return _context.Comments
                 .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
             return _context.Comments
                 .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .FirstOrDefault()!;
     }
 
@@ -140,15 +139,15 @@ public class CommentRepository : ICommentRepository
         if (disableTracking)
             return (await _context.Comments
                 .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
             return (await _context.Comments
                 .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -187,12 +186,12 @@ public class CommentRepository : ICommentRepository
     private Comment UpdateCurrentEnity(Comment sourse, Comment recipient)
     {
         recipient.CreatedAt = sourse.CreatedAt;
-        recipient.Files = sourse.Files;
+        recipient.File = sourse.File;
         recipient.ParentId = sourse.ParentId;
         recipient.Text = sourse.Text;
-        recipient.FileGroups = sourse.FileGroups;
-        recipient.Owner = sourse.Owner;
-        recipient.OwnerId = sourse.OwnerId;
+        recipient.FileGroup = sourse.FileGroup;
+        recipient.Author = sourse.Author;
+        recipient.AuthorId = sourse.AuthorId;
 
         return recipient;
     }
