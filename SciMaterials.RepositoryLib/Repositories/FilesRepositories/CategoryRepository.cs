@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CategorysRepositories;
@@ -75,7 +74,7 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Category> GetAll(bool disableTracking = true)
+    public List<Category>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CategoryRepository.GetAll)}");
 
@@ -83,16 +82,16 @@ public class CategoryRepository : ICategoryRepository
             return _context.Categories
                 .Include(c => c.Files)
                 .AsNoTracking()
-                .ToList();
+                .ToList()!;
         else
             return _context.Categories
                 .Include(c => c.Files)
-                .ToList();
+                .ToList()!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Category>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Category>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CategoryRepository.GetAllAsync)}");
 
@@ -100,11 +99,11 @@ public class CategoryRepository : ICategoryRepository
             return await _context.Categories
                 .Include(c => c.Files)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync()!;
         else
             return await _context.Categories
                 .Include(c => c.Files)
-                .ToListAsync();
+                .ToListAsync()!;
     }
 
     ///
@@ -128,7 +127,7 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Category> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Category?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CategoryRepository.GetByIdAsync)}");
 
@@ -167,7 +166,7 @@ public class CategoryRepository : ICategoryRepository
         if (entity is null) return;
         var categoryDb = await GetByIdAsync(entity.Id, false);
 
-        categoryDb = UpdateCurrentEnity(entity, categoryDb);
+        categoryDb = UpdateCurrentEnity(entity, categoryDb!);
         _context.Categories.Update(categoryDb);
     }
 

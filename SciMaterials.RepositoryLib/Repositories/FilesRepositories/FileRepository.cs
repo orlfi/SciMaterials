@@ -75,7 +75,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<File> GetAll(bool disableTracking = true)
+    public List<File>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileRepository.GetAll)}");
 
@@ -104,7 +104,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<File>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<File>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileRepository.GetAllAsync)}");
 
@@ -133,7 +133,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public File GetById(Guid id, bool disableTracking = true)
+    public File? GetById(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileRepository.GetById)}");
 
@@ -164,7 +164,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<File> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<File?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileRepository.GetByIdAsync)}");
 
@@ -202,7 +202,7 @@ public class FileRepository : IFileRepository
         if (entity is null) return;
         var FileDb = GetById(entity.Id, false);
 
-        FileDb = UpdateCurrentEnity(entity, FileDb);
+        FileDb = UpdateCurrentEnity(entity, FileDb!);
         _context.Files.Update(FileDb);
     }
 
@@ -215,7 +215,7 @@ public class FileRepository : IFileRepository
         if (entity is null) return;
         var FileDb = await GetByIdAsync(entity.Id, false);
 
-        FileDb = UpdateCurrentEnity(entity, FileDb);
+        FileDb = UpdateCurrentEnity(entity, FileDb!);
         _context.Files.Update(FileDb);
     }
 

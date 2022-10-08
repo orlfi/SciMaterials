@@ -74,7 +74,7 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<ContentType> GetAll(bool disableTracking = true)
+    public List<ContentType>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(ContentTypeRepository.GetAll)}");
 
@@ -91,7 +91,7 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<ContentType>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<ContentType>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(ContentTypeRepository.GetAllAsync)}");
 
@@ -108,7 +108,7 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public ContentType GetById(Guid id, bool disableTracking = true)
+    public ContentType? GetById(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(ContentTypeRepository.GetById)}");
 
@@ -127,7 +127,7 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<ContentType> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<ContentType?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(ContentTypeRepository.GetByIdAsync)}");
 
@@ -153,7 +153,7 @@ public class ContentTypeRepository : IContentTypeRepository
         if (entity is null) return;
         var ContentTypeDb = GetById(entity.Id, false);
 
-        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb);
+        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb!);
         _context.ContentTypes.Update(ContentTypeDb);
     }
 
@@ -166,7 +166,7 @@ public class ContentTypeRepository : IContentTypeRepository
         if (entity is null) return;
         var ContentTypeDb = await GetByIdAsync(entity.Id, false);
 
-        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb);
+        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb!);
         _context.ContentTypes.Update(ContentTypeDb);
     }
 

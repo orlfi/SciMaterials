@@ -77,7 +77,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Rating> GetAll(bool disableTracking = true)
+    public List<Rating>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(RatingRepository.GetAll)}");
 
@@ -96,7 +96,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Rating>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(RatingRepository.GetAllAsync)}");
 
@@ -115,7 +115,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Rating GetById(Guid id, bool disableTracking = true)
+    public Rating? GetById(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(RatingRepository.GetById)}");
 
@@ -137,7 +137,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Rating> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(RatingRepository.GetByIdAsync)}");
 
@@ -167,7 +167,7 @@ public class RatingRepository : IRatingRepository
         if (entity is null) return;
         var RatingDb = GetById(entity.AuthorId, false);
 
-        RatingDb = UpdateCurrentEnity(entity, RatingDb);
+        RatingDb = UpdateCurrentEnity(entity, RatingDb!);
         _context.Ratings.Update(RatingDb);
     }
 
@@ -181,7 +181,7 @@ public class RatingRepository : IRatingRepository
         if (entity is null) return;
         var RatingDb = await GetByIdAsync(entity.AuthorId, false);
 
-        RatingDb = UpdateCurrentEnity(entity, RatingDb);
+        RatingDb = UpdateCurrentEnity(entity, RatingDb!);
         _context.Ratings.Update(RatingDb);
     }
 

@@ -73,7 +73,7 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<FileGroup> GetAll(bool disableTracking = true)
+    public List<FileGroup>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetAll)}");
 
@@ -100,7 +100,7 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<FileGroup>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<FileGroup>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetAllAsync)}");
 
@@ -127,7 +127,7 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public FileGroup GetById(Guid id, bool disableTracking = true)
+    public FileGroup? GetById(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetById)}");
 
@@ -156,7 +156,7 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<FileGroup> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<FileGroup?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(FileGroupRepository.GetByIdAsync)}");
 
@@ -192,7 +192,7 @@ public class FileGroupRepository : IFileGroupRepository
         if (entity is null) return;
         var FileGroupDb = GetById(entity.Id, false);
 
-        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb);
+        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb!);
         _context.FileGroups.Update(FileGroupDb);
     }
 
@@ -205,7 +205,7 @@ public class FileGroupRepository : IFileGroupRepository
         if (entity is null) return;
         var FileGroupDb = await GetByIdAsync(entity.Id, false);
 
-        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb);
+        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb!);
         _context.FileGroups.Update(FileGroupDb);
     }
 

@@ -8,13 +8,13 @@ public interface IRepository<T> where T : class
     /// <param name="id"> Id экземпляра модли в БД. </param>
     /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
     /// <returns> Найденный в БД экземпляр модли или null. </returns>
-    T GetById(Guid id, bool disableTracking = true);
+    T? GetById(Guid id, bool disableTracking = true);
 
     /// <summary> Получить экземпляр модели по Id. Асинхронный. </summary>
     /// <param name="id"> Id экземпляра модли в БД. </param>
     /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
     /// <returns> Найденный в БД экземпляр модли или null. </returns>
-    Task<T> GetByIdAsync(Guid id, bool disableTracking = true);
+    Task<T?> GetByIdAsync(Guid id, bool disableTracking = true);
 
     /// <summary> Добавить экзепляр модели в БД. </summary>
     /// <param name="entity"> Добавляемый экземпляр. </param>
@@ -43,10 +43,10 @@ public interface IRepository<T> where T : class
     /// <summary> Получить список всех экзепляров из БД. </summary>
     /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
     /// <returns> Список экземпляров. </returns>
-    List<T> GetAll(bool disableTracking = true);
+    List<T>? GetAll(bool disableTracking = true);
 
     /// <summary> Получить список всех экзепляров из БД. Асинхронный. </summary>
     /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
     /// <returns> Список экземпляров. </returns>
-    Task<List<T>> GetAllAsync(bool disableTracking = true);
+    Task<List<T>?> GetAllAsync(bool disableTracking = true);
 }

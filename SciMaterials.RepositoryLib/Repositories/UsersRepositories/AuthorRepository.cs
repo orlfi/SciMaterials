@@ -71,7 +71,7 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Author> GetAll(bool disableTracking = true)
+    public List<Author>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(AuthorRepository.GetAll)}");
 
@@ -88,7 +88,7 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Author>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Author>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(AuthorRepository.GetAllAsync)}");
 
@@ -109,7 +109,7 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Author GetById(Guid id, bool disableTracking = true)
+    public Author? GetById(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(AuthorRepository.GetById)}");
 
@@ -132,7 +132,7 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Author> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Author?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(AuthorRepository.GetByIdAsync)}");
 
@@ -162,7 +162,7 @@ public class AuthorRepository : IAuthorRepository
         if (entity is null) return;
         var AuthorDb = GetById(entity.Id, false);
 
-        AuthorDb = UpdateCurrentEnity(entity, AuthorDb);
+        AuthorDb = UpdateCurrentEnity(entity, AuthorDb!);
         _context.Authors.Update(AuthorDb);
     }
 
@@ -175,7 +175,7 @@ public class AuthorRepository : IAuthorRepository
         if (entity is null) return;
         var AuthorDb = await GetByIdAsync(entity.Id, false);
 
-        AuthorDb = UpdateCurrentEnity(entity, AuthorDb);
+        AuthorDb = UpdateCurrentEnity(entity, AuthorDb!);
         _context.Authors.Update(AuthorDb);
     }
 

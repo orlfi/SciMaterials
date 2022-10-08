@@ -73,7 +73,7 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Comment> GetAll(bool disableTracking = true)
+    public List<Comment>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CommentRepository.GetAll)}");
 
@@ -92,7 +92,7 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Comment>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CommentRepository.GetAllAsync)}");
 
@@ -132,7 +132,7 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Comment> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(CommentRepository.GetByIdAsync)}");
 
@@ -175,7 +175,7 @@ public class CommentRepository : ICommentRepository
         if (entity is null) return;
         var categoryDb = await GetByIdAsync(entity.Id, false);
 
-        categoryDb = UpdateCurrentEnity(entity, categoryDb);
+        categoryDb = UpdateCurrentEnity(entity, categoryDb!);
         _context.Comments.Update(categoryDb);
     }
 

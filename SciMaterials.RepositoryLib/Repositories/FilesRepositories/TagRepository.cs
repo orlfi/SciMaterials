@@ -73,7 +73,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Tag> GetAll(bool disableTracking = true)
+    public List<Tag>? GetAll(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetAll)}");
 
@@ -92,7 +92,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Tag>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Tag>?> GetAllAsync(bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetAllAsync)}");
 
@@ -111,7 +111,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Tag GetById(Guid id, bool disableTracking = true)
+    public Tag? GetById(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetById)}");
 
@@ -132,7 +132,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Tag> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Tag?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
         _logger.Debug($"{nameof(TagRepository.GetByIdAsync)}");
 
@@ -160,7 +160,7 @@ public class TagRepository : ITagRepository
         if (entity is null) return;
         var TagDb = GetById(entity.Id, false);
 
-        TagDb = UpdateCurrentEnity(entity, TagDb);
+        TagDb = UpdateCurrentEnity(entity, TagDb!);
         _context.Tags.Update(TagDb);
     }
 
@@ -173,7 +173,7 @@ public class TagRepository : ITagRepository
         if (entity is null) return;
         var TagDb = await GetByIdAsync(entity.Id, false);
 
-        TagDb = UpdateCurrentEnity(entity, TagDb);
+        TagDb = UpdateCurrentEnity(entity, TagDb!);
         _context.Tags.Update(TagDb);
     }
 
