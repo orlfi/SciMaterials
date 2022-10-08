@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddContextMultipleProviders(this IServiceCollection services, HostBuilderContext context)
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
+            
             var defaultProvider = context.Configuration["DbProvider"];
 
             services.AddDbContext<SciMaterialsContext>(options => _ = defaultProvider switch
@@ -19,6 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     optionsBuilder => optionsBuilder.MigrationsAssembly("SciMaterials.MsSqlServerMigrations")),
                 "PostgreSQL" => options.UseNpgsql(context.Configuration.GetConnectionString("PostgreSQLConnectionString"), 
                     optionsBuilder => optionsBuilder.MigrationsAssembly("SciMaterials.PostgresqlMigrations")),
+                "MySQL" => options.UseMySql(context.Configuration.GetConnectionString("MySQLConnectionString"), new MySqlServerVersion(new Version(8, 0, 30)),
+                    optionsBuilder => optionsBuilder.MigrationsAssembly("SciMaterials.Data.MySqlMigrations")),
                 _ => throw new Exception($"Unsupported provider: {defaultProvider}")
             });
 
