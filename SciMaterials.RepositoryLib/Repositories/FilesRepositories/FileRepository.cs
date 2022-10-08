@@ -83,8 +83,8 @@ public class FileRepository : IFileRepository
             return _context.Files
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -94,8 +94,8 @@ public class FileRepository : IFileRepository
             return _context.Files
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -112,8 +112,8 @@ public class FileRepository : IFileRepository
             return await _context.Files
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -123,8 +123,8 @@ public class FileRepository : IFileRepository
             return await _context.Files
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -142,8 +142,8 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Id == id)
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -154,8 +154,8 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Id == id)
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -173,8 +173,8 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Id == id)
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -185,8 +185,8 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Id == id)
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
-                .Include(f => f.Category)
-                .Include(f => f.Owner)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
                 .Include(f => f.Comments)
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
@@ -234,11 +234,10 @@ public class FileRepository : IFileRepository
         recipient.FileGroupId = sourse.FileGroupId;
         recipient.ContentType = sourse.ContentType;
         recipient.FileGroup = sourse.FileGroup;
-        recipient.Category = sourse.Category;
-        recipient.CategoryId = sourse.CategoryId;
+        recipient.Categories = sourse.Categories;
         recipient.Comments = sourse.Comments;
-        recipient.Owner = sourse.Owner;
-        recipient.OwnerId = sourse.OwnerId;
+        recipient.Author = sourse.Author;
+        recipient.AuthorId = sourse.AuthorId;
         recipient.Ratings = sourse.Ratings;
         recipient.Tags = sourse.Tags;
         recipient.Title = sourse.Title;

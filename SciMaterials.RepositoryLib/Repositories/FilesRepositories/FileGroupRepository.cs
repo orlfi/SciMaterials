@@ -83,8 +83,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .ToList();
         else
@@ -93,8 +93,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .ToList();
     }
 
@@ -110,8 +110,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .ToListAsync();
         else
@@ -120,8 +120,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .ToListAsync();
     }
 
@@ -138,8 +138,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
@@ -149,8 +149,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .FirstOrDefault()!;
     }
 
@@ -167,8 +167,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
@@ -178,8 +178,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -219,10 +219,9 @@ public class FileGroupRepository : IFileGroupRepository
         recipient.CreatedAt = sourse.CreatedAt;
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
-        recipient.Owner = sourse.Owner;
-        recipient.OwnerId = sourse.OwnerId;
-        recipient.Category = sourse.Category;
-        recipient.CategoryId = sourse.CategoryId;
+        recipient.Author = sourse.Author;
+        recipient.AuthorId = sourse.AuthorId;
+        recipient.Categories = sourse.Categories;
         recipient.Tags = sourse.Tags;
         recipient.Ratings = sourse.Ratings;
         recipient.Comments = sourse.Comments;
