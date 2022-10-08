@@ -27,7 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryLib"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuisnessLogic", "BuisnessLogic", "{EC598CE5-36D2-44A4-9F7A-F15BCC92688F}"
 EndProject
+<<<<<<< HEAD
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryTests", "Tests\BuisnessLogic\SciMaterials.RepositoryTests\SciMaterials.RepositoryTests.csproj", "{4D1C8EB6-3614-4D06-810D-5F032D0DA676}"
+=======
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryTests", "SciMaterials.RepositoryTests\SciMaterials.RepositoryTests.csproj", "{4D1C8EB6-3614-4D06-810D-5F032D0DA676}"
+>>>>>>> e72e30f (Changed the User field to optional шт Author entity)
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Domain", "Common\SciMaterials.Domain\SciMaterials.Domain.csproj", "{0AC767F9-938B-41FF-A808-E6E6CAEC88E0}"
 EndProject
