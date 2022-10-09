@@ -7,16 +7,32 @@
     <DataAnnotationsValidator />
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="7">
-            <MudCard Elevation="3">
+            <MudCard Elevation="0">
+                <MudText Typo="Typo.h4" Align="Align.Start">Get started absolutely free.</MudText>
+                <MudText Typo="Typo.subtitle1" Align="Align.Start">Free forever. No credit card needed.</MudText>
+                <MudCardContent Class="d-flex flex-grow-1 gap-4">
+                    <AuthVariants/>
+                </MudCardContent>
+                <MudCardContent Class="d-flex flex-grow-1 gap-4 p-0" >
+                    <MudPaper Class="d-flex justify-center flex-grow-1 " Elevation="0" Height="68">
+                        <MudText Typo="Typo.body1" Align="Align.Center">OR</MudText>
+                    </MudPaper>
+                </MudCardContent>
+                <MudCardContent Class="d-flex flex-grow-1 gap-4 pb-0" >
+                    <MudTextField Class="flex-grow-1" Label="First name" HelperText="Max. 8 characters" Variant="Variant.Outlined"
+                                  @bind-Value="model.Username" For="@(() => model.Username)"/>
+                    <MudTextField Class="flex-grow-1" Label="Last name" HelperText="Max. 8 characters" Variant="Variant.Outlined"
+                                  @bind-Value="model.LastName" For="@(() => model.LastName)" />
+                </MudCardContent>
+
                 <MudCardContent>
-                    <MudTextField Label="First name" HelperText="Max. 8 characters" Variant="Variant.Outlined"
-                                  @bind-Value="model.Username" For="@(() => model.Username)" />
-                    <MudTextField Label="Email" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Email" For="@(() => model.Email)" />
+
+                    <MudTextField Label="Email address" Class="mt-3" Variant="Variant.Outlined"
+                                  @bind-Value="model.Email" For="@(() => model.Email)"/>
                     <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>
                     <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+                                  @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password"/>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
@@ -48,7 +64,9 @@
         [Required]
         [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
         public string Username { get; set; }
-
+        [Required]
+        [StringLength(8, ErrorMessage = "LastName length can't be more than 8.")]
+        public string LastName { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
