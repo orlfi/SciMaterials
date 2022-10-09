@@ -7,16 +7,17 @@
 <MudGrid Spacing="@spacing" Justify="Justify.FlexStart">
     <MudItem xs="12">
         <MudStack Justify="Justify.FlexEnd" Row="true">
+            <MudIconButton Icon="@Icons.Material.Filled.List" aria-label="delete" OnClick="()=>ToFileCollectionTableUrl()"></MudIconButton>
             <MudSelect @bind-Value="filterValue" Label="Filter" AdornmentIcon="@Icons.Material.Filled.FilterList">
                 <MudSelectItem Value="@("Filter #1")"/>
                 <MudSelectItem Value="@("Filter #2")"/>
                 <MudSelectItem Value="@("Filter #3")"/>
             </MudSelect>
             <MudText Typo="Typo.subtitle1" Align="Align.Start">Sort by:</MudText>
-            <MudSelect @bind-Value="sortValue"  Dense="true" T="string" Variant="Variant.Text">
-                <MudSelectItem Value="@("Sort #1")" />
-                <MudSelectItem Value="@("Sort #2")" />
-                <MudSelectItem Value="@("Sort #3")" />
+            <MudSelect @bind-Value="sortValue" Dense="true" T="string" Variant="Variant.Text">
+                <MudSelectItem Value="@("Sort #1")"/>
+                <MudSelectItem Value="@("Sort #2")"/>
+                <MudSelectItem Value="@("Sort #3")"/>
             </MudSelect>
         </MudStack>
        
@@ -25,10 +26,17 @@
     @foreach (var id in Ids)
     {
         <MudItem>
-            <MudButton Class="rounded-lg px-1 py-1" Variant="Variant.Text" Color="Color.Primary" OnClick="() => FileDetailsUrl(id)">
-                <MudPaper Height="100px" Width="100px">
-                    <MudIcon Icon="@Icons.Material.Filled.FilePresent" Style="font-size: 4rem;" />
-                    <MudText Class="mx-1" Typo="Typo.subtitle1" Align="Align.Start">File #@(id)</MudText>
+            <MudButton Class="rounded-lg px-1 py-1" Variant="Variant.Text" Color="Color.Primary" OnClick="() => ToFileDetailsUrl(id)">
+                <MudPaper Height="100px" Width="150px">
+                    @if (true)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.FilePresent" Style="font-size: 4rem;"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Folder" Style="font-size: 4rem;"/>
+                    }
+                    <MudText Class="mx-1" Typo="Typo.subtitle1" Align="Align.Start">File name #@(id)</MudText>
                 </MudPaper>
             </MudButton>
         </MudItem>
@@ -48,8 +56,12 @@
         Ids = Enumerable.Range(1, 20);
     }
 
-    private void FileDetailsUrl(int id)
+    private void ToFileDetailsUrl(int id)
     {
         NavigationManager.NavigateTo($"/filedetails/{id}");
+    }
+    private void ToFileCollectionTableUrl()
+    {
+        NavigationManager.NavigateTo($"/storage-table");
     }
 }
