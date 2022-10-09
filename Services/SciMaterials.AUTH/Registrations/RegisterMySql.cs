@@ -10,7 +10,7 @@ public static class RegisterMySql
     {
         var connectionString = configuration.GetConnectionString("AuthDbConnection");
 
-        var dbConfig = configuration.GetSection("DbConfig");
+        var dbConfig = configuration.GetSection("MySqlDbConfig");
         
         var builder = new MySqlConnectionStringBuilder(connectionString);
         builder.Server = dbConfig["server"];
@@ -21,7 +21,7 @@ public static class RegisterMySql
 
         connectionString = builder.ConnectionString;
         
-        return services.AddDbContext<AuthDbContext>(options =>
+        return services.AddDbContext<AuthMySqlDbContext>(options =>
             options.UseMySql(connectionString, new MySqlServerVersion(new Version(8,0,30))));
     }
 }

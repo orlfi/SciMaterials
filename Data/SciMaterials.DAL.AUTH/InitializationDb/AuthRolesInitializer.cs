@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
-namespace SciMaterials.DAL.InitializationDb.Implementation;
+namespace SciMaterials.DAL.AUTH.InitializationDb;
 
-public static class AuthDbInitializer
+public static class AuthRolesInitializer
 {
     /// <summary>
     /// Инициализация базы данных с созданием ролей "супер админ" и "пользователь"
@@ -16,8 +16,9 @@ public static class AuthDbInitializer
         RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
     {
-        string superAdminEmail = configuration.GetSection("SuperAdminSettings:Login").Value;
-        string superAdminPassword = configuration.GetSection("SuperAdminSettings:Password").Value;
+        var adminSettings = configuration.GetSection("AdminSettings");
+        string adminEmail = adminSettings["login"];
+        string adminPassword = adminSettings["password"];
         
         //Роль админа
         if (await roleManager.FindByNameAsync("admin") is null)
@@ -32,19 +33,21 @@ public static class AuthDbInitializer
         }
         
         //Супер админ
-        if (await userManager.FindByNameAsync(superAdminEmail) is null)
+        if (await userManager.FindByNameAsync(adminEmail) is null)
         {
             var superAdmin = new IdentityUser()
             {
-                Email = superAdminEmail, 
-                UserName = superAdminEmail
+                Email = adminEmail, 
+                UserName = adminEmail
             };
             
-            var identityResult = await userManager.CreateAsync(superAdmin, superAdminPassword);
+            var identityResult = await userManager.CreateAsync(superAdmin, adminPassword);
                 
             if (identityResult.Succeeded)
             {
                 await userManager.AddToRoleAsync(superAdmin, "admin");
+                var tokenForAdmin = await userManager.GenerateEmailConfirmationTokenAsync(superAdmin);
+                await userManager.ConfirmEmailAsync(superAdmin, tokenForAdmin);
             }
         }
     }

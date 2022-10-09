@@ -53,19 +53,40 @@ public class Program
         });
 
         builder.Services.RegisterAuthUtils();
-        builder.Services.RegisterMySqlProvider(builder.Configuration);
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-        {
-            //По умолчанию поставил так
-            options.Password.RequiredLength = 5; //минимальная длинна пароля
-            options.Password.RequireNonAlphanumeric = false; //требуется ли применять символы
-            options.Password.RequireLowercase = false; //требуются ли символы в нижнем регистре
-            options.Password.RequireUppercase = false; //требуются ли символя в верхнем регистре
-            options.Password.RequireDigit = false; //требуются ли применять цифры в пароле
-        })
-        .AddEntityFrameworkStores<AuthDbContext>()
-        .AddDefaultTokenProviders();
 
+        //!Временное решение!
+        var useDataBase = builder.Configuration.GetSection("AuthDataBase:Use").Value;
+        if (useDataBase.Equals("MySql"))
+        {
+            builder.Services.RegisterMySqlProvider(builder.Configuration);
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+                {
+                    //По умолчанию поставил так
+                    options.Password.RequiredLength = 5; //минимальная длинна пароля
+                    options.Password.RequireNonAlphanumeric = false; //требуется ли применять символы
+                    options.Password.RequireLowercase = false; //требуются ли символы в нижнем регистре
+                    options.Password.RequireUppercase = false; //требуются ли символя в верхнем регистре
+                    options.Password.RequireDigit = false; //требуются ли применять цифры в пароле
+                })
+                .AddEntityFrameworkStores<AuthMySqlDbContext>()
+                .AddDefaultTokenProviders();
+        }
+        if (useDataBase.Equals("Sqlite"))
+        {
+            builder.Services.RegisterSqliteProvider(builder.Configuration);
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+                {
+                    //По умолчанию поставил так
+                    options.Password.RequiredLength = 5; //минимальная длинна пароля
+                    options.Password.RequireNonAlphanumeric = false; //требуется ли применять символы
+                    options.Password.RequireLowercase = false; //требуются ли символы в нижнем регистре
+                    options.Password.RequireUppercase = false; //требуются ли символя в верхнем регистре
+                    options.Password.RequireDigit = false; //требуются ли применять цифры в пароле
+                })
+                .AddEntityFrameworkStores<AuthSqliteDbContext>()
+                .AddDefaultTokenProviders();
+        }
+        
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         
         builder.Services.AddHttpContextAccessor();
@@ -102,7 +123,7 @@ public class Program
         {
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var rolesManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            await AuthDbInitializer.InitializeAsync(userManager, rolesManager, builder.Configuration);
+            await AuthRolesInitializer.InitializeAsync(userManager, rolesManager, builder.Configuration);
         }
 
         // Configure the HTTP request pipeline.

@@ -182,7 +182,6 @@ public class AccountController : Controller
         return BadRequest("Некорректно введены данные");
     }
     
-    [Authorize(Roles = "user")]
     [HttpGet]
     public async Task<IActionResult> ConfirmEmailAsync(string userId, string confirmToken)
     {
@@ -574,5 +573,32 @@ public class AccountController : Controller
         }
 
         return BadRequest("Некорректно введены данные пользователя");
+    }
+
+    [Authorize(Roles = "admin")]
+    [HttpDelete("DeleteUserWithOutConfirmation")]
+    public async Task<IActionResult> DeleteUsersWithOutConfirmation()
+    {
+        try
+        {
+            var usersWitOutConf = await _userManager
+                .Users.Where(x => 
+                    x.EmailConfirmed.Equals(false))
+                .ToListAsync();
+            foreach (var user in usersWitOutConf)
+            {
+                if (user.EmailConfirmed is false)
+                {
+                    await _userManager.DeleteAsync(user);
+                }
+            }
+
+            return Ok("Пользователи без регистрации удалены");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{ex}");
+            return BadRequest("Не удалось удалить пользователей из-за ошибки");
+        }
     }
 }
