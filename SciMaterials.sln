@@ -27,15 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryLib"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuisnessLogic", "BuisnessLogic", "{EC598CE5-36D2-44A4-9F7A-F15BCC92688F}"
 EndProject
-<<<<<<< HEAD
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryTests", "Tests\BuisnessLogic\SciMaterials.RepositoryTests\SciMaterials.RepositoryTests.csproj", "{4D1C8EB6-3614-4D06-810D-5F032D0DA676}"
-=======
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryTests", "SciMaterials.RepositoryTests\SciMaterials.RepositoryTests.csproj", "{4D1C8EB6-3614-4D06-810D-5F032D0DA676}"
->>>>>>> e72e30f (Changed the User field to optional шт Author entity)
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Domain", "Common\SciMaterials.Domain\SciMaterials.Domain.csproj", "{0AC767F9-938B-41FF-A808-E6E6CAEC88E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuisnessLogic", "BuisnessLogic", "{EA321C02-5A97-4A61-9D69-33A834023BD2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Data.MySqlMigrations", "Data\Migrations\SciMaterials.Data.MySqlMigrations\SciMaterials.Data.MySqlMigrations.csproj", "{10309CF8-4BAA-4C4B-9EFC-A4C10A7E3725}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,6 +77,10 @@ Global
 		{0AC767F9-938B-41FF-A808-E6E6CAEC88E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AC767F9-938B-41FF-A808-E6E6CAEC88E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AC767F9-938B-41FF-A808-E6E6CAEC88E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10309CF8-4BAA-4C4B-9EFC-A4C10A7E3725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10309CF8-4BAA-4C4B-9EFC-A4C10A7E3725}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10309CF8-4BAA-4C4B-9EFC-A4C10A7E3725}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10309CF8-4BAA-4C4B-9EFC-A4C10A7E3725}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +96,7 @@ Global
 		{74820A12-68EE-4D74-8FBE-15D842295271} = {EA321C02-5A97-4A61-9D69-33A834023BD2}
 		{EC598CE5-36D2-44A4-9F7A-F15BCC92688F} = {2DCB8316-A1A3-4A2A-9C6E-4C834963DAD1}
 		{4D1C8EB6-3614-4D06-810D-5F032D0DA676} = {EC598CE5-36D2-44A4-9F7A-F15BCC92688F}
+		{10309CF8-4BAA-4C4B-9EFC-A4C10A7E3725} = {B4E3FF22-0421-42D5-9F32-86D6BE0867BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}
