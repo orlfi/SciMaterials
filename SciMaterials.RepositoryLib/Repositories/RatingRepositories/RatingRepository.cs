@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.FilesRepositories;
@@ -26,7 +26,7 @@ public class RatingRepository : IRatingRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(RatingRepository)}");
+        _logger.LogDebug($"Логгер встроен в {nameof(RatingRepository)}");
 
         _context = context;
     }
@@ -35,7 +35,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.Add)}");
+        _logger.LogDebug($"{nameof(RatingRepository.Add)}");
 
         if (entity is null) return;
         _context.Ratings.Add(entity);
@@ -45,7 +45,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.AddAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.AddAsync)}");
 
         if (entity is null) return;
         await _context.Ratings.AddAsync(entity);
@@ -55,7 +55,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(RatingRepository.Delete)}");
+        _logger.LogDebug($"{nameof(RatingRepository.Delete)}");
 
         //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         var RatingDb = _context.Ratings.FirstOrDefault(c => c.AuthorId == id);
@@ -67,7 +67,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(RatingRepository.DeleteAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.DeleteAsync)}");
 
         //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.AuthorId == id);
@@ -79,7 +79,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<Rating>? GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetAll)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetAll)}");
 
         if (disableTracking)
             return _context.Ratings
@@ -98,7 +98,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetAllAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetAllAsync)}");
 
         if (disableTracking)
             return await _context.Ratings
@@ -117,7 +117,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public Rating? GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetById)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetById)}");
 
         //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
@@ -139,7 +139,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetByIdAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetByIdAsync)}");
 
         //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
@@ -161,7 +161,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.Update)}");
+        _logger.LogDebug($"{nameof(RatingRepository.Update)}");
 
         //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;
@@ -175,7 +175,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.UpdateAsync)}");
 
         //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;

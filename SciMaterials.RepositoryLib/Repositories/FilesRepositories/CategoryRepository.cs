@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
@@ -25,7 +25,7 @@ public class CategoryRepository : ICategoryRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(CategoryRepository)}");
+        _logger.LogDebug($"Логгер встроен в {nameof(CategoryRepository)}");
 
         _context = context;
     }
@@ -34,7 +34,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Add)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.Add)}");
 
         if (entity is null) return;
         _context.Categories.Add(entity);
@@ -44,7 +44,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.AddAsync)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.AddAsync)}");
 
         if (entity is null) return;
         await _context.Categories.AddAsync(entity);
@@ -54,7 +54,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Delete)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.Delete)}");
 
         var categoryDb = _context.Categories.FirstOrDefault(c => c.Id == id);
         if (categoryDb is null) return;
@@ -65,7 +65,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(CategoryRepository.DeleteAsync)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.DeleteAsync)}");
 
         var categoryDb = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
         if (categoryDb is null) return;
@@ -76,7 +76,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<Category>? GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetAll)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.GetAll)}");
 
         if(disableTracking)
             return _context.Categories
@@ -93,7 +93,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<Category>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetAllAsync)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.GetAllAsync)}");
 
         if (disableTracking)
             return await _context.Categories
@@ -110,7 +110,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public Category GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetById)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.GetById)}");
 
         if (disableTracking)
             return _context.Categories
@@ -129,7 +129,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<Category?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetByIdAsync)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.GetByIdAsync)}");
 
         if (disableTracking)
             return (await _context.Categories
@@ -148,7 +148,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Update)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.Update)}");
 
         if (entity is null) return;
         var categoryDb = GetById(entity.Id, false);
@@ -161,7 +161,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(CategoryRepository.UpdateAsync)}");
 
         if (entity is null) return;
         var categoryDb = await GetByIdAsync(entity.Id, false);

@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
@@ -24,7 +24,7 @@ public class FileGroupRepository : IFileGroupRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(FileGroupRepository)}");
+        _logger.LogDebug($"Логгер встроен в {nameof(FileGroupRepository)}");
 
         _context = context;
     }
@@ -33,7 +33,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Add)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.Add)}");
 
         if (entity is null) return;
         _context.FileGroups.Add(entity);
@@ -43,7 +43,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.AddAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.AddAsync)}");
 
         if (entity is null) return;
         await _context.FileGroups.AddAsync(entity);
@@ -53,7 +53,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Delete)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.Delete)}");
 
         var FileGroupDb = _context.FileGroups.FirstOrDefault(c => c.Id == id);
         if (FileGroupDb is null) return;
@@ -64,7 +64,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.DeleteAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.DeleteAsync)}");
 
         var FileGroupDb = await _context.FileGroups.FirstOrDefaultAsync(c => c.Id == id);
         if (FileGroupDb is null) return;
@@ -75,7 +75,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<FileGroup>? GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAll)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetAll)}");
 
         if (disableTracking)
             return _context.FileGroups
@@ -102,7 +102,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<FileGroup>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAllAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetAllAsync)}");
 
         if (disableTracking)
             return await _context.FileGroups
@@ -129,7 +129,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public FileGroup? GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetById)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetById)}");
 
         if (disableTracking)
             return _context.FileGroups
@@ -158,7 +158,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<FileGroup?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetByIdAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByIdAsync)}");
 
         if (disableTracking)
             return (await _context.FileGroups
@@ -187,7 +187,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Update)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.Update)}");
 
         if (entity is null) return;
         var FileGroupDb = GetById(entity.Id, false);
@@ -200,7 +200,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.UpdateAsync)}");
 
         if (entity is null) return;
         var FileGroupDb = await GetByIdAsync(entity.Id, false);

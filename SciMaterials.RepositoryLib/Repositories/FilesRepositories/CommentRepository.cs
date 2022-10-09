@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
@@ -24,7 +24,7 @@ public class CommentRepository : ICommentRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(CommentRepository)}");
+        _logger.LogDebug($"Логгер встроен в {nameof(CommentRepository)}");
 
         _context = context;
     }
@@ -33,7 +33,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.Add)}");
+        _logger.LogDebug($"{nameof(CommentRepository.Add)}");
 
         if (entity is null) return;
         _context.Comments.Add(entity);
@@ -43,7 +43,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.AddAsync)}");
+        _logger.LogDebug($"{nameof(CommentRepository.AddAsync)}");
 
         if (entity is null) return;
         await _context.Comments.AddAsync(entity);
@@ -53,7 +53,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(CommentRepository.Delete)}");
+        _logger.LogDebug($"{nameof(CommentRepository.Delete)}");
 
         var categoryDb = _context.Comments.FirstOrDefault(c => c.Id == id);
         if (categoryDb is null) return;
@@ -64,7 +64,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(CommentRepository.DeleteAsync)}");
+        _logger.LogDebug($"{nameof(CommentRepository.DeleteAsync)}");
 
         var categoryDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
         if (categoryDb is null) return;
@@ -75,7 +75,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<Comment>? GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetAll)}");
+        _logger.LogDebug($"{nameof(CommentRepository.GetAll)}");
 
         if (disableTracking)
             return _context.Comments
@@ -94,7 +94,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetAllAsync)}");
+        _logger.LogDebug($"{nameof(CommentRepository.GetAllAsync)}");
 
         if (disableTracking)
             return await _context.Comments
@@ -113,7 +113,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public Comment GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetById)}");
+        _logger.LogDebug($"{nameof(CommentRepository.GetById)}");
 
         if (disableTracking)
             return _context.Comments
@@ -134,7 +134,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetByIdAsync)}");
+        _logger.LogDebug($"{nameof(CommentRepository.GetByIdAsync)}");
 
         if (disableTracking)
             return (await _context.Comments
@@ -155,7 +155,7 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.Update)}");
+        _logger.LogDebug($"{nameof(CommentRepository.Update)}");
 
         if (entity is null) return;
         var categoryDb = GetById(entity.Id, false);
@@ -168,9 +168,9 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(CommentRepository.UpdateAsync)}");
 
-        _logger.Debug($"{nameof(CommentRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(CommentRepository.UpdateAsync)}");
 
         if (entity is null) return;
         var categoryDb = await GetByIdAsync(entity.Id, false);
