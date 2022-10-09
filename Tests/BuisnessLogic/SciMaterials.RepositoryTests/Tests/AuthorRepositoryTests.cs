@@ -463,10 +463,10 @@ public class AuthorRepositoryTests
         Assert.NotNull(authorDb!.Surname);
         Assert.NotNull(authorDb!.Email);
         Assert.NotNull(authorDb!.Phone);
-        Assert.NotNull(authorDb!.User!.Id);
-        Assert.NotNull(authorDb!.Files.ToList()[0].Id);
-        Assert.NotNull(authorDb!.Comments.ToList()[0].Id);
-        Assert.NotNull(authorDb!.Ratings.ToList()[0].Id);
+        Assert.NotNull(authorDb!.User!);
+        Assert.NotNull(authorDb!.Files.ToList()[0]);
+        Assert.NotNull(authorDb!.Comments.ToList()[0]);
+        Assert.NotNull(authorDb!.Ratings.ToList()[0]);
     }
 
     [Fact]
@@ -487,9 +487,9 @@ public class AuthorRepositoryTests
         Assert.NotNull(authorDb!.Surname);
         Assert.NotNull(authorDb!.Email);
         Assert.NotNull(authorDb!.Phone);
-        Assert.NotNull(authorDb!.Files.ToList()[0].Id);
-        Assert.NotNull(authorDb!.Comments.ToList()[0].Id);
-        Assert.NotNull(authorDb!.Ratings.ToList()[0].Id);
+        Assert.NotNull(authorDb!.Files.ToList()[0]);
+        Assert.NotNull(authorDb!.Comments.ToList()[0]);
+        Assert.NotNull(authorDb!.Ratings.ToList()[0]);
     }
 
     #endregion
