@@ -1,28 +1,20 @@
 ﻿{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:40921",
-      "sslPort": 0
+      "applicationUrl": "http://localhost:64310",
+      "sslPort": 44340
     }
   },
   "profiles": {
-    "Default": {
+    "SciMaterials.API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5185",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "MVC": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "mvc",
-      "applicationUrl": "http://localhost:5185",
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7156;http://localhost:5082",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -30,6 +22,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
