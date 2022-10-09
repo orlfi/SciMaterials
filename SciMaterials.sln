@@ -33,6 +33,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.API", "Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.AUTH", "Services\SciMaterials.AUTH\SciMaterials.AUTH.csproj", "{4AE621B0-7938-4FC5-B41E-2D8E5132D70C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.Services", "Services\SciMaterials.Services\SciMaterials.Services.csproj", "{878A3E7A-0190-4961-859F-A426F4D1B3AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.Contracts", "Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj", "{509171F9-A387-40B0-AC00-E21F55F4B208}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +83,14 @@ Global
 		{4AE621B0-7938-4FC5-B41E-2D8E5132D70C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AE621B0-7938-4FC5-B41E-2D8E5132D70C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AE621B0-7938-4FC5-B41E-2D8E5132D70C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{878A3E7A-0190-4961-859F-A426F4D1B3AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{878A3E7A-0190-4961-859F-A426F4D1B3AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{878A3E7A-0190-4961-859F-A426F4D1B3AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{878A3E7A-0190-4961-859F-A426F4D1B3AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{509171F9-A387-40B0-AC00-E21F55F4B208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{509171F9-A387-40B0-AC00-E21F55F4B208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{509171F9-A387-40B0-AC00-E21F55F4B208}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{509171F9-A387-40B0-AC00-E21F55F4B208}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -95,6 +107,8 @@ Global
 		{1B04494C-36B6-463C-9DD5-39213DA35F9B} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
 		{5FA80036-A966-4FB3-9E12-7D6667500745} = {10686559-B125-4F1C-8AE5-AAB9810CD3E6}
 		{4AE621B0-7938-4FC5-B41E-2D8E5132D70C} = {10686559-B125-4F1C-8AE5-AAB9810CD3E6}
+		{878A3E7A-0190-4961-859F-A426F4D1B3AE} = {10686559-B125-4F1C-8AE5-AAB9810CD3E6}
+		{509171F9-A387-40B0-AC00-E21F55F4B208} = {10686559-B125-4F1C-8AE5-AAB9810CD3E6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}
