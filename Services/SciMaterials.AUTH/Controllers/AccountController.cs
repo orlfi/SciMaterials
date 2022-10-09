@@ -100,6 +100,7 @@ public class AccountController : Controller
                 {
                     var identityRoles = await _userManager.GetRolesAsync(identityUser);
                     
+
                     var signInResult = await _signInManager.PasswordSignInAsync(
                         userName: email, 
                         password: password, 
@@ -110,6 +111,7 @@ public class AccountController : Controller
                     {
                         var sessionToken = _authUtils.CreateSessionToken(identityUser, identityRoles);
                         return Ok($"Ваш токен сессии: {sessionToken}");
+
                     }
 
                     return BadRequest("Не удалось авторизовать пользователя");
@@ -145,6 +147,7 @@ public class AccountController : Controller
     [Authorize(Roles = "admin, user")]
     [HttpPost("ChangePassword")]
     public async Task<IActionResult> ChangePasswordAsync(string oldPassword, string newPassword)
+
     {
         if (!string.IsNullOrEmpty(oldPassword) || !string.IsNullOrEmpty(newPassword))
         {
@@ -157,6 +160,7 @@ public class AccountController : Controller
                 if (!string.IsNullOrEmpty(currentUserName) ||
                     identityUser is not null ||
                     isEmailCorfirmed)
+
                 {
                     var identityResult = await _userManager.ChangePasswordAsync(
                         identityUser, 
@@ -171,6 +175,7 @@ public class AccountController : Controller
                 }
 
                 return BadRequest("Не удалось получить информацию о пользователе или ваша почта не подтверждена");
+
             }
             catch (Exception ex)
             {
@@ -268,6 +273,7 @@ public class AccountController : Controller
                 if (identityRole is not null)
                 {
                     return Ok(identityRole);
+
                 }
 
                 return BadRequest("Не удалось получить роль");
@@ -292,6 +298,7 @@ public class AccountController : Controller
             try
             {
                 var foundRole = await _roleManager.FindByIdAsync(roleId);
+
                 foundRole.Name = roleName;
             
                 var result = await _roleManager.UpdateAsync(foundRole);
@@ -316,6 +323,7 @@ public class AccountController : Controller
             try
             {
                 var result = await _roleManager.FindByIdAsync(roleId);
+
                 if (result is not null)
                 {
                     var userRole = await _roleManager.DeleteAsync(result);
@@ -601,4 +609,5 @@ public class AccountController : Controller
             return BadRequest("Не удалось удалить пользователей из-за ошибки");
         }
     }
+
 }

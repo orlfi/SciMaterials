@@ -7,6 +7,7 @@ using SciMaterials.Auth.Registrations;
 using SciMaterials.DAL.AUTH.Context;
 using SciMaterials.DAL.AUTH.InitializationDb;
 
+
 namespace SciMaterials.Auth;
 
 public class Program
@@ -87,6 +88,7 @@ public class Program
                 .AddDefaultTokenProviders();
         }
         
+
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         
         builder.Services.AddHttpContextAccessor();
@@ -124,6 +126,7 @@ public class Program
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var rolesManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             await AuthRolesInitializer.InitializeAsync(userManager, rolesManager, builder.Configuration);
+
         }
 
         // Configure the HTTP request pipeline.
