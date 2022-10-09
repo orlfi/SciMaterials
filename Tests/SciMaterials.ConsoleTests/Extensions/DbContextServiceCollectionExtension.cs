@@ -21,6 +21,8 @@ namespace Microsoft.Extensions.DependencyInjection
                     optionsBuilder => optionsBuilder.MigrationsAssembly("SciMaterials.PostgresqlMigrations")),
                 "MySQL" => options.UseMySql(context.Configuration.GetConnectionString("MySQLConnectionString"), new MySqlServerVersion(new Version(8, 0, 30)),
                     optionsBuilder => optionsBuilder.MigrationsAssembly("SciMaterials.Data.MySqlMigrations")),
+                "SQLite" => options.UseSqlite(context.Configuration.GetConnectionString("SQLiteConnectionString"),
+                    optionsBuilder => optionsBuilder.MigrationsAssembly("SciMaterials.SQLiteMigrations")),
                 _ => throw new Exception($"Unsupported provider: {defaultProvider}")
             });
 
