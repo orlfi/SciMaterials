@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
 
 namespace SciMaterials.Data.Repositories.AuthorRepositories;
 
