@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SciMaterials.Auth.Registrations;
@@ -123,7 +124,10 @@ public class Program
         
         using (var scope = scopeFactory.CreateScope())
         {
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            //var auth_db      = scope.ServiceProvider.GetRequiredService<AuthMySqlDbContext>();
+            //await auth_db.Database.MigrateAsync();
+
+            var userManager  = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
             var rolesManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             await AuthRolesInitializer.InitializeAsync(userManager, rolesManager, builder.Configuration);
 
