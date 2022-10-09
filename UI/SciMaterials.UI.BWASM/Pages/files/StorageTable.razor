@@ -56,8 +56,8 @@
         <MudTd DataLabel="Name">@($"Name #{context}")</MudTd>
         <MudTd DataLabel="Size">@($"{context} gb")</MudTd>
         <MudTh>
-            <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="() => ToFileDetailsUrl(context)">Edit</MudButton>
-            <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
+            <MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => ToFileDetailsUrl(context)">Edit</MudButton>
+            <MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
         </MudTh>
     </RowTemplate>
     <FooterContent>
