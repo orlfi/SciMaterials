@@ -1,5 +1,6 @@
 ﻿
 using SciMaterials.DAL.Models;
+using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.RepositoryTests.Helpers.ModelsHelpers;
 
@@ -22,6 +23,18 @@ internal static class AuthorHelper
             User = new User()
             {
                 Id= Guid.NewGuid(),
+            },
+            Files =
+            {
+                new File() { Id = Guid.NewGuid(), }
+            },
+            Comments =
+            {
+                new Comment() { Id = Guid.NewGuid(), }
+            },
+            Ratings =
+            {
+                new Rating() {Id = Guid.NewGuid(), }
             }
         };
     }

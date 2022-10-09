@@ -81,6 +81,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .AsNoTracking()
                 .ToList();
         else
@@ -98,6 +99,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .AsNoTracking()
                 .ToListAsync();
         else
@@ -105,6 +107,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .ToListAsync();
     }
 
@@ -120,6 +123,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
@@ -128,6 +132,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .FirstOrDefault()!;
     }
 
@@ -143,6 +148,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
@@ -151,6 +157,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -192,6 +199,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
@@ -200,6 +208,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -215,6 +224,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
@@ -223,6 +233,7 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
+                .Include(u => u.User)
                 .FirstOrDefault()!;
     }
 
@@ -250,9 +261,12 @@ public class AuthorRepository : IAuthorRepository
     {
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
+        recipient.Surname = sourse.Surname;
         recipient.Comments = sourse.Comments;
+        recipient.Phone = sourse.Phone;
         recipient.Email = sourse.Email;
         recipient.Ratings = sourse.Ratings;
+        recipient.User = sourse.User;
 
         return recipient;
     }
