@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 using File = SciMaterials.DAL.Models.File;
@@ -217,6 +218,68 @@ public class FileRepository : IFileRepository
 
         FileDb = UpdateCurrentEnity(entity, FileDb!);
         _context.Files.Update(FileDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<File?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileRepository.GetByNameAsync)}");
+
+        if (disableTracking)
+            return (await _context.Files
+                .Where(c => c.Name == name)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Files
+                .Where(c => c.Name == name)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .FirstOrDefaultAsync())!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public File? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileRepository.GetByName)}");
+
+        if (disableTracking)
+            return _context.Files
+                .Where(c => c.Name == name)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Files
+                .Where(c => c.Name == name)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .FirstOrDefault()!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>

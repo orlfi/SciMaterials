@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CommentsRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
@@ -168,6 +169,24 @@ public class ContentTypeRepository : IContentTypeRepository
 
         ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb!);
         _context.ContentTypes.Update(ContentTypeDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<ContentType?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByNameAsync)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public ContentType? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByName)}");
+
+        return null!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>

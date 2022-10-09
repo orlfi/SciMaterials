@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CommentsRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
@@ -183,6 +184,24 @@ public class RatingRepository : IRatingRepository
 
         RatingDb = UpdateCurrentEnity(entity, RatingDb!);
         _context.Ratings.Update(RatingDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<Rating?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByNameAsync)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Rating? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByName)}");
+
+        return null!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>

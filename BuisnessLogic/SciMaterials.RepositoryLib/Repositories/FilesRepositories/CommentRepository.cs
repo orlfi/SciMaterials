@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CommentsRepositories;
@@ -194,5 +195,23 @@ public class CommentRepository : ICommentRepository
         recipient.AuthorId = sourse.AuthorId;
 
         return recipient;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.GetByNameAsync)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Comment? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.GetByName)}");
+
+        return null!;
     }
 }

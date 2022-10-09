@@ -49,4 +49,14 @@ public interface IRepository<T> where T : class
     /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
     /// <returns> Список экземпляров. </returns>
     Task<List<T>?> GetAllAsync(bool disableTracking = true);
+
+    /// <summary> Получить экземпляр по наименованию. Асинхронный. </summary>
+    /// <param name="name"> Искомое наименование. </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    Task<T?> GetByNameAsync(string name, bool disableTracking = true);
+
+    /// <summary> Получить экземпляр по наименованию. </summary>
+    /// <param name="name"> Искомое наименование. </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    T? GetByName(string name, bool disableTracking = true);
 }

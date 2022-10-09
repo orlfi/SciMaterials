@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -175,6 +176,48 @@ public class TagRepository : ITagRepository
 
         TagDb = UpdateCurrentEnity(entity, TagDb!);
         _context.Tags.Update(TagDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<Tag?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(TagRepository.GetByNameAsync)}");
+
+        if (disableTracking)
+            return (await _context.Tags
+                .Where(c => c.Name == name)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Tags
+                .Where(c => c.Name == name)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .FirstOrDefaultAsync())!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Tag? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(TagRepository.GetByName)}");
+
+        if (disableTracking)
+            return _context.Tags
+                .Where(c => c.Name == name)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Tags
+                .Where(c => c.Name == name)
+                .Include(t => t.Files)
+                .Include(t => t.FileGroups)
+                .FirstOrDefault()!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>

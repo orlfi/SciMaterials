@@ -145,6 +145,44 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<Category?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CategoryRepository.GetByNameAsync)}");
+
+        if (disableTracking)
+            return (await _context.Categories
+                .Where(c => c.Name == name)
+                .Include(c => c.Files)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Categories
+                .Where(c => c.Name == name)
+                .Include(c => c.Files)
+                .FirstOrDefaultAsync())!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Category? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CategoryRepository.GetByName)}");
+
+        if (disableTracking)
+            return _context.Categories
+                .Where(c => c.Name == name)
+                .Include(c => c.Files)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Categories
+                .Where(c => c.Name == name)
+                .Include(c => c.Files)
+                .FirstOrDefault()!;
+    }
+
+    ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Category entity)
     {

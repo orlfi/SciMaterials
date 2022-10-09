@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CategorysRepositories;
 
 namespace SciMaterials.Data.Repositories.AuthorRepositories;
 
@@ -177,6 +178,52 @@ public class AuthorRepository : IAuthorRepository
 
         AuthorDb = UpdateCurrentEnity(entity, AuthorDb!);
         _context.Authors.Update(AuthorDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<Author?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(AuthorRepository.GetByNameAsync)}");
+
+        if (disableTracking)
+            return (await _context.Authors
+                .Where(c => c.Name == name)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Authors
+                .Where(c => c.Name == name)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .FirstOrDefaultAsync())!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Author? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(AuthorRepository.GetByName)}");
+
+        if (disableTracking)
+            return _context.Authors
+                .Where(c => c.Name == name)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Authors
+                .Where(c => c.Name == name)
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .FirstOrDefault()!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
