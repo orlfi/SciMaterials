@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\SciMateraials.DAL\SciMaterials.DAL.csproj" />
-    <ProjectReference Include="..\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
+    <ProjectReference Include="..\..\..\BuisnessLogic\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
+    <ProjectReference Include="..\..\..\Data\SciMateraials.DAL\SciMaterials.DAL.csproj" />
   </ItemGroup>
 
 </Project>

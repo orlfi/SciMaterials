@@ -1,8 +1,10 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CategorysRepositories;
+using SciMaterials.DAL.Repositories.ContentTypesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -24,7 +26,7 @@ public class FileGroupRepository : IFileGroupRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(FileGroupRepository)}");
+        _logger.LogDebug($"Логгер встроен в {nameof(FileGroupRepository)}");
 
         _context = context;
     }
@@ -33,7 +35,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Add)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.Add)}");
 
         if (entity is null) return;
         _context.FileGroups.Add(entity);
@@ -43,7 +45,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.AddAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.AddAsync)}");
 
         if (entity is null) return;
         await _context.FileGroups.AddAsync(entity);
@@ -53,7 +55,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Delete)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.Delete)}");
 
         var FileGroupDb = _context.FileGroups.FirstOrDefault(c => c.Id == id);
         if (FileGroupDb is null) return;
@@ -64,7 +66,7 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.DeleteAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.DeleteAsync)}");
 
         var FileGroupDb = await _context.FileGroups.FirstOrDefaultAsync(c => c.Id == id);
         if (FileGroupDb is null) return;
@@ -73,9 +75,9 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<FileGroup> GetAll(bool disableTracking = true)
+    public List<FileGroup>? GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAll)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetAll)}");
 
         if (disableTracking)
             return _context.FileGroups
@@ -83,8 +85,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .ToList();
         else
@@ -93,16 +95,16 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<FileGroup>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<FileGroup>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAllAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetAllAsync)}");
 
         if (disableTracking)
             return await _context.FileGroups
@@ -110,8 +112,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .ToListAsync();
         else
@@ -120,16 +122,16 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .ToListAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public FileGroup GetById(Guid id, bool disableTracking = true)
+    public FileGroup? GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetById)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetById)}");
 
         if (disableTracking)
             return _context.FileGroups
@@ -138,8 +140,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
@@ -149,16 +151,16 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .FirstOrDefault()!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<FileGroup> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<FileGroup?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetByIdAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByIdAsync)}");
 
         if (disableTracking)
             return (await _context.FileGroups
@@ -167,8 +169,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
@@ -178,8 +180,8 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
-                .Include(fg => fg.Category)
-                .Include(fg => fg.Owner)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -187,12 +189,12 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Update)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.Update)}");
 
         if (entity is null) return;
         var FileGroupDb = GetById(entity.Id, false);
 
-        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb);
+        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb!);
         _context.FileGroups.Update(FileGroupDb);
     }
 
@@ -200,13 +202,87 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(FileGroupRepository.UpdateAsync)}");
 
         if (entity is null) return;
         var FileGroupDb = await GetByIdAsync(entity.Id, false);
 
-        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb);
+        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb!);
         _context.FileGroups.Update(FileGroupDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<FileGroup?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByNameAsync)}");
+
+        if (disableTracking)
+            return (await _context.FileGroups
+                .Where(c => c.Name == name)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.FileGroups
+                .Where(c => c.Name == name)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
+                .FirstOrDefaultAsync())!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public FileGroup? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByName)}");
+
+        if (disableTracking)
+            return _context.FileGroups
+                .Where(c => c.Name == name)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.FileGroups
+                .Where(c => c.Name == name)
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author)
+                .FirstOrDefault()!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<FileGroup?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public FileGroup? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByHash)}");
+        return null!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
@@ -219,10 +295,9 @@ public class FileGroupRepository : IFileGroupRepository
         recipient.CreatedAt = sourse.CreatedAt;
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
-        recipient.Owner = sourse.Owner;
-        recipient.OwnerId = sourse.OwnerId;
-        recipient.Category = sourse.Category;
-        recipient.CategoryId = sourse.CategoryId;
+        recipient.Author = sourse.Author;
+        recipient.AuthorId = sourse.AuthorId;
+        recipient.Categories = sourse.Categories;
         recipient.Tags = sourse.Tags;
         recipient.Ratings = sourse.Ratings;
         recipient.Comments = sourse.Comments;

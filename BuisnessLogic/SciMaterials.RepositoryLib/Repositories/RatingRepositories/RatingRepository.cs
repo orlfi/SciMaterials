@@ -1,9 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.RatingRepositories;
@@ -26,7 +25,7 @@ public class RatingRepository : IRatingRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(RatingRepository)}");
+        _logger.LogDebug($"Логгер встроен в {nameof(RatingRepository)}");
 
         _context = context;
     }
@@ -35,7 +34,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.Add)}");
+        _logger.LogDebug($"{nameof(RatingRepository.Add)}");
 
         if (entity is null) return;
         _context.Ratings.Add(entity);
@@ -45,7 +44,7 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.AddAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.AddAsync)}");
 
         if (entity is null) return;
         await _context.Ratings.AddAsync(entity);
@@ -55,10 +54,10 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(RatingRepository.Delete)}");
+        _logger.LogDebug($"{nameof(RatingRepository.Delete)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
-        var RatingDb = _context.Ratings.FirstOrDefault(c => c.FileId == id);
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
+        var RatingDb = _context.Ratings.FirstOrDefault(c => c.AuthorId == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
@@ -67,19 +66,19 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(RatingRepository.DeleteAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.DeleteAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
-        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.FileId == id);
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
+        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.AuthorId == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Rating> GetAll(bool disableTracking = true)
+    public List<Rating>? GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetAll)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetAll)}");
 
         if (disableTracking)
             return _context.Ratings
@@ -96,9 +95,9 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Rating>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetAllAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetAllAsync)}");
 
         if (disableTracking)
             return await _context.Ratings
@@ -115,21 +114,21 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Rating GetById(Guid id, bool disableTracking = true)
+    public Rating? GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetById)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetById)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
             return _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
             return _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .FirstOrDefault()!;
@@ -137,21 +136,21 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Rating> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(RatingRepository.GetByIdAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.GetByIdAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
             return (await _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
             return (await _context.Ratings
-                .Where(c => c.FileId == id)
+                .Where(c => c.AuthorId == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
                 .FirstOrDefaultAsync())!;
@@ -161,13 +160,13 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.Update)}");
+        _logger.LogDebug($"{nameof(RatingRepository.Update)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;
-        var RatingDb = GetById(entity.FileId, false);
+        var RatingDb = GetById(entity.AuthorId, false);
 
-        RatingDb = UpdateCurrentEnity(entity, RatingDb);
+        RatingDb = UpdateCurrentEnity(entity, RatingDb!);
         _context.Ratings.Update(RatingDb);
     }
 
@@ -175,14 +174,48 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Rating entity)
     {
-        _logger.Debug($"{nameof(RatingRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(RatingRepository.UpdateAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.FeildId)
+        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;
-        var RatingDb = await GetByIdAsync(entity.FileId, false);
+        var RatingDb = await GetByIdAsync(entity.AuthorId, false);
 
-        RatingDb = UpdateCurrentEnity(entity, RatingDb);
+        RatingDb = UpdateCurrentEnity(entity, RatingDb!);
         _context.Ratings.Update(RatingDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<Rating?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByNameAsync)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Rating? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByName)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public Rating? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByHash)}");
+        return null!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
@@ -195,7 +228,7 @@ public class RatingRepository : IRatingRepository
         recipient.FileId = sourse.FileId;
         recipient.RatingValue = sourse.RatingValue;
         recipient.User = sourse.User;
-        recipient.UserId = sourse.UserId;
+        recipient.AuthorId = sourse.AuthorId;
 
         return recipient;
     }

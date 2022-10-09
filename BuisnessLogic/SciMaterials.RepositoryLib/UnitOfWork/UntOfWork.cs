@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.CategorysRepositories;
@@ -10,8 +10,7 @@ using SciMaterials.DAL.Repositories.ContentTypesRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.Repositories;
-using SciMaterials.Data.Repositories.UserRepositories;
-using System;
+using SciMaterials.Data.Repositories.AuthorRepositories;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Data.UnitOfWork;
@@ -33,16 +32,18 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         TContext context)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(UnitOfWork)}.");
+        _logger.LogDebug($"Логгер встроен в {nameof(UnitOfWork)}.");
 
         _context = context ?? throw new ArgumentException(nameof(context));
+
+        Initialise();
     }
 
     ///
     /// <inheritdoc cref="IUnitOfWork{T}.GetRepository{TEntity}"/>
     public IRepository<T> GetRepository<T>() where T : class
     {
-        _logger.Debug($"{nameof(UnitOfWork)} >>> {nameof(GetRepository)}.");
+        _logger.LogDebug($"{nameof(UnitOfWork)} >>> {nameof(GetRepository)}.");
 
         if (_repositories == null)
             _repositories = new Dictionary<Type, object>();
@@ -56,14 +57,14 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <inheritdoc cref="IUnitOfWork{T}.SaveContext()"/>
     public int SaveContext()
     {
-        _logger.Info($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}.");
+        _logger.LogInformation($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}.");
         try
         {
             return _context.SaveChanges();
         }
         catch (Exception ex)
         {
-            _logger.Error($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
+            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
             return 0;
         }
     }
@@ -97,7 +98,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     private void Initialise()
     {
-        _repositories!.Add(typeof(User), new UserRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(User), new AuthorRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(File), new FileRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));

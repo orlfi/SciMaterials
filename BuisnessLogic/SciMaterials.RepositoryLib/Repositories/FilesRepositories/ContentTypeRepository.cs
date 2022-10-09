@@ -1,8 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using NLog;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CommentsRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
@@ -25,7 +26,7 @@ public class ContentTypeRepository : IContentTypeRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(ContentTypeRepository)}");
+        _logger.LogDebug($"Логгер встроен в {nameof(ContentTypeRepository)}");
 
         _context = context;
     }
@@ -34,7 +35,7 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.Add)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.Add)}");
 
         if (entity is null) return;
         _context.ContentTypes.Add(entity);
@@ -44,7 +45,7 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.AddAsync)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.AddAsync)}");
 
         if (entity is null) return;
         await _context.ContentTypes.AddAsync(entity);
@@ -54,7 +55,7 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.Delete)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.Delete)}");
 
         var ContentTypeDb = _context.ContentTypes.FirstOrDefault(c => c.Id == id);
         if (ContentTypeDb is null) return;
@@ -65,7 +66,7 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.DeleteAsync)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.DeleteAsync)}");
 
         var ContentTypeDb = await _context.ContentTypes.FirstOrDefaultAsync(c => c.Id == id);
         if (ContentTypeDb is null) return;
@@ -74,9 +75,9 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<ContentType> GetAll(bool disableTracking = true)
+    public List<ContentType>? GetAll(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetAll)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetAll)}");
 
         if (disableTracking)
             return _context.ContentTypes
@@ -91,9 +92,9 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<ContentType>> GetAllAsync(bool disableTracking = true)
+    public async Task<List<ContentType>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetAllAsync)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetAllAsync)}");
 
         if (disableTracking)
             return await _context.ContentTypes
@@ -108,9 +109,9 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public ContentType GetById(Guid id, bool disableTracking = true)
+    public ContentType? GetById(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetById)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetById)}");
 
         if (disableTracking)
             return _context.ContentTypes
@@ -127,9 +128,9 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<ContentType> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<ContentType?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.GetByIdAsync)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByIdAsync)}");
 
         if (disableTracking)
             return (await _context.ContentTypes
@@ -148,12 +149,12 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.Update)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.Update)}");
 
         if (entity is null) return;
         var ContentTypeDb = GetById(entity.Id, false);
 
-        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb);
+        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb!);
         _context.ContentTypes.Update(ContentTypeDb);
     }
 
@@ -161,13 +162,47 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(ContentType entity)
     {
-        _logger.Debug($"{nameof(ContentTypeRepository.UpdateAsync)}");
+        _logger.LogDebug($"{nameof(ContentTypeRepository.UpdateAsync)}");
 
         if (entity is null) return;
         var ContentTypeDb = await GetByIdAsync(entity.Id, false);
 
-        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb);
+        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb!);
         _context.ContentTypes.Update(ContentTypeDb);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<ContentType?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByNameAsync)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public ContentType? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByName)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<ContentType?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public ContentType? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByHash)}");
+        return null!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
