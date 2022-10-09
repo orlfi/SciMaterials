@@ -50,6 +50,16 @@ public interface IRepository<T> where T : class
     /// <returns> Список экземпляров. </returns>
     Task<List<T>?> GetAllAsync(bool disableTracking = true);
 
+    /// <summary> Получить экземпляр по хэш-коду. Асинхронный. </summary>
+    /// <param name="hash"> Искомый хэш-код (в текущем методе договорено о строчном варианте хэша). </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    Task<T?> GetByHashAsync(string hash, bool disableTracking = true);
+
+    /// <summary> Получить экземпляр по хэш-коду. </summary>
+    /// <param name="hash"> Искомый хэш-код (в текущем методе договорено о строчном варианте хэша). </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    T? GetByHash(string hash, bool disableTracking = true);
+
     /// <summary> Получить экземпляр по наименованию. Асинхронный. </summary>
     /// <param name="name"> Искомое наименование. </param>
     /// <returns> Экземпляр класса или null. </returns>

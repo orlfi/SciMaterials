@@ -6,6 +6,7 @@ using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
+using System.Xml.Linq;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -280,6 +281,74 @@ public class FileRepository : IFileRepository
                 .Include(f => f.Tags)
                 .Include(f => f.Ratings)
                 .FirstOrDefault()!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<File?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileRepository.GetByHashAsync)}");
+
+        //ToDo: раскомментировать, когда будет добавлено св-во Hash
+
+        //if (disableTracking)
+        //    return (await _context.Files
+        //        .Where(c => c.Hash == hash)
+        //        .Include(f => f.ContentType)
+        //        .Include(f => f.FileGroup)
+        //        .Include(f => f.Categories)
+        //        .Include(f => f.Author)
+        //        .Include(f => f.Comments)
+        //        .Include(f => f.Tags)
+        //        .Include(f => f.Ratings)
+        //        .AsNoTracking()
+        //        .FirstOrDefaultAsync())!;
+        //else
+        //    return (await _context.Files
+        //        .Where(c => c.Hash == hash)
+        //        .Include(f => f.ContentType)
+        //        .Include(f => f.FileGroup)
+        //        .Include(f => f.Categories)
+        //        .Include(f => f.Author)
+        //        .Include(f => f.Comments)
+        //        .Include(f => f.Tags)
+        //        .Include(f => f.Ratings)
+        //        .FirstOrDefaultAsync())!;
+        throw new NotImplementedException();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public File? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileRepository.GetByHash)}");
+
+        //ToDo: раскомментировать, когда будет добавлено св-во Hash
+
+        //if (disableTracking)
+        //    return _context.Files
+        //        .Where(c => c.Hash == hash)
+        //        .Include(f => f.ContentType)
+        //        .Include(f => f.FileGroup)
+        //        .Include(f => f.Categories)
+        //        .Include(f => f.Author)
+        //        .Include(f => f.Comments)
+        //        .Include(f => f.Tags)
+        //        .Include(f => f.Ratings)
+        //        .AsNoTracking()
+        //        .FirstOrDefault()!;
+        //else
+        //    return _context.Files
+        //        .Where(c => c.Hash == hash)
+        //        .Include(f => f.ContentType)
+        //        .Include(f => f.FileGroup)
+        //        .Include(f => f.Categories)
+        //        .Include(f => f.Author)
+        //        .Include(f => f.Comments)
+        //        .Include(f => f.Tags)
+        //        .Include(f => f.Ratings)
+        //        .FirstOrDefault()!;
+        throw new NotImplementedException();
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>

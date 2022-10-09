@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.CategorysRepositories;
+using SciMaterials.DAL.Repositories.ContentTypesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -266,6 +267,22 @@ public class FileGroupRepository : IFileGroupRepository
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author)
                 .FirstOrDefault()!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<FileGroup?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public FileGroup? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.GetByHash)}");
+        return null!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>

@@ -220,6 +220,22 @@ public class TagRepository : ITagRepository
                 .FirstOrDefault()!;
     }
 
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<Tag?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(TagRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public Tag? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(TagRepository.GetByHash)}");
+        return null!;
+    }
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>

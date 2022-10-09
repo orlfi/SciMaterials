@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CommentsRepositories;
@@ -179,6 +180,40 @@ public class CommentRepository : ICommentRepository
         _context.Comments.Update(categoryDb);
     }
 
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.GetByNameAsync)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public Comment? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.GetByHash)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Comment? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.GetByName)}");
+
+        return null!;
+    }
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
@@ -194,23 +229,5 @@ public class CommentRepository : ICommentRepository
         recipient.AuthorId = sourse.AuthorId;
 
         return recipient;
-    }
-
-    ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true)
-    {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByNameAsync)}");
-
-        return null!;
-    }
-
-    ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Comment? GetByName(string name, bool disableTracking = true)
-    {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByName)}");
-
-        return null!;
     }
 }

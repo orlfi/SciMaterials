@@ -189,6 +189,22 @@ public class ContentTypeRepository : IContentTypeRepository
         return null!;
     }
 
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<ContentType?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public ContentType? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.GetByHash)}");
+        return null!;
+    }
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>

@@ -202,6 +202,22 @@ public class RatingRepository : IRatingRepository
         return null!;
     }
 
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public Rating? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.GetByHash)}");
+        return null!;
+    }
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>

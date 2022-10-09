@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Repositories.RatingRepositories;
 
 namespace SciMaterials.Data.Repositories.AuthorRepositories;
 
@@ -223,6 +224,22 @@ public class AuthorRepository : IAuthorRepository
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .FirstOrDefault()!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    public async Task<Author?> GetByHashAsync(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(AuthorRepository.GetByHashAsync)}");
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    public Author? GetByHash(string hash, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(AuthorRepository.GetByHash)}");
+        return null!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
