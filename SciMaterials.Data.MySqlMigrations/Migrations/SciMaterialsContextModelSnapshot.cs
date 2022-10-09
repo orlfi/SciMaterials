@@ -101,7 +101,7 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("Id");
@@ -385,9 +385,7 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                 {
                     b.HasOne("SciMaterials.DAL.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

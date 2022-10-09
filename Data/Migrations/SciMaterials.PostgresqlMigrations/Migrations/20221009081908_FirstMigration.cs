@@ -66,7 +66,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
                     Phone = table.Column<string>(type: "text", nullable: false),
                     Surname = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false)
@@ -78,8 +78,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         name: "FK_Authors_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

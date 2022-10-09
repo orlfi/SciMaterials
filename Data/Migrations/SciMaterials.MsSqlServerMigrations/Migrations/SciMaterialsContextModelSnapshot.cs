@@ -104,7 +104,7 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -388,9 +388,7 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 {
                     b.HasOne("SciMaterials.DAL.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
