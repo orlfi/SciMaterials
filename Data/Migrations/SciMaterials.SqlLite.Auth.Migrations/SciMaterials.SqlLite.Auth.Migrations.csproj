@@ -8,22 +8,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Devart.Data.SQLite.EFCore" Version="6.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.9" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.9">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\SciMaterials.DAL.AUTH\SciMaterials.DAL.AUTH.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -31,10 +26,17 @@
       <Content Include="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
       <None Remove="appsettings.Development.json" />
       <Content Include="appsettings.Development.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\SciMaterials.DAL.AUTH\SciMaterials.DAL.AUTH.csproj" />
     </ItemGroup>
 
 </Project>
