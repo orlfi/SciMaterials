@@ -11,21 +11,7 @@
                 <MudText Typo="Typo.subtitle1" Align="Align.Start">Enter your details below.</MudText>
 
                 <MudCardContent Class="d-flex flex-grow-1 gap-4">
-                    <MudPaper Class="d-flex justify-center flex-grow-1 pa-5" Outlined="true" Height="68">
-                        <MudLink Href="#" Class="d-flex align-center flex-grow-1 gap-4">
-                            <img class="d-flex flex-1" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" style="height: 50px; width: 50px;" />
-                        </MudLink>
-                    </MudPaper>
-                    <MudPaper Class="d-flex justify-center flex-grow-1 pa-5" Outlined="true" Height="68">
-                        <MudLink Href="#" Underline="Underline.None" Color="Color.Dark">
-                            <MudText Typo="Typo.h2" Align="Align.Center" >Я</MudText>
-                        </MudLink>
-                    </MudPaper>
-                    <MudPaper Class="d-flex justify-center flex-grow-1 pa-5" Outlined="true" Height="68">
-                        <MudLink Href="#" Color="Color.Dark" Class="d-flex align-center flex-grow-1 gap-4">
-                            <img class="d-flex flex-1" src="@icon_vk" style="height: 50px; width: 50px;" />
-                        </MudLink>
-                    </MudPaper>
+                    <AuthVariants/>
                 </MudCardContent>
                 
                 <MudCardContent Class="d-flex flex-grow-1 gap-4 p-0" >
@@ -71,8 +57,6 @@
     LogInForm model = new LogInForm();
     bool success;
     public bool RememberMe { get; set; } = true;
-    private string icon_vk = "icons/vk.svg";
-    private string icon_yandex = "icons/yandex.svg";
     public class LogInForm
     {
 
