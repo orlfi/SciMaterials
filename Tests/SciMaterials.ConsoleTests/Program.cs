@@ -9,7 +9,8 @@ using SciMaterials.DAL.Models;
 
 static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
     .ConfigureServices(ConfigureServices)
-    .ConfigureAppConfiguration(app => app.AddJsonFile("appsettings.json"));
+    .ConfigureAppConfiguration(app => app.AddJsonFile("appsettings.json")
+        .AddUserSecrets<Program>());
 
 static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
 {
