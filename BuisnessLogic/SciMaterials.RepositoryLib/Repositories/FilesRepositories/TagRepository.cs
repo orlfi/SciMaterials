@@ -51,6 +51,24 @@ public class TagRepository : ITagRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(Tag entity)
+    {
+        _logger.LogDebug($"{nameof(TagRepository.Delete)}");
+        if (entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(Tag entity)
+    {
+        _logger.LogDebug($"{nameof(TagRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
+    }
+
+    ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
@@ -161,7 +179,7 @@ public class TagRepository : ITagRepository
         if (entity is null) return;
         var TagDb = GetById(entity.Id, false);
 
-        TagDb = UpdateCurrentEnity(entity, TagDb!);
+        TagDb = UpdateCurrentEntity(entity, TagDb!);
         _context.Tags.Update(TagDb);
     }
 
@@ -174,7 +192,7 @@ public class TagRepository : ITagRepository
         if (entity is null) return;
         var TagDb = await GetByIdAsync(entity.Id, false);
 
-        TagDb = UpdateCurrentEnity(entity, TagDb!);
+        TagDb = UpdateCurrentEntity(entity, TagDb!);
         _context.Tags.Update(TagDb);
     }
 
@@ -240,7 +258,7 @@ public class TagRepository : ITagRepository
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Tag UpdateCurrentEnity(Tag sourse, Tag recipient)
+    private Tag UpdateCurrentEntity(Tag sourse, Tag recipient)
     {
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;

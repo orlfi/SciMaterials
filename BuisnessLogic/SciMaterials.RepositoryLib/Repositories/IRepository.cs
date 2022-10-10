@@ -33,6 +33,14 @@ public interface IRepository<T> where T : class
     Task UpdateAsync(T entity);
 
     /// <summary> Удалить экземпляр модели из БД. </summary>
+    /// <param name="entity"> Id удаляемого экземпляра. </param>
+    void Delete(T entity);
+
+    /// <summary> Удалить экземпляр модели из БД. Асинхронный. </summary>
+    /// <param name="entity"> Id удаляемого экземпляра. </param>
+    Task DeleteAsync(T entity);
+
+    /// <summary> Удалить экземпляр модели из БД. </summary>
     /// <param name="id"> Id удаляемого экземпляра. </param>
     void Delete(Guid id);
 

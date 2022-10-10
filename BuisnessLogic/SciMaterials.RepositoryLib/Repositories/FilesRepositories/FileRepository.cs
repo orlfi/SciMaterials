@@ -2,11 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
-using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
-using System.Xml.Linq;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -51,6 +47,24 @@ public class FileRepository : IFileRepository
 
         if (entity is null) return;
         await _context.Files.AddAsync(entity);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(File entity)
+    {
+        _logger.LogDebug($"{nameof(FileRepository.Delete)}");
+        if (entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(File entity)
+    {
+        _logger.LogDebug($"{nameof(FileRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
     }
 
     ///
@@ -204,7 +218,7 @@ public class FileRepository : IFileRepository
         if (entity is null) return;
         var FileDb = GetById(entity.Id, false);
 
-        FileDb = UpdateCurrentEnity(entity, FileDb!);
+        FileDb = UpdateCurrentEntity(entity, FileDb!);
         _context.Files.Update(FileDb);
     }
 
@@ -217,7 +231,7 @@ public class FileRepository : IFileRepository
         if (entity is null) return;
         var FileDb = await GetByIdAsync(entity.Id, false);
 
-        FileDb = UpdateCurrentEnity(entity, FileDb!);
+        FileDb = UpdateCurrentEntity(entity, FileDb!);
         _context.Files.Update(FileDb);
     }
 
@@ -349,24 +363,27 @@ public class FileRepository : IFileRepository
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private File UpdateCurrentEnity(File sourse, File recipient)
+    private File UpdateCurrentEntity(File sourse, File recipient)
     {
-        recipient.Description = sourse.Description;
-        recipient.CreatedAt = sourse.CreatedAt;
         recipient.Name = sourse.Name;
+
+        recipient.Title = sourse.Title;
+        recipient.Description = sourse.Description;
+        recipient.AuthorId = sourse.AuthorId;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.Author = sourse.Author;
+        recipient.Comments = sourse.Comments;
+        recipient.Tags = sourse.Tags;
+        recipient.Categories = sourse.Categories;
+        recipient.Ratings = sourse.Ratings;
+
         recipient.Url = sourse.Url;
         recipient.Size = sourse.Size;
+        recipient.Hash = sourse.Hash;
         recipient.ContentTypeId = sourse.ContentTypeId;
         recipient.FileGroupId = sourse.FileGroupId;
         recipient.ContentType = sourse.ContentType;
         recipient.FileGroup = sourse.FileGroup;
-        recipient.Categories = sourse.Categories;
-        recipient.Comments = sourse.Comments;
-        recipient.Author = sourse.Author;
-        recipient.AuthorId = sourse.AuthorId;
-        recipient.Ratings = sourse.Ratings;
-        recipient.Tags = sourse.Tags;
-        recipient.Title = sourse.Title;
 
         return recipient;
     }

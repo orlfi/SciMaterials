@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CategorysRepositories;
@@ -52,6 +51,24 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(Category entity)
+    {
+        _logger.LogDebug($"{nameof(CategoryRepository.Delete)}");
+        if(entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(Category entity)
+    {
+        _logger.LogDebug($"{nameof(CategoryRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
+    }
+
+    ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
@@ -82,11 +99,13 @@ public class CategoryRepository : ICategoryRepository
         if(disableTracking)
             return _context.Categories
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .AsNoTracking()
                 .ToList()!;
         else
             return _context.Categories
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .ToList()!;
     }
 
@@ -99,11 +118,13 @@ public class CategoryRepository : ICategoryRepository
         if (disableTracking)
             return await _context.Categories
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .AsNoTracking()
                 .ToListAsync()!;
         else
             return await _context.Categories
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .ToListAsync()!;
     }
 
@@ -117,12 +138,14 @@ public class CategoryRepository : ICategoryRepository
             return _context.Categories
                 .Where(c => c.Id == id)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
             return _context.Categories
                 .Where(c => c.Id == id)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .FirstOrDefault()!;
     }
 
@@ -136,12 +159,14 @@ public class CategoryRepository : ICategoryRepository
             return (await _context.Categories
                 .Where(c => c.Id == id)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
             return (await _context.Categories
                 .Where(c => c.Id == id)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -155,12 +180,14 @@ public class CategoryRepository : ICategoryRepository
             return (await _context.Categories
                 .Where(c => c.Name == name)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
             return (await _context.Categories
                 .Where(c => c.Name == name)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -174,12 +201,14 @@ public class CategoryRepository : ICategoryRepository
             return _context.Categories
                 .Where(c => c.Name == name)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
             return _context.Categories
                 .Where(c => c.Name == name)
                 .Include(c => c.Files)
+                .Include(c => c.FileGroups)
                 .FirstOrDefault()!;
     }
 
@@ -234,6 +263,7 @@ public class CategoryRepository : ICategoryRepository
         recipient.Description = sourse.Description;
         recipient.CreatedAt = sourse.CreatedAt;
         recipient.Files = sourse.Files;
+        recipient.FileGroups = sourse.FileGroups;
         recipient.ParentId = sourse.ParentId;
         recipient.Name = sourse.Name;
 
