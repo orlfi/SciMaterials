@@ -109,13 +109,22 @@ public class FileService : IFileService
         if (file is null)
         {
             var contentTypeModel = await _unitOfWork.GetRepository<ContentType>().GetByNameAsync(contentType);
+            if (contentTypeModel is null)
+                return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Content type <{contentType}> not found.");
+
+            // TODO: Change to AspNet Core User                
+            var author = (await _unitOfWork.GetRepository<Author>().GetAllAsync()).First();
+            if (author is null)
+                return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Author not found.");
+
             file = new File
             {
                 Id = randomFileName,
                 Name = fileNameWithExension,
-                ContentType = contentTypeModel,
+                ContentTypeId = contentTypeModel.Id,
                 Hash = saveResult.Hash,
-                Size = saveResult.Size
+                Size = saveResult.Size,
+                AuthorId = author.Id
             };
             result = await AddAsync(file);
         }

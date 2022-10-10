@@ -8,6 +8,7 @@ using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.DAL.Repositories.CommentsRepositories;
 using SciMaterials.DAL.Repositories.ContentTypesRepositories;
 using SciMaterials.DAL.Repositories.FilesRepositories;
+using SciMaterials.DAL.Repositories.RatingRepositories;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.Repositories;
 using SciMaterials.Data.Repositories.AuthorRepositories;
@@ -80,7 +81,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
+            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message} >>> {ex.InnerException?.Message ?? ""}");
             return 0;
         }
     }
@@ -112,9 +113,10 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         _repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(ContentType), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(FileGroup), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Rating), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Tag), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(FileGroup), new FileGroupRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Rating), new RatingRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Tag), new TagRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Author), new AuthorRepository((ISciMaterialsContext)_context, _logger));
     }
 
     #region Dispose
