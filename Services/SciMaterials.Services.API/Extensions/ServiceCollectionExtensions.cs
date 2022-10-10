@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SciMaterials.Contracts.API.Extensions;
 using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Data.Extensions;
@@ -21,7 +22,7 @@ public static class ServiceCollectionExtensions
         services.AddRepositoryServices();
         services.AddContextMultipleProviders(configuration);
         services.AddDatabaseServices();
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddMappings();
         return services;
     }
 }

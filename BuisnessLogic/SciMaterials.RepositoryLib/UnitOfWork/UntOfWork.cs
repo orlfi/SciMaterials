@@ -71,9 +71,18 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     ///
     /// <inheritdoc cref="IUnitOfWork{T}.SaveContextAsync()"/>
-    public Task<int> SaveContextAsync()
+    public async Task<int> SaveContextAsync()
     {
-        throw new NotImplementedException();
+        _logger.LogInformation($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}.");
+        try
+        {
+            return await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
+            return 0;
+        }
     }
 
     ///
