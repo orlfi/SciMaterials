@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Options;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Services.Configuration;
-using SciMaterials.UI.MVC.API.Helpers;
+using SciMaterials.UI.MVC.API.Filters;
 
 namespace SciMaterials.UI.MVC.API.Extensions;
 

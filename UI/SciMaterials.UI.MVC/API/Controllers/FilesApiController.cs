@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
@@ -5,6 +6,7 @@ using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
+using SciMaterials.UI.MVC.API.Filters;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
@@ -46,6 +48,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
         return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
     }
 
+    [DisableFormValueModelBinding]
     [HttpPost("Upload")]
     public async Task<IActionResult> UploadAsync()
     {
@@ -59,7 +62,14 @@ public class FilesApiController : ApiBaseController<FilesApiController>
             return new UnsupportedMediaTypeResult();
         }
 
-        var reader = new MultipartReader(mediaTypeHeader.Boundary.Value, request.Body);
+        var boundary = mediaTypeHeader.Boundary is { Length: > 2 } b && b[0] == '"' && b[^1] == '"'
+            ? b.Subsegment(1, b.Length - 2)
+            : mediaTypeHeader.Boundary;
+
+        var boundaryValue = boundary.Value;
+        _logger.LogInformation("Область загрузки {0}", boundaryValue);
+
+        var reader = new MultipartReader(boundaryValue, request.Body);
         var section = await reader.ReadNextSectionAsync();
 
         while (section != null)
