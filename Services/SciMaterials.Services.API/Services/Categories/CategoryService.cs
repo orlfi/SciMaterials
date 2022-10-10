@@ -76,7 +76,8 @@ public class CategoryService : ICategoryService
     {
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is Category category)
         {
-            await ((ICategoryRepository)_unitOfWork.GetRepository<Category>()).DeleteAsync(category);
+            // TODO: Раскоментировать когда будет добавлен метод
+            // await ((ICategoryRepository)_unitOfWork.GetRepository<Category>()).DeleteAsync(category);
             return await Result<Guid>.SuccessAsync($"Category with ID {category.Id} deleted");
         }
         else

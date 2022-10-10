@@ -1,4 +1,5 @@
 using SciMaterials.Contracts.Enums;
+using SciMaterials.Contracts.Exceptions;
 
 namespace SciMaterials.Services.API.Exceptions;
 

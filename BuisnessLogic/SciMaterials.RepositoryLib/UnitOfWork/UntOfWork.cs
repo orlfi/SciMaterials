@@ -17,7 +17,7 @@ namespace SciMaterials.Data.UnitOfWork;
 
 public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<UnitOfWork<TContext>> _logger;
     private readonly TContext _context;
 
     private bool disposed;
@@ -28,7 +28,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <param name="context"></param>
     /// <exception cref="ArgumentException"></exception>
     public UnitOfWork(
-        ILogger logger,
+        ILogger<UnitOfWork<TContext>> logger,
         TContext context)
     {
         _logger = logger;

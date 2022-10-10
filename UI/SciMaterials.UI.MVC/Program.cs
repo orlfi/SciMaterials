@@ -1,7 +1,9 @@
 using SciMaterials.DAL.InitializationDb.Interfaces;
-using SciMaterials.UI.MVC.API.Configuration;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
+using SciMaterials.UI.MVC.API.Extensions;
+using SciMaterials.Domain.Extensions;
+using SciMaterials.Services.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,15 +17,9 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
-builder.Services.AddContextMultipleProviders(builder.Configuration);
-builder.Services.AddDatabaseServices();
-builder.Services.AddApiServices();
-builder.Services.AddRepositoryServices();
+builder.Services.AddApiServices(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.ConfigureApplication(builder.Configuration);
-builder.Services.AddRepositoryServices();
-
 builder.Services.AddMappings();
 
 var app = builder.Build();

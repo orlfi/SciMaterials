@@ -1,4 +1,4 @@
-using SciMaterials.Contracts.Settings;
+using SciMaterials.Contracts.API.Settings;
 
 namespace SciMaterials.Services.Configuration;
 

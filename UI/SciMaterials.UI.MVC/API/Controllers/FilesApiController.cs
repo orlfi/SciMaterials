@@ -1,11 +1,10 @@
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
-using SciMaterials.Contracts;
+using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
-using SciMaterials.UI.MVC.API.Interfaces.Services;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
@@ -21,7 +20,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     }
 
     [HttpGet]
-    public async  Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogDebug("Get all files");
         var result = await _fileService.GetAllAsync();
@@ -33,7 +32,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     {
         _logger.LogDebug("Get file by hash");
 
-        var fileInfo = await  _fileService.GetByHashAsync(hash);
+        var fileInfo = await _fileService.GetByHashAsync(hash);
         var fileStream = _fileService.GetFileStream(fileInfo.Data.Id);
         return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
     }

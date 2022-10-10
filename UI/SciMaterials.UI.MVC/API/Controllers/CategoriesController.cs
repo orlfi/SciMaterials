@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SciMaterials.Contracts;
-using SciMaterials.UI.MVC.API.DTO.Categories;
-using SciMaterials.UI.MVC.API.Interfaces.Services;
+using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.API.DTO.Categories;
+using SciMaterials.Contracts.API.Services.Categories;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
@@ -52,4 +52,4 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     {
         return Ok(await _сategoryService.DeleteAsync(id));
     }
- }
+}

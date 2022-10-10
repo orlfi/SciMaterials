@@ -1,5 +1,4 @@
 using SciMaterials.Contracts.Result;
-using SciMaterials.UI.MVC.API.Models;
 
 namespace SciMaterials.Contracts.API.Services;
 

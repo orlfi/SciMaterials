@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Options;
-using SciMaterials.UI.MVC.API.Configuration;
-using SciMaterials.UI.MVC.API.Configuration.Interfaces;
+using SciMaterials.Contracts.API.Settings;
+using SciMaterials.Services.Configuration;
 using SciMaterials.UI.MVC.API.Helpers;
-using SciMaterials.UI.MVC.API.Interfaces.Services;
-using SciMaterials.UI.MVC.API.Services.Stores;
-using SciMaterials.UI.MVC.Services;
-using System.Reflection;
 
 namespace SciMaterials.UI.MVC.API.Extensions;
 

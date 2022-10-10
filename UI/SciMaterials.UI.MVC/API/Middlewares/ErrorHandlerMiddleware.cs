@@ -1,4 +1,5 @@
 ﻿using SciMaterials.Contracts.Enums;
+using SciMaterials.Contracts.Exceptions;
 using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.UI.MVC.API.Middlewares;

@@ -77,7 +77,7 @@ public class FileService : IFileService
     public async Task<Result<Guid>> UploadAsync(Stream sourceStream, string fileName, string contentType, CancellationToken cancellationToken = default)
     {
         var fileNameWithExension = Path.GetFileName(fileName);
-        var fileRepository = (IFileRepository)_unitOfWork.GetRepository<File>();
+        var fileRepository = _unitOfWork.GetRepository<File>();
         var file = await fileRepository.GetByNameAsync(fileNameWithExension);
 
         if (file is not null && !_overwrite)
@@ -108,7 +108,7 @@ public class FileService : IFileService
         Result<Guid> result;
         if (file is null)
         {
-            var contentTypeModel = await ((IContentTypeRepository)_unitOfWork.GetRepository<ContentType>()).GetByNameAsync(contentType);
+            var contentTypeModel = await _unitOfWork.GetRepository<ContentType>().GetByNameAsync(contentType);
             file = new File
             {
                 Id = randomFileName,
