@@ -21,11 +21,6 @@ public static class ServiceCollectionExtensions
         services.AddRepositoryServices();
         services.AddContextMultipleProviders(configuration);
         services.AddDatabaseServices();
-        return services;
-    }
-
-    public static IServiceCollection AddMappings(this IServiceCollection services)
-    {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         return services;
     }

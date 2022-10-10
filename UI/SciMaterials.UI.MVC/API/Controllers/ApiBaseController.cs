@@ -11,6 +11,6 @@ namespace SciMaterials.UI.MVC.API.Controllers
         protected ILogger<T> _logger => _loggerInstance ??= HttpContext.RequestServices.GetService<ILogger<T>>()!;
 
         protected void LogError(Exception ex, [CallerMemberName] string methodName = null!)
-            => _logger.LogError(ex, "ошибка выполнения {error}", methodName);
+            => _logger.LogError(ex, "Error {error}", methodName);
     }
 }

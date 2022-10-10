@@ -17,10 +17,9 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddApiServices(builder.Configuration);
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.ConfigureApplication(builder.Configuration);
-builder.Services.AddMappings();
+builder.Services.AddApiServices(builder.Configuration);
 
 var app = builder.Build();
 
