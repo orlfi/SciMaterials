@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
-using SciMaterials.DAL.Repositories.ContentTypesRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -49,6 +47,24 @@ public class FileGroupRepository : IFileGroupRepository
 
         if (entity is null) return;
         await _context.FileGroups.AddAsync(entity);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(FileGroup entity)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.Delete)}");
+        if (entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(FileGroup entity)
+    {
+        _logger.LogDebug($"{nameof(FileGroupRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
     }
 
     ///
@@ -194,7 +210,7 @@ public class FileGroupRepository : IFileGroupRepository
         if (entity is null) return;
         var FileGroupDb = GetById(entity.Id, false);
 
-        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb!);
+        FileGroupDb = UpdateCurrentEntity(entity, FileGroupDb!);
         _context.FileGroups.Update(FileGroupDb);
     }
 
@@ -207,7 +223,7 @@ public class FileGroupRepository : IFileGroupRepository
         if (entity is null) return;
         var FileGroupDb = await GetByIdAsync(entity.Id, false);
 
-        FileGroupDb = UpdateCurrentEnity(entity, FileGroupDb!);
+        FileGroupDb = UpdateCurrentEntity(entity, FileGroupDb!);
         _context.FileGroups.Update(FileGroupDb);
     }
 
@@ -289,19 +305,21 @@ public class FileGroupRepository : IFileGroupRepository
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private FileGroup UpdateCurrentEnity(FileGroup sourse, FileGroup recipient)
+    private FileGroup UpdateCurrentEntity(FileGroup sourse, FileGroup recipient)
     {
-        recipient.Description = sourse.Description;
-        recipient.CreatedAt = sourse.CreatedAt;
-        recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
-        recipient.Author = sourse.Author;
-        recipient.AuthorId = sourse.AuthorId;
-        recipient.Categories = sourse.Categories;
-        recipient.Tags = sourse.Tags;
-        recipient.Ratings = sourse.Ratings;
-        recipient.Comments = sourse.Comments;
+
         recipient.Title = sourse.Title;
+        recipient.Description = sourse.Description;
+        recipient.AuthorId = sourse.AuthorId;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.Author = sourse.Author;
+        recipient.Comments = sourse.Comments;
+        recipient.Tags = sourse.Tags;
+        recipient.Categories = sourse.Categories;
+        recipient.Ratings = sourse.Ratings;
+
+        recipient.Files = sourse.Files;
 
         return recipient;
     }

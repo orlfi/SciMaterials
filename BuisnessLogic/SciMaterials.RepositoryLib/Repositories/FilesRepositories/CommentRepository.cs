@@ -51,6 +51,24 @@ public class CommentRepository : ICommentRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(Comment entity)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.Delete)}");
+        if (entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(Comment entity)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
+    }
+
+    ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
@@ -82,12 +100,14 @@ public class CommentRepository : ICommentRepository
             return _context.Comments
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .AsNoTracking()
                 .ToList();
         else
             return _context.Comments
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .ToList();
     }
 
@@ -101,12 +121,14 @@ public class CommentRepository : ICommentRepository
             return await _context.Comments
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .AsNoTracking()
                 .ToListAsync();
         else
             return await _context.Comments
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .ToListAsync();
     }
 
@@ -121,6 +143,7 @@ public class CommentRepository : ICommentRepository
                 .Where(c => c.Id == id)
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
@@ -128,6 +151,7 @@ public class CommentRepository : ICommentRepository
                 .Where(c => c.Id == id)
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .FirstOrDefault()!;
     }
 
@@ -142,6 +166,7 @@ public class CommentRepository : ICommentRepository
                 .Where(c => c.Id == id)
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
@@ -149,6 +174,7 @@ public class CommentRepository : ICommentRepository
                 .Where(c => c.Id == id)
                 .Include(c => c.File)
                 .Include(c => c.FileGroup)
+                .Include(c => c.Author)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -161,7 +187,7 @@ public class CommentRepository : ICommentRepository
         if (entity is null) return;
         var categoryDb = GetById(entity.Id, false);
 
-        categoryDb = UpdateCurrentEnity(entity, categoryDb);
+        categoryDb = UpdateCurrentEntity(entity, categoryDb);
         _context.Comments.Update(categoryDb);
     }
 
@@ -176,7 +202,7 @@ public class CommentRepository : ICommentRepository
         if (entity is null) return;
         var categoryDb = await GetByIdAsync(entity.Id, false);
 
-        categoryDb = UpdateCurrentEnity(entity, categoryDb!);
+        categoryDb = UpdateCurrentEntity(entity, categoryDb!);
         _context.Comments.Update(categoryDb);
     }
 
@@ -185,6 +211,15 @@ public class CommentRepository : ICommentRepository
     public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true)
     {
         _logger.LogDebug($"{nameof(CommentRepository.GetByNameAsync)}");
+
+        return null!;
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    public Comment? GetByName(string name, bool disableTracking = true)
+    {
+        _logger.LogDebug($"{nameof(CommentRepository.GetByName)}");
 
         return null!;
     }
@@ -205,25 +240,18 @@ public class CommentRepository : ICommentRepository
         return null!;
     }
 
-    ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Comment? GetByName(string name, bool disableTracking = true)
-    {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByName)}");
-
-        return null!;
-    }
-
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Comment UpdateCurrentEnity(Comment sourse, Comment recipient)
+    private Comment UpdateCurrentEntity(Comment sourse, Comment recipient)
     {
         recipient.CreatedAt = sourse.CreatedAt;
+        recipient.FileId = sourse.FileId;
         recipient.File = sourse.File;
         recipient.ParentId = sourse.ParentId;
         recipient.Text = sourse.Text;
+        recipient.FileGroupId = sourse.FileGroupId;
         recipient.FileGroup = sourse.FileGroup;
         recipient.Author = sourse.Author;
         recipient.AuthorId = sourse.AuthorId;

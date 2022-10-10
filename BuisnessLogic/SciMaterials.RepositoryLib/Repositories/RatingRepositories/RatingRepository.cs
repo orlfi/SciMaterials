@@ -51,13 +51,30 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(Rating entity)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.Delete)}");
+        if (entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(Rating entity)
+    {
+        _logger.LogDebug($"{nameof(RatingRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
+    }
+
+    ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
         _logger.LogDebug($"{nameof(RatingRepository.Delete)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
-        var RatingDb = _context.Ratings.FirstOrDefault(c => c.AuthorId == id);
+        var RatingDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
@@ -68,8 +85,7 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogDebug($"{nameof(RatingRepository.DeleteAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
-        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.AuthorId == id);
+        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
         if (RatingDb is null) return;
         _context.Ratings.Remove(RatingDb!);
     }
@@ -84,12 +100,14 @@ public class RatingRepository : IRatingRepository
             return _context.Ratings
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .AsNoTracking()
                 .ToList();
         else
             return _context.Ratings
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .ToList();
     }
 
@@ -103,12 +121,14 @@ public class RatingRepository : IRatingRepository
             return await _context.Ratings
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .AsNoTracking()
                 .ToListAsync();
         else
             return await _context.Ratings
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .ToListAsync();
     }
 
@@ -118,19 +138,20 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogDebug($"{nameof(RatingRepository.GetById)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
             return _context.Ratings
-                .Where(c => c.AuthorId == id)
+                .Where(c => c.Id == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .AsNoTracking()
                 .FirstOrDefault()!;
         else
             return _context.Ratings
-                .Where(c => c.AuthorId == id)
+                .Where(c => c.Id == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .FirstOrDefault()!;
     }
 
@@ -140,19 +161,20 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogDebug($"{nameof(RatingRepository.GetByIdAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (disableTracking)
             return (await _context.Ratings
-                .Where(c => c.AuthorId == id)
+                .Where(c => c.Id == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
         else
             return (await _context.Ratings
-                .Where(c => c.AuthorId == id)
+                .Where(c => c.Id == id)
                 .Include(r => r.File)
                 .Include(r => r.User)
+                .Include(r => r.FileGroup)
                 .FirstOrDefaultAsync())!;
     }
 
@@ -162,11 +184,10 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogDebug($"{nameof(RatingRepository.Update)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;
-        var RatingDb = GetById(entity.AuthorId, false);
+        var RatingDb = GetById(entity.Id, false);
 
-        RatingDb = UpdateCurrentEnity(entity, RatingDb!);
+        RatingDb = UpdateCurrentEntity(entity, RatingDb!);
         _context.Ratings.Update(RatingDb);
     }
 
@@ -176,11 +197,10 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogDebug($"{nameof(RatingRepository.UpdateAsync)}");
 
-        //ToDo: уточнить по какому id получать экземпляр (заглушил c.AuthorId)
         if (entity is null) return;
-        var RatingDb = await GetByIdAsync(entity.AuthorId, false);
+        var RatingDb = await GetByIdAsync(entity.Id, false);
 
-        RatingDb = UpdateCurrentEnity(entity, RatingDb!);
+        RatingDb = UpdateCurrentEntity(entity, RatingDb!);
         _context.Ratings.Update(RatingDb);
     }
 
@@ -222,10 +242,12 @@ public class RatingRepository : IRatingRepository
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Rating UpdateCurrentEnity(Rating sourse, Rating recipient)
+    private Rating UpdateCurrentEntity(Rating sourse, Rating recipient)
     {
         recipient.File = sourse.File;
         recipient.FileId = sourse.FileId;
+        recipient.FileGroup = sourse.FileGroup;
+        recipient.FileGroupId = sourse.FileGroupId;
         recipient.RatingValue = sourse.RatingValue;
         recipient.User = sourse.User;
         recipient.AuthorId = sourse.AuthorId;

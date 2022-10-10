@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.RatingRepositories;
 
 namespace SciMaterials.Data.Repositories.AuthorRepositories;
 
@@ -46,6 +45,24 @@ public class AuthorRepository : IAuthorRepository
 
         if (entity is null) return;
         await _context.Authors.AddAsync(entity);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(Author entity)
+    {
+        _logger.LogDebug($"{nameof(AuthorRepository.Delete)}");
+        if (entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(Author entity)
+    {
+        _logger.LogDebug($"{nameof(AuthorRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
     }
 
     ///
@@ -170,7 +187,7 @@ public class AuthorRepository : IAuthorRepository
         if (entity is null) return;
         var AuthorDb = GetById(entity.Id, false);
 
-        AuthorDb = UpdateCurrentEnity(entity, AuthorDb!);
+        AuthorDb = UpdateCurrentEntity(entity, AuthorDb!);
         _context.Authors.Update(AuthorDb);
     }
 
@@ -183,7 +200,7 @@ public class AuthorRepository : IAuthorRepository
         if (entity is null) return;
         var AuthorDb = await GetByIdAsync(entity.Id, false);
 
-        AuthorDb = UpdateCurrentEnity(entity, AuthorDb!);
+        AuthorDb = UpdateCurrentEntity(entity, AuthorDb!);
         _context.Authors.Update(AuthorDb);
     }
 
@@ -257,7 +274,7 @@ public class AuthorRepository : IAuthorRepository
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Author UpdateCurrentEnity(Author sourse, Author recipient)
+    private Author UpdateCurrentEntity(Author sourse, Author recipient)
     {
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
@@ -267,6 +284,7 @@ public class AuthorRepository : IAuthorRepository
         recipient.Email = sourse.Email;
         recipient.Ratings = sourse.Ratings;
         recipient.User = sourse.User;
+        recipient.UserId = sourse.UserId;
 
         return recipient;
     }

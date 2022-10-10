@@ -52,6 +52,24 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
+    public void Delete(ContentType entity)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.Delete)}");
+        if (entity is null || entity.Id == default) return;
+        Delete(entity.Id);
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
+    public async Task DeleteAsync(ContentType entity)
+    {
+        _logger.LogDebug($"{nameof(ContentTypeRepository.DeleteAsync)}");
+        if (entity is null || entity.Id == default) return;
+        await DeleteAsync(entity.Id);
+    }
+
+    ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
@@ -154,7 +172,7 @@ public class ContentTypeRepository : IContentTypeRepository
         if (entity is null) return;
         var ContentTypeDb = GetById(entity.Id, false);
 
-        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb!);
+        ContentTypeDb = UpdateCurrentEntity(entity, ContentTypeDb!);
         _context.ContentTypes.Update(ContentTypeDb);
     }
 
@@ -167,7 +185,7 @@ public class ContentTypeRepository : IContentTypeRepository
         if (entity is null) return;
         var ContentTypeDb = await GetByIdAsync(entity.Id, false);
 
-        ContentTypeDb = UpdateCurrentEnity(entity, ContentTypeDb!);
+        ContentTypeDb = UpdateCurrentEntity(entity, ContentTypeDb!);
         _context.ContentTypes.Update(ContentTypeDb);
     }
 
@@ -186,7 +204,6 @@ public class ContentTypeRepository : IContentTypeRepository
                 .Where(c => c.Name == name)
                 .Include(ct => ct.Files)
                 .FirstOrDefaultAsync())!;
-        return null!;
     }
 
     ///
@@ -218,10 +235,11 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private ContentType UpdateCurrentEnity(ContentType sourse, ContentType recipient)
+    private ContentType UpdateCurrentEntity(ContentType sourse, ContentType recipient)
     {
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
+        recipient.FileExtension = sourse.FileExtension;
 
         return recipient;
     }
