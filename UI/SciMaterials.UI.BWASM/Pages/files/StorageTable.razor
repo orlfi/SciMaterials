@@ -16,21 +16,7 @@
 
 <MudText Class="mb-5" Typo="Typo.h3" Align="Align.Start">Files</MudText>
 
-
-<MudStack Justify="Justify.FlexEnd" Row="true">
-    <MudIconButton Icon="@Icons.Material.Filled.Apps" aria-label="delete" OnClick="() => ToFileCollectionUrl()"></MudIconButton>
-    <MudSelect @bind-Value="filterValue" Label="Filter" AdornmentIcon="@Icons.Material.Filled.FilterList">
-        <MudSelectItem Value="@("Filter #1")"/>
-        <MudSelectItem Value="@("Filter #2")"/>
-        <MudSelectItem Value="@("Filter #3")"/>
-    </MudSelect>
-    <MudText Typo="Typo.subtitle1" Align="Align.Start">Sort by:</MudText>
-    <MudSelect @bind-Value="sortValue" Dense="true" T="string" Variant="Variant.Text">
-        <MudSelectItem Value="@("Sort #1")"/>
-        <MudSelectItem Value="@("Sort #2")"/>
-        <MudSelectItem Value="@("Sort #3")"/>
-    </MudSelect>
-</MudStack>
+<FilesFilter/>
 
 <MudTable Items="@Ids" MultiSelection="true" @bind-SelectedItems="selectedItems" Hover="true" Breakpoint="Breakpoint.Sm" Striped="true" Bordered="false"
           CustomHeader="true" CustomFooter="true" HeaderClass="table-head-bordered" FooterClass="table-foot-bordered">
@@ -74,8 +60,6 @@
 
 
 @code {
-    private string filterValue { get; set; }
-    private string sortValue { get; set; }
     private string searchString1 = "";
     private bool _hidePosition;
     private IEnumerable<int> Ids;
@@ -92,10 +76,6 @@
     private void ToFileDetailsUrl(int id)
     {
         NavigationManager.NavigateTo($"/filedetails/{id}");
-    }
-    private void ToFileCollectionUrl()
-    {
-        NavigationManager.NavigateTo($"/storage");
     }
 }
 
