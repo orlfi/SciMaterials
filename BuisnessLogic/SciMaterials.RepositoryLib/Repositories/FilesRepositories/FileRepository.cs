@@ -289,32 +289,29 @@ public class FileRepository : IFileRepository
     {
         _logger.LogDebug($"{nameof(FileRepository.GetByHashAsync)}");
 
-        //ToDo: раскомментировать, когда будет добавлено св-во Hash
-
-        //if (disableTracking)
-        //    return (await _context.Files
-        //        .Where(c => c.Hash == hash)
-        //        .Include(f => f.ContentType)
-        //        .Include(f => f.FileGroup)
-        //        .Include(f => f.Categories)
-        //        .Include(f => f.Author)
-        //        .Include(f => f.Comments)
-        //        .Include(f => f.Tags)
-        //        .Include(f => f.Ratings)
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync())!;
-        //else
-        //    return (await _context.Files
-        //        .Where(c => c.Hash == hash)
-        //        .Include(f => f.ContentType)
-        //        .Include(f => f.FileGroup)
-        //        .Include(f => f.Categories)
-        //        .Include(f => f.Author)
-        //        .Include(f => f.Comments)
-        //        .Include(f => f.Tags)
-        //        .Include(f => f.Ratings)
-        //        .FirstOrDefaultAsync())!;
-        throw new NotImplementedException();
+        if (disableTracking)
+            return (await _context.Files
+                .Where(c => c.Hash == hash)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.Files
+                .Where(c => c.Hash == hash)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .FirstOrDefaultAsync())!;
     }
 
     ///
@@ -323,32 +320,29 @@ public class FileRepository : IFileRepository
     {
         _logger.LogDebug($"{nameof(FileRepository.GetByHash)}");
 
-        //ToDo: раскомментировать, когда будет добавлено св-во Hash
-
-        //if (disableTracking)
-        //    return _context.Files
-        //        .Where(c => c.Hash == hash)
-        //        .Include(f => f.ContentType)
-        //        .Include(f => f.FileGroup)
-        //        .Include(f => f.Categories)
-        //        .Include(f => f.Author)
-        //        .Include(f => f.Comments)
-        //        .Include(f => f.Tags)
-        //        .Include(f => f.Ratings)
-        //        .AsNoTracking()
-        //        .FirstOrDefault()!;
-        //else
-        //    return _context.Files
-        //        .Where(c => c.Hash == hash)
-        //        .Include(f => f.ContentType)
-        //        .Include(f => f.FileGroup)
-        //        .Include(f => f.Categories)
-        //        .Include(f => f.Author)
-        //        .Include(f => f.Comments)
-        //        .Include(f => f.Tags)
-        //        .Include(f => f.Ratings)
-        //        .FirstOrDefault()!;
-        throw new NotImplementedException();
+        if (disableTracking)
+            return _context.Files
+                .Where(c => c.Hash == hash)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .AsNoTracking()
+                .FirstOrDefault()!;
+        else
+            return _context.Files
+                .Where(c => c.Hash == hash)
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings)
+                .FirstOrDefault()!;
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
