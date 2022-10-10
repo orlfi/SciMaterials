@@ -1,7 +1,7 @@
-using SciMaterials.UI.MVC.API.Interfaces.Services;
-using SciMaterials.UI.MVC.API.Models;
+using SciMaterials.Contracts.API.Models;
+using SciMaterials.Contracts.API.Services.Files;
 
-namespace SciMaterials.UI.MVC.API.Services.Stores;
+namespace SciMaterials.Services.API.Services.Files.Stores;
 
 public class YandexSore : IFileStore
 {

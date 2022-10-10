@@ -1,21 +1,17 @@
 using System.Diagnostics;
-using SciMaterials.UI.MVC.API.Exceptions;
-using SciMaterials.UI.MVC.API.Models;
-using SciMaterials.UI.MVC.API.Data.Interfaces;
-using SciMaterials.UI.MVC.API.Configuration.Interfaces;
-using SciMaterials.UI.MVC.API.Interfaces.Services;
 using AutoMapper;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.UnitOfWork;
 using File = SciMaterials.DAL.Models.File;
-using SciMaterials.DAL.Repositories.FilesRepositories;
-using SciMaterials.DAL.Repositories.ContentTypesRepositories;
 using SciMaterials.DAL.Models;
-using SciMaterials.UI.MVC.API.DTO.Files;
+using Microsoft.Extensions.Logging;
+using SciMaterials.Contracts.API.Services.Files;
+using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
+using SciMaterials.DAL.UnitOfWork;
+using SciMaterials.Contracts.API.Settings;
 
-namespace SciMaterials.UI.MVC.Services;
+namespace SciMaterials.Services.API.Services.Files;
 
 public class FileService : IFileService
 {
@@ -63,7 +59,7 @@ public class FileService : IFileService
 
     public async Task<Result<GetFileResponse>> GetByHashAsync(string hash)
     {
-        var file = await ((IFileRepository)_unitOfWork.GetRepository<File>()).GetByHashAsync(hash);
+        var file = await _unitOfWork.GetRepository<File>().GetByHashAsync(hash);
 
         if (file is null)
             return await Result<GetFileResponse>.ErrorAsync((int)ResultCodes.NotFound, $"File with hash {hash} not found");
@@ -81,7 +77,7 @@ public class FileService : IFileService
     public async Task<Result<Guid>> UploadAsync(Stream sourceStream, string fileName, string contentType, CancellationToken cancellationToken = default)
     {
         var fileNameWithExension = Path.GetFileName(fileName);
-        var fileRepository = ((IFileRepository)_unitOfWork.GetRepository<File>());
+        var fileRepository = (IFileRepository)_unitOfWork.GetRepository<File>();
         var file = await fileRepository.GetByNameAsync(fileNameWithExension);
 
         if (file is not null && !_overwrite)
@@ -132,7 +128,7 @@ public class FileService : IFileService
 
         var fileMetada = _mapper.Map<FileMetadata>(file);
         await _fileStore.WriteMetadataAsync(metadataPath, fileMetada, cancellationToken).ConfigureAwait(false);
-        
+
         return result;
     }
 
