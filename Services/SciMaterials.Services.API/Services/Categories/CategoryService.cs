@@ -49,7 +49,6 @@ public class CategoryService : ICategoryService
             var category = _mapper.Map<Category>(request);
             category.CreatedAt = DateTime.Now;
             return await AddAsync(category);
-
         }
 
         return await UpdateAsync(request.Id.Value);

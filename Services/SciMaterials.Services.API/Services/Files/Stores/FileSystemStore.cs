@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using SciMaterials.Contracts.API.Models;
+using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Services.Files;
 
 namespace SciMaterials.Services.API.Services.Files.Stores;
@@ -16,47 +16,36 @@ public class FileSystemStore : IFileStore
         _logger = logger;
     }
 
-    public async Task<FileSaveResult> WriteAsync(string path, Stream stream, CancellationToken cancellationToken = default)
+    public async Task<FileMetadata> WriteAsync(string path, Stream stream, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
-        var buffer = new byte[_bufferSize];
-        int bytesRead;
-        long totalBytesRead = 0;
+        try
+        {
+            CreateDirectoryFromPath(path);
+            (string Hash, long Size) writeResult = await WriteFileAsync(path, stream, cancellationToken);
+            metadata.Hash = writeResult.Hash;
+            metadata.Size = writeResult.Size;
 
+            await WriteMetadataAsync(path, metadata, cancellationToken);
+            return metadata;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Write file error.");
+            throw;
+        }
+    }
+
+    private void CreateDirectoryFromPath(string path)
+    {
         var directory = Path.GetDirectoryName(path);
         if (string.IsNullOrEmpty(directory))
             throw new DirectoryNotFoundException();
 
         if (!Directory.Exists(directory))
         {
-            _logger.LogInformation("Create directory {directory}", directory);
+            _logger.LogDebug("Create directory {directory}", directory);
             Directory.CreateDirectory(directory);
         }
-
-        using var writeStream = File.Create(path);
-        using var hashAlgorithm = SHA512.Create();
-        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) > 0)
-        {
-            await writeStream.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
-            hashAlgorithm.TransformBlock(buffer, 0, bytesRead, null, 0);
-            totalBytesRead += bytesRead;
-        }
-        hashAlgorithm.TransformFinalBlock(buffer, 0, 0);
-        var hash = hashAlgorithm.Hash;
-        if (hash is null)
-        {
-            var exception = new NullReferenceException("Unable to calculate Hash");
-            _logger.LogError(exception, null);
-            throw exception;
-        }
-
-        var hashString = Convert.ToHexString(hash);
-        return new FileSaveResult(hashString, totalBytesRead);
-    }
-
-    public async Task WriteMetadataAsync<T>(string path, T data, CancellationToken cancellationToken = default)
-    {
-        var metaData = JsonSerializer.Serialize(data);
-        await File.WriteAllTextAsync(path, metaData, cancellationToken).ConfigureAwait(false);
     }
 
     public Stream OpenRead(string path)
@@ -86,4 +75,44 @@ public class FileSystemStore : IFileStore
     {
         File.Delete(path);
     }
+
+    private async Task<(string Hash, long Size)> WriteFileAsync(string path, Stream stream, CancellationToken cancellationToken = default)
+    {
+        _logger.LogDebug("Write file {path} started...", path);
+        var buffer = new byte[_bufferSize];
+        int bytesRead;
+        long totalBytesRead = 0;
+        using var writeStream = File.Create(path);
+        using var hashAlgorithm = SHA512.Create();
+        while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) > 0)
+        {
+            await writeStream.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
+            hashAlgorithm.TransformBlock(buffer, 0, bytesRead, null, 0);
+            totalBytesRead += bytesRead;
+        }
+        hashAlgorithm.TransformFinalBlock(buffer, 0, 0);
+        var hash = hashAlgorithm.Hash;
+
+        if (hash is null)
+        {
+            var exception = new NullReferenceException("Unable to calculate Hash");
+            _logger.LogError(exception, null);
+            throw exception;
+        }
+
+        var hashString = Convert.ToHexString(hash);
+        _logger.LogDebug("The file was saved successfully.");
+        return (hashString, totalBytesRead);
+    }
+
+    private async Task WriteMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
+    {
+        var metadaPath = Path.ChangeExtension(path, "json");
+        _logger.LogDebug("Write file metadata {metadaPath} started...", path);
+
+        var metaData = JsonSerializer.Serialize(metadata);
+        await File.WriteAllTextAsync(metadaPath, metaData, cancellationToken).ConfigureAwait(false);
+        _logger.LogDebug("The filemetadata was saved successfully.");
+    }
+
 }
