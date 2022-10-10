@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SciMaterials.DAL.Contexts;
 
@@ -10,9 +11,10 @@ using SciMaterials.DAL.Contexts;
 namespace SciMaterials.SQLiteMigrations.Migrations
 {
     [DbContext(typeof(SciMaterialsContext))]
-    partial class SciMaterialsContextModelSnapshot : ModelSnapshot
+    [Migration("20221010083309_FirstMigration")]
+    partial class FirstMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.9");
@@ -207,6 +209,9 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("FileGroupId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Hash")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
