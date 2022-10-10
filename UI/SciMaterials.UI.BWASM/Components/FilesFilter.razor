@@ -2,7 +2,7 @@
 
 <div>
 	<MudStack Justify="Justify.FlexEnd" Row="true">
-		<MudMenu Icon="@_presentationModes[CurrentPresentationMode]">
+		<MudMenu Icon="@_presentationModes[ItemsPresentationMode]">
 			@foreach (var (mode,icon) in _presentationModes)
 			{
 				<MudMenuItem OnClick="() => SelectPresentationMode(mode)" Icon="@icon"></MudMenuItem>
@@ -34,13 +34,19 @@
 
 	private string filterValue { get; set; }
 	private string sortValue { get; set; }
-	private ItemsPresentationMode CurrentPresentationMode { get; set; }
+
+	[Parameter]
+	public ItemsPresentationMode ItemsPresentationMode { get; set; }
+
+	[Parameter]
+	public EventCallback<ItemsPresentationMode> OnItemsPresentationModeChanged { get; set; }
 
 
 	private void SelectPresentationMode(ItemsPresentationMode mode)
 	{
-		if(CurrentPresentationMode == mode) return;
-		CurrentPresentationMode = mode;
-		StateHasChanged();
+		if(ItemsPresentationMode == mode) return;
+		ItemsPresentationMode = mode;
+		OnItemsPresentationModeChanged.InvokeAsync(mode);
+		//StateHasChanged();
 	}
 }
