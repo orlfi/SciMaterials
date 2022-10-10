@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SciMaterials.UI.MVC.API.Configuration.Interfaces;
+using SciMaterials.Contracts.API.Settings;
 
 namespace SciMaterials.MVC.Controllers;
 

@@ -17,7 +17,7 @@ namespace SciMaterials.Data.UnitOfWork;
 
 public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<UnitOfWork<TContext>> _logger;
     private readonly TContext _context;
 
     private bool disposed;
@@ -28,7 +28,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <param name="context"></param>
     /// <exception cref="ArgumentException"></exception>
     public UnitOfWork(
-        ILogger logger,
+        ILogger<UnitOfWork<TContext>> logger,
         TContext context)
     {
         _logger = logger;
@@ -71,9 +71,18 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     ///
     /// <inheritdoc cref="IUnitOfWork{T}.SaveContextAsync()"/>
-    public Task<int> SaveContextAsync()
+    public async Task<int> SaveContextAsync()
     {
-        throw new NotImplementedException();
+        _logger.LogInformation($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}.");
+        try
+        {
+            return await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
+            return 0;
+        }
     }
 
     ///

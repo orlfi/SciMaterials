@@ -176,7 +176,16 @@ public class ContentTypeRepository : IContentTypeRepository
     public async Task<ContentType?> GetByNameAsync(string name, bool disableTracking = true)
     {
         _logger.LogDebug($"{nameof(ContentTypeRepository.GetByNameAsync)}");
-
+        if (disableTracking)
+            return (await _context.ContentTypes
+                .Where(c => c.Name == name)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())!;
+        else
+            return (await _context.ContentTypes
+                .Where(c => c.Name == name)
+                .Include(ct => ct.Files)
+                .FirstOrDefaultAsync())!;
         return null!;
     }
 

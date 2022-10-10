@@ -1,56 +1,55 @@
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
-using SciMaterials.Domain.Core;
-using SciMaterials.UI.MVC.API.Mappings;
-using SciMaterials.UI.MVC.API.Services.Interfaces;
+using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.API.Services.Files;
+using SciMaterials.Contracts.Enums;
+using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
 [ApiController]
-[Route("api/files")]
+[Route(WebApiRoute.Files)]
 public class FilesApiController : ApiBaseController<FilesApiController>
 {
-    private readonly IFileService<Guid> _fileService;
+    private readonly IFileService _fileService;
 
-    private void LogError(Exception ex, [CallerMemberName] string methodName = null!)
-        => _logger.LogError(ex, "ошибка выполнения {error}", methodName);
-
-    public FilesApiController(IFileService<Guid> fileService)
+    public FilesApiController(IFileService fileService)
     {
         _fileService = fileService;
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogDebug("Get all files");
-        var result = _fileService.GetAll();
+        var result = await _fileService.GetAllAsync();
         return Ok(result);
     }
 
     [HttpGet("DownloadByHash/{hash}")]
-    public IActionResult DownloadByHash([FromRoute] string hash)
+    public async Task<IActionResult> DownloadByHash([FromRoute] string hash)
     {
         _logger.LogDebug("Get file by hash");
 
-        var fileInfo = _fileService.GetByHash(hash);
+        var fileInfo = await _fileService.GetByHashAsync(hash);
         var fileStream = _fileService.GetFileStream(fileInfo.Data.Id);
-        return File(fileStream, fileInfo.Data.ContentType, fileInfo.Data.FileName);
+        return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
     }
 
     [HttpGet("DownloadById/{id}")]
-    public IActionResult DownloadById([FromRoute] Guid id)
+    public async Task<IActionResult> DownloadByIdAsync([FromRoute] Guid id)
     {
-        var fileInfo = _fileService.GetById(id);
+        _logger.LogDebug("Download by Id");
+        var fileInfo = await _fileService.GetByIdAsync(id);
         var fileStream = _fileService.GetFileStream(id);
-        return File(fileStream, fileInfo.Data.ContentType, fileInfo.Data.FileName);
+        return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
     }
 
     [HttpPost("Upload")]
     public async Task<IActionResult> UploadAsync()
     {
+        _logger.LogDebug("Upload file");
         var request = HttpContext.Request;
 
         if (!request.HasFormContentType ||
@@ -79,7 +78,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
             section = await reader.ReadNextSectionAsync();
         }
 
-        return Ok(Result.Error("No files data in the request."));
+        return Ok(Result.Error((int)ResultCodes.FormDataFileMissing, "Form-data sections does not contains files"));
     }
 
 }
