@@ -124,7 +124,8 @@ public class FileService : IFileService
                 ContentTypeId = contentTypeModel.Id,
                 Hash = saveResult.Hash,
                 Size = saveResult.Size,
-                AuthorId = author.Id
+                AuthorId = author.Id,
+                CreatedAt = DateTime.Now
             };
             result = await AddAsync(file);
         }
@@ -144,7 +145,8 @@ public class FileService : IFileService
     private async Task<Result<Guid>> AddAsync(File file)
     {
         await _unitOfWork.GetRepository<File>().AddAsync(file);
-        await _unitOfWork.SaveContextAsync();
+        if (await _unitOfWork.SaveContextAsync() <= 0)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
 
         return await Result<Guid>.SuccessAsync(file.Id, "File created");
     }
@@ -152,7 +154,10 @@ public class FileService : IFileService
     private async Task<Result<Guid>> OverrideAsync(File file)
     {
         await _unitOfWork.GetRepository<File>().UpdateAsync(file);
-        await _unitOfWork.SaveContextAsync();
+
+        if (await _unitOfWork.SaveContextAsync() <= 0)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+
         return await Result<Guid>.SuccessAsync(file.Id, "File overrided");
     }
 }

@@ -47,6 +47,7 @@ public class CategoryService : ICategoryService
         if (request.Id is null || request.Id == Guid.Empty)
         {
             var category = _mapper.Map<Category>(request);
+            category.CreatedAt = DateTime.Now;
             return await AddAsync(category);
 
         }
@@ -56,7 +57,10 @@ public class CategoryService : ICategoryService
     private async Task<Result<Guid>> AddAsync(Category category)
     {
         await _unitOfWork.GetRepository<Category>().AddAsync(category);
-        await _unitOfWork.SaveContextAsync();
+
+        if (await _unitOfWork.SaveContextAsync() <= 0)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+
         return await Result<Guid>.SuccessAsync(category.Id, "Category created");
     }
 
@@ -68,7 +72,10 @@ public class CategoryService : ICategoryService
             return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
 
         await _unitOfWork.GetRepository<Category>().UpdateAsync(category);
-        await _unitOfWork.SaveContextAsync();
+
+        if (await _unitOfWork.SaveContextAsync() <= 0)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+
         return await Result<Guid>.SuccessAsync(category.Id, "Category updated");
     }
 
@@ -76,8 +83,12 @@ public class CategoryService : ICategoryService
     {
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is Category category)
         {
-            // TODO: Раскоментировать когда будет добавлен метод
+            // TODO: Раскомментировать когда будет добавлен метод
             // await ((ICategoryRepository)_unitOfWork.GetRepository<Category>()).DeleteAsync(category);
+
+            if (await _unitOfWork.SaveContextAsync() <= 0)
+                return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+
             return await Result<Guid>.SuccessAsync($"Category with ID {category.Id} deleted");
         }
         else
