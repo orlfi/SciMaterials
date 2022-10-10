@@ -214,6 +214,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Property<Guid?>("FileGroupId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Hash")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

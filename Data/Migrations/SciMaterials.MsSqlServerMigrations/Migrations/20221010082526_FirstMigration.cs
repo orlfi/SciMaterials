@@ -158,6 +158,7 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Size = table.Column<long>(type: "bigint", nullable: false),
+                    Hash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ContentTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FileGroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),

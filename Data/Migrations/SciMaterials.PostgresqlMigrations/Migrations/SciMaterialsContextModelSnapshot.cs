@@ -214,6 +214,9 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                     b.Property<Guid?>("FileGroupId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Hash")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");

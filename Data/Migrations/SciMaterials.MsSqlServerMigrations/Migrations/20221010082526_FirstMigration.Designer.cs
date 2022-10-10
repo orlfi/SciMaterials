@@ -12,7 +12,7 @@ using SciMaterials.DAL.Contexts;
 namespace SciMaterials.MsSqlServerMigrations.Migrations
 {
     [DbContext(typeof(SciMaterialsContext))]
-    [Migration("20221009081620_FirstMigration")]
+    [Migration("20221010082526_FirstMigration")]
     partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -215,6 +215,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
                     b.Property<Guid?>("FileGroupId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Hash")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
