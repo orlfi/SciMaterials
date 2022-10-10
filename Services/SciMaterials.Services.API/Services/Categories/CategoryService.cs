@@ -82,8 +82,7 @@ public class CategoryService : ICategoryService
     {
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is Category category)
         {
-            // TODO: Раскомментировать когда будет добавлен метод
-            // await ((ICategoryRepository)_unitOfWork.GetRepository<Category>()).DeleteAsync(category);
+            await ((ICategoryRepository)_unitOfWork.GetRepository<Category>()).DeleteAsync(category);
 
             if (await _unitOfWork.SaveContextAsync() <= 0)
                 return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
