@@ -30,11 +30,11 @@ await using (var scope = app.Services.CreateAsyncScope())
     if (builder.Configuration["DbProvider"].Equals("SQLite"))
     {
         var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
-        await context.Database.MigrateAsync();
+        await context.Database.MigrateAsync().ConfigureAwait(false);
     }
     
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    await dbInitializer.InitializeDbAsync(removeAtStart: true);
+    await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);
 }
 
 // Configure the HTTP request pipeline.
