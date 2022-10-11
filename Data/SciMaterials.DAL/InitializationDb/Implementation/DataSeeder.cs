@@ -13,7 +13,12 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
     {
         //data generation was carried out by https://generatedata.com
 
-        internal static async Task Seed(SciMaterialsContext db, CancellationToken cancel = default)
+        /// <summary> Асинхронно выполняет транзакцию заполнения таблиц базы данных тестовыми данными. В случае ошибки транзакция не выполняется.</summary>
+        /// <param name="db">Контекст базы данных.</param>
+        /// <param name="cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/> Значение по умолчанию: <value>default</value></param>
+        /// <returns>Задача, которая представляет работу в очереди на выполнение в ThreadPool. См. <see cref="Task"/></returns>
+        /// <exception cref="OperationCanceledException"></exception>
+        internal static async Task SeedAsync(SciMaterialsContext db, CancellationToken cancel = default)
         {
             await using var transaction = await db.Database.BeginTransactionAsync(cancel).ConfigureAwait(false);
 

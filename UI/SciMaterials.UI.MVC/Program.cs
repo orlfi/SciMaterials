@@ -1,3 +1,4 @@
+using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
@@ -25,6 +26,12 @@ var app = builder.Build();
 
 await using (var scope = app.Services.CreateAsyncScope())
 {
+    if (builder.Configuration["DbProvider"].Equals("SQLite"))
+    {
+        var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
+        await context.Database.EnsureCreatedAsync();
+    }
+    
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
     await dbInitializer.InitializeDbAsync(removeAtStart: true);
 }
