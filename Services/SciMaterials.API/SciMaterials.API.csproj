@@ -1,3 +1,4 @@
+<<<<<<<< HEAD:Services/SciMaterials.API/SciMaterials.API.csproj
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
@@ -8,6 +9,18 @@
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+========
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SciMaterials.DAL\SciMaterials.DAL.csproj" />
+>>>>>>>> a2bf4784273b79ee5d485e0c093be5b070da692c:Data/Migrations/SciMaterials.Data.MySqlMigrations/SciMaterials.Data.MySqlMigrations.csproj
   </ItemGroup>
 
 </Project>
