@@ -28,10 +28,11 @@ public class TestAuthenticationService : IAuthenticationService
 
         Claim[] userClaims = {
             new(ClaimTypes.Name, formData.Username),
-            new(ClaimTypes.Email, formData.Email)
+            new(ClaimTypes.Email, formData.Email),
+            new(ClaimTypes.Role, "User")
         };
 
-        await SetUserSignIn(userClaims);
+        await SetUserSignIn(userClaims, new(formData.Username, formData.Email));
     }
 
     public async Task SignIn(SignInForm formData)
@@ -40,10 +41,11 @@ public class TestAuthenticationService : IAuthenticationService
 
         Claim[] userClaims = {
             new(ClaimTypes.Name, form.Username),
-            new(ClaimTypes.Email, formData.Email)
+            new(ClaimTypes.Email, formData.Email),
+            new(ClaimTypes.Role, "User")
         };
 
-        await SetUserSignIn(userClaims);
+        await SetUserSignIn(userClaims, new(form.Username, form.Email));
     }
 
     public async Task Logout()
@@ -52,11 +54,11 @@ public class TestAuthenticationService : IAuthenticationService
         ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserLogout();
     }
 
-    private async Task SetUserSignIn(Claim[] userClaims)
+    private async Task SetUserSignIn(Claim[] userClaims, TestAuthenticationStateProvider.UserInfo userInfo)
     {
-        ClaimsIdentity userData = new(userClaims);
-        await _localStorageService.SetItemAsStringAsync("authToken", JsonSerializer.Serialize(userData));
+        await _localStorageService.SetItemAsStringAsync("authToken", JsonSerializer.Serialize(userInfo));
 
+        ClaimsIdentity userData = new(userClaims, "Some Auth Policy Type");
         ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserSignIn(userData);
     }
 }

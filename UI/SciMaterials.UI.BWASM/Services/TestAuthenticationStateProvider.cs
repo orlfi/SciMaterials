@@ -22,10 +22,15 @@ public class TestAuthenticationStateProvider : AuthenticationStateProvider
         var token = await _localStorageService.GetItemAsync<string>("authToken");
         if (string.IsNullOrWhiteSpace(token)) return Anonymous;
 
-        var userData = JsonSerializer.Deserialize<ClaimsIdentity>(token);
+        var userData = JsonSerializer.Deserialize<UserInfo>(token);
         if (userData is null) return Anonymous;
 
-        return new(new(userData));
+        return new(new(new ClaimsIdentity(new []
+        {
+            new Claim(ClaimTypes.Name, userData.Nick),
+            new Claim(ClaimTypes.Email, userData.Email),
+            new Claim(ClaimTypes.Role, "User")
+        }, "Some Auth Policy Type")));
     }
 
     public void NotifyUserSignIn(ClaimsIdentity userClaims)
@@ -37,4 +42,6 @@ public class TestAuthenticationStateProvider : AuthenticationStateProvider
     {
         NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
     }
+
+    public record UserInfo(string Nick, string Email);
 }
