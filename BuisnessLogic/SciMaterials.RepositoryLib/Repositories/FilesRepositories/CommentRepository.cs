@@ -25,7 +25,7 @@ public class CommentRepository : ICommentRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogDebug($"Логгер встроен в {nameof(CommentRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(CommentRepository)}");
 
         _context = context;
     }
@@ -34,9 +34,14 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Comment entity)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.Add)}");
+        _logger.LogInformation($"{nameof(CommentRepository.Add)}");
 
-        if (entity is null) return;
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.Add)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
         _context.Comments.Add(entity);
     }
 
@@ -44,9 +49,14 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Comment entity)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.AddAsync)}");
+        _logger.LogInformation($"{nameof(CommentRepository.AddAsync)}");
 
-        if (entity is null) return;
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.AddAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
         await _context.Comments.AddAsync(entity);
     }
 
@@ -54,8 +64,15 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Comment entity)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.Delete)}");
-        if (entity is null || entity.Id == default) return;
+        _logger.LogInformation($"{nameof(CommentRepository.Delete)}");
+
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.Delete)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        if (entity.Id == default) return;
         Delete(entity.Id);
     }
 
@@ -63,8 +80,15 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Comment entity)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.DeleteAsync)}");
-        if (entity is null || entity.Id == default) return;
+        _logger.LogInformation($"{nameof(CommentRepository.DeleteAsync)}");
+
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.DeleteAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        if (entity.Id == default) return;
         await DeleteAsync(entity.Id);
     }
 
@@ -72,173 +96,161 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.Delete)}");
+        _logger.LogInformation($"{nameof(CommentRepository.Delete)}");
 
-        var categoryDb = _context.Comments.FirstOrDefault(c => c.Id == id);
-        if (categoryDb is null) return;
-        _context.Comments.Remove(categoryDb!);
+        var entityDb = _context.Comments.FirstOrDefault(c => c.Id == id);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.Delete)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        _context.Comments.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(CommentRepository.DeleteAsync)}");
 
-        var categoryDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
-        if (categoryDb is null) return;
-        _context.Comments.Remove(categoryDb!);
+        var entityDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.DeleteAsync)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        _context.Comments.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<Comment>? GetAll(bool disableTracking = true)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.GetAll)}");
+        IQueryable<Comment> query = _context.Comments
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
+                .Include(c => c.Author);
 
         if (disableTracking)
-            return _context.Comments
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .AsNoTracking()
-                .ToList();
-        else
-            return _context.Comments
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .ToList();
+            query = query.AsNoTracking();
+
+        return query.ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.GetAllAsync)}");
+        IQueryable<Comment> query = _context.Comments
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
+                .Include(c => c.Author);
 
         if (disableTracking)
-            return await _context.Comments
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .AsNoTracking()
-                .ToListAsync();
-        else
-            return await _context.Comments
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .ToListAsync();
+            query = query.AsNoTracking();
+
+        return await query.ToListAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Comment GetById(Guid id, bool disableTracking = true)
+    public Comment? GetById(Guid id, bool disableTracking = true)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.GetById)}");
+        IQueryable<Comment> query = _context.Comments
+                .Where(c => c.Id == id)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
+                .Include(c => c.Author);
 
         if (disableTracking)
-            return _context.Comments
-                .Where(c => c.Id == id)
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .AsNoTracking()
-                .FirstOrDefault()!;
-        else
-            return _context.Comments
-                .Where(c => c.Id == id)
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .FirstOrDefault()!;
+            query = query.AsNoTracking();
+
+        return query.FirstOrDefault();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByIdAsync)}");
+        IQueryable<Comment> query = _context.Comments
+                .Where(c => c.Id == id)
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
+                .Include(c => c.Author);
 
         if (disableTracking)
-            return (await _context.Comments
-                .Where(c => c.Id == id)
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .AsNoTracking()
-                .FirstOrDefaultAsync())!;
-        else
-            return (await _context.Comments
-                .Where(c => c.Id == id)
-                .Include(c => c.File)
-                .Include(c => c.FileGroup)
-                .Include(c => c.Author)
-                .FirstOrDefaultAsync())!;
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Comment entity)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.Update)}");
+        _logger.LogInformation($"{nameof(CommentRepository.Update)}");
 
-        if (entity is null) return;
-        var categoryDb = GetById(entity.Id, false);
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.Update)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
 
-        categoryDb = UpdateCurrentEntity(entity, categoryDb);
-        _context.Comments.Update(categoryDb);
+        var entityDb = GetById(entity.Id, false);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        entityDb = UpdateCurrentEntity(entity, entityDb);
+        _context.Comments.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Comment entity)
     {
-        _logger.LogDebug($"{nameof(CommentRepository.UpdateAsync)}");
+        _logger.LogInformation($"{nameof(CommentRepository.UpdateAsync)}");
 
-        _logger.LogDebug($"{nameof(CommentRepository.UpdateAsync)}");
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
 
-        if (entity is null) return;
-        var categoryDb = await GetByIdAsync(entity.Id, false);
+        var entityDb = await GetByIdAsync(entity.Id, false);
 
-        categoryDb = UpdateCurrentEntity(entity, categoryDb!);
-        _context.Comments.Update(categoryDb);
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(CommentRepository.UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        entityDb = UpdateCurrentEntity(entity, entityDb);
+        _context.Comments.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true)
-    {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByNameAsync)}");
-
-        return null!;
-    }
+    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Comment? GetByName(string name, bool disableTracking = true)
-    {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByName)}");
-
-        return null!;
-    }
+    public Comment? GetByName(string name, bool disableTracking = true) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true)
-    {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByHashAsync)}");
-        return null!;
-    }
+    public async Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Comment? GetByHash(string hash, bool disableTracking = true)
-    {
-        _logger.LogDebug($"{nameof(CommentRepository.GetByHash)}");
-        return null!;
-    }
+    public Comment? GetByHash(string hash, bool disableTracking = true) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
