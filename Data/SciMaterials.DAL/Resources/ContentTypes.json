@@ -1,0 +1,77 @@
+[
+	{
+		"Id": "B90759E1-D8A3-12F2-E02B-ED265B2BF049",
+		"Name": "application/epub+zip",
+		"FileExtension": "epub"
+	},
+	{
+		"Id": "E122BC0B-72BF-DBE9-FBE6-564A9F631132",
+		"Name": "application/java-archive",
+		"FileExtension": "jar"
+	},
+	{
+		"Id": "21725CB3-A1AE-2C2C-7746-D2E9A1EDDB4E",
+		"Name": "application/json",
+		"FileExtension": "json"
+	},
+	{
+		"Id": "293BE991-E8A6-8BA7-B5BA-373D4CC82C36",
+		"Name": "application/msword",
+		"FileExtension": "doc"
+	},
+	{
+		"Id": "3771E4C9-2A1D-4DC9-4597-C391897496AC",
+		"Name": "application/octet-stream",
+		"FileExtension": "bin"
+	},
+	{
+		"Id": "582135A6-69F4-717E-8675-24D74D3714BE",
+		"Name": "text/plain",
+		"FileExtension": "txt"
+	},
+	{
+		"Id": "A2EB9C82-C635-76ED-5C23-6297EFC77475",
+		"Name": "application/pdf",
+		"FileExtension": "pdf"
+	},
+	{
+		"Id": "D7D9A173-9400-D445-48C9-45E344B8AD24",
+		"Name": "application/rtf",
+		"FileExtension": "rtf"
+	},
+	{
+		"Id": "9BDC668A-9269-872B-428B-24FE1C3E248E",
+		"Name": "application/vnd.ms-excel",
+		"FileExtension": "xls"
+	},
+	{
+		"Id": "EF7C0250-2318-C67D-2899-41598D5D5462",
+		"Name": "application/vnd.ms-powerpoint",
+		"FileExtension": "ppt"
+	},
+	{
+		"Id": "5CD02057-4EEF-F671-8511-41255DA533AA",
+		"Name": "application/x-rar-compressed",
+		"FileExtension": "rar"
+	},
+	{
+		"Id": "C3B74DA9-1DC8-1053-842A-C383792365A7",
+		"Name": "application/xml",
+		"FileExtension": "xml"
+	},
+	{
+		"Id": "989E5E08-1069-92FA-6609-D9368692EB3B",
+		"Name": "application/zip",
+		"FileExtension": "zip"
+	},
+	{
+		"Id": "35E01B70-38CA-1A6E-4625-38C36A6C0C4B",
+		"Name": "application/x-dtbresource+xml",
+		"FileExtension": "res"
+	},
+	{
+		"Id": "B8B3A48B-0C87-269B-154E-15B242A3DC3C",
+		"Name": "application/x-tar",
+		"FileExtension": "tar"
+	}
+]

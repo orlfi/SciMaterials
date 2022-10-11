@@ -5,16 +5,16 @@
 public interface IRepository<T> where T : class
 {
     /// <summary> Получить экземпляр модели по Id. </summary>
-    /// <param name="id"> Id экземпляра модли в БД. </param>
-    /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
-    /// <returns> Найденный в БД экземпляр модли или null. </returns>
-    T GetById(Guid id, bool disableTracking = true);
+    /// <param name="id"> Id экземпляра модели в БД. </param>
+    /// <param name="DisableTracking"> Отключить отслеживание изменений. </param>
+    /// <returns> Найденный в БД экземпляр модели или null. </returns>
+    T? GetById(Guid id, bool DisableTracking = true);
 
     /// <summary> Получить экземпляр модели по Id. Асинхронный. </summary>
-    /// <param name="id"> Id экземпляра модли в БД. </param>
-    /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
-    /// <returns> Найденный в БД экземпляр модли или null. </returns>
-    Task<T> GetByIdAsync(Guid id, bool disableTracking = true);
+    /// <param name="id"> Id экземпляра модели в БД. </param>
+    /// <param name="DisableTracking"> Отключить отслеживание изменений. </param>
+    /// <returns> Найденный в БД экземпляр модели или null. </returns>
+    Task<T?> GetByIdAsync(Guid id, bool DisableTracking = true);
 
     /// <summary> Добавить экзепляр модели в БД. </summary>
     /// <param name="entity"> Добавляемый экземпляр. </param>
@@ -22,7 +22,7 @@ public interface IRepository<T> where T : class
 
     /// <summary> Добавить экзепляр модели в БД. Асинхронный. </summary>
     /// <param name="entity"> Добавляемый экземпляр. </param>
-    void AddAsync(T entity);
+    Task AddAsync(T entity);
 
     /// <summary> Обновить экземпляр модели. </summary>
     /// <param name="entity"> Экземпляр с новыми данными. </param>
@@ -30,7 +30,15 @@ public interface IRepository<T> where T : class
 
     /// <summary> Обновить экземпляр модели. Асинхронный. </summary>
     /// <param name="entity"> Экземпляр с новыми данными. </param>
-    void UpdateAsync(T entity);
+    Task UpdateAsync(T entity);
+
+    /// <summary> Удалить экземпляр модели из БД. </summary>
+    /// <param name="entity"> Id удаляемого экземпляра. </param>
+    void Delete(T entity);
+
+    /// <summary> Удалить экземпляр модели из БД. Асинхронный. </summary>
+    /// <param name="entity"> Id удаляемого экземпляра. </param>
+    Task DeleteAsync(T entity);
 
     /// <summary> Удалить экземпляр модели из БД. </summary>
     /// <param name="id"> Id удаляемого экземпляра. </param>
@@ -38,15 +46,35 @@ public interface IRepository<T> where T : class
 
     /// <summary> Удалить экземпляр модели из БД. Асинхронный. </summary>
     /// <param name="id"> Id удаляемого экземпляра. </param>
-    void DeleteAsync(Guid id);
+    Task DeleteAsync(Guid id);
 
     /// <summary> Получить список всех экзепляров из БД. </summary>
-    /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
+    /// <param name="DisableTracking"> Отключить отслеживание изменений. </param>
     /// <returns> Список экземпляров. </returns>
-    List<T> GetAll(bool disableTracking = true);
+    List<T>? GetAll(bool DisableTracking = true);
 
     /// <summary> Получить список всех экзепляров из БД. Асинхронный. </summary>
-    /// <param name="disableTracking"> Отключить отслеживание изменений. </param>
+    /// <param name="DisableTracking"> Отключить отслеживание изменений. </param>
     /// <returns> Список экземпляров. </returns>
-    Task<List<T>> GetAllAsync(bool disableTracking = true);
+    Task<List<T>?> GetAllAsync(bool DisableTracking = true);
+
+    /// <summary> Получить экземпляр по хэш-коду. Асинхронный. </summary>
+    /// <param name="hash"> Искомый хэш-код (в текущем методе договорено о строчном варианте хэша). </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    Task<T?> GetByHashAsync(string hash, bool DisableTracking = true);
+
+    /// <summary> Получить экземпляр по хэш-коду. </summary>
+    /// <param name="hash"> Искомый хэш-код (в текущем методе договорено о строчном варианте хэша). </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    T? GetByHash(string hash, bool DisableTracking = true);
+
+    /// <summary> Получить экземпляр по наименованию. Асинхронный. </summary>
+    /// <param name="name"> Искомое наименование. </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    Task<T?> GetByNameAsync(string name, bool DisableTracking = true);
+
+    /// <summary> Получить экземпляр по наименованию. </summary>
+    /// <param name="name"> Искомое наименование. </param>
+    /// <returns> Экземпляр класса или null. </returns>
+    T? GetByName(string name, bool DisableTracking = true);
 }

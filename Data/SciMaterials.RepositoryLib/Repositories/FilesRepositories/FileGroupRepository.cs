@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
@@ -32,35 +31,37 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Add)}");
+        _logger.Debug(nameof(Add));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(FileGroup entity)
+    public async Task AddAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.AddAsync)}");
+        _logger.Debug(nameof(AddAsync));
     }
+
+    public async Task DeleteAsync(FileGroup entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Delete)}");
+        _logger.Debug(nameof(Delete));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.DeleteAsync)}");
+        _logger.Debug(nameof(DeleteAsync));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<FileGroup> GetAll(bool disableTracking = true)
+    public List<FileGroup> GetAll(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAll)}");
+        _logger.Debug(nameof(GetAll));
 
 
 
@@ -69,20 +70,25 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<FileGroup>> GetAllAsync(bool disableTracking = true)
+    public Task<List<FileGroup>> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetAllAsync)}");
+        _logger.Debug(nameof(GetAllAsync));
 
 
 
         return null!;
     }
 
+    public async Task<FileGroup?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public FileGroup? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<FileGroup?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public FileGroup? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public FileGroup GetById(Guid id, bool disableTracking = true)
+    public FileGroup GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetById)}");
+        _logger.Debug(nameof(GetById));
 
 
 
@@ -91,9 +97,9 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<FileGroup> GetByIdAsync(Guid id, bool disableTracking = true)
+    public Task<FileGroup> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.GetByIdAsync)}");
+        _logger.Debug(nameof(GetByIdAsync));
 
 
 
@@ -104,13 +110,15 @@ public class FileGroupRepository : IFileGroupRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.Update)}");
+        _logger.Debug(nameof(Update));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(FileGroup entity)
+    public async Task UpdateAsync(FileGroup entity)
     {
-        _logger.Debug($"{nameof(FileGroupRepository.UpdateAsync)}");
+        _logger.Debug(nameof(UpdateAsync));
     }
+
+    public void Delete(FileGroup entity) { throw new NotImplementedException(); }
 }

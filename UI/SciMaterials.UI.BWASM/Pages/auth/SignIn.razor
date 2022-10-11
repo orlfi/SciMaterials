@@ -55,12 +55,12 @@
 
 @code {
 	readonly SignInForm _model = new ();
-    bool _success;
+  bool _success;
 	private bool RememberMe { get; set; } = true;
-
+  
 	private async Task OnValidSubmit(EditContext context)
 	{
-		await AuthenticationService.SignIn(_model);
+		    await AuthenticationService.SignIn(_model);
         NavigationManager.NavigateTo("/");
-    }
+  }
 }

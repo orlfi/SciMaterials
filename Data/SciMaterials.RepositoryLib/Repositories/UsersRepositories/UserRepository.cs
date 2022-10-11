@@ -31,35 +31,37 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(User entity)
     {
-        _logger.Debug($"{nameof(UserRepository.Add)}");
+        _logger.Debug(nameof(Add));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(User entity)
+    public async Task AddAsync(User entity)
     {
-        _logger.Debug($"{nameof(UserRepository.AddAsync)}");
+        _logger.Debug(nameof(AddAsync));
     }
+
+    public async Task DeleteAsync(User entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(UserRepository.Delete)}");
+        _logger.Debug(nameof(Delete));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(UserRepository.DeleteAsync)}");
+        _logger.Debug(nameof(DeleteAsync));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<User> GetAll(bool disableTracking = true)
+    public List<User> GetAll(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetAll)}");
+        _logger.Debug(nameof(GetAll));
 
 
 
@@ -68,20 +70,25 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<User>> GetAllAsync(bool disableTracking = true)
+    public Task<List<User>> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetAllAsync)}");
+        _logger.Debug(nameof(GetAllAsync));
 
 
 
         return null!;
     }
 
+    public async Task<User?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public User? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<User?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public User? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public User GetById(Guid id, bool disableTracking = true)
+    public User GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetById)}");
+        _logger.Debug(nameof(GetById));
 
 
 
@@ -90,9 +97,9 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<User> GetByIdAsync(Guid id, bool disableTracking = true)
+    public Task<User> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(UserRepository.GetByIdAsync)}");
+        _logger.Debug(nameof(GetByIdAsync));
 
 
 
@@ -103,13 +110,15 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(User entity)
     {
-        _logger.Debug($"{nameof(UserRepository.Update)}");
+        _logger.Debug(nameof(Update));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(User entity)
+    public async Task UpdateAsync(User entity)
     {
-        _logger.Debug($"{nameof(UserRepository.UpdateAsync)}");
+        _logger.Debug(nameof(UpdateAsync));
     }
+
+    public void Delete(User entity) { throw new NotImplementedException(); }
 }

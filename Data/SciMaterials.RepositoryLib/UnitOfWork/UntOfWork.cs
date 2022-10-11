@@ -1,85 +1,46 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using NLog;
-using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
-using SciMaterials.DAL.Repositories.CommentsRepositories;
-using SciMaterials.DAL.Repositories.ContentTypesRepositories;
-using SciMaterials.DAL.Repositories.FilesRepositories;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.Repositories;
-using SciMaterials.RepositoryLib.Repositories.UsersRepositories;
-using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Data.UnitOfWork;
 
 public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<UnitOfWork<TContext>> _logger;
     private readonly TContext _context;
 
     private bool disposed;
-    private Dictionary<string, object>? _repositories;
+    private Dictionary<Type, object>? _repositories = new();
 
     /// <summary> ctor. </summary>
     /// <param name="logger"></param>
     /// <param name="context"></param>
     /// <exception cref="ArgumentException"></exception>
     public UnitOfWork(
-        ILogger logger,
+        ILogger<UnitOfWork<TContext>> logger,
         TContext context)
     {
         _logger = logger;
-        _logger.Debug($"Логгер встроен в {nameof(UnitOfWork)}.");
+        _logger.LogDebug($"Логгер встроен в {nameof(UnitOfWork)}.");
 
         _context = context ?? throw new ArgumentException(nameof(context));
+
+        Initialise();
     }
 
     ///
     /// <inheritdoc cref="IUnitOfWork{T}.GetRepository{TEntity}"/>
     public IRepository<T> GetRepository<T>() where T : class
     {
-        _logger.Debug($"{nameof(UnitOfWork)} >>> {nameof(GetRepository)}.");
+        _logger.LogDebug($"{nameof(UnitOfWork)} >>> {nameof(GetRepository)}.");
 
         if (_repositories == null)
-            _repositories = new Dictionary<string, object>();
+            _repositories = new Dictionary<Type, object>();
 
-        var type = nameof(T);
+        var type = typeof(T);
 
-        if (!_repositories.ContainsKey(type))
-        {
-            switch (type)
-            {
-                case nameof(User):
-                    _repositories.Add(type, new UserRepository(_context, _logger));
-                    break;
-                case nameof(File):
-                    _repositories.Add(type, new FileRepository(_context, _logger));
-                    break;
-                case nameof(Category):
-                    _repositories.Add(type, new CategoryRepository(_context, _logger));
-                    break;
-                case nameof(Comment):
-                    _repositories.Add(type, new CommentRepository(_context, _logger));
-                    break;
-                case nameof(ContentType):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                case nameof(FileGroup):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                case nameof(Rating):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                case nameof(Tag):
-                    _repositories.Add(type, new ContentTypeRepository(_context, _logger));
-                    break;
-                default:
-                    _logger.Error($"Ошибка при попытке создания экземпляра репозитория для {nameof(T)}.");
-                    break;
-            }
-        }
         return (IRepository<T>)_repositories[type];
     }
 
@@ -87,23 +48,32 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <inheritdoc cref="IUnitOfWork{T}.SaveContext()"/>
     public int SaveContext()
     {
-        _logger.Info($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}.");
+        _logger.LogInformation($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}.");
         try
         {
             return _context.SaveChanges();
         }
         catch (Exception ex)
         {
-            _logger.Error($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
+            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
             return 0;
         }
     }
 
     ///
     /// <inheritdoc cref="IUnitOfWork{T}.SaveContextAsync()"/>
-    public Task<int> SaveContextAsync()
+    public async Task<int> SaveContextAsync()
     {
-        throw new NotImplementedException();
+        _logger.LogInformation($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}.");
+        try
+        {
+            return await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message} >>> {ex.InnerException?.Message ?? ""}");
+            return 0;
+        }
     }
 
     ///
@@ -124,6 +94,19 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     public Task<IDbContextTransaction> BeginTransactionAsync(bool useIfExists = false)
     {
         throw new NotImplementedException();
+    }
+
+    private void Initialise()
+    {
+        //_repositories!.Add(typeof(User), new AuthorRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(File), new FileRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(ContentType), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(FileGroup), new FileGroupRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(Rating), new RatingRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(Tag), new TagRepository((ISciMaterialsContext)_context, _logger));
+        //_repositories!.Add(typeof(Author), new AuthorRepository((ISciMaterialsContext)_context, _logger));
     }
 
     #region Dispose

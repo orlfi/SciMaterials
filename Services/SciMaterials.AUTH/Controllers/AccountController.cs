@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SciMaterials.Auth.Requests;
+using SciMaterials.Auth.Utilits;
 
 namespace SciMaterials.Auth.Controllers;
 
@@ -18,19 +19,22 @@ public class AccountController : Controller
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly ILogger<AccountController> _logger;
+    private readonly IAuthUtils _authUtils;
     
     public AccountController(
         UserManager<IdentityUser> userManager, 
         SignInManager<IdentityUser> signInManager, 
         RoleManager<IdentityRole> roleManager, 
         ILogger<AccountController> logger, 
-        IHttpContextAccessor contextAccessor)
+        IHttpContextAccessor contextAccessor, 
+        IAuthUtils authUtils)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _roleManager = roleManager;
         _logger = logger;
         _contextAccessor = contextAccessor;
+        _authUtils = authUtils;
     }
 
     [AllowAnonymous]
@@ -44,7 +48,7 @@ public class AccountController : Controller
         {
             try
             {
-                var user = new IdentityUser()
+                var user = new IdentityUser
                 {
                     Email = registerUserRequest.Email,
                     UserName = registerUserRequest.Email,
@@ -52,9 +56,24 @@ public class AccountController : Controller
                 };
 
                 var result = await _userManager.CreateAsync(user, registerUserRequest.Password);
-                await _userManager.AddToRoleAsync(user, "user");
-                await _signInManager.SignInAsync(user, false);
-                return Ok(result);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, "user");
+                    await _signInManager.SignInAsync(user, false);
+                
+                    var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, confirmToken = emailConfirmToken }, protocol: 
+                        HttpContext.Request.Scheme);
+
+                    //Временное решение, пока не интегрировал сервис отправки!
+                    return Ok($"Пройдите по ссылке, чтобы подтвердить ваш email: {callbackUrl}");
+                }
+
+                return BadRequest("Не удалось зарегистрировать пользователя");
             }
             catch (Exception ex)
             {
@@ -76,18 +95,23 @@ public class AccountController : Controller
         {
             try
             {
-                var identityResult = await _userManager.FindByEmailAsync(email);
-                if (identityResult is not null)
+                var identityUser = await _userManager.FindByEmailAsync(email);
+                if (identityUser is not null)
                 {
+                    var identityRoles = await _userManager.GetRolesAsync(identityUser);
+                    
+
                     var signInResult = await _signInManager.PasswordSignInAsync(
                         userName: email, 
                         password: password, 
                         isPersistent: true, 
                         lockoutOnFailure: false);
-            
+                    
                     if (signInResult.Succeeded)
                     {
-                        return Ok(signInResult);
+                        var sessionToken = _authUtils.CreateSessionToken(identityUser, identityRoles);
+                        return Ok($"Ваш токен сессии: {sessionToken}");
+
                     }
 
                     return BadRequest("Не удалось авторизовать пользователя");
@@ -119,18 +143,24 @@ public class AccountController : Controller
             return BadRequest("Не удалось выйти из системы");
         }
     }
-
+    
     [Authorize(Roles = "admin, user")]
     [HttpPost("ChangePassword")]
-    public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword)
+    public async Task<IActionResult> ChangePasswordAsync(string oldPassword, string newPassword)
+
     {
         if (!string.IsNullOrEmpty(oldPassword) || !string.IsNullOrEmpty(newPassword))
         {
             try
             {
-                var currentUserName = _contextAccessor.HttpContext.User.Identity.Name;
+                var currentUserName = _contextAccessor.HttpContext?.User.Identity?.Name;
+                
                 var identityUser = await _userManager.FindByNameAsync(currentUserName);
-                if (!string.IsNullOrEmpty(currentUserName) || identityUser is not null)
+                var isEmailCorfirmed = await _userManager.IsEmailConfirmedAsync(identityUser);
+                if (!string.IsNullOrEmpty(currentUserName) ||
+                    identityUser is not null ||
+                    isEmailCorfirmed)
+
                 {
                     var identityResult = await _userManager.ChangePasswordAsync(
                         identityUser, 
@@ -144,7 +174,8 @@ public class AccountController : Controller
                     return BadRequest("Не удалось изменить пароль");
                 }
 
-                return BadRequest("Не удалось получить информацию о пользователе");
+                return BadRequest("Не удалось получить информацию о пользователе или ваша почта не подтверждена");
+
             }
             catch (Exception ex)
             {
@@ -154,6 +185,37 @@ public class AccountController : Controller
         }
 
         return BadRequest("Некорректно введены данные");
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> ConfirmEmailAsync(string userId, string confirmToken)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(userId) || !string.IsNullOrEmpty(confirmToken))
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user is not null)
+                {
+                    var result = await _userManager.ConfirmEmailAsync(user, confirmToken);
+                    if (result.Succeeded)
+                    { 
+                        return Ok(result);
+                    }
+
+                    return BadRequest("Не удалось подтвердить email пользователя");
+                }
+                
+                return BadRequest("Не удалось найти пользователя в системе");
+            }
+            
+            return BadRequest("Некорректные данные");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{ex}");
+            return BadRequest("При");
+        }
     }
 
     [Authorize(Roles = "admin")]
@@ -201,16 +263,17 @@ public class AccountController : Controller
     
     [Authorize(Roles = "admin")]
     [HttpGet("GetRoleById")]
-    public async Task<IActionResult> GetRoleByIdAsync(string id)
+    public async Task<IActionResult> GetRoleByIdAsync(string roleId)
     {
-        if (!string.IsNullOrEmpty(id))
+        if (!string.IsNullOrEmpty(roleId))
         {
             try
             {
-                var result = await _roleManager.FindByIdAsync(id);
-                if (result is not null)
+                var identityRole = await _roleManager.FindByIdAsync(roleId);
+                if (identityRole is not null)
                 {
-                    return Ok(result);
+                    return Ok(identityRole);
+
                 }
 
                 return BadRequest("Не удалось получить роль");
@@ -227,14 +290,15 @@ public class AccountController : Controller
     
     [Authorize(Roles = "admin")]
     [HttpPost("EditRoleById")]
-    public async Task<IActionResult> EditRoleByIdAsync(string id, string roleName)
+    public async Task<IActionResult> EditRoleByIdAsync(string roleId, string roleName)
     {
         //Это временная проверка
-        if (!string.IsNullOrEmpty(id) || !string.IsNullOrEmpty(roleName))
+        if (!string.IsNullOrEmpty(roleId) || !string.IsNullOrEmpty(roleName))
         {
             try
             {
-                var foundRole = await _roleManager.FindByIdAsync(id);
+                var foundRole = await _roleManager.FindByIdAsync(roleId);
+
                 foundRole.Name = roleName;
             
                 var result = await _roleManager.UpdateAsync(foundRole);
@@ -252,13 +316,14 @@ public class AccountController : Controller
     
     [Authorize(Roles = "admin")]
     [HttpDelete("DeleteRoleById")]
-    public async Task<IActionResult> DeleteRoleByIdAsync(string id)
+    public async Task<IActionResult> DeleteRoleByIdAsync(string roleId)
     {
-        if (!string.IsNullOrEmpty(id))
+        if (!string.IsNullOrEmpty(roleId))
         {
             try
             {
-                var result = await _roleManager.FindByIdAsync(id);
+                var result = await _roleManager.FindByIdAsync(roleId);
+
                 if (result is not null)
                 {
                     var userRole = await _roleManager.DeleteAsync(result);
@@ -517,4 +582,32 @@ public class AccountController : Controller
 
         return BadRequest("Некорректно введены данные пользователя");
     }
+
+    [Authorize(Roles = "admin")]
+    [HttpDelete("DeleteUserWithOutConfirmation")]
+    public async Task<IActionResult> DeleteUsersWithOutConfirmation()
+    {
+        try
+        {
+            var usersWitOutConf = await _userManager
+                .Users.Where(x => 
+                    x.EmailConfirmed.Equals(false))
+                .ToListAsync();
+            foreach (var user in usersWitOutConf)
+            {
+                if (user.EmailConfirmed is false)
+                {
+                    await _userManager.DeleteAsync(user);
+                }
+            }
+
+            return Ok("Пользователи без регистрации удалены");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"{ex}");
+            return BadRequest("Не удалось удалить пользователей из-за ошибки");
+        }
+    }
+
 }

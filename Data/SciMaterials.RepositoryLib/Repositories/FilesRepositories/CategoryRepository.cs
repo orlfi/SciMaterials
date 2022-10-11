@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
@@ -33,35 +32,37 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Add)}");
+        _logger.Debug(nameof(Add));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Category entity)
+    public async Task AddAsync(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.AddAsync)}");
+        _logger.Debug(nameof(AddAsync));
     }
+
+    public async Task DeleteAsync(Category entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Delete)}");
+        _logger.Debug(nameof(Delete));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(CategoryRepository.DeleteAsync)}");
+        _logger.Debug(nameof(DeleteAsync));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Category> GetAll(bool disableTracking = true)
+    public List<Category> GetAll(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetAll)}");
+        _logger.Debug(nameof(GetAll));
 
 
 
@@ -70,20 +71,25 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Category>> GetAllAsync(bool disableTracking = true)
+    public Task<List<Category>> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetAllAsync)}");
+        _logger.Debug(nameof(GetAllAsync));
 
 
 
         return null!;
     }
 
+    public async Task<Category?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Category? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<Category?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Category? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Category GetById(Guid id, bool disableTracking = true)
+    public Category GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetById)}");
+        _logger.Debug(nameof(GetById));
 
 
 
@@ -92,9 +98,9 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Category> GetByIdAsync(Guid id, bool disableTracking = true)
+    public Task<Category> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CategoryRepository.GetByIdAsync)}");
+        _logger.Debug(nameof(GetByIdAsync));
 
 
 
@@ -105,13 +111,15 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.Update)}");
+        _logger.Debug(nameof(Update));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Category entity)
+    public async Task UpdateAsync(Category entity)
     {
-        _logger.Debug($"{nameof(CategoryRepository.UpdateAsync)}");
+        _logger.Debug(nameof(UpdateAsync));
     }
+
+    public void Delete(Category entity) { throw new NotImplementedException(); }
 }

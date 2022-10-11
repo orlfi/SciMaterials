@@ -49,12 +49,12 @@
 
 
 @code {
-	readonly SignUpForm _model = new();
+	  readonly SignUpForm _model = new();
     bool _success;
 
     private async Task OnValidSubmit(EditContext context)
     {
-	    await AuthenticationService.SignUp(_model);
+	      await AuthenticationService.SignUp(_model);
         NavigationManager.NavigateTo("/");
     }
 }
