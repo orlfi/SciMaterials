@@ -91,4 +91,12 @@ public class FilesApiController : ApiBaseController<FilesApiController>
         return Ok(Result.Error((int)ResultCodes.FormDataFileMissing, "Form-data sections does not contains files"));
     }
 
+    /// <summary> Delete a file. </summary>
+    /// <param name="id"> File Id. </param>
+    /// <returns> Status 200 OK response. </returns>
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
+    {
+        return Ok(await _fileService.DeleteAsync(id));
+    }
 }

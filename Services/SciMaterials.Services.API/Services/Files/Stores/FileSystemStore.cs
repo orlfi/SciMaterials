@@ -71,18 +71,20 @@ public class FileSystemStore : IFileStore
         return metaData;
     }
 
-    public void Delete(string path)
+    public void Delete(string filePath)
     {
-        File.Delete(path);
+        File.Delete(filePath);
+
+        File.Delete(GetMetadataPath(filePath));
     }
 
-    private async Task<(string Hash, long Size)> WriteFileAsync(string path, Stream stream, CancellationToken cancellationToken = default)
+    private async Task<(string Hash, long Size)> WriteFileAsync(string filePath, Stream stream, CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Write file {path} started...", path);
+        _logger.LogDebug("Write file {path} started...", filePath);
         var buffer = new byte[_bufferSize];
         int bytesRead;
         long totalBytesRead = 0;
-        using var writeStream = File.Create(path);
+        using var writeStream = File.Create(filePath);
         using var hashAlgorithm = SHA512.Create();
         while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)) > 0)
         {
@@ -107,12 +109,15 @@ public class FileSystemStore : IFileStore
 
     private async Task WriteMetadataAsync(string path, FileMetadata metadata, CancellationToken cancellationToken = default)
     {
-        var metadaPath = Path.ChangeExtension(path, "json");
+        var metadaPath = GetMetadataPath(path);
         _logger.LogDebug("Write file metadata {metadaPath} started...", path);
 
         var metaData = JsonSerializer.Serialize(metadata);
         await File.WriteAllTextAsync(metadaPath, metaData, cancellationToken).ConfigureAwait(false);
         _logger.LogDebug("The filemetadata was saved successfully.");
     }
+
+    private static string GetMetadataPath(string filePath)
+        => Path.ChangeExtension(filePath, "json");
 
 }

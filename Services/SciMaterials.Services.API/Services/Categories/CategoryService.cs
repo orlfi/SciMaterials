@@ -82,16 +82,14 @@ public class CategoryService : ICategoryService
     {
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is Category category)
         {
-            await ((ICategoryRepository)_unitOfWork.GetRepository<Category>()).DeleteAsync(category);
+            await _unitOfWork.GetRepository<Category>().DeleteAsync(category);
 
             if (await _unitOfWork.SaveContextAsync() <= 0)
                 return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
 
             return await Result<Guid>.SuccessAsync($"Category with ID {category.Id} deleted");
         }
-        else
-        {
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
-        }
+
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
     }
 }
