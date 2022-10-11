@@ -31,7 +31,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Author entity)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.Add)}");
+        _logger.LogDebug(nameof(Add));
 
         if (entity is null) return;
         _context.Authors.Add(entity);
@@ -41,7 +41,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Author entity)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.AddAsync)}");
+        _logger.LogDebug(nameof(AddAsync));
 
         if (entity is null) return;
         await _context.Authors.AddAsync(entity);
@@ -51,7 +51,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Author entity)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
         if (entity is null || entity.Id == default) return;
         Delete(entity.Id);
     }
@@ -60,7 +60,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Author entity)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
         if (entity is null || entity.Id == default) return;
         await DeleteAsync(entity.Id);
     }
@@ -69,31 +69,31 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
 
         var AuthorDb = _context.Authors.FirstOrDefault(c => c.Id == id);
         if (AuthorDb is null) return;
-        _context.Authors.Remove(AuthorDb!);
+        _context.Authors.Remove(AuthorDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
 
         var AuthorDb = await _context.Authors.FirstOrDefaultAsync(c => c.Id == id);
         if (AuthorDb is null) return;
-        _context.Authors.Remove(AuthorDb!);
+        _context.Authors.Remove(AuthorDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Author>? GetAll(bool disableTracking = true)
+    public List<Author>? GetAll(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetAll)}");
+        _logger.LogDebug(nameof(GetAll));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Authors
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
@@ -107,11 +107,11 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Author>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Author>?> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetAllAsync)}");
+        _logger.LogDebug(nameof(GetAllAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return await _context.Authors
                 .Include(u => u.Comments)
                 .Include(u => u.Files)
@@ -130,11 +130,11 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Author? GetById(Guid id, bool disableTracking = true)
+    public Author? GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetById)}");
+        _logger.LogDebug(nameof(GetById));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Authors
                 .Where(c => c.Id == id)
                 .Include(u => u.Comments)
@@ -155,11 +155,11 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Author?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Author?> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetByIdAsync)}");
+        _logger.LogDebug(nameof(GetByIdAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Authors
                 .Where(c => c.Id == id)
                 .Include(u => u.Comments)
@@ -182,7 +182,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Author entity)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.Update)}");
+        _logger.LogDebug(nameof(Update));
 
         if (entity is null) return;
         var AuthorDb = GetById(entity.Id, false);
@@ -195,7 +195,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Author entity)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.UpdateAsync)}");
+        _logger.LogDebug(nameof(UpdateAsync));
 
         if (entity is null) return;
         var AuthorDb = await GetByIdAsync(entity.Id, false);
@@ -206,11 +206,11 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Author?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<Author?> GetByNameAsync(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetByNameAsync)}");
+        _logger.LogDebug(nameof(GetByNameAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Authors
                 .Where(c => c.Name == name)
                 .Include(u => u.Comments)
@@ -231,11 +231,11 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Author? GetByName(string name, bool disableTracking = true)
+    public Author? GetByName(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetByName)}");
+        _logger.LogDebug(nameof(GetByName));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Authors
                 .Where(c => c.Name == name)
                 .Include(u => u.Comments)
@@ -256,17 +256,17 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Author?> GetByHashAsync(string hash, bool disableTracking = true)
+    public async Task<Author?> GetByHashAsync(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetByHashAsync)}");
+        _logger.LogDebug(nameof(GetByHashAsync));
         return null!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Author? GetByHash(string hash, bool disableTracking = true)
+    public Author? GetByHash(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(AuthorRepository.GetByHash)}");
+        _logger.LogDebug(nameof(GetByHash));
         return null!;
     }
 

@@ -31,7 +31,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(User entity)
     {
-        _logger.LogDebug($"{nameof(UserRepository.Add)}");
+        _logger.LogDebug(nameof(Add));
 
         if (entity is null) return;
         _context.Users.Add(entity);
@@ -41,7 +41,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(User entity)
     {
-        _logger.LogDebug($"{nameof(UserRepository.AddAsync)}");
+        _logger.LogDebug(nameof(AddAsync));
 
         if (entity is null) return;
         await _context.Users.AddAsync(entity);
@@ -51,7 +51,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(User entity)
     {
-        _logger.LogDebug($"{nameof(UserRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
         if (entity is null || entity.Id == default) return;
         Delete(entity.Id);
     }
@@ -60,7 +60,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(User entity)
     {
-        _logger.LogDebug($"{nameof(UserRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
         if (entity is null || entity.Id == default) return;
         await DeleteAsync(entity.Id);
     }
@@ -69,31 +69,31 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogDebug($"{nameof(UserRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
 
         var UserDb = _context.Users.FirstOrDefault(c => c.Id == id);
         if (UserDb is null) return;
-        _context.Users.Remove(UserDb!);
+        _context.Users.Remove(UserDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogDebug($"{nameof(UserRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
 
         var UserDb = await _context.Users.FirstOrDefaultAsync(c => c.Id == id);
         if (UserDb is null) return;
-        _context.Users.Remove(UserDb!);
+        _context.Users.Remove(UserDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<User>? GetAll(bool disableTracking = true)
+    public List<User>? GetAll(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetAll)}");
+        _logger.LogDebug(nameof(GetAll));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Users
                 .AsNoTracking()
                 .ToList();
@@ -103,11 +103,11 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<User>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<User>?> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetAllAsync)}");
+        _logger.LogDebug(nameof(GetAllAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return await _context.Users
                 .AsNoTracking()
                 .ToListAsync();
@@ -118,11 +118,11 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public User? GetById(Guid id, bool disableTracking = true)
+    public User? GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetById)}");
+        _logger.LogDebug(nameof(GetById));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Users
                 .Where(c => c.Id == id)
                 .AsNoTracking()
@@ -135,11 +135,11 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<User?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<User?> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetByIdAsync)}");
+        _logger.LogDebug(nameof(GetByIdAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Users
                 .Where(c => c.Id == id)
                 .AsNoTracking()
@@ -154,7 +154,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(User entity)
     {
-        _logger.LogDebug($"{nameof(UserRepository.Update)}");
+        _logger.LogDebug(nameof(Update));
 
         if (entity is null) return;
         var UserDb = GetById(entity.Id, false);
@@ -167,7 +167,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(User entity)
     {
-        _logger.LogDebug($"{nameof(UserRepository.UpdateAsync)}");
+        _logger.LogDebug(nameof(UpdateAsync));
 
         if (entity is null) return;
         var UserDb = await GetByIdAsync(entity.Id, false);
@@ -178,11 +178,11 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<User?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<User?> GetByNameAsync(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetByNameAsync)}");
+        _logger.LogDebug(nameof(GetByNameAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync())!;
@@ -193,11 +193,11 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public User? GetByName(string name, bool disableTracking = true)
+    public User? GetByName(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetByName)}");
+        _logger.LogDebug(nameof(GetByName));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Users
                 .AsNoTracking()
                 .FirstOrDefault()!;
@@ -208,17 +208,17 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<User?> GetByHashAsync(string hash, bool disableTracking = true)
+    public async Task<User?> GetByHashAsync(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetByHashAsync)}");
+        _logger.LogDebug(nameof(GetByHashAsync));
         return null!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public User? GetByHash(string hash, bool disableTracking = true)
+    public User? GetByHash(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(UserRepository.GetByHash)}");
+        _logger.LogDebug(nameof(GetByHash));
         return null!;
     }
 

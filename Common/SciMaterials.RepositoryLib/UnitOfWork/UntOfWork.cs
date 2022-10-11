@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
@@ -22,7 +21,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     private readonly TContext _context;
 
     private bool disposed;
-    private Dictionary<Type, object>? _repositories = new Dictionary<Type, object>();
+    private Dictionary<Type, object>? _repositories = new();
 
     /// <summary> ctor. </summary>
     /// <param name="logger"></param>
@@ -88,7 +87,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     ///
     /// <inheritdoc cref="IUnitOfWork{T}.BeginTransaction(bool)"/>
-    public IDbContextTransaction BeginTransaction(bool useIfExists = false)
+    public IDbContextTransaction BeginTransaction(bool UseIfExists = false)
     {
         var transaction = _context.Database.CurrentTransaction;
         if (transaction == null)
@@ -96,12 +95,12 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
             return _context.Database.BeginTransaction();
         }
 
-        return useIfExists ? transaction : _context.Database.BeginTransaction();
+        return UseIfExists ? transaction : _context.Database.BeginTransaction();
     }
 
     ///
     /// <inheritdoc cref="IUnitOfWork{T}.BeginTransactionAsync(bool)"/>
-    public Task<IDbContextTransaction> BeginTransactionAsync(bool useIfExists = false)
+    public Task<IDbContextTransaction> BeginTransactionAsync(bool UseIfExists = false)
     {
         throw new NotImplementedException();
     }

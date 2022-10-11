@@ -1,5 +1,4 @@
-﻿
-using Moq;
+﻿using Moq;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;

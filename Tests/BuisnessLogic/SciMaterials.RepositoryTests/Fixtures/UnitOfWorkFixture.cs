@@ -1,5 +1,4 @@
-﻿
-using SciMaterials.DAL.Contexts;
+﻿using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.RepositoryTests.Helpers;
 

@@ -1,9 +1,7 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.FilesRepositories;
@@ -34,7 +32,7 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Tag entity)
     {
-        _logger.LogDebug($"{nameof(TagRepository.Add)}");
+        _logger.LogDebug(nameof(Add));
 
         if (entity is null) return;
         _context.Tags.Add(entity);
@@ -44,7 +42,7 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Tag entity)
     {
-        _logger.LogDebug($"{nameof(TagRepository.AddAsync)}");
+        _logger.LogDebug(nameof(AddAsync));
 
         if (entity is null) return;
         await _context.Tags.AddAsync(entity);
@@ -54,7 +52,7 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Tag entity)
     {
-        _logger.LogDebug($"{nameof(TagRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
         if (entity is null || entity.Id == default) return;
         Delete(entity.Id);
     }
@@ -63,7 +61,7 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Tag entity)
     {
-        _logger.LogDebug($"{nameof(TagRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
         if (entity is null || entity.Id == default) return;
         await DeleteAsync(entity.Id);
     }
@@ -72,31 +70,31 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogDebug($"{nameof(TagRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
 
         var TagDb = _context.Tags.FirstOrDefault(c => c.Id == id);
         if (TagDb is null) return;
-        _context.Tags.Remove(TagDb!);
+        _context.Tags.Remove(TagDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogDebug($"{nameof(TagRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
 
         var TagDb = await _context.Tags.FirstOrDefaultAsync(c => c.Id == id);
         if (TagDb is null) return;
-        _context.Tags.Remove(TagDb!);
+        _context.Tags.Remove(TagDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Tag>? GetAll(bool disableTracking = true)
+    public List<Tag>? GetAll(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetAll)}");
+        _logger.LogDebug(nameof(GetAll));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Tags
                 .Include(t => t.Files)
                 .Include(t => t.FileGroups)
@@ -111,11 +109,11 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Tag>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Tag>?> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetAllAsync)}");
+        _logger.LogDebug(nameof(GetAllAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return await _context.Tags
                 .Include(t => t.Files)
                 .Include(t => t.FileGroups)
@@ -130,11 +128,11 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Tag? GetById(Guid id, bool disableTracking = true)
+    public Tag? GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetById)}");
+        _logger.LogDebug(nameof(GetById));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Tags
                 .Where(c => c.Id == id)
                 .Include(t => t.Files)
@@ -151,11 +149,11 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Tag?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Tag?> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetByIdAsync)}");
+        _logger.LogDebug(nameof(GetByIdAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Tags
                 .Where(c => c.Id == id)
                 .Include(t => t.Files)
@@ -174,7 +172,7 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Tag entity)
     {
-        _logger.LogDebug($"{nameof(TagRepository.Update)}");
+        _logger.LogDebug(nameof(Update));
 
         if (entity is null) return;
         var TagDb = GetById(entity.Id, false);
@@ -187,7 +185,7 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Tag entity)
     {
-        _logger.LogDebug($"{nameof(TagRepository.UpdateAsync)}");
+        _logger.LogDebug(nameof(UpdateAsync));
 
         if (entity is null) return;
         var TagDb = await GetByIdAsync(entity.Id, false);
@@ -198,11 +196,11 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Tag?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<Tag?> GetByNameAsync(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetByNameAsync)}");
+        _logger.LogDebug(nameof(GetByNameAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Tags
                 .Where(c => c.Name == name)
                 .Include(t => t.Files)
@@ -219,11 +217,11 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Tag? GetByName(string name, bool disableTracking = true)
+    public Tag? GetByName(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetByName)}");
+        _logger.LogDebug(nameof(GetByName));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Tags
                 .Where(c => c.Name == name)
                 .Include(t => t.Files)
@@ -240,17 +238,17 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Tag?> GetByHashAsync(string hash, bool disableTracking = true)
+    public async Task<Tag?> GetByHashAsync(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetByHashAsync)}");
+        _logger.LogDebug(nameof(GetByHashAsync));
         return null!;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Tag? GetByHash(string hash, bool disableTracking = true)
+    public Tag? GetByHash(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(TagRepository.GetByHash)}");
+        _logger.LogDebug(nameof(GetByHash));
         return null!;
     }
 

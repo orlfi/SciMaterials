@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
@@ -134,9 +133,9 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
         Assert.Equal(expected, count);
         Assert.NotNull(categoryDb);
         Assert.Equal(category.Id, categoryDb!.Id);
-        Assert.Equal(category.CreatedAt, categoryDb!.CreatedAt);
-        Assert.Equal(category.Description, categoryDb!.Description);
-        Assert.Equal(category.Name, categoryDb!.Name);
+        Assert.Equal(category.CreatedAt, categoryDb.CreatedAt);
+        Assert.Equal(category.Description, categoryDb.Description);
+        Assert.Equal(category.Name, categoryDb.Name);
     }
 
     [Fact]
@@ -162,9 +161,9 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
         Assert.Equal(expected, count);
         Assert.NotNull(categoryDb);
         Assert.Equal(category.Id, categoryDb!.Id);
-        Assert.Equal(category.CreatedAt, categoryDb!.CreatedAt);
-        Assert.Equal(category.Description, categoryDb!.Description);
-        Assert.Equal(category.Name, categoryDb!.Name);
+        Assert.Equal(category.CreatedAt, categoryDb.CreatedAt);
+        Assert.Equal(category.Description, categoryDb.Description);
+        Assert.Equal(category.Name, categoryDb.Name);
     }
 
     #endregion

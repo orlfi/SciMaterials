@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.Data.Repositories;
@@ -33,7 +32,7 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(File entity)
     {
-        _logger.LogDebug($"{nameof(FileRepository.Add)}");
+        _logger.LogDebug(nameof(Add));
 
         if (entity is null) return;
         _context.Files.Add(entity);
@@ -43,7 +42,7 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(File entity)
     {
-        _logger.LogDebug($"{nameof(FileRepository.AddAsync)}");
+        _logger.LogDebug(nameof(AddAsync));
 
         if (entity is null) return;
         await _context.Files.AddAsync(entity);
@@ -53,7 +52,7 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(File entity)
     {
-        _logger.LogDebug($"{nameof(FileRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
         if (entity is null || entity.Id == default) return;
         Delete(entity.Id);
     }
@@ -62,7 +61,7 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(File entity)
     {
-        _logger.LogDebug($"{nameof(FileRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
         if (entity is null || entity.Id == default) return;
         await DeleteAsync(entity.Id);
     }
@@ -71,31 +70,31 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogDebug($"{nameof(FileRepository.Delete)}");
+        _logger.LogDebug(nameof(Delete));
 
         var FileDb = _context.Files.FirstOrDefault(c => c.Id == id);
         if (FileDb is null) return;
-        _context.Files.Remove(FileDb!);
+        _context.Files.Remove(FileDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogDebug($"{nameof(FileRepository.DeleteAsync)}");
+        _logger.LogDebug(nameof(DeleteAsync));
 
         var FileDb = await _context.Files.FirstOrDefaultAsync(c => c.Id == id);
         if (FileDb is null) return;
-        _context.Files.Remove(FileDb!);
+        _context.Files.Remove(FileDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<File>? GetAll(bool disableTracking = true)
+    public List<File>? GetAll(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetAll)}");
+        _logger.LogDebug(nameof(GetAll));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Files
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
@@ -120,11 +119,11 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<File>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<File>?> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetAllAsync)}");
+        _logger.LogDebug(nameof(GetAllAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return await _context.Files
                 .Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
@@ -149,11 +148,11 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public File? GetById(Guid id, bool disableTracking = true)
+    public File? GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetById)}");
+        _logger.LogDebug(nameof(GetById));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Files
                 .Where(c => c.Id == id)
                 .Include(f => f.ContentType)
@@ -180,11 +179,11 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<File?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<File?> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetByIdAsync)}");
+        _logger.LogDebug(nameof(GetByIdAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Files
                 .Where(c => c.Id == id)
                 .Include(f => f.ContentType)
@@ -213,7 +212,7 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(File entity)
     {
-        _logger.LogDebug($"{nameof(FileRepository.Update)}");
+        _logger.LogDebug(nameof(Update));
 
         if (entity is null) return;
         var FileDb = GetById(entity.Id, false);
@@ -226,7 +225,7 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(File entity)
     {
-        _logger.LogDebug($"{nameof(FileRepository.UpdateAsync)}");
+        _logger.LogDebug(nameof(UpdateAsync));
 
         if (entity is null) return;
         var FileDb = await GetByIdAsync(entity.Id, false);
@@ -237,11 +236,11 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<File?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<File?> GetByNameAsync(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetByNameAsync)}");
+        _logger.LogDebug(nameof(GetByNameAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Files
                 .Where(c => c.Name == name)
                 .Include(f => f.ContentType)
@@ -268,11 +267,11 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public File? GetByName(string name, bool disableTracking = true)
+    public File? GetByName(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetByName)}");
+        _logger.LogDebug(nameof(GetByName));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Files
                 .Where(c => c.Name == name)
                 .Include(f => f.ContentType)
@@ -299,11 +298,11 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<File?> GetByHashAsync(string hash, bool disableTracking = true)
+    public async Task<File?> GetByHashAsync(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetByHashAsync)}");
+        _logger.LogDebug(nameof(GetByHashAsync));
 
-        if (disableTracking)
+        if (DisableTracking)
             return (await _context.Files
                 .Where(c => c.Hash == hash)
                 .Include(f => f.ContentType)
@@ -330,11 +329,11 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public File? GetByHash(string hash, bool disableTracking = true)
+    public File? GetByHash(string hash, bool DisableTracking = true)
     {
-        _logger.LogDebug($"{nameof(FileRepository.GetByHash)}");
+        _logger.LogDebug(nameof(GetByHash));
 
-        if (disableTracking)
+        if (DisableTracking)
             return _context.Files
                 .Where(c => c.Hash == hash)
                 .Include(f => f.ContentType)

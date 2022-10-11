@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SciMaterials.Data.Repositories;
 
@@ -28,12 +27,12 @@ public interface IUnitOfWork<TContext> where TContext : DbContext
     Task<int> SaveContextAsync();
 
     /// <summary> Начать транзакцию. </summary>
-    /// <param name="useIfExists"></param>
+    /// <param name="UseIfExists"></param>
     /// <returns></returns>
-    IDbContextTransaction BeginTransaction(bool useIfExists = false);
+    IDbContextTransaction BeginTransaction(bool UseIfExists = false);
 
     /// <summary> Начать транзакцию. Асинхронный. </summary>
     /// <param name="useIfExists"></param>
     /// <returns></returns>
-    Task<IDbContextTransaction> BeginTransactionAsync(bool useIfExists = false);
+    Task<IDbContextTransaction> BeginTransactionAsync(bool UseIfExists = false);
 }

@@ -1,8 +1,7 @@
 ﻿using SciMaterials.DAL.Models.Base;
 
-namespace SciMaterials.DAL.Models
+namespace SciMaterials.DAL.Models;
+
+public class User : BaseModel
 {
-    public class User : BaseModel
-    {
-    }
 }

@@ -1,17 +1,8 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
-using SciMaterials.DAL.Repositories.CommentsRepositories;
-using SciMaterials.DAL.Repositories.ContentTypesRepositories;
-using SciMaterials.DAL.Repositories.FilesRepositories;
-using SciMaterials.DAL.Repositories.RatingRepositories;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.Repositories;
-using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Data.UnitOfWork;
 
@@ -21,7 +12,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     private readonly TContext _context;
 
     private bool disposed;
-    private Dictionary<Type, object>? _repositories = new Dictionary<Type, object>();
+    private Dictionary<Type, object>? _repositories = new();
 
     /// <summary> ctor. </summary>
     /// <param name="logger"></param>

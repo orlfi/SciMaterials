@@ -48,7 +48,7 @@ public class AccountController : Controller
         {
             try
             {
-                var user = new IdentityUser()
+                var user = new IdentityUser
                 {
                     Email = registerUserRequest.Email,
                     UserName = registerUserRequest.Email,

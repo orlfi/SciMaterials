@@ -1,6 +1,5 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-
 using SciMaterials.DAL.AUTH.Context;
 
 namespace SciMaterials.Auth.Registrations;

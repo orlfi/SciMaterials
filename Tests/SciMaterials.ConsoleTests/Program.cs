@@ -3,15 +3,12 @@ using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using SciMaterials.ConsoleTests;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.Result;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Implementation;
 using SciMaterials.DAL.InitializationDb.Interfaces;
-using SciMaterials.DAL.Models;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Services.API.Extensions;
 using File = SciMaterials.DAL.Models.File;
@@ -30,7 +27,6 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddTransient<IDbInitializer, DbInitializer>();
     services.AddApiServices(context.Configuration);
 }
-
 using IHost host = CreateHostBuilder(args).Build();
 
 await using (var scope = host.Services.CreateAsyncScope())

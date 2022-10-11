@@ -2,7 +2,6 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.DAL.Contexts;
 using AutoMapper;
 using Category = SciMaterials.DAL.Models.Category;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;

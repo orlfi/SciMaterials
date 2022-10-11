@@ -1,9 +1,5 @@
-
-using System.Data;
 using System.Globalization;
 using System.Net.Http.Json;
-using Microsoft.EntityFrameworkCore.Query;
-using Newtonsoft.Json;
 using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.ConsoleTests;

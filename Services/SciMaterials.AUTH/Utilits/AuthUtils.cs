@@ -30,18 +30,19 @@ public class AuthUtils : IAuthUtils
         byte[] key = Encoding.ASCII.GetBytes(_secretKey);
 
         //Claims
-        var claims = new List<Claim>();
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Name, user.Email),
+            new(ClaimTypes.Email, user.Email)
+        };
 
-        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-        claims.Add(new Claim(ClaimTypes.Name, user.Email));
-        claims.Add(new Claim(ClaimTypes.Email, user.Email));
-        
         foreach (var role in roles)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            claims.Add(new(ClaimTypes.Role, role));
         }
 
-        var securityTokenDescriptor = new SecurityTokenDescriptor()
+        var securityTokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims.ToArray()),
                 

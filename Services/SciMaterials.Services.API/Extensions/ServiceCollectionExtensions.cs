@@ -8,7 +8,6 @@ using SciMaterials.Domain.Extensions;
 using SciMaterials.Services.API.Services.Categories;
 using SciMaterials.Services.API.Services.Files;
 using SciMaterials.Services.API.Services.Files.Stores;
-using System.Reflection;
 
 namespace SciMaterials.Services.API.Extensions;
 

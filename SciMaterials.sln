@@ -27,8 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuisnessLogic", "BuisnessLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryTests", "Tests\BuisnessLogic\SciMaterials.RepositoryTests\SciMaterials.RepositoryTests.csproj", "{4D1C8EB6-3614-4D06-810D-5F032D0DA676}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuisnessLogic", "BuisnessLogic", "{EA321C02-5A97-4A61-9D69-33A834023BD2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{7E25424F-B3C1-4CB5-B034-36AF7169CCAA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts", "Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj", "{39AC126E-2478-458D-BE35-99B1D6273654}"

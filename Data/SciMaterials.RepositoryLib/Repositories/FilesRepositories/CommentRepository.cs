@@ -1,8 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CommentsRepositories;
 using SciMaterials.Data.Repositories;
 
 namespace SciMaterials.DAL.Repositories.CommentsRepositories;
@@ -33,14 +31,14 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.Add)}");
+        _logger.Debug(nameof(Add));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.AddAsync)}");
+        _logger.Debug(nameof(AddAsync));
     }
 
     public async Task DeleteAsync(Comment entity) { throw new NotImplementedException(); }
@@ -49,21 +47,21 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(CommentRepository.Delete)}");
+        _logger.Debug(nameof(Delete));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(CommentRepository.DeleteAsync)}");
+        _logger.Debug(nameof(DeleteAsync));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Comment> GetAll(bool disableTracking = true)
+    public List<Comment> GetAll(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetAll)}");
+        _logger.Debug(nameof(GetAll));
 
 
 
@@ -72,9 +70,9 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Comment>> GetAllAsync(bool disableTracking = true)
+    public Task<List<Comment>> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetAllAsync)}");
+        _logger.Debug(nameof(GetAllAsync));
 
 
 
@@ -88,9 +86,9 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Comment GetById(Guid id, bool disableTracking = true)
+    public Comment GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetById)}");
+        _logger.Debug(nameof(GetById));
 
 
 
@@ -99,9 +97,9 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Comment> GetByIdAsync(Guid id, bool disableTracking = true)
+    public Task<Comment> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(CommentRepository.GetByIdAsync)}");
+        _logger.Debug(nameof(GetByIdAsync));
 
 
 
@@ -112,14 +110,14 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.Update)}");
+        _logger.Debug(nameof(Update));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Comment entity)
     {
-        _logger.Debug($"{nameof(CommentRepository.UpdateAsync)}");
+        _logger.Debug(nameof(UpdateAsync));
     }
 
     public void Delete(Comment entity) { throw new NotImplementedException(); }

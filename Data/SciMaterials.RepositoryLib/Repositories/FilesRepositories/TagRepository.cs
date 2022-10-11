@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
@@ -32,14 +31,14 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Tag entity)
     {
-        _logger.Debug($"{nameof(TagRepository.Add)}");
+        _logger.Debug(nameof(Add));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Tag entity)
     {
-        _logger.Debug($"{nameof(TagRepository.AddAsync)}");
+        _logger.Debug(nameof(AddAsync));
     }
 
     public async Task DeleteAsync(Tag entity) { throw new NotImplementedException(); }
@@ -48,21 +47,21 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.Debug($"{nameof(TagRepository.Delete)}");
+        _logger.Debug(nameof(Delete));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.Debug($"{nameof(TagRepository.DeleteAsync)}");
+        _logger.Debug(nameof(DeleteAsync));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Tag> GetAll(bool disableTracking = true)
+    public List<Tag> GetAll(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(TagRepository.GetAll)}");
+        _logger.Debug(nameof(GetAll));
 
 
 
@@ -71,9 +70,9 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public Task<List<Tag>> GetAllAsync(bool disableTracking = true)
+    public Task<List<Tag>> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(TagRepository.GetAllAsync)}");
+        _logger.Debug(nameof(GetAllAsync));
 
 
 
@@ -87,9 +86,9 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Tag GetById(Guid id, bool disableTracking = true)
+    public Tag GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(TagRepository.GetById)}");
+        _logger.Debug(nameof(GetById));
 
 
 
@@ -98,9 +97,9 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public Task<Tag> GetByIdAsync(Guid id, bool disableTracking = true)
+    public Task<Tag> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.Debug($"{nameof(TagRepository.GetByIdAsync)}");
+        _logger.Debug(nameof(GetByIdAsync));
 
 
 
@@ -111,14 +110,14 @@ public class TagRepository : ITagRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Tag entity)
     {
-        _logger.Debug($"{nameof(TagRepository.Update)}");
+        _logger.Debug(nameof(Update));
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Tag entity)
     {
-        _logger.Debug($"{nameof(TagRepository.UpdateAsync)}");
+        _logger.Debug(nameof(UpdateAsync));
     }
 
     public void Delete(Tag entity) { throw new NotImplementedException(); }

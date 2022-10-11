@@ -35,7 +35,7 @@ public static class AuthRolesInitializer
         //Супер админ
         if (await userManager.FindByNameAsync(adminEmail) is null)
         {
-            var superAdmin = new IdentityUser()
+            var superAdmin = new IdentityUser
             {
                 Email = adminEmail, 
                 UserName = adminEmail
