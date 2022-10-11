@@ -1,7 +1,6 @@
 ﻿@page "/signin"
-@using System.ComponentModel.DataAnnotations
 
-<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
  
     <MudGrid Justify="Justify.Center">
@@ -22,9 +21,9 @@
 
                 <MudCardContent>
                     <MudTextField Label="Email" Class="mt-3 mx-0" Variant="Variant.Outlined"
-                                  @bind-Value="model.Email" For="@(() => model.Email)"/>
+                                  @bind-Value="_model.Email" For="@(() => _model.Email)"/>
                     <MudTextField Label="Password" Class="mt-3 mx-0" Variant="Variant.Outlined"
-                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>
+                                  @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password"/>
                 </MudCardContent>
                 <MudCardActions Class="d-flex justify-space-between flex-grow-1 gap-4">
                     <MudCheckBox @bind-Checked="@RememberMe" Label="Remember me"></MudCheckBox>
@@ -37,7 +36,7 @@
         </MudItem>
 
         <MudItem xs="12">
-            @if (success)
+            @if (_success)
             {
                 <MudText Color="Color.Success">Success</MudText>
             }
@@ -53,25 +52,13 @@
 
 
 @code {
-    LogInForm model = new LogInForm();
-    bool success;
-    public bool RememberMe { get; set; } = true;
-    public class LogInForm
+	readonly SignInForm _model = new ();
+    bool _success;
+	private bool RememberMe { get; set; } = true;
+
+	private void OnValidSubmit(EditContext context)
     {
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-    }
-
-    private void OnValidSubmit(EditContext context)
-    {
-        success = true;
+        _success = true;
         StateHasChanged();
     }
 

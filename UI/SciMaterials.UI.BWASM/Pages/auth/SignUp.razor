@@ -1,8 +1,6 @@
 ﻿@page "/signup"
-@using System.ComponentModel.DataAnnotations
 
-
-<EditForm Model="@model" OnValidSubmit="OnValidSubmit" >
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit" >
     <DataAnnotationsValidator />
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="7">
@@ -20,11 +18,11 @@
 
 	            <MudCardContent>
 		            <MudTextField Class="flex-grow-1" Label="Name" HelperText="Your nick on site" Variant="Variant.Outlined"
-		                          @bind-Value="model.Username" For="@(() => model.Username)"/>
+		                          @bind-Value="_model.Username" For="@(() => _model.Username)"/>
 		            <MudTextField Label="Email address" Class="mt-3" Variant="Variant.Outlined"
-		                          @bind-Value="model.Email" For="@(() => model.Email)"/>
+		                          @bind-Value="_model.Email" For="@(() => _model.Email)"/>
 		            <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" Variant="Variant.Outlined"
-		                          @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password"/>
+		                          @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password"/>
 	            </MudCardContent>
 
                 <MudCardActions>
@@ -33,7 +31,7 @@
             </MudCard>
         </MudItem>
         <MudItem xs="12">
-            @if (success)
+            @if (_success)
             {
                 <MudText Color="Color.Success">Success</MudText>
             }
@@ -49,28 +47,12 @@
 
 
 @code {
-    RegisterAccountForm model = new();
-    bool success;
-
-    public class RegisterAccountForm
-    {
-        [Required]
-        [StringLength(255, ErrorMessage = "Name length can't be more than 255.")]
-        public string Username { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-    }
+	readonly SignUpForm _model = new();
+    bool _success;
 
     private void OnValidSubmit(EditContext context)
     {
-        success = true;
+        _success = true;
         StateHasChanged();
     }
-
 }
