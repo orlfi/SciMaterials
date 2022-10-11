@@ -39,7 +39,7 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
             }
         }
 
-        public async Task InitializeDbAsync(bool removeAtStart = false, CancellationToken cancel = default)
+        public async Task InitializeDbAsync(bool removeAtStart = false, bool useDataSeeder = false, CancellationToken cancel = default)
         {
             _logger.LogInformation("Database initialization...");
 
@@ -56,7 +56,8 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
                     await _db.Database.MigrateAsync(cancel).ConfigureAwait(false);
                 }
 
-                await InitializeDbAsync(cancel).ConfigureAwait(false);
+                if(useDataSeeder)
+                    await InitializeDbAsync(cancel).ConfigureAwait(false);
             }
             catch (OperationCanceledException e)
             {
@@ -74,7 +75,7 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
         {
             cancel.ThrowIfCancellationRequested();
 
-            await DataSeeder.Seed(_db, cancel).ConfigureAwait(false);
+            await DataSeeder.SeedAsync(_db, cancel).ConfigureAwait(false);
         }
     }
 }
