@@ -1,5 +1,10 @@
 
+using System.Data;
+using System.Globalization;
 using System.Net.Http.Json;
+using Microsoft.EntityFrameworkCore.Query;
+using Newtonsoft.Json;
+using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.ConsoleTests;
 
@@ -9,30 +14,25 @@ public class FilesClient
 
     public FilesClient(HttpClient Http) => this.Http = Http;
 
-    public async Task<ServerFileInfo> UploadAsync(string FilePath, CancellationToken Cancel = default)
+    public async Task<Result<Guid>> UploadAsync(string FilePath, string payload, CancellationToken Cancel = default)
     {
-        var file_info = new FileInfo(FilePath);
+        var fileInfo = new FileInfo(FilePath);
 
-        using var content = new MultipartFormDataContent();
+        using var multipartFormDataContent = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
 
-        await using var file_stream = File.OpenRead(FilePath);
-        var stream_content = new StreamContent(file_stream);
-        content.Add(stream_content, "file", file_info.Name);
+        await using var fileStream = File.OpenRead(FilePath);
+        var streamContent = new StreamContent(fileStream);
 
-        var response = await Http.PostAsync("api/file", content, Cancel);
+        streamContent.Headers.Add("Payload", payload);
+        multipartFormDataContent.Add(streamContent, "file", fileInfo.Name);
+
+        var response = await Http.PostAsync("api/files/upload", multipartFormDataContent, Cancel);
         var result = await response
                .EnsureSuccessStatusCode()
                .Content
-               .ReadFromJsonAsync<ServerFileInfo>(cancellationToken: Cancel)
+               .ReadFromJsonAsync<Result<Guid>>(cancellationToken: Cancel)
                 ?? throw new InvalidOperationException("Не получен ответ от сервера");
 
         return result;
     }
-}
-
-public class ServerFileInfo
-{
-    public string FileName { get; init; } = null!;
-    public long Length { get; init; }
-    public string MD5 { get; init; } = null!;
 }
