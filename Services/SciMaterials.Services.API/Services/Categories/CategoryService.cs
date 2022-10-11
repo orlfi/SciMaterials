@@ -42,7 +42,7 @@ public class CategoryService : ICategoryService
         return result;
     }
 
-    public async Task<Result<Guid>> AddEditAsync(AddEditCategoryRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> AddAsync(AddEditCategoryRequest request, CancellationToken cancellationToken = default)
     {
         if (request.Id is null || request.Id == Guid.Empty)
         {

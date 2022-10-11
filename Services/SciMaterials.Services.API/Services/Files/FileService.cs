@@ -9,6 +9,8 @@ using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
+using SciMaterials.Contracts.API.Models;
+using SciMaterials.Contracts.API.Services;
 
 namespace SciMaterials.Services.API.Services.Files;
 

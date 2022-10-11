@@ -9,7 +9,7 @@ public class FileProfile:Profile
 	public FileProfile()
 	{
         CreateMap<File, GetFileResponse>().ReverseMap();
-        CreateMap<File, AddEditFileRequest>().ReverseMap();
+        CreateMap<File, EditFileRequest>().ReverseMap();
         CreateMap<File, FileMetadata>().ReverseMap();
     }
 }

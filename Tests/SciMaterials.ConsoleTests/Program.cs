@@ -3,15 +3,12 @@ using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using SciMaterials.ConsoleTests;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.Result;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Implementation;
 using SciMaterials.DAL.InitializationDb.Interfaces;
-using SciMaterials.DAL.Models;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Services.API.Extensions;
 using File = SciMaterials.DAL.Models.File;
@@ -42,7 +39,7 @@ await using (var scope = host.Services.CreateAsyncScope())
     var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
     var file = (await unitOfWork.GetRepository<File>().GetAllAsync()).First();
-    var request = mapper.Map<AddEditFileRequest>(file);
+    var request = mapper.Map<EditFileRequest>(file);
     
     if ((await SendFile(path, request)) is { Succeeded: true } result)
     {
@@ -54,7 +51,7 @@ Console.WriteLine("Press any key to exit...");
 Console.ReadKey();
 
 
-static async Task<Result<Guid>> SendFile(string path, AddEditFileRequest uploadRequest)
+static async Task<Result<Guid>> SendFile(string path, EditFileRequest uploadRequest)
 {
     using HttpClient httpClient = new()
     {

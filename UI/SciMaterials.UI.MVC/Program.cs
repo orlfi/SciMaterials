@@ -4,7 +4,6 @@ using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
-using SciMaterials.Domain.Extensions;
 using SciMaterials.Services.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
