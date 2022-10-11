@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.Services.API.Extensions;
@@ -29,7 +30,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     if (builder.Configuration["DbProvider"].Equals("SQLite"))
     {
         var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
     }
     
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
