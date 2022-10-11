@@ -11,7 +11,6 @@ using SciMaterials.DAL.Repositories.FilesRepositories;
 using SciMaterials.DAL.Repositories.RatingRepositories;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.Repositories;
-using SciMaterials.Data.Repositories.AuthorRepositories;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Data.UnitOfWork;
