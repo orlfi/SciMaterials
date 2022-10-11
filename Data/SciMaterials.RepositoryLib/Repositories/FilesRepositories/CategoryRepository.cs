@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NLog;
 using SciMaterials.DAL.Models;
 using SciMaterials.Data.Repositories;
@@ -38,10 +37,12 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Category entity)
+    public async Task AddAsync(Category entity)
     {
         _logger.Debug($"{nameof(CategoryRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(Category entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -52,7 +53,7 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(CategoryRepository.DeleteAsync)}");
     }
@@ -78,6 +79,11 @@ public class CategoryRepository : ICategoryRepository
 
         return null!;
     }
+
+    public async Task<Category?> GetByHashAsync(string hash, bool disableTracking = true) { throw new NotImplementedException(); }
+    public Category? GetByHash(string hash, bool disableTracking = true) { throw new NotImplementedException(); }
+    public async Task<Category?> GetByNameAsync(string name, bool disableTracking = true) { throw new NotImplementedException(); }
+    public Category? GetByName(string name, bool disableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -110,8 +116,10 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Category entity)
+    public async Task UpdateAsync(Category entity)
     {
         _logger.Debug($"{nameof(CategoryRepository.UpdateAsync)}");
     }
+
+    public void Delete(Category entity) { throw new NotImplementedException(); }
 }

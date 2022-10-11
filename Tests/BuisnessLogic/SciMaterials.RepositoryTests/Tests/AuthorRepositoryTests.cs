@@ -37,9 +37,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = _authorRepository.GetAll();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -56,9 +56,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = _authorRepository.GetAll(false);
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -79,9 +79,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = await _authorRepository.GetAllAsync();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -98,9 +98,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = await _authorRepository.GetAllAsync(false);
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -116,19 +116,19 @@ public class AuthorRepositoryTests
     public async void AddAsync_ItShould_contains_category_increase_by_1()
     {
         //arrange
-        int expected = _authorRepository.GetAll()!.Count + 1;
-        var author = AuthorHelper.GetOne();
+        var expected = (await _authorRepository.GetAllAsync())!.Count + 1;
+        var author   = AuthorHelper.GetOne();
 
         //act
         await _authorRepository.AddAsync(author);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         var authors = await _authorRepository.GetAllAsync();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
-        var authorDb = _authorRepository.GetById(author.Id);
+        var authorDb = await _authorRepository.GetByIdAsync(author.Id);
 
         ICollection<int> coll = new List<int>() { 1, 2, 3 };
 
@@ -151,7 +151,7 @@ public class AuthorRepositoryTests
     public void Add_ItShould_contains_category_3()
     {
         //arrange
-        int expected = _authorRepository.GetAll()!.Count + 1;
+        var expected = _authorRepository.GetAll()!.Count + 1;
         var author = AuthorHelper.GetOne();
 
         //act
@@ -159,9 +159,9 @@ public class AuthorRepositoryTests
         _context.SaveChanges();
 
         var authors = _authorRepository.GetAll();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         var authorDb = _authorRepository.GetById(author.Id);
 
@@ -189,20 +189,20 @@ public class AuthorRepositoryTests
     {
         //arrange
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
-        int expected = _authorRepository.GetAll()!.Count - 1;
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
+        var expected = (await _authorRepository.GetAllAsync())!.Count - 1;
 
         //act
         await _authorRepository.DeleteAsync(author.Id);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
-        var authors = _authorRepository.GetAll();
-        int count = 0;
+        var authors = await _authorRepository.GetAllAsync();
+        var count   = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
-        var removedAuthor = _authorRepository.GetById(author.Id);
+        var removedAuthor = await _authorRepository.GetByIdAsync(author.Id);
 
         //assert
         Assert.Equal(expected, count);
@@ -217,16 +217,16 @@ public class AuthorRepositoryTests
         var author = AuthorHelper.GetOne();
         _authorRepository.Add(author);
         _context.SaveChanges();
-        int expected = _authorRepository.GetAll()!.Count - 1;
+        var expected = _authorRepository.GetAll()!.Count - 1;
 
         //act
         _authorRepository.Delete(author.Id);
         _context.SaveChanges();
 
         var authors = _authorRepository.GetAll();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         var removedAuthor = _authorRepository.GetById(author.Id);
 
@@ -246,8 +246,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Unchanged;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByIdAsync(author.Id, false);
@@ -265,8 +265,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Detached;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByIdAsync(author.Id, true);
@@ -321,8 +321,8 @@ public class AuthorRepositoryTests
     {
         //arrange
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByIdAsync(author.Id);
@@ -376,8 +376,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Detached;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByNameAsync(author.Name, true);
@@ -414,8 +414,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Unchanged;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByNameAsync(author.Name, false);
@@ -451,8 +451,8 @@ public class AuthorRepositoryTests
     {
         //arrange
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByNameAsync(author.Name);
@@ -520,15 +520,15 @@ public class AuthorRepositoryTests
             Comments = expectedComments,
             Ratings = expectedRatings,
         };
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         author.Name = expectedName;
         await _authorRepository.UpdateAsync(author);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
-        var authorDb = _authorRepository.GetById(author.Id);
+        var authorDb = await _authorRepository.GetByIdAsync(author.Id);
 
         //assert
         Assert.Equal(author.Id, authorDb!.Id);

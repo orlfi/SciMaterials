@@ -36,10 +36,12 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(User entity)
+    public async Task AddAsync(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(User entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -50,7 +52,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(UserRepository.DeleteAsync)}");
     }
@@ -76,6 +78,11 @@ public class UserRepository : IUserRepository
 
         return null!;
     }
+
+    public async Task<User?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public User? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<User?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public User? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -108,8 +115,10 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(User entity)
+    public async Task UpdateAsync(User entity)
     {
         _logger.Debug($"{nameof(UserRepository.UpdateAsync)}");
     }
+
+    public void Delete(User entity) { throw new NotImplementedException(); }
 }

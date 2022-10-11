@@ -108,15 +108,15 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     private void Initialise()
     {
-        //_repositories!.Add(typeof(User), new AuthorRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(File), new FileRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(ContentType), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(FileGroup), new FileGroupRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(Rating), new RatingRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(Tag), new TagRepository((ISciMaterialsContext)_context, _logger));
-        //_repositories!.Add(typeof(Author), new AuthorRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(User), new AuthorRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(File), new FileRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(ContentType), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(FileGroup), new FileGroupRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Rating), new RatingRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Tag), new TagRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Author), new AuthorRepository((ISciMaterialsContext)_context, _logger));
     }
 
     #region Dispose

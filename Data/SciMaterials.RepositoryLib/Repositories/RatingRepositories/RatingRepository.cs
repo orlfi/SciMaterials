@@ -38,10 +38,12 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Rating entity)
+    public async Task AddAsync(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(Rating entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -52,7 +54,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(RatingRepository.DeleteAsync)}");
     }
@@ -78,6 +80,11 @@ public class RatingRepository : IRatingRepository
 
         return null!;
     }
+
+    public async Task<Rating?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Rating? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<Rating?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Rating? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -110,8 +117,10 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Rating entity)
+    public async Task UpdateAsync(Rating entity)
     {
         _logger.Debug($"{nameof(RatingRepository.UpdateAsync)}");
     }
+
+    public void Delete(Rating entity) { throw new NotImplementedException(); }
 }

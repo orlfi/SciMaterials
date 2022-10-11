@@ -7,11 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<<< HEAD:Data/SciMaterials.RepositoryLib/SciMaterials.RepositoryLib.csproj
-    <ProjectReference Include="..\SciMateraials.DAL\SciMaterials.DAL.csproj" />
-========
-    <ProjectReference Include="..\..\SciMaterials.DAL\SciMaterials.DAL.csproj" />
->>>>>>>> a2bf4784273b79ee5d485e0c093be5b070da692c:Data/Migrations/SciMaterials.SQLiteMigrations/SciMaterials.SQLiteMigrations.csproj
+    <ProjectReference Include="..\..\BuisnessLogic\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
+    <ProjectReference Include="..\SciMaterials.DAL\SciMaterials.DAL.csproj" />
   </ItemGroup>
 
 </Project>

@@ -37,10 +37,12 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(FileGroup entity)
+    public async Task AddAsync(FileGroup entity)
     {
         _logger.Debug($"{nameof(FileGroupRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(FileGroup entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -51,7 +53,7 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(FileGroupRepository.DeleteAsync)}");
     }
@@ -77,6 +79,11 @@ public class FileGroupRepository : IFileGroupRepository
 
         return null!;
     }
+
+    public async Task<FileGroup?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public FileGroup? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<FileGroup?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public FileGroup? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -109,8 +116,10 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(FileGroup entity)
+    public async Task UpdateAsync(FileGroup entity)
     {
         _logger.Debug($"{nameof(FileGroupRepository.UpdateAsync)}");
     }
+
+    public void Delete(FileGroup entity) { throw new NotImplementedException(); }
 }

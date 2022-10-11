@@ -38,10 +38,12 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Comment entity)
+    public async Task AddAsync(Comment entity)
     {
         _logger.Debug($"{nameof(CommentRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(Comment entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -52,7 +54,7 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(CommentRepository.DeleteAsync)}");
     }
@@ -78,6 +80,11 @@ public class CommentRepository : ICommentRepository
 
         return null!;
     }
+
+    public async Task<Comment?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Comment? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<Comment?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Comment? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -110,8 +117,10 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Comment entity)
+    public async Task UpdateAsync(Comment entity)
     {
         _logger.Debug($"{nameof(CommentRepository.UpdateAsync)}");
     }
+
+    public void Delete(Comment entity) { throw new NotImplementedException(); }
 }

@@ -37,10 +37,12 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(ContentType entity)
+    public async Task AddAsync(ContentType entity)
     {
         _logger.Debug($"{nameof(ContentTypeRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(ContentType entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -51,7 +53,7 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(ContentTypeRepository.DeleteAsync)}");
     }
@@ -77,6 +79,11 @@ public class ContentTypeRepository : IContentTypeRepository
 
         return null!;
     }
+
+    public async Task<ContentType?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public ContentType? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<ContentType?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public ContentType? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -109,8 +116,10 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(ContentType entity)
+    public async Task UpdateAsync(ContentType entity)
     {
         _logger.Debug($"{nameof(ContentTypeRepository.UpdateAsync)}");
     }
+
+    public void Delete(ContentType entity) { throw new NotImplementedException(); }
 }

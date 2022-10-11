@@ -37,10 +37,12 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(Tag entity)
+    public async Task AddAsync(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(Tag entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -51,7 +53,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(TagRepository.DeleteAsync)}");
     }
@@ -77,6 +79,11 @@ public class TagRepository : ITagRepository
 
         return null!;
     }
+
+    public async Task<Tag?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Tag? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<Tag?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public Tag? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -109,8 +116,10 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(Tag entity)
+    public async Task UpdateAsync(Tag entity)
     {
         _logger.Debug($"{nameof(TagRepository.UpdateAsync)}");
     }
+
+    public void Delete(Tag entity) { throw new NotImplementedException(); }
 }

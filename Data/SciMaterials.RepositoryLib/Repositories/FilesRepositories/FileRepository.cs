@@ -38,10 +38,12 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public void AddAsync(File entity)
+    public async Task AddAsync(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.AddAsync)}");
     }
+
+    public async Task DeleteAsync(File entity) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
@@ -52,7 +54,7 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
-    public void DeleteAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
         _logger.Debug($"{nameof(FileRepository.DeleteAsync)}");
     }
@@ -78,6 +80,11 @@ public class FileRepository : IFileRepository
 
         return null!;
     }
+
+    public async Task<File?> GetByHashAsync(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public File? GetByHash(string hash, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public async Task<File?> GetByNameAsync(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
+    public File? GetByName(string name, bool DisableTracking = true) { throw new NotImplementedException(); }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
@@ -110,8 +117,10 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public void UpdateAsync(File entity)
+    public async Task UpdateAsync(File entity)
     {
         _logger.Debug($"{nameof(FileRepository.UpdateAsync)}");
     }
+
+    public void Delete(File entity) { throw new NotImplementedException(); }
 }
