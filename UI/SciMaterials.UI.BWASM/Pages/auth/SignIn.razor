@@ -1,4 +1,6 @@
 ﻿@page "/signin"
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -56,10 +58,9 @@
     bool _success;
 	private bool RememberMe { get; set; } = true;
 
-	private void OnValidSubmit(EditContext context)
-    {
-        _success = true;
-        StateHasChanged();
+	private async Task OnValidSubmit(EditContext context)
+	{
+		await AuthenticationService.SignIn(_model);
+        NavigationManager.NavigateTo("/");
     }
-
 }

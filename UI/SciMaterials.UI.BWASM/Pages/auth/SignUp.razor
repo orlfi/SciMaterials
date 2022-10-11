@@ -1,4 +1,6 @@
 ﻿@page "/signup"
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
 
 <EditForm Model="@_model" OnValidSubmit="OnValidSubmit" >
     <DataAnnotationsValidator />
@@ -50,9 +52,9 @@
 	readonly SignUpForm _model = new();
     bool _success;
 
-    private void OnValidSubmit(EditContext context)
+    private async Task OnValidSubmit(EditContext context)
     {
-        _success = true;
-        StateHasChanged();
+	    await AuthenticationService.SignUp(_model);
+        NavigationManager.NavigateTo("/");
     }
 }
