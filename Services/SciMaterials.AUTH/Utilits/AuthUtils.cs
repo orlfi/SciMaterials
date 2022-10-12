@@ -22,27 +22,26 @@ public class AuthUtils : IAuthUtils
     
     public string CreateSessionToken(IdentityUser user, IList<string> roles)
     {
-        var config = _configuration.GetSection("SecretTokenKey");
-        _secretKey = config["Key"];
+        var config = _configuration.GetSection("AuthApiSettings:SecretTokenKey");
+        _secretKey = config["key"];
         
         JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         
         byte[] key = Encoding.ASCII.GetBytes(_secretKey);
 
         //Claims
-        var claims = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.Id),
-            new(ClaimTypes.Name, user.Email),
-            new(ClaimTypes.Email, user.Email)
-        };
+        var claims = new List<Claim>();
 
+        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+        claims.Add(new Claim(ClaimTypes.Name, user.Email));
+        claims.Add(new Claim(ClaimTypes.Email, user.Email));
+        
         foreach (var role in roles)
         {
-            claims.Add(new(ClaimTypes.Role, role));
+            claims.Add(new Claim(ClaimTypes.Role, role));
         }
 
-        var securityTokenDescriptor = new SecurityTokenDescriptor
+        var securityTokenDescriptor = new SecurityTokenDescriptor()
         {
             Subject = new ClaimsIdentity(claims.ToArray()),
                 
