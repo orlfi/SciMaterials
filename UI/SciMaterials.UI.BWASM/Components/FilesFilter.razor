@@ -1,0 +1,52 @@
+﻿@inject NavigationManager NavigationManager
+
+<div>
+	<MudStack Justify="Justify.FlexEnd" Row="true">
+		<MudMenu Icon="@_presentationModes[ItemsPresentationMode]">
+			@foreach (var (mode,icon) in _presentationModes)
+			{
+				<MudMenuItem OnClick="() => SelectPresentationMode(mode)" Icon="@icon"></MudMenuItem>
+			}
+		</MudMenu>
+
+		<MudSelect @bind-Value="filterValue" Label="Filter" AdornmentIcon="@Icons.Material.Filled.FilterList">
+			<MudSelectItem Value="@("Filter #1")" />
+			<MudSelectItem Value="@("Filter #2")" />
+			<MudSelectItem Value="@("Filter #3")" />
+		</MudSelect>
+
+		<MudText Typo="Typo.subtitle1" Align="Align.Start">Sort by:</MudText>
+		<MudSelect @bind-Value="sortValue" Dense="true" T="string" Variant="Variant.Text">
+			<MudSelectItem Value="@("Sort #1")" />
+			<MudSelectItem Value="@("Sort #2")" />
+			<MudSelectItem Value="@("Sort #3")" />
+		</MudSelect>
+	</MudStack>
+</div>
+
+@code
+{
+	private IReadOnlyDictionary<ItemsPresentationMode, string> _presentationModes = new Dictionary<ItemsPresentationMode, string>()
+		{
+			[ItemsPresentationMode.Table] = Icons.Material.Filled.List,
+			[ItemsPresentationMode.LargeGrid] = Icons.Material.Filled.Apps
+		};
+
+	private string filterValue { get; set; }
+	private string sortValue { get; set; }
+
+	[Parameter]
+	public ItemsPresentationMode ItemsPresentationMode { get; set; }
+
+	[Parameter]
+	public EventCallback<ItemsPresentationMode> OnItemsPresentationModeChanged { get; set; }
+
+
+	private void SelectPresentationMode(ItemsPresentationMode mode)
+	{
+		if(ItemsPresentationMode == mode) return;
+		ItemsPresentationMode = mode;
+		OnItemsPresentationModeChanged.InvokeAsync(mode);
+		//StateHasChanged();
+	}
+}

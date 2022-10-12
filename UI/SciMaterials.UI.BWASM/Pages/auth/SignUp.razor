@@ -1,30 +1,39 @@
 ﻿@page "/signup"
-@using System.ComponentModel.DataAnnotations
-<h3>SignUp</h3>
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
 
-
-<EditForm Model="@model" OnValidSubmit="OnValidSubmit" >
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit" >
     <DataAnnotationsValidator />
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="7">
-            <MudCard Elevation="3">
-                <MudCardContent>
-                    <MudTextField Label="First name" HelperText="Max. 8 characters" Variant="Variant.Outlined"
-                                  @bind-Value="model.Username" For="@(() => model.Username)" />
-                    <MudTextField Label="Email" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Email" For="@(() => model.Email)" />
-                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
-                    <MudTextField Label="Password" HelperText="Repeat the password" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Password2" For="@(() => model.Password2)" InputType="InputType.Password" />
+            <MudCard Elevation="0">
+                <MudText Typo="Typo.h4" Align="Align.Start">Get started absolutely free.</MudText>
+                <MudText Typo="Typo.subtitle1" Align="Align.Start">Free forever. No credit card needed.</MudText>
+                <MudCardContent Class="d-flex flex-grow-1 gap-4">
+                    <AuthVariants/>
                 </MudCardContent>
+	            <MudCardContent Class="d-flex flex-grow-1 gap-4 p-0" >
+		            <MudPaper Class="d-flex justify-center flex-grow-1 " Elevation="0" Height="68">
+			            <MudText Typo="Typo.body1" Align="Align.Center">OR</MudText>
+		            </MudPaper>
+	            </MudCardContent>
+
+	            <MudCardContent>
+		            <MudTextField Class="flex-grow-1" Label="Name" HelperText="Your nick on site" Variant="Variant.Outlined"
+		                          @bind-Value="_model.Username" For="@(() => _model.Username)"/>
+		            <MudTextField Label="Email address" Class="mt-3" Variant="Variant.Outlined"
+		                          @bind-Value="_model.Email" For="@(() => _model.Email)"/>
+		            <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" Variant="Variant.Outlined"
+		                          @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password"/>
+	            </MudCardContent>
+
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
         <MudItem xs="12">
-            @if (success)
+            @if (_success)
             {
                 <MudText Color="Color.Success">Success</MudText>
             }
@@ -40,33 +49,12 @@
 
 
 @code {
-    RegisterAccountForm model = new();
-    bool success;
+	  readonly SignUpForm _model = new();
+    bool _success;
 
-    public class RegisterAccountForm
+    private async Task OnValidSubmit(EditContext context)
     {
-        [Required]
-        [StringLength(8, ErrorMessage = "Name length can't be more than 8.")]
-        public string Username { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-        [Required]
-        [Compare(nameof(Password))]
-        public string Password2 { get; set; }
-
+	      await AuthenticationService.SignUp(_model);
+        NavigationManager.NavigateTo("/");
     }
-
-    private void OnValidSubmit(EditContext context)
-    {
-        success = true;
-        StateHasChanged();
-    }
-
 }

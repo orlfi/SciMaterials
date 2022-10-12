@@ -1,30 +1,44 @@
 ﻿@page "/signin"
-@using System.ComponentModel.DataAnnotations
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
 
-<h3>SignIn</h3>
-<EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
+ 
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="7">
-            <MudCard Elevation="3">
-                <MudCardContent>
-                    <MudTextField Label="Email" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Email" For="@(() => model.Email)" />
-                    <MudTextField Label="Password" HelperText="Choose a strong password" Class="mt-3" Variant="Variant.Outlined"
-                                  @bind-Value="model.Password" For="@(() => model.Password)" InputType="InputType.Password" />
+            <MudCard Elevation="0">
+                <MudText Typo="Typo.h4" Align="Align.Start">Sign in to SciMaterials</MudText>
+                <MudText Typo="Typo.subtitle1" Align="Align.Start">Enter your details below.</MudText>
+
+                <MudCardContent Class="d-flex flex-grow-1 gap-4">
+                    <AuthVariants/>
                 </MudCardContent>
+                
+                <MudCardContent Class="d-flex flex-grow-1 gap-4 p-0" >
+                    <MudPaper Class="d-flex justify-center flex-grow-1 " Elevation="0" Height="68">
+                        <MudText Typo="Typo.body1" Align="Align.Center">OR</MudText>
+                    </MudPaper>
+                </MudCardContent>
+
+                <MudCardContent>
+                    <MudTextField Label="Email" Class="mt-3 mx-0" Variant="Variant.Outlined"
+                                  @bind-Value="_model.Email" For="@(() => _model.Email)"/>
+                    <MudTextField Label="Password" Class="mt-3 mx-0" Variant="Variant.Outlined"
+                                  @bind-Value="_model.Password" For="@(() => _model.Password)" InputType="InputType.Password"/>
+                </MudCardContent>
+                <MudCardActions Class="d-flex justify-space-between flex-grow-1 gap-4">
+                    <MudCheckBox @bind-Checked="@RememberMe" Label="Remember me"></MudCheckBox>
+                    <MudLink Href="#">Forgot Password?</MudLink>
+                </MudCardActions>
                 <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Sing In</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="mx-2" FullWidth="true">Login</MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
-        <MudItem xs="12" sm="7">
-            <MudPaper Elevation="3">
-                <MudNavLink Href="signup" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AccountCircle">Create an account</MudNavLink>
-            </MudPaper>
-        </MudItem>
+
         <MudItem xs="12">
-            @if (success)
+            @if (_success)
             {
                 <MudText Color="Color.Success">Success</MudText>
             }
@@ -40,26 +54,13 @@
 
 
 @code {
-    LogInForm model = new();
-    bool success;
-
-    public class LogInForm
-    {
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(30, ErrorMessage = "Password must be at least 8 characters long.", MinimumLength = 8)]
-        public string Password { get; set; }
-
-    }
-
-    private void OnValidSubmit(EditContext context)
-    {
-        success = true;
-        StateHasChanged();
-    }
-
+	readonly SignInForm _model = new ();
+  bool _success;
+	private bool RememberMe { get; set; } = true;
+  
+	private async Task OnValidSubmit(EditContext context)
+	{
+		    await AuthenticationService.SignIn(_model);
+        NavigationManager.NavigateTo("/");
+  }
 }
