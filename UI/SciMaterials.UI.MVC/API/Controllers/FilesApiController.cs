@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Enums;
@@ -82,7 +83,12 @@ public class FilesApiController : ApiBaseController<FilesApiController>
                 !string.IsNullOrEmpty(contentDisposition.FileName.Value))
             {
                 _logger.LogInformation("Section contains file {file}", contentDisposition.FileName.Value);
-                var result = await _fileService.UploadAsync(section.Body, contentDisposition.FileName.Value, section.ContentType ?? "application/octet-stream").ConfigureAwait(false);
+                UploadFileRequest uploadFileRequest = new UploadFileRequest()
+                {
+                    Name = contentDisposition.FileName.Value,
+                    ContentTypeName = section.ContentType ?? "application/octet-stream"
+                };
+                var result = await _fileService.UploadAsync(section.Body, uploadFileRequest).ConfigureAwait(false);
                 return Ok(result);
             }
 

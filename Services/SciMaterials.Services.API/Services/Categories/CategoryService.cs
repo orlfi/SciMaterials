@@ -44,10 +44,10 @@ public class CategoryService : ICategoryService
         category.CreatedAt = DateTime.Now;
         await _unitOfWork.GetRepository<Category>().AddAsync(category);
 
-        if (await _unitOfWork.SaveContextAsync() <= 0)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+        if (await _unitOfWork.SaveContextAsync() > 0)
+            return await Result<Guid>.SuccessAsync(category.Id, "Category created");
 
-        return await Result<Guid>.SuccessAsync(category.Id, "Category created");
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 
     public async Task<Result<Guid>> EditAsync(EditCategoryRequest request, CancellationToken cancellationToken = default)
@@ -57,10 +57,10 @@ public class CategoryService : ICategoryService
 
         await _unitOfWork.GetRepository<Category>().UpdateAsync(category);
 
-        if (await _unitOfWork.SaveContextAsync() <= 0)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+        if (await _unitOfWork.SaveContextAsync() > 0)
+            return await Result<Guid>.SuccessAsync(category.Id, "Category updated");
 
-        return await Result<Guid>.SuccessAsync(category.Id, "Category updated");
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -70,9 +70,9 @@ public class CategoryService : ICategoryService
 
         await _unitOfWork.GetRepository<Category>().DeleteAsync(category);
 
-        if (await _unitOfWork.SaveContextAsync() <= 0)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+        if (await _unitOfWork.SaveContextAsync() > 0)
+            return await Result<Guid>.SuccessAsync($"Category with ID {category.Id} deleted");
 
-        return await Result<Guid>.SuccessAsync($"Category with ID {category.Id} deleted");
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 }
