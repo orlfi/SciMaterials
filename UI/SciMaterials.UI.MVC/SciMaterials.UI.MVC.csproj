@@ -15,10 +15,6 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.Data.MySqlMigrations\SciMaterials.Data.MySqlMigrations.csproj" />
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj" />
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.PostgresqlMigrations\SciMaterials.PostgresqlMigrations.csproj" />
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.SQLiteMigrations\SciMaterials.SQLiteMigrations.csproj" />
     <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj" />
