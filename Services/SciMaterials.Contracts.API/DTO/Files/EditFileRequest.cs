@@ -6,8 +6,6 @@ public class EditFileRequest
     public string Name { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public long Size { get; set; }
     public string Tags { get; set; }
     public string Categories { get; set; }
-    public Guid ContentTypeId { get; set; }
 }

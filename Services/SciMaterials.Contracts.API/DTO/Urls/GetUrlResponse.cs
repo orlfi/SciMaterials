@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace SciMaterials.Contracts.API.DTO.Files;
 
-public class GetFileResponse
+public class GetUrlResponse
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

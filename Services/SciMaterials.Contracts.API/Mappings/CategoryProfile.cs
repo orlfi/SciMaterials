@@ -9,6 +9,7 @@ public class CategoryProfile : Profile
     public CategoryProfile()
     {
         CreateMap<Category, GetCategoryResponse>().ReverseMap();
-        CreateMap<Category, AddEditCategoryRequest>().ReverseMap();
+        CreateMap<Category, AddCategoryRequest>().ReverseMap();
+        CreateMap<Category, EditCategoryRequest>().ReverseMap();
     }
 }

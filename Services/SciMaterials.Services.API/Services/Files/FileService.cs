@@ -11,6 +11,10 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services;
+using System.Reflection.Metadata.Ecma335;
+using System.Net.Sockets;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -67,58 +71,156 @@ public class FileService : IFileService
         return await Result<GetFileResponse>.ErrorAsync((int)ResultCodes.NotFound, $"File with hash {hash} not found");
     }
 
-    public Stream GetFileStream(Guid id)
+    public async Task<Result<FileStreamInfo>> DownloadByHash(string hash)
     {
-        var readFromPath = Path.Combine(_path, id.ToString());
-        return _fileStore.OpenRead(readFromPath);
+
+        if (await GetByHashAsync(hash) is not { } getFileResponse)
+            return Result<FileStreamInfo>.Error((int)ResultCodes.NotFound, $"File with hash {hash} not found");
+
+        var readFromPath = Path.Combine(_path, getFileResponse.Data.Id.ToString());
+        return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, _fileStore.OpenRead(readFromPath));
     }
 
-    public async Task<Result<Guid>> UploadAsync(Stream sourceStream, string fileName, string contentType, CancellationToken cancellationToken = default)
-    {
-        var fileRepository = _unitOfWork.GetRepository<File>();
-        var fileNameWithExension = Path.GetFileName(fileName);
-        var file = await fileRepository.GetByNameAsync(fileNameWithExension);
 
-        if (file is not null && !_overwrite)
+    public async Task<Result<FileStreamInfo>> DownloadById(Guid id)
+    {
+
+        if (await GetByIdAsync(id) is not { } getFileResponse)
+            return Result<FileStreamInfo>.Error((int)ResultCodes.NotFound, $"File with ID {id} not found");
+
+        var readFromPath = Path.Combine(_path, id.ToString());
+        return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, _fileStore.OpenRead(readFromPath));
+    }
+
+    public async Task<Result<Guid>> UploadAsync(Stream fileStream, UploadFileRequest uploadFileRequest, CancellationToken cancellationToken = default)
+    {
+        if (await _unitOfWork.GetRepository<File>().GetByNameAsync(uploadFileRequest.Name) is { } file && !_overwrite)
         {
-            _logger.LogInformation("File with name {fileNameWithExension} alredy exist", fileNameWithExension);
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, $"File with name {fileNameWithExension} alredy exist");
+            _logger.LogInformation("File with name {fileNameWithExension} alredy exist", uploadFileRequest.Name);
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, $"File with name {uploadFileRequest.Name} alredy exist");
         }
 
-        var randomFileName = Guid.NewGuid();
-        FileMetadata fileMetadata = new()
+        var writeToStoreResult = await WriteToStore(uploadFileRequest, fileStream, cancellationToken);
+        if (!writeToStoreResult.Succeeded)
         {
-            Id = randomFileName,
-            Name = fileName,
-            ContentTypeName = contentType,
+            return await Result<Guid>.ErrorAsync(writeToStoreResult.Code, writeToStoreResult.Messages.First());
+        }
+
+        return await WriteToDatabase(writeToStoreResult.Data, cancellationToken);
+    }
+
+    private async Task<Result<Guid>> WriteToDatabase(FileMetadata metadata, CancellationToken cancellationToken = default)
+    {
+        var contentTypeModel = await _unitOfWork.GetRepository<ContentType>().GetByNameAsync(metadata.ContentTypeName);
+        if (contentTypeModel is null)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Content type <{metadata.ContentTypeName}> not found.");
+
+        // TODO: Change to AspNet Core User                
+        var author = (await _unitOfWork.GetRepository<Author>().GetAllAsync()).First();
+        if (author is null)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Author not found.");
+
+        var file = new File
+        {
+            Id = metadata.Id,
+            Name = metadata.Name,
+            ContentTypeId = contentTypeModel.Id,
+            Hash = metadata.Hash,
+            Size = metadata.Size,
+            AuthorId = author.Id,
+            CreatedAt = DateTime.Now
         };
 
-        var saveToPath = Path.Combine(_path, randomFileName.ToString());
+        await _unitOfWork.GetRepository<File>().AddAsync(file);
+        if (await _unitOfWork.SaveContextAsync() <= 0)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
 
+        return await Result<Guid>.SuccessAsync(file.Id, "File created");
+    }
+
+
+    private async Task<Result<FileMetadata>> WriteToStore(UploadFileRequest uploadFileRequest, Stream fileStream, CancellationToken cancellationToken = default)
+    {
         try
         {
-            fileMetadata = await _fileStore.WriteAsync(saveToPath, sourceStream, fileMetadata, cancellationToken).ConfigureAwait(false);
-            if (await fileRepository.GetByHashAsync(fileMetadata.Hash) is File existingFile)
+            var id = Guid.NewGuid();
+            var path = Path.Combine(_path, id.ToString());
+            var fileWriteResult = await _fileStore.WriteAsync(path, fileStream, cancellationToken).ConfigureAwait(false);
+
+            var metadata = _mapper.Map<FileMetadata>(uploadFileRequest);
+            metadata.Id = id;
+            metadata.Size = fileWriteResult.Size;
+            metadata.Hash = fileWriteResult.Hash;
+
+            var metadataJsonString = JsonSerializer.Serialize(metadata);
+            _ = await _fileStore.WriteAsync(GetMetadataPath(path), metadataJsonString, cancellationToken).ConfigureAwait(false);
+
+            if (await _unitOfWork.GetRepository<File>().GetByHashAsync(metadata.Hash) is { } existingFile)
             {
                 string message = $"File with the same hash {existingFile.Hash} already exists with id: {existingFile.Id.ToString()}";
-                _fileStore.Delete(saveToPath);
-                _logger.LogInformation(message);
-                return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, message);
+                _fileStore.Delete(path);
+                _logger.LogError(message);
+                return await Result<FileMetadata>.ErrorAsync((int)ResultCodes.FileAlreadyExist, message);
             }
 
-            if (file is null)
-                return await AddAsync(fileMetadata, cancellationToken);
-
-            file.Hash = fileMetadata.Hash;
-            file.Size = fileMetadata.Size;
-            return await OverrideAsync(file, cancellationToken);
+            return metadata;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "File save error.");
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "File save error.");
+            _logger.LogError(ex, "Error when saving a file to storage");
         }
+        return await Result<FileMetadata>.ErrorAsync((int)ResultCodes.ApiError, "Error when saving a file to storage");
     }
+
+    // public async Task<Result<Guid>> UploadAsync2(Stream sourceStream, UploadFileRequest uploadFileRequest, CancellationToken cancellationToken = default)
+    // {
+    //     var fileRepository = _unitOfWork.GetRepository<File>();
+    //     var fileNameWithExension = Path.GetFileName(fileName);
+    //     var file = await fileRepository.GetByNameAsync(fileNameWithExension);
+
+    //     if (file is not null && !_overwrite)
+    //     {
+    //         _logger.LogInformation("File with name {fileNameWithExension} alredy exist", fileNameWithExension);
+    //         return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, $"File with name {fileNameWithExension} alredy exist");
+    //     }
+
+
+    //     FileMetadata fileMetadata = new()
+    //     {
+    //         Id = randomFileName,
+    //         Name = fileName,
+    //         ContentTypeName = contentType,
+    //     };
+
+
+
+
+    //     var saveToPath = Path.Combine(_path, randomFileName.ToString());
+
+    //     try
+    //     {
+    //         fileMetadata = await _fileStore.WriteAsync(saveToPath, sourceStream, fileMetadata, cancellationToken).ConfigureAwait(false);
+    //         if (await fileRepository.GetByHashAsync(fileMetadata.Hash) is File existingFile)
+    //         {
+    //             string message = $"File with the same hash {existingFile.Hash} already exists with id: {existingFile.Id.ToString()}";
+    //             _fileStore.Delete(saveToPath);
+    //             _logger.LogInformation(message);
+    //             return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, message);
+    //         }
+
+    //         if (file is null)
+    //             return await AddAsync(fileMetadata, cancellationToken);
+
+    //         file.Hash = fileMetadata.Hash;
+    //         file.Size = fileMetadata.Size;
+    //         return await OverrideAsync(file, cancellationToken);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         _logger.LogError(ex, "File save error.");
+    //         return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "File save error.");
+    //     }
+    // }
 
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -160,34 +262,6 @@ public class FileService : IFileService
         return await Result<Guid>.SuccessAsync($"File with ID {id} deleted");
     }
 
-    private async Task<Result<Guid>> AddAsync(FileMetadata fileMetadata, CancellationToken cancellationToken = default)
-    {
-        var contentTypeModel = await _unitOfWork.GetRepository<ContentType>().GetByNameAsync(fileMetadata.ContentTypeName);
-        if (contentTypeModel is null)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Content type <{fileMetadata.ContentTypeName}> not found.");
-
-        // TODO: Change to AspNet Core User                
-        var author = (await _unitOfWork.GetRepository<Author>().GetAllAsync()).First();
-        if (author is null)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Author not found.");
-
-        var file = new File
-        {
-            Id = fileMetadata.Id.Value,
-            Name = fileMetadata.Name,
-            ContentTypeId = contentTypeModel.Id,
-            Hash = fileMetadata.Hash,
-            Size = fileMetadata.Size,
-            AuthorId = author.Id,
-            CreatedAt = DateTime.Now
-        };
-
-        await _unitOfWork.GetRepository<File>().AddAsync(file);
-        if (await _unitOfWork.SaveContextAsync() <= 0)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
-
-        return await Result<Guid>.SuccessAsync(file.Id, "File created");
-    }
 
     private async Task<Result<Guid>> OverrideAsync(File file, CancellationToken cancellationToken = default)
     {
@@ -198,4 +272,7 @@ public class FileService : IFileService
 
         return await Result<Guid>.SuccessAsync(file.Id, "File overrided");
     }
+
+    private static string GetMetadataPath(string filePath)
+    => Path.ChangeExtension(filePath, "json");
 }

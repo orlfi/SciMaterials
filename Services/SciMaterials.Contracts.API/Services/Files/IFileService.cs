@@ -8,6 +8,7 @@ public interface IFileService : IService<Guid, GetFileResponse>
 {
     Task<Result<GetFileResponse>> GetByHashAsync(string hash);
     Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
-    Task<Result<Guid>> UploadAsync(Stream fileStream, string fileName, string contentType, CancellationToken cancellationToken = default);
-    GetFileStreamModel GetFileStream(Guid id);
+    Task<Result<Guid>> UploadAsync(Stream fileStream, UploadFileRequest uploadFileRequest, CancellationToken cancellationToken = default);
+    Task<Result<FileStreamInfo>> DownloadById(Guid id);
+    Task<Result<FileStreamInfo>> DownloadByHash(string hash);
 }

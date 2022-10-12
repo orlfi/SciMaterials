@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
@@ -34,18 +35,18 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     {
         _logger.LogDebug("Get file by hash");
 
-        var fileInfo = await _fileService.GetByHashAsync(hash);
-        var fileStream = _fileService.GetFileStream(fileInfo.Data.Id);
-        return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
+        var fileStreamInfoResult = await _fileService.DownloadByHash(hash);
+
+        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
     }
 
     [HttpGet("DownloadById/{id}")]
     public async Task<IActionResult> DownloadByIdAsync([FromRoute] Guid id)
     {
         _logger.LogDebug("Download by Id");
-        var fileInfo = await _fileService.GetByIdAsync(id);
-        var fileStream = _fileService.GetFileStream(id);
-        return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
+        var fileStreamInfoResult = await _fileService.DownloadById(id);
+
+        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
     }
 
     [DisableFormValueModelBinding]
