@@ -28,6 +28,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Data\SciMaterials.DAL.AUTH\SciMaterials.DAL.AUTH.csproj" />
+      <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     </ItemGroup>
 
 </Project>

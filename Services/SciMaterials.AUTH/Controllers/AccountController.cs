@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SciMaterials.Auth.Requests;
 using SciMaterials.Auth.Utilits;
+using SciMaterials.Contracts.API.Constants;
 
 namespace SciMaterials.Auth.Controllers;
 
@@ -11,7 +12,7 @@ namespace SciMaterials.Auth.Controllers;
 /// Контроллер для регистрации и авторизации в системе аутентификации
 /// </summary>
 [ApiController]
-[Route("[controller]")]
+[Route(AuthApiRoute.AuthControllerName)]
 public class AccountController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -43,7 +44,7 @@ public class AccountController : Controller
     /// <param name="registerUserRequest">Запрос пользователя</param>
     /// <returns>IActionResult</returns>
     [AllowAnonymous]
-    [HttpPost("Register")]
+    [HttpPost(AuthApiRoute.Register)]
     public async Task<IActionResult> RegisterAsync([FromBody] UserRequest registerUserRequest)
     {
         if (!string.IsNullOrEmpty(registerUserRequest.Email) ||
@@ -100,7 +101,7 @@ public class AccountController : Controller
     /// <param name="password">Пароль</param>
     /// <returns>IActionResult</returns>
     [AllowAnonymous]
-    [HttpPost("Login")]
+    [HttpPost(AuthApiRoute.Login)]
     public async Task<IActionResult> LoginAsync(string email, string password)
     {
         if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(password))
@@ -145,7 +146,7 @@ public class AccountController : Controller
     /// </summary>
     /// <returns>IActionResult</returns>
     [AllowAnonymous]
-    [HttpPost("Logout")]
+    [HttpPost(AuthApiRoute.Logout)]
     public async Task<IActionResult> LogoutAsync()
     {
         try
@@ -168,7 +169,7 @@ public class AccountController : Controller
     /// <param name="newPassword">Новый пароль</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin, user")]
-    [HttpPost("ChangePassword")]
+    [HttpPost(AuthApiRoute.ChangePassword)]
     public async Task<IActionResult> ChangePasswordAsync(string oldPassword, string newPassword)
     {
         if (!string.IsNullOrEmpty(oldPassword) || !string.IsNullOrEmpty(newPassword))
@@ -220,7 +221,7 @@ public class AccountController : Controller
     /// <param name="userId">Идентификатор пользователя в системе</param>
     /// <param name="confirmToken">Токен подтверждения</param>
     /// <returns>IActionResult</returns>
-    [HttpGet]
+    [HttpGet(AuthApiRoute.ConfirmEmail)]
     public async Task<IActionResult> ConfirmEmailAsync(string userId, string confirmToken)
     {
         if (!string.IsNullOrEmpty(userId) || !string.IsNullOrEmpty(confirmToken))
@@ -262,7 +263,7 @@ public class AccountController : Controller
     /// <param name="roleName">Название роли</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpPost("CreateRole")]
+    [HttpPost(AuthApiRoute.CreateRole)]
     public async Task<IActionResult> CreateRoleAsync(string roleName)
     {
         if (!string.IsNullOrEmpty(roleName))
@@ -294,7 +295,7 @@ public class AccountController : Controller
     /// </summary>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpGet("GetAllRoles")]
+    [HttpGet(AuthApiRoute.GetAllRoles)]
     public async Task<IActionResult> GetAllRolesAsync()
     {
         try
@@ -321,7 +322,7 @@ public class AccountController : Controller
     /// <param name="roleId">Идентификатор роли (не пользователя)</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpGet("GetRoleById")]
+    [HttpGet(AuthApiRoute.GetRoleById)]
     public async Task<IActionResult> GetRoleByIdAsync(string roleId)
     {
         if (!string.IsNullOrEmpty(roleId))
@@ -355,7 +356,7 @@ public class AccountController : Controller
     /// <param name="roleName">Название роли</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpPost("EditRoleById")]
+    [HttpPost(AuthApiRoute.EditRoleById)]
     public async Task<IActionResult> EditRoleByIdAsync(string roleId, string roleName)
     {
         //Это временная проверка
@@ -393,7 +394,7 @@ public class AccountController : Controller
     /// <param name="roleId">Идентификатор роли</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpDelete("DeleteRoleById")]
+    [HttpDelete(AuthApiRoute.DeleteRoleById)]
     public async Task<IActionResult> DeleteRoleByIdAsync(string roleId)
     {
         if (!string.IsNullOrEmpty(roleId))
@@ -434,7 +435,7 @@ public class AccountController : Controller
     /// <param name="roleName">Название роли</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpPost("AddRoleToUser")]
+    [HttpPost(AuthApiRoute.AddRoleToUser)]
     public async Task<IActionResult> AddRoleToUserAsync(string email, string roleName)
     {
         if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(roleName))
@@ -483,7 +484,7 @@ public class AccountController : Controller
     /// <param name="roleName">Название роли</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpDelete("DeleteUserRole")]
+    [HttpDelete(AuthApiRoute.DeleteUserRole)]
     public async Task<IActionResult> DeleteUserRoleAsync(string email, string roleName)
     {
         if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(roleName))
@@ -530,7 +531,7 @@ public class AccountController : Controller
     /// <param name="email">Почта пользователя</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpGet("ListOfUserRoles")]
+    [HttpGet(AuthApiRoute.ListOfUserRoles)]
     public async Task<IActionResult> ListOfUserRolesAsync(string email)
     {
         if (!string.IsNullOrEmpty(email))
@@ -572,7 +573,7 @@ public class AccountController : Controller
     /// <param name="create">Запрос админа</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpPost("CreateUser")]
+    [HttpPost(AuthApiRoute.CreateUser)]
     public async Task<IActionResult> CreateUserAsync([FromBody] UserRequest create)
     {
         if (!string.IsNullOrEmpty(create.Email) || 
@@ -593,7 +594,7 @@ public class AccountController : Controller
     /// <param name="email">Почта пользователя</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpPost("GetUserByEmail")]
+    [HttpPost(AuthApiRoute.GetUserByEmail)]
     public async Task<IActionResult> GetUserByEmailAsync(string email)
     {
         if (!string.IsNullOrEmpty(email))
@@ -625,7 +626,7 @@ public class AccountController : Controller
     /// </summary>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpPost("GetAllUsers")]
+    [HttpPost(AuthApiRoute.GetAllUsers)]
     public async Task<IActionResult> GetAllUsersAsync()
     {
         try
@@ -647,7 +648,7 @@ public class AccountController : Controller
     /// <param name="editUserRequest">Запрос админа</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpPost("EditUserByEmail")]
+    [HttpPost(AuthApiRoute.EditUserByEmail)]
     public async Task<IActionResult> EditUserByEmailAsync(string email, UserRequest editUserRequest)
     {
         if (!string.IsNullOrEmpty(email) || editUserRequest is not null)
@@ -692,7 +693,7 @@ public class AccountController : Controller
     /// <param name="email">Почта пользователя</param>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpDelete("DeleteUserByEmail")]
+    [HttpDelete(AuthApiRoute.DeleteUserByEmail)]
     public async Task<IActionResult> DeleteUserByEmail(string email)
     {
         if (!string.IsNullOrEmpty(email))
@@ -731,7 +732,7 @@ public class AccountController : Controller
     /// </summary>
     /// <returns>IActionResult</returns>
     [Authorize(Roles = "admin")]
-    [HttpDelete("DeleteUserWithOutConfirmation")]
+    [HttpDelete(AuthApiRoute.DeleteUserWithoutConfirmation)]
     public async Task<IActionResult> DeleteUsersWithOutConfirmation()
     {
         try
