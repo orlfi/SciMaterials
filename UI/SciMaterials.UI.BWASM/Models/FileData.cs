@@ -10,6 +10,7 @@ public class FileUploadData
         FileName = file.Name;
     }
 
+    public Guid Id { get; } = Guid.NewGuid();
     public IBrowserFile File { get; }
     public string FileName { get; set; }
     public string? Category { get; set; }

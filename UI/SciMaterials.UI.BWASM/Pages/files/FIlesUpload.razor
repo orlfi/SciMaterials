@@ -1,35 +1,68 @@
 ﻿@page "/files_upload"
 
-<div class="form-group">
-	<InputFile OnChange="OnFilesListChange" multiple/>
-	
-	<table>
-		<thead>
-		<tr>
-			<th>Group</th>
-			<th>FileName</th>
-		</tr>
-		</thead>
-		<tbody>
-		@foreach (var file in _files)
-		{
-			<tr>
-				<td>@file.Category</td>
-				<td>@file.FileName</td>
-			</tr>
-		}
-		</tbody>
-	</table>
-	
-	
+<MudDrawerContainer>
+	<MudDrawer @bind-Open="@_openFileDetails" Width="300px" Anchor="Anchor.Right" Variant="@DrawerVariant.Persistent">
+		<MudIconButton Variant="Variant.Filled" Size="Size.Medium" Icon="@Icons.Material.Filled.Close" OnClick="CloseFileDetails" />
+		
+		<MudForm Model="@_formModel" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
+			<MudTextField T="string" Label="FileName" @bind-Value="_formModel.FileName"
+			              Required="true" RequiredError="File cannot live without it's name!'" />
+
+			<MudTextField T="string" Label="Category" @bind-Value="_formModel.Category" />
+
+			<MudText>Size: @_formModel.Size</MudText>
+
+			<div>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!_fileDetailsFormFilledCorrectly)" Class="ml-auto" OnClick="SaveFormData">Save</MudButton>
+			</div>
+		</MudForm>   
+	</MudDrawer>
+
 	<div>
-		<button class="btn btn-info" disabled="@_files.Count > 0" @onclick="Upload">Send</button>
+		<div>
+			<InputFile id="fileInput" hidden OnChange="OnFilesListChange" multiple/>
+			<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled" Size="Size.Small" OnClick="Upload">Add more</MudButton>
+		</div>
+
+		<TableView Data="_files">
+			<TableHeader>
+				<MudTh>Name</MudTh>
+				<MudTh>Category</MudTh>
+				<MudTh>Size</MudTh>
+				<MudTh></MudTh>
+			</TableHeader>
+
+			<RowTemplate>
+				<MudTd DataLabel="Name">@context.FileName</MudTd>
+				<MudTd DataLabel="Category">@context.Category</MudTd>
+				<MudTd DataLabel="Size">@context.File.Size</MudTd>
+				<MudTd>
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Details(context)">Details</MudButton>
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
+				</MudTd>
+			</RowTemplate>
+		</TableView>
+
+		<div>
+			<MudButton Variant="Variant.Filled" Size="Size.Small" Disabled="@_cantUploadFiles" OnClick="Upload">Upload</MudButton>
+		</div>
 	</div>
-</div>
+</MudDrawerContainer>
 
 @code {
-	private List<FileUploadData> _files = new();
-	private FileUploadData _selectedFile;
+	private readonly List<FileUploadData> _files = new();
+
+	private bool _cantUploadFiles = true;
+
+	private UploadFileDetailsForm _formModel = UploadFileDetailsForm.Empty;
+	private bool _openFileDetails;
+	private bool _fileDetailsFormFilledCorrectly;
+	private string[] _fileDetailsFormError = { };
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		_cantUploadFiles = _files.Count <= 0;
+	}
 
 	private void OnFilesListChange(InputFileChangeEventArgs e)
 	{
@@ -40,10 +73,36 @@
 			FileUploadData data = new(file);
 			_files.Add(data);
 		}
+		StateHasChanged();
 	}
 
 	private void Upload()
 	{
 	}
 
+	private void Delete(FileUploadData context)
+	{
+		_files.Remove(context);
+		StateHasChanged();
+	}
+
+	private void Details(FileUploadData context)
+	{
+		_openFileDetails = true;
+		_formModel = context;
+	}
+
+	private void CloseFileDetails()
+	{
+		_formModel = UploadFileDetailsForm.Empty;
+		_openFileDetails = false;
+	}
+
+	private void SaveFormData()
+	{
+		var formData = _formModel;
+		CloseFileDetails();
+		var file = _files.Find(x => x.Id == formData.Id);
+		formData.UpdateSource(file);
+	}
 }
