@@ -4,7 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SciMaterials.ConsoleTests;
-using SciMaterials.ConsoleTests.Extensions;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.Result;
 using SciMaterials.DAL.Contexts;

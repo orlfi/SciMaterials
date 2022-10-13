@@ -6,6 +6,7 @@ namespace SciMaterials.UI.MVC.Controllers;
 public class FilesController : Controller
 {
     private readonly ILogger<FilesController> _logger;
+
     private static string? _message;
     private readonly IApiSettings _apiSettings;
 

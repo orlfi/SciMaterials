@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SciMaterials.DAL.Contexts;
 
-namespace SciMaterials.ConsoleTests.Extensions;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DbContextServiceCollectionExtension
 {

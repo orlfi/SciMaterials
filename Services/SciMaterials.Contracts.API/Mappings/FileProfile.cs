@@ -2,7 +2,7 @@
 using SciMaterials.Contracts.API.DTO.Files;
 using File = SciMaterials.DAL.Models.File;
 
-namespace SciMaterials.Contracts.API.Mappings;
+namespace SciMaterials.UI.MVC.API.Mappings;
 
 public class FileProfile:Profile
 {

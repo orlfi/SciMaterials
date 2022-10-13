@@ -3,10 +3,10 @@ using SciMaterials.Auth.Registrations;
 using SciMaterials.DAL.AUTH.Interfaces;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Interfaces;
-using SciMaterials.Services.API.Configuration;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
+using SciMaterials.Services.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,10 +34,10 @@ await using (var scope = app.Services.CreateAsyncScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
         await context.Database.MigrateAsync().ConfigureAwait(false);
+
+        var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
+        await authDb.InitializeAsync(builder.Configuration);
     }
-    
-    var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
-    await authDb.InitializeAsync(builder.Configuration);
     
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
     await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);

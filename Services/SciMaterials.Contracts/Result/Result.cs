@@ -26,7 +26,8 @@ public class Result : IResult
     /// <summary> Возращает успешный результат выполнения операции. Асинхронный. </summary>
     /// <returns> Результат операции. </returns>
     public static Task<Result> SuccessAsync() => Task.FromResult(Success());
-    
+
+
     /// <summary> Возращает успешный результат выполнения операции. Асинхронный. </summary>
     /// <param name="message"> Текствое сообщение о результате выполнения операции. </param>
     /// <returns> Результат операции. </returns>
@@ -86,4 +87,5 @@ public class Result<TData> : Result, IResult<TData>
     public static implicit operator Result<TData>(TData data) => new() { Succeeded = true, Data = data };
 
     public static implicit operator Result<TData>(ApiException exception) => new() { Succeeded = false, Code = exception.Code, Messages = new List<string> { exception.Message } };
+
 }
