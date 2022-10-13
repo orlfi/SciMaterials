@@ -21,12 +21,12 @@ public class YandexSore : IFileStore
         throw new NotImplementedException();
     }
 
-    public Task<WriteFileResult> WriteAsync(string path, string text, CancellationToken cancellationToken = default)
+    public Task<FileWriteResult> WriteAsync(string path, string text, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task<WriteFileResult> WriteAsync(string path, Stream stream, CancellationToken cancellationToken = default)
+    public Task<FileWriteResult> WriteAsync(string path, Stream stream, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

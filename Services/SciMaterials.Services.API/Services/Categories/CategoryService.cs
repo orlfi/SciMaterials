@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace SciMaterials.Services.API.Services.Categories;
 
@@ -52,9 +53,10 @@ public class CategoryService : ICategoryService
 
     public async Task<Result<Guid>> EditAsync(EditCategoryRequest request, CancellationToken cancellationToken = default)
     {
-        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(request.Id) is not { } category)
+        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(request.Id) is not { })
             return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {request.Id} not found");
 
+        var category = _mapper.Map<Category>(request);
         await _unitOfWork.GetRepository<Category>().UpdateAsync(category);
 
         if (await _unitOfWork.SaveContextAsync() > 0)

@@ -8,4 +8,7 @@ public static class WebApiRoute
 
     /// <summary> Сервис управления категориями </summary>
     public const string Categories = "api/categories";
+
+    /// <summary> Сервис управления пользователями </summary>
+    public const string Authors = "api/authors";
 }

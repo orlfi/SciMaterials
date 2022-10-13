@@ -3,10 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 using SciMaterials.Contracts.API.Extensions;
 using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.Services.Files;
+using SciMaterials.Contracts.API.Services.Authors;
 using SciMaterials.Data.Extensions;
 using SciMaterials.Domain.Extensions;
-using SciMaterials.Services.API.Services.Categories;
+using SciMaterials.Services.API.Services.Authors;
 using SciMaterials.Services.API.Services.Files;
+using SciMaterials.Services.API.Services.Categories;
 using SciMaterials.Services.API.Services.Files.Stores;
 using System.Reflection;
 
@@ -19,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IFileStore, FileSystemStore>();
         services.AddScoped<IFileService, FileService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IAuthorService, AuthorService>();
         services.AddRepositoryServices();
         services.AddContextMultipleProviders(configuration);
         services.AddDatabaseServices();

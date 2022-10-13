@@ -18,13 +18,13 @@ public class FileSystemStore : IFileStore
         _logger = logger;
     }
 
-    public async Task<WriteFileResult> WriteAsync(string path, string text, CancellationToken cancellationToken = default)
+    public async Task<FileWriteResult> WriteAsync(string path, string text, CancellationToken cancellationToken = default)
     {
         using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("string"));
         return await WriteAsync(path, memoryStream, cancellationToken);
     }
 
-    public async Task<WriteFileResult> WriteAsync(string path, Stream stream, CancellationToken cancellationToken = default)
+    public async Task<FileWriteResult> WriteAsync(string path, Stream stream, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -53,7 +53,7 @@ public class FileSystemStore : IFileStore
 
             var hashString = Convert.ToHexString(hash);
             _logger.LogDebug("The file was saved successfully.");
-            return new WriteFileResult(hashString, totalBytesRead);
+            return new FileWriteResult(hashString, totalBytesRead);
         }
         catch (Exception ex)
         {

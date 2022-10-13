@@ -19,5 +19,6 @@
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj" />
     <ProjectReference Include="..\SciMaterials.UI.BWASM\SciMaterials.UI.BWASM.csproj" />
+    <ProjectReference Include="..\..\data\migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj" />
   </ItemGroup>
 </Project>
