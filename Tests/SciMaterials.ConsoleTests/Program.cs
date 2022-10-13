@@ -54,8 +54,8 @@ internal class Program
             Console.WriteLine($"Comment id {changedComment.Id}: {commentEditRequest.Text}");
         }
 
-
-        UpdateWithRepo(host, changedComment);
+        UpdateWithPavelAlg(host, changedComment);
+        //UpdateWithRepo(host, changedComment);
         // UpdateWithContext(host, changedComment);
 
         Console.WriteLine("Press any key to exit...");
@@ -74,6 +74,61 @@ internal class Program
         Console.WriteLine(commentDb is null ? "Почему то удалилась!!!!" : $"DB comment text: {commentDb.Text}");
     }
 
+    static void UpdateWithPavelAlg(IHost host, Comment entity)
+    {
+        Console.WriteLine($"Change comment text: {entity.Text}");
+        using var scope = host.Services.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
+
+
+        // _logger.LogInformation($"{nameof(CommentRepository.UpdateAsync)}");
+
+        if (entity is null)
+        {
+            // _logger.LogError($"{nameof(CommentRepository.UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        // var entityDb = await context.GetByIdAsync(entity.Id, false);
+        IQueryable<Comment> query = context.Comments
+                .Where(c => c.Id == entity.Id);
+        // .Include(c => c.File)
+        // .Include(c => c.FileGroup)
+        // .Include(c => c.Author);
+
+        // Здесь ошибка !!!!!!!!!!!!!! Если включить отслеживание и с Include'ами, то удаляется!!!!!!!!!!!!!!!!
+        // query = query.AsNoTracking(); 
+
+        var entityDb = query.FirstOrDefault();
+
+        if (entityDb is null)
+        {
+            // _logger.LogdError($"{nameof(CommentRepository.UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        entityDb = UpdateCurrentEntity(entity, entityDb);
+        context.Comments.Update(entityDb);
+        context.SaveChanges();
+
+        var commentDb = context.Comments.Find(entity.Id); ;
+        Console.WriteLine(commentDb is null ? "Почему то удалилась!!!!" : $"DB comment text: {commentDb.Text}");
+    }
+
+    private static Comment UpdateCurrentEntity(Comment sourse, Comment recipient)
+    {
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.FileId = sourse.FileId;
+        recipient.File = sourse.File;
+        recipient.ParentId = sourse.ParentId;
+        recipient.Text = sourse.Text;
+        recipient.FileGroupId = sourse.FileGroupId;
+        recipient.FileGroup = sourse.FileGroup;
+        recipient.Author = sourse.Author;
+        recipient.AuthorId = sourse.AuthorId;
+
+        return recipient;
+    }
 
     static void UpdateWithContext(IHost host, Comment changedComment)
     {
