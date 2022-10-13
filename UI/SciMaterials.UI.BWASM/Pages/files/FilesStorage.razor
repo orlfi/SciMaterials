@@ -10,7 +10,32 @@
 @switch (_itemsPresentationMode)
 {
 	case ItemsPresentationMode.Table:
-		<FilesTableView Files="Files" OnFileSelected="NavigateToFileDetailsUrl"/>
+		<TableView Data="Files">
+			<TableHeader>
+				<MudTh></MudTh>
+				<MudTh>Name</MudTh>
+				<MudTh>Size</MudTh>
+				<MudTh></MudTh>
+			</TableHeader>
+
+			<RowTemplate>
+				@if (true)
+				{
+					<MudTd><MudIcon Icon="@Icons.Material.Filled.FilePresent" /></MudTd>
+				}
+				else
+				{
+					<MudTd><MudIcon Icon="@Icons.Material.Filled.Folder"/></MudTd>
+				}
+
+				<MudTd DataLabel="Name">@($"Name #{context}")</MudTd>
+				<MudTd DataLabel="Size">@($"{context} gb")</MudTd>
+				<MudTh>
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => NavigateToFileDetailsUrl(context)">Edit</MudButton>
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
+				</MudTh>
+			</RowTemplate>
+		</TableView>
 		break;
 	case ItemsPresentationMode.LargeGrid:
 		<FilesGridView Files="Files" OnFileSelected="NavigateToFileDetailsUrl"/>
@@ -38,5 +63,9 @@
 	private void ChangeItemsPresentationMode(ItemsPresentationMode mode)
 	{
 		_itemsPresentationMode = mode;
+	}
+
+	private void Delete(int context)
+	{
 	}
 }
