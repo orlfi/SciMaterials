@@ -1,12 +1,12 @@
 ﻿<div class="d-flex flex-row">
-	<NavLink class="nav-link" href="signin">
-		Sign In
-	</NavLink>
-	<NavLink class="nav-link" href="signup">
-		Sign Up
-	</NavLink>
+	<AuthorizeView>
+		<Authorized>
+			Hello, @context.User.Identity.Name!
+			<MudNavLink Class="rounded-lg" Href="logout" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout">LOGOUT</MudNavLink>
+		</Authorized>
+		<NotAuthorized>
+			<MudNavLink Class="rounded-lg" Href="signin" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Login">SIGN IN</MudNavLink>
+			<MudNavLink Class="rounded-lg" Href="signup" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AppRegistration">SIGN UP</MudNavLink>
+		</NotAuthorized>
+	</AuthorizeView>
 </div>
-
-@code {
-
-}

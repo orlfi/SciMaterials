@@ -1,0 +1,34 @@
+﻿<MudGrid Spacing="2" Justify="Justify.FlexStart">
+	@foreach (var id in Files)
+	{
+		<MudItem>
+			<MudButton Class="rounded-lg px-1 py-1" Variant="Variant.Text" Color="Color.Primary" OnClick="() => SelectFile(id)">
+				<MudPaper Height="100px" Width="150px">
+					@if (true)
+					{
+						<MudIcon Icon="@Icons.Material.Filled.FilePresent" Style="font-size: 4rem;"/>
+					}
+					else
+					{
+						<MudIcon Icon="@Icons.Material.Filled.Folder" Style="font-size: 4rem;"/>
+					}
+					<MudText Class="mx-1" Typo="Typo.subtitle1" Align="Align.Start">File name #@(id)</MudText>
+				</MudPaper>
+			</MudButton>
+		</MudItem>
+	}
+</MudGrid>
+
+@code {
+	[Parameter]
+	public List<int> Files { get; set; }
+
+	[Parameter]
+	public EventCallback<int> OnFileSelected { get; set; }
+
+	private async Task SelectFile(int file)
+	{
+		if (!OnFileSelected.HasDelegate) throw new InvalidOperationException($"You not subscribe to selection event from {GetType().FullName}");
+		await OnFileSelected.InvokeAsync(file);
+	}
+}
