@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\UI\SciMaterials.API\SciMaterials.API.csproj" />
+    <ProjectReference Include="..\..\..\UI\SciMaterials.UI.MVC\SciMaterials.UI.MVC.csproj" />
   </ItemGroup>
 
 </Project>
