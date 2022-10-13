@@ -5,7 +5,7 @@ using SciMaterials.Contracts.API.Services.Authors;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
-/// <summary> Service for working with categories. </summary>
+/// <summary> Service for working with authors. </summary>
 [ApiController]
 [Route(WebApiRoute.Authors)]
 public class AuthorsController : ApiBaseController<CategoriesController>

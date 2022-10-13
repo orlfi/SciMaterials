@@ -11,4 +11,7 @@ public static class WebApiRoute
 
     /// <summary> Сервис управления пользователями </summary>
     public const string Authors = "api/authors";
+
+    /// <summary> Сервис управления комментариями </summary>
+    public const string Comments = "api/comments";
 }
