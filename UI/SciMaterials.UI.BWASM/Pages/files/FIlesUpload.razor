@@ -1,7 +1,49 @@
 ﻿@page "/files_upload"
 
-<h3>FilesUpload</h3>
+<div class="form-group">
+	<InputFile OnChange="OnFilesListChange" multiple/>
+	
+	<table>
+		<thead>
+		<tr>
+			<th>Group</th>
+			<th>FileName</th>
+		</tr>
+		</thead>
+		<tbody>
+		@foreach (var file in _files)
+		{
+			<tr>
+				<td>@file.Category</td>
+				<td>@file.FileName</td>
+			</tr>
+		}
+		</tbody>
+	</table>
+	
+	
+	<div>
+		<button class="btn btn-info" disabled="@_files.Count > 0" @onclick="Upload">Send</button>
+	</div>
+</div>
 
 @code {
-	
+	private List<FileUploadData> _files = new();
+	private FileUploadData _selectedFile;
+
+	private void OnFilesListChange(InputFileChangeEventArgs e)
+	{
+		if (e.FileCount <= 0) return;
+
+		foreach (var file in e.GetMultipleFiles())
+		{
+			FileUploadData data = new(file);
+			_files.Add(data);
+		}
+	}
+
+	private void Upload()
+	{
+	}
+
 }
