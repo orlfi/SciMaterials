@@ -65,7 +65,6 @@ internal class Program
     {
         Console.WriteLine($"Change comment text: {changedComment.Text}");
         using var scope = host.Services.CreateAsyncScope();
-        var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<SciMaterialsContext>>();
 
         unitOfWork.GetRepository<Comment>().Update(changedComment);
