@@ -14,6 +14,8 @@ using SciMaterials.Contracts.API.Services.Comments;
 using SciMaterials.Services.API.Services.Comments;
 using SciMaterials.Contracts.API.Services.ContentTypes;
 using SciMaterials.Services.API.Services.ContentTypes;
+using SciMaterials.Contracts.API.Services.Tags;
+using SciMaterials.Services.API.Services.Tags;
 
 namespace SciMaterials.Services.API.Extensions;
 
@@ -27,6 +29,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IContentTypeService, ContentTypeService>();
+        services.AddScoped<ITagService, TagService>();
         services.AddRepositoryServices();
         services.AddContextMultipleProviders(configuration);
         services.AddDatabaseServices();

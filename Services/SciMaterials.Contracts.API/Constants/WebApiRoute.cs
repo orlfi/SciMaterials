@@ -17,4 +17,7 @@ public static class WebApiRoute
 
     /// <summary> Сервис управления типами содержимого файла </summary>
     public const string ContentTypes = "api/content_types";
+
+    /// <summary> Сервис управления ключевыми словами </summary>
+    public const string Tags = "api/tags";
 }
