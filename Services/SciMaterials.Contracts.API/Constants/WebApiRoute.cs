@@ -14,4 +14,7 @@ public static class WebApiRoute
 
     /// <summary> Сервис управления комментариями </summary>
     public const string Comments = "api/comments";
+
+    /// <summary> Сервис управления типами содержимого файла </summary>
+    public const string ContentTypes = "api/content_types";
 }

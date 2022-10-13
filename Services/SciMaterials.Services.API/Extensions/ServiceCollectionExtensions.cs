@@ -10,9 +10,10 @@ using SciMaterials.Services.API.Services.Authors;
 using SciMaterials.Services.API.Services.Files;
 using SciMaterials.Services.API.Services.Categories;
 using SciMaterials.Services.API.Services.Files.Stores;
-using System.Reflection;
 using SciMaterials.Contracts.API.Services.Comments;
 using SciMaterials.Services.API.Services.Comments;
+using SciMaterials.Contracts.API.Services.ContentTypes;
+using SciMaterials.Services.API.Services.ContentTypes;
 
 namespace SciMaterials.Services.API.Extensions;
 
@@ -25,6 +26,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<IContentTypeService, ContentTypeService>();
         services.AddRepositoryServices();
         services.AddContextMultipleProviders(configuration);
         services.AddDatabaseServices();
