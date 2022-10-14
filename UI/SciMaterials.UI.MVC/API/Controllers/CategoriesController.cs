@@ -61,4 +61,19 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     {
         return Ok(await _сategoryService.DeleteAsync(id));
     }
+
+    [HttpGet("tree/{Id}")]
+    //[ProducesResponseType(typeof(CategoryTree), StatusCodes.Status200OK)]
+    [ProducesDefaultResponseType(typeof(CategoryTree))]
+    public IActionResult GetCategoryTree(Guid Id)
+    {
+        var result = new CategoryTree(Guid.NewGuid(), "Test", Enumerable.Empty<CategotyTreeInfo>(), Enumerable.Empty<CategoryTreeFile>());
+        return Ok(result);
+    }
+
+    public record CategotyTreeInfo(Guid Id, string Name);
+
+    public record CategoryTree(Guid Id, string Name, IEnumerable<CategotyTreeInfo> SubCategories, IEnumerable<CategoryTreeFile> Files);
+
+    public record CategoryTreeFile(Guid Id, string Name);
 }
