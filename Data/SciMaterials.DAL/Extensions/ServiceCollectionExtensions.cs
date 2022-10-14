@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Implementation;
 using SciMaterials.DAL.InitializationDb.Interfaces;
 
-namespace SciMaterials.Domain.Extensions
+namespace SciMaterials.DAL.Extensions
 {
     public static class ServiceCollectionExtensions
     {
