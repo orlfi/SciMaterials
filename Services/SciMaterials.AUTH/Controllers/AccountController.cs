@@ -75,7 +75,19 @@ public class AccountController : Controller
                         HttpContext.Request.Scheme);
 
                     //TODO: В будущем сделать интеграцию по отправке email для подтвреждения
-                    return Ok($"Пройдите по ссылке, чтобы подтвердить ваш email: {callbackUrl}");
+                    //return Ok($"Пройдите по ссылке, чтобы подтвердить ваш email: {callbackUrl}");
+
+                    var confirmation_token = await _userManager.GenerateEmailConfirmationTokenAsync(identityResult);
+
+                    return Ok(new
+                    {
+                        Message = $"Пройдите по ссылке, чтобы подтвердить ваш email: {callbackUrl}",
+                        ConfirmationEmail = Url.Action(nameof(ConfirmEmailAsync), new
+                        {
+                            UserId       = identityUser.Id,
+                            confirmToken = confirmation_token,
+                        })
+                    });
                 }
             
                 _logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}", 

@@ -63,6 +63,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.FilesApiTests"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.BWASMTests", "Tests\UI\SciMaterials.BWASMTests\SciMaterials.BWASMTests.csproj", "{D07EAC80-5261-435E-B63B-3B1AA26E5226}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.WebApi.Clients", "Services\SciMaterials.WebApi.Clients\SciMaterials.WebApi.Clients.csproj", "{556FAED3-0ED4-4D95-8AAD-25F5681C6F8E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{D07EAC80-5261-435E-B63B-3B1AA26E5226}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D07EAC80-5261-435E-B63B-3B1AA26E5226}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D07EAC80-5261-435E-B63B-3B1AA26E5226}.Release|Any CPU.Build.0 = Release|Any CPU
+		{556FAED3-0ED4-4D95-8AAD-25F5681C6F8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{556FAED3-0ED4-4D95-8AAD-25F5681C6F8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{556FAED3-0ED4-4D95-8AAD-25F5681C6F8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{556FAED3-0ED4-4D95-8AAD-25F5681C6F8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,6 +189,7 @@ Global
 		{4EE84F04-0C3D-40E8-9B2A-B67180258A68} = {2DCB8316-A1A3-4A2A-9C6E-4C834963DAD1}
 		{4279349C-2BA7-4E65-BB83-8B2FDE1C687D} = {FBA8E49C-BBBF-47BE-B1DF-33AD5A56C91D}
 		{D07EAC80-5261-435E-B63B-3B1AA26E5226} = {4EE84F04-0C3D-40E8-9B2A-B67180258A68}
+		{556FAED3-0ED4-4D95-8AAD-25F5681C6F8E} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}
