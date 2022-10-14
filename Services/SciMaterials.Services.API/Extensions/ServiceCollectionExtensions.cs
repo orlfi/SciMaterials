@@ -4,11 +4,11 @@ using SciMaterials.Contracts.API.Extensions;
 using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Data.Extensions;
-using SciMaterials.Domain.Extensions;
 using SciMaterials.Services.API.Services.Categories;
 using SciMaterials.Services.API.Services.Files;
 using SciMaterials.Services.API.Services.Files.Stores;
 using System.Reflection;
+using SciMaterials.DAL.Extensions;
 
 namespace SciMaterials.Services.API.Extensions;
 
