@@ -1,7 +1,10 @@
-using SciMaterials.DAL.Extensions;
+using Microsoft.EntityFrameworkCore;
+using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
+using SciMaterials.Domain.Extensions;
 using SciMaterials.Services.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +25,17 @@ builder.Services.AddApiServices(builder.Configuration);
 
 var app = builder.Build();
 
-await app.UseInitializationDbAsync(builder.Configuration);
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    if (builder.Configuration["DbProvider"].Equals("SQLite"))
+    {
+        var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
+        await context.Database.MigrateAsync().ConfigureAwait(false);
+    }
+    
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+    await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
