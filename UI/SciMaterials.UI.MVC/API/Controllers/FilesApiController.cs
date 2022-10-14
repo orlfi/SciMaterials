@@ -83,11 +83,11 @@ public class FilesApiController : ApiBaseController<FilesApiController>
                 !string.IsNullOrEmpty(contentDisposition.FileName.Value))
             {
                 _logger.LogInformation("Section contains file {file}", contentDisposition.FileName.Value);
-                UploadFileRequest uploadFileRequest = new UploadFileRequest()
-                {
-                    Name = contentDisposition.FileName.Value,
-                    ContentTypeName = section.ContentType ?? "application/octet-stream"
-                };
+                if (section.Headers is null
+                    || !section.Headers.ContainsKey("Metadata")
+                    || System.Text.Json.JsonSerializer.Deserialize<UploadFileRequest>(section.Headers["Metadata"]) is not { } uploadFileRequest)
+                    return Ok(await Result.ErrorAsync((int)ResultCodes.NotFound, "Metadata not found"));
+
                 var result = await _fileService.UploadAsync(section.Body, uploadFileRequest).ConfigureAwait(false);
                 return Ok(result);
             }

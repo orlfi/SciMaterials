@@ -32,19 +32,19 @@ public class TagService : ITagService
 
     public async Task<Result<GetTagResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(id) is { } author)
-            return _mapper.Map<GetTagResponse>(author);
+        if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(id) is { } tag)
+            return _mapper.Map<GetTagResponse>(tag);
 
         return await Result<GetTagResponse>.ErrorAsync((int)ResultCodes.NotFound, $"Tag with ID {id} not found");
     }
 
     public async Task<Result<Guid>> AddAsync(AddTagRequest request, CancellationToken cancellationToken = default)
     {
-        var author = _mapper.Map<Tag>(request);
-        await _unitOfWork.GetRepository<Tag>().AddAsync(author);
+        var tag = _mapper.Map<Tag>(request);
+        await _unitOfWork.GetRepository<Tag>().AddAsync(tag);
 
         if (await _unitOfWork.SaveContextAsync() > 0)
-            return await Result<Guid>.SuccessAsync(author.Id, "Tag created");
+            return await Result<Guid>.SuccessAsync(tag.Id, "Tag created");
 
         return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
@@ -54,24 +54,24 @@ public class TagService : ITagService
         if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(request.Id) is not { })
             return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Tag with ID {request.Id} not found");
 
-        var author = _mapper.Map<Tag>(request);
-        await _unitOfWork.GetRepository<Tag>().UpdateAsync(author);
+        var tag = _mapper.Map<Tag>(request);
+        await _unitOfWork.GetRepository<Tag>().UpdateAsync(tag);
 
         if (await _unitOfWork.SaveContextAsync() > 0)
-            return await Result<Guid>.SuccessAsync(author.Id, "Tag updated");
+            return await Result<Guid>.SuccessAsync(tag.Id, "Tag updated");
 
         return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(id) is not { } author)
+        if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(id) is not { } tag)
             return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Tag with ID {id} not found");
 
-        await _unitOfWork.GetRepository<Tag>().DeleteAsync(author);
+        await _unitOfWork.GetRepository<Tag>().DeleteAsync(tag);
 
         if (await _unitOfWork.SaveContextAsync() > 0)
-            return await Result<Guid>.SuccessAsync($"Tag with ID {author.Id} deleted");
+            return await Result<Guid>.SuccessAsync($"Tag with ID {tag.Id} deleted");
 
         return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }

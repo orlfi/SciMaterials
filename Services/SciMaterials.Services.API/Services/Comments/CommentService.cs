@@ -75,7 +75,7 @@ public class CommentService : ICommentService
     private async Task<Result<Guid>> VerifyRelatedData(Comment comment)
     {
         if (await _unitOfWork.GetRepository<Author>().GetByIdAsync(comment.AuthorId) is not { } author)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Comment file with ID {comment.FileId} not found");
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Comment aгthor with ID {comment.FileId} not found");
         comment.Author = author;
 
         if (comment.FileId.HasValue && await _unitOfWork.GetRepository<DAL.Models.File>().GetByIdAsync(comment.FileId.Value) is not { })

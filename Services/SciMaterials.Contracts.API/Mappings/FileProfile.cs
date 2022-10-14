@@ -12,7 +12,10 @@ public class FileProfile : Profile
         CreateMap<File, GetFileResponse>().ReverseMap();
         CreateMap<File, EditFileRequest>().ReverseMap();
         CreateMap<UploadFileRequest, FileMetadata>().ReverseMap();
-        CreateMap<FileMetadata, File>().ForMember(dest => dest.Categories, opt => opt.Ignore()).ReverseMap();
+        CreateMap<FileMetadata, File>()
+            .ForMember(dest => dest.Categories, opt => opt.Ignore())
+            .ForMember(dest => dest.Tags, opt => opt.Ignore())
+            .ReverseMap();
         //CreateMap<File, FileMetadata>().ReverseMap();
     }
 
