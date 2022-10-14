@@ -11,6 +11,4 @@ public class File : Resource
 
     public ContentType? ContentType { get; set; }
     public FileGroup? FileGroup { get; set; }
-
-    public File() : base() { }
 }

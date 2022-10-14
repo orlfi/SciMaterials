@@ -4,13 +4,7 @@ namespace SciMaterials.DAL.Models;
 
 public class Tag : NamedModel
 {
-    public ICollection<File> Files { get; set; }
-    
-    public ICollection<FileGroup> FileGroups { get; set; }
+    public ICollection<File> Files { get; set; } = new HashSet<File>();
 
-    public Tag()
-    {
-        Files = new HashSet<File>();
-        FileGroups = new HashSet<FileGroup>();
-    }
+    public ICollection<FileGroup> FileGroups { get; set; } = new HashSet<FileGroup>();
 }
