@@ -9,7 +9,7 @@ using SciMaterials.DAL.AUTH.Context;
 
 namespace SciMaterials.MySql.Auth.Migrations.Migrations
 {
-    [DbContext(typeof(AuthMySqlDbContext))]
+    [DbContext(typeof(AuthDbContext))]
     partial class AuthDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

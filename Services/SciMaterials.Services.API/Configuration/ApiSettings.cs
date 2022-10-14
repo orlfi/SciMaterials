@@ -1,6 +1,6 @@
 using SciMaterials.Contracts.API.Settings;
 
-namespace SciMaterials.Services.Configuration;
+namespace SciMaterials.Services.API.Configuration;
 
 public class ApiSettings : IApiSettings
 {

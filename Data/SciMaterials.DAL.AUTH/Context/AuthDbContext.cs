@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SciMaterials.DAL.AUTH.Context;
 
-public class AuthSqliteDbContext : IdentityDbContext<IdentityUser>
+public class AuthDbContext : IdentityDbContext<IdentityUser>
 {
-    public AuthSqliteDbContext(DbContextOptions<AuthSqliteDbContext> options) : base(options)
+    public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
     { }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -16,7 +16,7 @@ public static class AuthRolesInitializer
         RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
     {
-        var adminSettings = configuration.GetSection("AdminSettings");
+        var adminSettings = configuration.GetSection("AuthApiSettings:AdminSettings");
         string adminEmail = adminSettings["login"];
         string adminPassword = adminSettings["password"];
         
@@ -35,7 +35,7 @@ public static class AuthRolesInitializer
         //Супер админ
         if (await userManager.FindByNameAsync(adminEmail) is null)
         {
-            var superAdmin = new IdentityUser
+            var superAdmin = new IdentityUser()
             {
                 Email = adminEmail, 
                 UserName = adminEmail

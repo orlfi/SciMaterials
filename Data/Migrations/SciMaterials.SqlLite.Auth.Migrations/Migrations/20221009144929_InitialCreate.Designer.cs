@@ -10,7 +10,7 @@ using SciMaterials.DAL.AUTH.Context;
 
 namespace SciMaterials.SqlLite.Auth.Migrations.Migrations
 {
-    [DbContext(typeof(AuthSqliteDbContext))]
+    [DbContext(typeof(AuthDbContext))]
     [Migration("20221009144929_InitialCreate")]
     partial class InitialCreate
     {

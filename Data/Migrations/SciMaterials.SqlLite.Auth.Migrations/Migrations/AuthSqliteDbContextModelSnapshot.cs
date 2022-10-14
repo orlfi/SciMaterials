@@ -9,7 +9,7 @@ using SciMaterials.DAL.AUTH.Context;
 
 namespace SciMaterials.SqlLite.Auth.Migrations.Migrations
 {
-    [DbContext(typeof(AuthSqliteDbContext))]
+    [DbContext(typeof(AuthDbContext))]
     partial class AuthSqliteDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
