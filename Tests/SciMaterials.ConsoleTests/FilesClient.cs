@@ -10,7 +10,7 @@ public class FilesClient
 
     public FilesClient(HttpClient Http) => this.Http = Http;
 
-    public async Task<Result<Guid>> UploadAsync(string FilePath, string payload, CancellationToken Cancel = default)
+    public async Task<Result<Guid>> UploadAsync(string FilePath, string metadata, CancellationToken Cancel = default)
     {
         var fileInfo = new FileInfo(FilePath);
 
@@ -19,7 +19,7 @@ public class FilesClient
         await using var fileStream = File.OpenRead(FilePath);
         var streamContent = new StreamContent(fileStream);
 
-        streamContent.Headers.Add("Payload", payload);
+        streamContent.Headers.Add("Metadata", metadata);
         multipartFormDataContent.Add(streamContent, "file", fileInfo.Name);
 
         var response = await Http.PostAsync("api/files/upload", multipartFormDataContent, Cancel);

@@ -40,7 +40,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     await authDb.InitializeAsync(builder.Configuration);
     
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);
+    await dbInitializer.InitializeDbAsync(removeAtStart: false, useDataSeeder: false).ConfigureAwait(false);
 }
 
 
@@ -70,3 +70,7 @@ app.MapFallbackToFile("index.html");
 app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
 
 app.Run();
+
+
+// Required mark for integration tests
+public partial class Program{}

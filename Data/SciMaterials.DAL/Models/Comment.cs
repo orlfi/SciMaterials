@@ -15,7 +15,4 @@ public class Comment : BaseModel
     public Author Author { get; set; } = null!;
     public File? File { get; set; } = null!;
     public FileGroup? FileGroup { get; set; } = null!;
-    public Comment()
-    {
-    }
 }

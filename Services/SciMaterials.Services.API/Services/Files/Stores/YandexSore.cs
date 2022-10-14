@@ -1,4 +1,4 @@
-using SciMaterials.Contracts.API.DTO.Files;
+using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 
 namespace SciMaterials.Services.API.Services.Files.Stores;
@@ -20,12 +20,12 @@ public class YandexSore : IFileStore
         throw new NotImplementedException();
     }
 
-    public Task<FileMetadata> WriteAsync(string path, Stream stream, FileMetadata metadata, CancellationToken cancellationToken = default)
+    public Task<FileWriteResult> WriteAsync(string path, string text, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public Task WriteMetadataAsync<T>(string path, T data, CancellationToken cancellationToken = default)
+    public Task<FileWriteResult> WriteAsync(string path, Stream stream, CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

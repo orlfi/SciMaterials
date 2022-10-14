@@ -24,7 +24,7 @@ public class RatingRepository : IRatingRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogDebug($"Логгер встроен в {nameof(RatingRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(RatingRepository)}");
 
         _context = context;
     }
@@ -33,9 +33,14 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Rating entity)
     {
-        _logger.LogDebug(nameof(Add));
+        _logger.LogInformation($"{nameof(Add)}");
 
-        if (entity is null) return;
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(Add)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
         _context.Ratings.Add(entity);
     }
 
@@ -43,9 +48,14 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Rating entity)
     {
-        _logger.LogDebug(nameof(AddAsync));
+        _logger.LogInformation($"{nameof(AddAsync)}");
 
-        if (entity is null) return;
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(AddAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
         await _context.Ratings.AddAsync(entity);
     }
 
@@ -53,8 +63,15 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Rating entity)
     {
-        _logger.LogDebug(nameof(Delete));
-        if (entity is null || entity.Id == default) return;
+        _logger.LogInformation($"{nameof(Delete)}");
+
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        if (entity.Id == default) return;
         Delete(entity.Id);
     }
 
@@ -62,8 +79,15 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Rating entity)
     {
-        _logger.LogDebug(nameof(DeleteAsync));
-        if (entity is null || entity.Id == default) return;
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
+
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        if (entity.Id == default) return;
         await DeleteAsync(entity.Id);
     }
 
@@ -71,171 +95,161 @@ public class RatingRepository : IRatingRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogDebug(nameof(Delete));
+        _logger.LogInformation($"{nameof(Delete)}");
 
-        var RatingDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
-        if (RatingDb is null) return;
-        _context.Ratings.Remove(RatingDb);
+        var entityDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        _context.Ratings.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogDebug(nameof(DeleteAsync));
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
-        var RatingDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
-        if (RatingDb is null) return;
-        _context.Ratings.Remove(RatingDb);
+        var entityDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        _context.Ratings.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<Rating>? GetAll(bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetAll));
+        IQueryable<Rating> query = _context.Ratings
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .Include(r => r.FileGroup);
 
         if (DisableTracking)
-            return _context.Ratings
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .AsNoTracking()
-                .ToList();
-        else
-            return _context.Ratings
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .ToList();
+            query = query.AsNoTracking();
+
+        return query.ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<Rating>?> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetAllAsync));
+        IQueryable<Rating> query = _context.Ratings
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .Include(r => r.FileGroup);
 
         if (DisableTracking)
-            return await _context.Ratings
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .AsNoTracking()
-                .ToListAsync();
-        else
-            return await _context.Ratings
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .ToListAsync();
+            query = query.AsNoTracking();
+
+        return await query.ToListAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
     public Rating? GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetById));
+        IQueryable<Rating> query = _context.Ratings
+                .Where(c => c.Id == id)
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .Include(r => r.FileGroup);
 
         if (DisableTracking)
-            return _context.Ratings
-                .Where(c => c.Id == id)
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .AsNoTracking()
-                .FirstOrDefault()!;
-        else
-            return _context.Ratings
-                .Where(c => c.Id == id)
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .FirstOrDefault()!;
+            query = query.AsNoTracking();
+
+        return query.FirstOrDefault();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<Rating?> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetByIdAsync));
+        IQueryable<Rating> query = _context.Ratings
+                .Where(c => c.Id == id)
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .Include(r => r.FileGroup);
 
         if (DisableTracking)
-            return (await _context.Ratings
-                .Where(c => c.Id == id)
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .AsNoTracking()
-                .FirstOrDefaultAsync())!;
-        else
-            return (await _context.Ratings
-                .Where(c => c.Id == id)
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup)
-                .FirstOrDefaultAsync())!;
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Rating entity)
     {
-        _logger.LogDebug(nameof(Update));
+        _logger.LogInformation($"{nameof(Update)}");
 
-        if (entity is null) return;
-        var RatingDb = GetById(entity.Id, false);
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
 
-        RatingDb = UpdateCurrentEntity(entity, RatingDb!);
-        _context.Ratings.Update(RatingDb);
+        var entityDb = GetById(entity.Id, false);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        entityDb = UpdateCurrentEntity(entity, entityDb);
+        _context.Ratings.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Rating entity)
     {
-        _logger.LogDebug(nameof(UpdateAsync));
+        _logger.LogInformation($"{nameof(UpdateAsync)}");
 
-        if (entity is null) return;
-        var RatingDb = await GetByIdAsync(entity.Id, false);
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
 
-        RatingDb = UpdateCurrentEntity(entity, RatingDb!);
-        _context.Ratings.Update(RatingDb);
+        var entityDb = await GetByIdAsync(entity.Id, false);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        entityDb = UpdateCurrentEntity(entity, entityDb);
+        _context.Ratings.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Rating?> GetByNameAsync(string name, bool DisableTracking = true)
-    {
-        _logger.LogDebug(nameof(GetByNameAsync));
-
-        return null!;
-    }
+    public async Task<Rating?> GetByNameAsync(string name, bool DisableTracking = true) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Rating? GetByName(string name, bool DisableTracking = true)
-    {
-        _logger.LogDebug(nameof(GetByName));
-
-        return null!;
-    }
+    public Rating? GetByName(string name, bool DisableTracking = true) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Rating?> GetByHashAsync(string hash, bool DisableTracking = true)
-    {
-        _logger.LogDebug(nameof(GetByHashAsync));
-        return null!;
-    }
+    public async Task<Rating?> GetByHashAsync(string hash, bool DisableTracking = true) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Rating? GetByHash(string hash, bool DisableTracking = true)
-    {
-        _logger.LogDebug(nameof(GetByHash));
-        return null!;
-    }
+    public Rating? GetByHash(string hash, bool DisableTracking = true) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
