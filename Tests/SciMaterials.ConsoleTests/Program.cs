@@ -1,17 +1,13 @@
 #region usings
-using AutoMapper;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SciMaterials.ConsoleTests;
-using SciMaterials.Contracts.API.DTO.Files;
-using SciMaterials.Contracts.Result;
-using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Implementation;
 using SciMaterials.DAL.InitializationDb.Interfaces;
-using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Services.API.Extensions;
-using File = SciMaterials.DAL.Models.File;
+
 #endregion
 
 const string path = @"d:\tmp\test.txt";

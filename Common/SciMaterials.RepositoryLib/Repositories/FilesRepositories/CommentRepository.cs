@@ -32,11 +32,11 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Comment entity)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.Add)}");
+        _logger.LogInformation($"{nameof(Add)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.Add)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Add)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -47,11 +47,11 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Comment entity)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.AddAsync)}");
+        _logger.LogInformation($"{nameof(AddAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.AddAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(AddAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -62,11 +62,11 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Comment entity)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.Delete)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -78,11 +78,11 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Comment entity)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.DeleteAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -94,13 +94,13 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         var entityDb = _context.Comments.FirstOrDefault(c => c.Id == id);
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.Delete)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -111,13 +111,13 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         var entityDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.DeleteAsync)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -190,11 +190,11 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Comment entity)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.Update)}");
+        _logger.LogInformation($"{nameof(Update)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.Update)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -202,7 +202,7 @@ public class CommentRepository : ICommentRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -214,11 +214,11 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Comment entity)
     {
-        _logger.LogInformation($"{nameof(CommentRepository.UpdateAsync)}");
+        _logger.LogInformation($"{nameof(UpdateAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -226,7 +226,7 @@ public class CommentRepository : ICommentRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(CommentRepository.UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 

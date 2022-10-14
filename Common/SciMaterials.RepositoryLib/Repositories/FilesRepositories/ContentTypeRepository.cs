@@ -32,11 +32,11 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(ContentType entity)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.Add)}");
+        _logger.LogInformation($"{nameof(Add)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.Add)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Add)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -47,11 +47,11 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(ContentType entity)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.AddAsync)}");
+        _logger.LogInformation($"{nameof(AddAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.AddAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(AddAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -62,11 +62,11 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(ContentType entity)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.Delete)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -78,11 +78,11 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(ContentType entity)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.DeleteAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -94,13 +94,13 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         var ContentTypeDb = _context.ContentTypes.FirstOrDefault(c => c.Id == id);
 
         if (ContentTypeDb is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.Delete)} >>> argumentNullException {nameof(ContentTypeDb)}");
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(ContentTypeDb)}");
             throw new ArgumentNullException(nameof(ContentTypeDb));
         }
 
@@ -111,13 +111,13 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         var ContentTypeDb = await _context.ContentTypes.FirstOrDefaultAsync(c => c.Id == id);
 
         if (ContentTypeDb is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.DeleteAsync)} >>> argumentNullException {nameof(ContentTypeDb)}");
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(ContentTypeDb)}");
             throw new ArgumentNullException(nameof(ContentTypeDb));
         }
 
@@ -182,11 +182,11 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(ContentType entity)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.Update)}");
+        _logger.LogInformation($"{nameof(Update)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.Update)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -194,7 +194,7 @@ public class ContentTypeRepository : IContentTypeRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -206,11 +206,11 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(ContentType entity)
     {
-        _logger.LogInformation($"{nameof(ContentTypeRepository.UpdateAsync)}");
+        _logger.LogInformation($"{nameof(UpdateAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -218,7 +218,7 @@ public class ContentTypeRepository : IContentTypeRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(ContentTypeRepository.UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 

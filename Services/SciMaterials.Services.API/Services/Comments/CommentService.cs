@@ -7,7 +7,6 @@ using SciMaterials.Contracts.API.Services.Comments;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.Comments;
-using SciMaterials.DAL.Repositories.FilesRepositories;
 
 namespace SciMaterials.Services.API.Services.Comments;
 

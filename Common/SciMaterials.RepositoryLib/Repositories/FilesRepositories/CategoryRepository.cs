@@ -33,11 +33,11 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Category entity)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.Add)}");
+        _logger.LogInformation($"{nameof(Add)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.Add)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Add)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -48,11 +48,11 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Category entity)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.AddAsync)}");
+        _logger.LogInformation($"{nameof(AddAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.AddAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(AddAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -63,11 +63,11 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Category entity)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.Delete)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -79,11 +79,11 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Category entity)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.DeleteAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -95,7 +95,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         var categoryDb = _context.Categories.FirstOrDefault(c => c.Id == id);
         if (categoryDb is null) return;
@@ -106,7 +106,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         var categoryDb = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
         if (categoryDb is null) return;
@@ -205,11 +205,11 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Category entity)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.Update)}");
+        _logger.LogInformation($"{nameof(Update)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.Update)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -217,7 +217,7 @@ public class CategoryRepository : ICategoryRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -229,11 +229,11 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Category entity)
     {
-        _logger.LogInformation($"{nameof(CategoryRepository.UpdateAsync)}");
+        _logger.LogInformation($"{nameof(UpdateAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -241,7 +241,7 @@ public class CategoryRepository : ICategoryRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(CategoryRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 

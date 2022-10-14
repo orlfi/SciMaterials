@@ -1,5 +1,3 @@
-using Microsoft.VisualBasic;
-
 namespace SciMaterials.Contracts.API.Settings;
 
 public interface IApiSettings

@@ -1,4 +1,3 @@
-using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 

@@ -31,11 +31,11 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Author entity)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.Add)}");
+        _logger.LogInformation($"{nameof(Add)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.Add)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Add)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -46,11 +46,11 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Author entity)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.AddAsync)}");
+        _logger.LogInformation($"{nameof(AddAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.AddAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(AddAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -61,11 +61,11 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Author entity)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.Delete)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -77,11 +77,11 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Author entity)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.DeleteAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -93,13 +93,13 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.Delete)}");
+        _logger.LogInformation($"{nameof(Delete)}");
 
         var entityDb = _context.Authors.FirstOrDefault(c => c.Id == id);
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.Delete)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -110,13 +110,13 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.DeleteAsync)}");
+        _logger.LogInformation($"{nameof(DeleteAsync)}");
 
         var entityDb = await _context.Authors.FirstOrDefaultAsync(c => c.Id == id);
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.DeleteAsync)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -193,11 +193,11 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Author entity)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.Update)}");
+        _logger.LogInformation($"{nameof(Update)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.Update)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -205,7 +205,7 @@ public class AuthorRepository : IAuthorRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
@@ -217,11 +217,11 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Author entity)
     {
-        _logger.LogInformation($"{nameof(AuthorRepository.UpdateAsync)}");
+        _logger.LogInformation($"{nameof(UpdateAsync)}");
 
         if (entity is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
 
@@ -229,7 +229,7 @@ public class AuthorRepository : IAuthorRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(AuthorRepository.UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
