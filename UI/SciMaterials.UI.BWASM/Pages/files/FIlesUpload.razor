@@ -1,4 +1,5 @@
 ﻿@page "/files_upload"
+@inject FileUploadScheduleService FileUploadScheduleService
 
 <MudDrawerContainer>
 	<MudDrawer @bind-Open="@_openFileDetails" Width="300px" Anchor="Anchor.Right" Variant="@DrawerVariant.Persistent">
@@ -78,6 +79,7 @@
 
 	private void Upload()
 	{
+		FileUploadScheduleService.ScheduleUpload(_files);
 	}
 
 	private void Delete(FileUploadData context)

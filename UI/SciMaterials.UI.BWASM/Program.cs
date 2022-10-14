@@ -19,4 +19,7 @@ builder.Services
     .AddScoped<IAuthenticationService, TestAuthenticationService>()
     .AddScoped<AuthenticationStateProvider, TestAuthenticationStateProvider>();
 
+builder.Services
+    .AddSingleton<FileUploadScheduleService>();
+
 await builder.Build().RunAsync();

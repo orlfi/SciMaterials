@@ -14,4 +14,8 @@
     <PackageReference Include="MudBlazor" Version="6.0.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
+  </ItemGroup>
+
 </Project>
