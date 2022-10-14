@@ -25,6 +25,7 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
 {
     services.AddContextMultipleProviders(context);
     services.AddTransient<IDbInitializer, DbInitializer>();
+    services.AddScoped<AddFileWithCategories>();
     services.AddApiServices(context.Configuration);
 }
 
@@ -34,9 +35,13 @@ await using (var scope = host.Services.CreateAsyncScope())
 {
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
     await dbInitializer.InitializeDbAsync(removeAtStart: false, useDataSeeder: false);
+    var service = scope.ServiceProvider.GetRequiredService<AddFileWithCategories>();
+    await service.AddFileToDatabase("test.txt");
+
 }
 var httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5185/") };
-var sendFileTest = new SendFileTest(httpClient, host.Services);
-await sendFileTest.SendFile("test.txt");
+// var sendFileTest = new SendFileTest(httpClient, host.Services);
+// await sendFileTest.SendFile("test.txt");
+
 Console.WriteLine("Press any key to exit...");
 Console.ReadKey();

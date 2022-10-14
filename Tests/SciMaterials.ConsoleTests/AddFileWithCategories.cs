@@ -1,0 +1,54 @@
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SciMaterials.Contracts.API.DTO.Files;
+using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Models;
+using SciMaterials.DAL.UnitOfWork;
+
+namespace SciMaterials.ConsoleTests;
+
+public class AddFileWithCategories
+{
+    private readonly IServiceProvider _services;
+    private readonly SciMaterialsContext _context;
+
+    public AddFileWithCategories(SciMaterialsContext context)
+    {
+        // _services = services;
+        _context = context;
+    }
+
+    public async Task AddFileToDatabase(string path)
+    {
+        Guid categoryId = Guid.NewGuid();
+        try
+        {
+            var author = await _context.Set<Author>().FirstAsync();
+            var contentType = await _context.Set<ContentType>().FirstAsync();
+            var category = await _context.Set<Category>().FirstAsync();
+
+            var fileInfo = new FileInfo(path);
+            var file = new DAL.Models.File
+            {
+                Id = Guid.NewGuid(),
+                Name = fileInfo.Name,
+                Title = "Файл " + fileInfo.Name,
+                Description = "Содержит файл " + fileInfo.Name,
+                Size = fileInfo.Length,
+                Tags = null,
+                Categories = new List<Category>() { category },
+                ContentType = contentType,
+                Author = author
+            };
+
+            await _context.Set<DAL.Models.File>().AddAsync(file);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message + ">>>" + ex.InnerException.Message);
+        }
+    }
+}
