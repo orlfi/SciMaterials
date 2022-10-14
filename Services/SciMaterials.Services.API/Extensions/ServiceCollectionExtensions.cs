@@ -5,17 +5,12 @@ using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.API.Services.Authors;
 using SciMaterials.Data.Extensions;
-using SciMaterials.Domain.Extensions;
-using SciMaterials.Services.API.Services.Authors;
+using SciMaterials.Services.API.Services.Categories;
 using SciMaterials.Services.API.Services.Files;
 using SciMaterials.Services.API.Services.Categories;
 using SciMaterials.Services.API.Services.Files.Stores;
-using SciMaterials.Contracts.API.Services.Comments;
-using SciMaterials.Services.API.Services.Comments;
-using SciMaterials.Contracts.API.Services.ContentTypes;
-using SciMaterials.Services.API.Services.ContentTypes;
-using SciMaterials.Contracts.API.Services.Tags;
-using SciMaterials.Services.API.Services.Tags;
+using System.Reflection;
+using SciMaterials.DAL.Extensions;
 
 namespace SciMaterials.Services.API.Extensions;
 
