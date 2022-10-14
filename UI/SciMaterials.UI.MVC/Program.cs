@@ -31,9 +31,9 @@ await using (var scope = app.Services.CreateAsyncScope())
         var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
         await context.Database.MigrateAsync().ConfigureAwait(false);
     }
-    
+
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);
+    await dbInitializer.InitializeDbAsync(removeAtStart: false, useDataSeeder: false).ConfigureAwait(false);
 }
 
 
