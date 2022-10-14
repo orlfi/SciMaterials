@@ -69,11 +69,7 @@
 	{
 		if (e.FileCount <= 0) return;
 
-		foreach (var file in e.GetMultipleFiles())
-		{
-			FileUploadData data = new(file);
-			_files.Add(data);
-		}
+		_files.AddRange(e.GetMultipleFiles().Select(file => new FileUploadData(file)));
 		StateHasChanged();
 	}
 
