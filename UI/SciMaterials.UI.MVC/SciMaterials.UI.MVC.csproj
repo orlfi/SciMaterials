@@ -8,22 +8,25 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.Data.MySqlMigrations\SciMaterials.Data.MySqlMigrations.csproj" />
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj" />
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.PostgresqlMigrations\SciMaterials.PostgresqlMigrations.csproj" />
-    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.SQLiteMigrations\SciMaterials.SQLiteMigrations.csproj" />
-    <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
+    <ProjectReference Include="..\..\SciMaterials.Contracts.Database\SciMaterials.Contracts.Database.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services\SciMaterials.Services.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj" />
     <ProjectReference Include="..\SciMaterials.UI.BWASM\SciMaterials.UI.BWASM.csproj" />
   </ItemGroup>
+
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>
