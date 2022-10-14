@@ -37,27 +37,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.SQLiteMigratio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{7E25424F-B3C1-4CB5-B034-36AF7169CCAA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SciMaterials.Contracts", "SciMaterials.Contracts", "{533D93AD-F53A-466F-A72E-B01A46DD1BA0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts", "Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj", "{39AC126E-2478-458D-BE35-99B1D6273654}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SciMaterials.Contracts.API", "SciMaterials.Contracts.API", "{D072DC23-4B16-434F-90BD-AD4769328611}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.API", "Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj", "{636F7D35-E426-4ED7-B1F2-4ACCF2F3DFCB}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SciMaterials.Services", "SciMaterials.Services", "{1C5A4765-842B-41F1-88BA-A646C749FDC7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services", "Services\SciMaterials.Services\SciMaterials.Services.csproj", "{28CD5228-169B-44D9-A9E6-530A19D13CCF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SciMaterials.Services.API", "SciMaterials.Services.API", "{7BA4158F-AF01-4B8C-961A-B8D6475B3A87}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.API", "Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj", "{791878C5-1827-4303-8D39-32F21A2BD878}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{3F608516-84D2-44AD-9DA4-866738934F00}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SciMaterials.Domain", "SciMaterials.Domain", "{478EB56B-1699-4306-83AB-C29A221E6F21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts", "Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj", "{7D411AA1-A9BA-42A8-8770-5DF4329D52E1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Domain", "Common\SciMaterials.Domain\SciMaterials.Domain.csproj", "{6CB9BA36-2C97-4F5C-B71E-C9ED0284A234}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.API", "Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj", "{D0919824-BE2E-4D38-BD43-61635F8C5E8F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services", "Services\SciMaterials.Services\SciMaterials.Services.csproj", "{37B54EA2-E1E2-47A2-BEA7-1E7225CCFB32}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.API", "Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj", "{640FAECF-07DD-4C63-99E7-432DBBC418BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Domain", "Common\SciMaterials.Domain\SciMaterials.Domain.csproj", "{E482BB29-B6F7-40DE-992C-9D1EEB5F8FC0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SciMaterials.Contracts.Database", "SciMaterials.Contracts.Database", "{7E21B62F-A88B-46D0-96E2-CB2C5CD5368B}"
 EndProject
