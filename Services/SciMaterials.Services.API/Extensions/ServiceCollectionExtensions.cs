@@ -11,6 +11,13 @@ using SciMaterials.Services.API.Services.Categories;
 using SciMaterials.Services.API.Services.Files.Stores;
 using System.Reflection;
 using SciMaterials.DAL.Extensions;
+using SciMaterials.Services.API.Services.Authors;
+using SciMaterials.Contracts.API.Services.Comments;
+using SciMaterials.Services.API.Services.Comments;
+using SciMaterials.Contracts.API.Services.ContentTypes;
+using SciMaterials.Services.API.Services.ContentTypes;
+using SciMaterials.Contracts.API.Services.Tags;
+using SciMaterials.Services.API.Services.Tags;
 
 namespace SciMaterials.Services.API.Extensions;
 
