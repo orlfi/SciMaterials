@@ -63,3 +63,7 @@ app.MapFallbackToFile("index.html");
 app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
 
 app.Run();
+
+
+// Required mark for integration tests
+public partial class Program{}
