@@ -77,7 +77,7 @@ public class AccountController : Controller
                     //TODO: В будущем сделать интеграцию по отправке email для подтвреждения
                     //return Ok($"Пройдите по ссылке, чтобы подтвердить ваш email: {callbackUrl}");
 
-                    var confirmation_token = await _userManager.GenerateEmailConfirmationTokenAsync(identityResult);
+                    var confirmation_token = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
 
                     return Ok(new
                     {
