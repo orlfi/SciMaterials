@@ -6,5 +6,4 @@ public interface IService<TId, TResult>
 {
     Task<Result<IEnumerable<TResult>>> GetAllAsync(CancellationToken cancellationToken = default);
     Task<Result<TResult>> GetByIdAsync(TId id, CancellationToken cancellationToken = default);
-    
 }

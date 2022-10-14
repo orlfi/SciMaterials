@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.API.DTO.Files;
+using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
@@ -34,18 +36,18 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     {
         _logger.LogDebug("Get file by hash");
 
-        var fileInfo = await _fileService.GetByHashAsync(hash);
-        var fileStream = _fileService.GetFileStream(fileInfo.Data.Id);
-        return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
+        var fileStreamInfoResult = await _fileService.DownloadByHash(hash);
+
+        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
     }
 
     [HttpGet("DownloadById/{id}")]
     public async Task<IActionResult> DownloadByIdAsync([FromRoute] Guid id)
     {
         _logger.LogDebug("Download by Id");
-        var fileInfo = await _fileService.GetByIdAsync(id);
-        var fileStream = _fileService.GetFileStream(id);
-        return File(fileStream, fileInfo.Data.ContentTypeName, fileInfo.Data.Name);
+        var fileStreamInfoResult = await _fileService.DownloadById(id);
+
+        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
     }
 
     [DisableFormValueModelBinding]
@@ -81,7 +83,12 @@ public class FilesApiController : ApiBaseController<FilesApiController>
                 !string.IsNullOrEmpty(contentDisposition.FileName.Value))
             {
                 _logger.LogInformation("Section contains file {file}", contentDisposition.FileName.Value);
-                var result = await _fileService.UploadAsync(section.Body, contentDisposition.FileName.Value, section.ContentType ?? "application/octet-stream").ConfigureAwait(false);
+                if (section.Headers is null
+                    || !section.Headers.ContainsKey("Metadata")
+                    || System.Text.Json.JsonSerializer.Deserialize<UploadFileRequest>(section.Headers["Metadata"]) is not { } uploadFileRequest)
+                    return Ok(await Result.ErrorAsync((int)ResultCodes.NotFound, "Metadata not found"));
+
+                var result = await _fileService.UploadAsync(section.Body, uploadFileRequest).ConfigureAwait(false);
                 return Ok(result);
             }
 

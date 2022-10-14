@@ -14,8 +14,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
-    <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\..\BuisnessLogic\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
+    <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
+    <ProjectReference Include="..\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
   </ItemGroup>
 
 </Project>
