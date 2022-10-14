@@ -24,7 +24,7 @@ public class CategoryRepository : ICategoryRepository
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogDebug($"Логгер встроен в {nameof(CategoryRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(CategoryRepository)}");
 
         _context = context;
     }
@@ -33,9 +33,14 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Add"/>
     public void Add(Category entity)
     {
-        _logger.LogDebug(nameof(Add));
+        _logger.LogInformation($"{nameof(CategoryRepository.Add)}");
 
-        if (entity is null) return;
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.Add)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
         _context.Categories.Add(entity);
     }
 
@@ -43,9 +48,14 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
     public async Task AddAsync(Category entity)
     {
-        _logger.LogDebug(nameof(AddAsync));
+        _logger.LogInformation($"{nameof(CategoryRepository.AddAsync)}");
 
-        if (entity is null) return;
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.AddAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
         await _context.Categories.AddAsync(entity);
     }
 
@@ -53,8 +63,15 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
     public void Delete(Category entity)
     {
-        _logger.LogDebug(nameof(Delete));
-        if(entity is null || entity.Id == default) return;
+        _logger.LogInformation($"{nameof(CategoryRepository.Delete)}");
+
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.Delete)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        if (entity.Id == default) return;
         Delete(entity.Id);
     }
 
@@ -62,8 +79,15 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
     public async Task DeleteAsync(Category entity)
     {
-        _logger.LogDebug(nameof(DeleteAsync));
-        if (entity is null || entity.Id == default) return;
+        _logger.LogInformation($"{nameof(CategoryRepository.DeleteAsync)}");
+
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.DeleteAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
+
+        if (entity.Id == default) return;
         await DeleteAsync(entity.Id);
     }
 
@@ -71,7 +95,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.Delete(Guid)"/>
     public void Delete(Guid id)
     {
-        _logger.LogDebug(nameof(Delete));
+        _logger.LogInformation($"{nameof(CategoryRepository.Delete)}");
 
         var categoryDb = _context.Categories.FirstOrDefault(c => c.Id == id);
         if (categoryDb is null) return;
@@ -82,7 +106,7 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(Guid)"/>
     public async Task DeleteAsync(Guid id)
     {
-        _logger.LogDebug(nameof(DeleteAsync));
+        _logger.LogInformation($"{nameof(CategoryRepository.DeleteAsync)}");
 
         var categoryDb = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
         if (categoryDb is null) return;
@@ -93,165 +117,145 @@ public class CategoryRepository : ICategoryRepository
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
     public List<Category>? GetAll(bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetAll));
+        IQueryable<Category> query = _context.Categories
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups);
 
-        if(DisableTracking)
-            return _context.Categories
-               .Include(c => c.Files)
-               .Include(c => c.FileGroups)
-               .AsNoTracking()
-               .ToList();
-        else
-            return _context.Categories
-               .Include(c => c.Files)
-               .Include(c => c.FileGroups)
-               .ToList();
+        if (DisableTracking)
+            query = query.AsNoTracking();
+
+        return query.ToList();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
     public async Task<List<Category>?> GetAllAsync(bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetAllAsync));
+        IQueryable<Category> query = _context.Categories
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups);
 
         if (DisableTracking)
-            return await _context.Categories
-               .Include(c => c.Files)
-               .Include(c => c.FileGroups)
-               .AsNoTracking()
-               .ToListAsync();
-        else
-            return await _context.Categories
-               .Include(c => c.Files)
-               .Include(c => c.FileGroups)
-               .ToListAsync();
+            query = query.AsNoTracking();
+
+        return await query.ToListAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Category GetById(Guid id, bool DisableTracking = true)
+    public Category? GetById(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetById));
+        IQueryable<Category> query = _context.Categories
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups);
 
         if (DisableTracking)
-            return _context.Categories
-                .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .AsNoTracking()
-                .FirstOrDefault()!;
-        else
-            return _context.Categories
-                .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .FirstOrDefault()!;
+            query = query.AsNoTracking();
+
+        return query.FirstOrDefault();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
     public async Task<Category?> GetByIdAsync(Guid id, bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetByIdAsync));
+        IQueryable<Category> query = _context.Categories
+                .Where(c => c.Id == id)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups);
 
         if (DisableTracking)
-            return (await _context.Categories
-                .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .AsNoTracking()
-                .FirstOrDefaultAsync())!;
-        else
-            return (await _context.Categories
-                .Where(c => c.Id == id)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .FirstOrDefaultAsync())!;
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
     public async Task<Category?> GetByNameAsync(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetByNameAsync));
+        IQueryable<Category> query = _context.Categories
+                .Where(c => c.Name == name)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups);
 
         if (DisableTracking)
-            return (await _context.Categories
-                .Where(c => c.Name == name)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .AsNoTracking()
-                .FirstOrDefaultAsync())!;
-        else
-            return (await _context.Categories
-                .Where(c => c.Name == name)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .FirstOrDefaultAsync())!;
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
     public Category? GetByName(string name, bool DisableTracking = true)
     {
-        _logger.LogDebug(nameof(GetByName));
+        IQueryable<Category> query = _context.Categories
+                .Where(c => c.Name == name)
+                .Include(c => c.Files)
+                .Include(c => c.FileGroups);
 
         if (DisableTracking)
-            return _context.Categories
-                .Where(c => c.Name == name)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .AsNoTracking()
-                .FirstOrDefault()!;
-        else
-            return _context.Categories
-                .Where(c => c.Name == name)
-                .Include(c => c.Files)
-                .Include(c => c.FileGroups)
-                .FirstOrDefault()!;
+            query = query.AsNoTracking();
+
+        return query.FirstOrDefault();
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
     public void Update(Category entity)
     {
-        _logger.LogDebug(nameof(Update));
+        _logger.LogInformation($"{nameof(CategoryRepository.Update)}");
 
-        if (entity is null) return;
-        var categoryDb = GetById(entity.Id, false);
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.Update)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
 
-        categoryDb = UpdateCurrentEnity(entity, categoryDb);
-        _context.Categories.Update(categoryDb);
+        var entityDb = GetById(entity.Id, false);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        entityDb = UpdateCurrentEnity(entity, entityDb);
+        _context.Categories.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
     public async Task UpdateAsync(Category entity)
     {
-        _logger.LogDebug(nameof(UpdateAsync));
+        _logger.LogInformation($"{nameof(CategoryRepository.UpdateAsync)}");
 
-        if (entity is null) return;
-        var categoryDb = await GetByIdAsync(entity.Id, false);
+        if (entity is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.UpdateAsync)} >>> argumentNullException {nameof(entity)}");
+            throw new ArgumentNullException(nameof(entity));
+        }
 
-        categoryDb = UpdateCurrentEnity(entity, categoryDb!);
-        _context.Categories.Update(categoryDb);
+        var entityDb = await GetByIdAsync(entity.Id, false);
+
+        if (entityDb is null)
+        {
+            _logger.LogError($"{nameof(CategoryRepository.Update)} >>> argumentNullException {nameof(entityDb)}");
+            throw new ArgumentNullException(nameof(entityDb));
+        }
+
+        entityDb = UpdateCurrentEnity(entity, entityDb);
+        _context.Categories.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Category?> GetByHashAsync(string hash, bool DisableTracking = true)
-    {
-        _logger.LogDebug(nameof(GetByHashAsync));
-        return null!;
-    }
+    public async Task<Category?> GetByHashAsync(string hash, bool DisableTracking = true) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Category? GetByHash(string hash, bool DisableTracking = true)
-    {
-        _logger.LogDebug(nameof(GetByHash));
-        return null!;
-    }
+    public Category? GetByHash(string hash, bool DisableTracking = true) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>

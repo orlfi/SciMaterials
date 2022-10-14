@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace SciMaterials.Services.API.Services.Categories;
 
@@ -32,63 +33,48 @@ public class CategoryService : ICategoryService
 
     public async Task<Result<GetCategoryResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(id);
+        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is { } category)
+            return _mapper.Map<GetCategoryResponse>(category);
 
-        if (category is null)
-            return await Result<GetCategoryResponse>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
-
-        var result = _mapper.Map<GetCategoryResponse>(category);
-        return result;
+        return await Result<GetCategoryResponse>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
     }
 
-    public async Task<Result<Guid>> AddEditAsync(AddEditCategoryRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<Guid>> AddAsync(AddCategoryRequest request, CancellationToken cancellationToken = default)
     {
-        if (request.Id is null || request.Id == Guid.Empty)
-        {
-            var category = _mapper.Map<Category>(request);
-            category.CreatedAt = DateTime.Now;
-            return await AddAsync(category);
-        }
-
-        return await UpdateAsync(request.Id.Value);
-    }
-    private async Task<Result<Guid>> AddAsync(Category category)
-    {
+        var category = _mapper.Map<Category>(request);
+        category.CreatedAt = DateTime.Now;
         await _unitOfWork.GetRepository<Category>().AddAsync(category);
 
-        if (await _unitOfWork.SaveContextAsync() <= 0)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+        if (await _unitOfWork.SaveContextAsync() > 0)
+            return await Result<Guid>.SuccessAsync(category.Id, "Category created");
 
-        return await Result<Guid>.SuccessAsync(category.Id, "Category created");
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 
-    private async Task<Result<Guid>> UpdateAsync(Guid id)
+    public async Task<Result<Guid>> EditAsync(EditCategoryRequest request, CancellationToken cancellationToken = default)
     {
-        var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(id);
+        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(request.Id) is not { })
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {request.Id} not found");
 
-        if (category is null)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
-
+        var category = _mapper.Map<Category>(request);
         await _unitOfWork.GetRepository<Category>().UpdateAsync(category);
 
-        if (await _unitOfWork.SaveContextAsync() <= 0)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+        if (await _unitOfWork.SaveContextAsync() > 0)
+            return await Result<Guid>.SuccessAsync(category.Id, "Category updated");
 
-        return await Result<Guid>.SuccessAsync(category.Id, "Category updated");
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is Category category)
-        {
-            await _unitOfWork.GetRepository<Category>().DeleteAsync(category);
+        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is not { } category)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
 
-            if (await _unitOfWork.SaveContextAsync() <= 0)
-                return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+        await _unitOfWork.GetRepository<Category>().DeleteAsync(category);
 
+        if (await _unitOfWork.SaveContextAsync() > 0)
             return await Result<Guid>.SuccessAsync($"Category with ID {category.Id} deleted");
-        }
 
-        return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {id} not found");
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 }
