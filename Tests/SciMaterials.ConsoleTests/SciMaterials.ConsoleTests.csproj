@@ -49,7 +49,9 @@
     <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
     <ProjectReference Include="..\..\BuisnessLogic\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
+    <ProjectReference Include="..\..\Services\SciMaterials.Contracts.Database\SciMaterials.Contracts.Database.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj" />
+    <ProjectReference Include="..\..\Services\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
