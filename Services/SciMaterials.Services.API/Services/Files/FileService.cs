@@ -11,6 +11,7 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -145,7 +146,7 @@ public class FileService : IFileService
         var result = new List<Category>(categoryIdArray.Length);
         foreach (var categoryId in categoryIdArray)
         {
-            if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId) is not { } category)
+            if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, disableTracking: false) is not { } category)
                 return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.NotFound, $"Категория with ID {categoryId} not found");
             result.Add(category);
         }
@@ -158,7 +159,7 @@ public class FileService : IFileService
         var result = new List<Tag>(tagsStrings.Length);
         foreach (var tagString in tagsStrings)
         {
-            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString) is not { } tag)
+            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString, disableTracking:false) is not { } tag)
             {
                 tag = new Tag { Name = tagString.ToLower().Trim() };
                 await _unitOfWork.GetRepository<Tag>().AddAsync(tag);
@@ -189,10 +190,11 @@ public class FileService : IFileService
         file.ContentTypeId = verifyContentTypeResult.Data.Id;
         file.AuthorId = author.Id;
 
-        // TODO: Many to many error... Разобраться
-        // file.Categories = verifyCategoriesResult.Data ?? new List<Category>();
-        // if (!string.IsNullOrEmpty(metadata.Tags))
-        //     file.Tags = (await GetTagsFromSeparatedStringAsync(_separator, metadata.Tags)).Data;
+        if (verifyCategoriesResult.Data is { })
+            file.Categories = verifyCategoriesResult.Data;
+
+        if (!string.IsNullOrEmpty(metadata.Tags))
+            file.Tags = (await GetTagsFromSeparatedStringAsync(_separator, metadata.Tags)).Data;
 
         await _unitOfWork.GetRepository<File>().AddAsync(file);
         if (await _unitOfWork.SaveContextAsync() > 0)
@@ -214,9 +216,6 @@ public class FileService : IFileService
             metadata.Size = fileWriteResult.Size;
             metadata.Hash = fileWriteResult.Hash;
 
-            var metadataJsonString = JsonSerializer.Serialize(metadata);
-            _ = await _fileStore.WriteAsync(GetMetadataPath(path), metadataJsonString, cancellationToken).ConfigureAwait(false);
-
             if (await _unitOfWork.GetRepository<File>().GetByHashAsync(metadata.Hash) is { } existingFile)
             {
                 string message = $"File with the same hash {existingFile.Hash} already exists with id: {existingFile.Id.ToString()}";
@@ -224,6 +223,9 @@ public class FileService : IFileService
                 _logger.LogError(message);
                 return await Result<FileMetadata>.ErrorAsync((int)ResultCodes.FileAlreadyExist, message);
             }
+
+            var metadataJsonString = JsonSerializer.Serialize(metadata);
+            _ = await _fileStore.WriteAsync(GetMetadataPath(path), metadataJsonString, cancellationToken).ConfigureAwait(false);
 
             return metadata;
         }
@@ -238,8 +240,11 @@ public class FileService : IFileService
     {
         try
         {
-            var deletePath = Path.Combine(_path, id.ToString());
-            _fileStore.Delete(deletePath);
+            var filePath = Path.Combine(_path, id.ToString());
+            _fileStore.Delete(filePath);
+
+            var metadataPath = GetMetadataPath(filePath);
+            _fileStore.Delete(metadataPath);
 
             return await Result<Guid>.SuccessAsync(id, $"File with ID {id} deleted");
         }

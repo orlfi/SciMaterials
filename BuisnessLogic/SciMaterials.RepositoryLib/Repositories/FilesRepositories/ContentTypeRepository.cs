@@ -127,10 +127,12 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<ContentType>? GetAll(bool disableTracking = true)
+    public List<ContentType>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<ContentType> query = _context.ContentTypes
-                .Include(ct => ct.Files);
+        IQueryable<ContentType> query = _context.ContentTypes.Where(c => !c.IsDeleted);
+
+        if (include)
+            query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -140,10 +142,12 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<ContentType>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<ContentType>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<ContentType> query = _context.ContentTypes
-                .Include(ct => ct.Files);
+        IQueryable<ContentType> query = _context.ContentTypes.Where(c => !c.IsDeleted);
+
+        if (include)
+            query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -153,11 +157,13 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public ContentType? GetById(Guid id, bool disableTracking = true)
+    public ContentType? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
-                .Where(c => c.Id == id)
-                .Include(ct => ct.Files);
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -167,11 +173,13 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<ContentType?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<ContentType?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
-                .Where(c => c.Id == id)
-                .Include(ct => ct.Files);
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -229,10 +237,13 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<ContentType?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<ContentType?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
-                .Where(c => c.Name == name);
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -242,10 +253,13 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public ContentType? GetByName(string name, bool disableTracking = true)
+    public ContentType? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
-                .Where(c => c.Name == name);
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -255,11 +269,11 @@ public class ContentTypeRepository : IContentTypeRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<ContentType?> GetByHashAsync(string hash, bool disableTracking = true) => null;
+    public async Task<ContentType?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public ContentType? GetByHash(string hash, bool disableTracking = true) => null;
+    public ContentType? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>

@@ -125,10 +125,12 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Tag>? GetAll(bool disableTracking = true)
+    public List<Tag>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags
-                .Include(t => t.Files)
+        IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
+
+        if (include)
+            query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -139,10 +141,12 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Tag>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Tag>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags
-                .Include(t => t.Files)
+        IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
+
+        if (include)
+            query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -153,11 +157,13 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Tag? GetById(Guid id, bool disableTracking = true)
+    public Tag? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Tag> query = _context.Tags
-                .Where(c => c.Id == id)
-                .Include(t => t.Files)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -168,11 +174,13 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Tag?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Tag?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Tag> query = _context.Tags
-                .Where(c => c.Id == id)
-                .Include(t => t.Files)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -232,11 +240,13 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Tag?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<Tag?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Tag> query = _context.Tags
-                .Where(c => c.Name == name)
-                .Include(t => t.Files)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -247,11 +257,13 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Tag? GetByName(string name, bool disableTracking = true)
+    public Tag? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Tag> query = _context.Tags
-                .Where(c => c.Name == name)
-                .Include(t => t.Files)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -262,11 +274,11 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Tag?> GetByHashAsync(string hash, bool disableTracking = true) => null;
+    public async Task<Tag?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Tag? GetByHash(string hash, bool disableTracking = true) => null;
+    public Tag? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>

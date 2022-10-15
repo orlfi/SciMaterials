@@ -20,7 +20,7 @@ namespace SciMaterials.DAL.Extensions
             }
 
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);
+            await dbInitializer.InitializeDbAsync(removeAtStart: true, useDataSeeder: true ).ConfigureAwait(false);
 
             return app;
         }
