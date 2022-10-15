@@ -7,9 +7,9 @@ using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Properties;
 using File = SciMaterials.DAL.Models.File;
 
-namespace SciMaterials.DAL.InitializationDb.Implementation
+namespace SciMaterials.DAL.Services
 {
-    internal static class DataSeeder
+    public static class DataSeeder
     {
         //data generation was carried out by https://generatedata.com
 
@@ -18,7 +18,7 @@ namespace SciMaterials.DAL.InitializationDb.Implementation
         /// <param name="cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/> Значение по умолчанию: <value>default</value></param>
         /// <returns>Задача, которая представляет работу в очереди на выполнение в ThreadPool. См. <see cref="Task"/></returns>
         /// <exception cref="OperationCanceledException"></exception>
-        internal static async Task SeedAsync(SciMaterialsContext db, CancellationToken cancel = default)
+        public static async Task SeedAsync(SciMaterialsContext db, CancellationToken cancel = default)
         {
             await using var transaction = await db.Database.BeginTransactionAsync(cancel).ConfigureAwait(false);
 

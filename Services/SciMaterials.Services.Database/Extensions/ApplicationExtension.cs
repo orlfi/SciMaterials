@@ -3,9 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.InitializationDb.Interfaces;
+using SciMaterials.Services.Database.Configuration;
+using SciMaterials.Services.Database.Services;
 
-namespace SciMaterials.DAL.Extensions
+namespace SciMaterials.Services.Database.Extensions
 {
     public static class ApplicationExtension
     {
@@ -13,14 +14,16 @@ namespace SciMaterials.DAL.Extensions
         {
             await using var scope = app.ApplicationServices.CreateAsyncScope();
 
-            if (configuration["DbProvider"].Equals("SQLite"))
+            var dbSetting = configuration.GetSection("DbSettings").Get<DbSettings>();
+
+            if (dbSetting.DbProvider.Equals("SQLite"))
             {
                 var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
                 await context.Database.MigrateAsync().ConfigureAwait(false);
             }
 
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);
+            await dbInitializer.InitializeDbAsync(removeAtStart: dbSetting.RemoveAtStart, useDataSeeder: dbSetting.UseDataSeeder).ConfigureAwait(false);
 
             return app;
         }

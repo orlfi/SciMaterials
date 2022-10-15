@@ -1,8 +1,8 @@
-using SciMaterials.DAL.Extensions;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Configuration;
+using SciMaterials.Services.Database.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
