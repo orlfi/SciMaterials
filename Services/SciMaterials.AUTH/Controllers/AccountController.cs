@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
+
 using SciMaterials.Auth.Requests;
 using SciMaterials.Auth.Utilits;
 using SciMaterials.Contracts.API.Constants;
@@ -21,13 +23,13 @@ public class AccountController : Controller
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly ILogger<AccountController> _logger;
     private readonly IAuthUtils _authUtils;
-    
+
     public AccountController(
-        UserManager<IdentityUser> userManager, 
-        SignInManager<IdentityUser> signInManager, 
-        RoleManager<IdentityRole> roleManager, 
-        ILogger<AccountController> logger, 
-        IHttpContextAccessor contextAccessor, 
+        UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
+        ILogger<AccountController> logger,
+        IHttpContextAccessor contextAccessor,
         IAuthUtils authUtils)
     {
         _userManager = userManager;
@@ -65,13 +67,13 @@ public class AccountController : Controller
                 {
                     await _userManager.AddToRoleAsync(identityUser, "user");
                     await _signInManager.SignInAsync(identityUser, false);
-            
+
                     var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
-            
+
                     var callbackUrl = Url.Action(
                         "ConfirmEmail",
                         "Account",
-                        new { userId = identityUser.Id, confirmToken = emailConfirmToken }, protocol: 
+                        new { userId = identityUser.Id, confirmToken = emailConfirmToken }, protocol:
                         HttpContext.Request.Scheme);
 
                     //TODO: В будущем сделать интеграцию по отправке email для подтвреждения
@@ -82,15 +84,19 @@ public class AccountController : Controller
                     return Ok(new
                     {
                         Message = $"Пройдите по ссылке, чтобы подтвердить ваш email: {callbackUrl}",
-                        ConfirmationEmail = Url.Action(nameof(ConfirmEmailAsync), new
-                        {
-                            UserId       = identityUser.Id,
-                            confirmToken = confirmation_token,
-                        })
+                        ConfirmationEmail = Url.Action(
+                            action: AuthApiRoute.ConfirmEmail,
+                            controller: "Account",
+                            values: new
+                            {
+                                UserId = identityUser.Id,
+                                confirmToken = confirmation_token,
+                            },
+                            protocol: Request.Scheme)
                     });
                 }
-            
-                _logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}", 
+
+                _logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}",
                     registerUserRequest.Email);
                 return BadRequest($"Не удалось зарегистрировать пользователя");
             }
@@ -100,12 +106,12 @@ public class AccountController : Controller
                 return BadRequest("Пользователя не удалось зарегистрировать");
             }
         }
-        
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}, {PhoneNumber}", 
+
+        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}, {PhoneNumber}",
             registerUserRequest.Email, registerUserRequest.Password, registerUserRequest.PhoneNumber);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод авторизации пользователя
     /// </summary>
@@ -124,13 +130,13 @@ public class AccountController : Controller
                 if (identityUser is not null)
                 {
                     var identityRoles = await _userManager.GetRolesAsync(identityUser);
-                
+
                     var signInResult = await _signInManager.PasswordSignInAsync(
-                        userName: email, 
-                        password: password, 
-                        isPersistent: true, 
+                        userName: email,
+                        password: password,
+                        isPersistent: true,
                         lockoutOnFailure: false);
-                
+
                     if (signInResult.Succeeded)
                     {
                         var sessionToken = _authUtils.CreateSessionToken(identityUser, identityRoles);
@@ -147,12 +153,12 @@ public class AccountController : Controller
                 return BadRequest("Не удалось авторизовать пользователя");
             }
         }
-        
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}", 
+
+        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}",
             email, password);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод выхода пользователя из системы
     /// </summary>
@@ -173,7 +179,7 @@ public class AccountController : Controller
             return BadRequest("Не удалось выйти из системы!");
         }
     }
-    
+
     /// <summary>
     /// Метод смены пароля пользователя
     /// </summary>
@@ -189,7 +195,7 @@ public class AccountController : Controller
             try
             {
                 var currentUserName = _contextAccessor.HttpContext?.User.Identity?.Name;
-                
+
                 var identityUser = await _userManager.FindByNameAsync(currentUserName);
                 var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(identityUser);
                 if (!string.IsNullOrEmpty(currentUserName) ||
@@ -197,21 +203,21 @@ public class AccountController : Controller
                     isEmailConfirmed)
                 {
                     var identityResult = await _userManager.ChangePasswordAsync(
-                        identityUser, 
-                        oldPassword, 
+                        identityUser,
+                        oldPassword,
                         newPassword);
                     if (identityResult.Succeeded)
                     {
                         return Ok("Пароль пользователя успешно изменен");
                     }
-                    
-                    _logger.Log(LogLevel.Information, "Не удалось изменить пароль {OldPassword}, {NewPassword}", 
+
+                    _logger.Log(LogLevel.Information, "Не удалось изменить пароль {OldPassword}, {NewPassword}",
                         oldPassword, newPassword);
                     return BadRequest("Не удалось изменить пароль");
                 }
 
                 _logger.Log(LogLevel.Information,
-                    "Не удалось получить информацию о пользователе {IdentityUser} или ваша почта не подтверждена {isEmailCorfirmed}", 
+                    "Не удалось получить информацию о пользователе {IdentityUser} или ваша почта не подтверждена {isEmailCorfirmed}",
                     identityUser, isEmailConfirmed);
                 return BadRequest("Не удалось получить информацию о пользователе или ваша почта не подтверждена");
             }
@@ -222,11 +228,11 @@ public class AccountController : Controller
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {OldPasswoprd}, {NewPassword}", 
+        _logger.Log(LogLevel.Information, "Некорректно введены данные {OldPasswoprd}, {NewPassword}",
             oldPassword, newPassword);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод подтверждения почты пользователя, когда пользователь проходит по сформированной ссылке
     /// </summary>
@@ -245,15 +251,15 @@ public class AccountController : Controller
                 {
                     var identityResult = await _userManager.ConfirmEmailAsync(identityUser, confirmToken);
                     if (identityResult.Succeeded)
-                    { 
+                    {
                         return Ok("Почта успешно подтверждена");
                     }
 
                     _logger.Log(LogLevel.Information, "Не удалось подтвердить email пользователя");
                     return BadRequest("Не удалось подтвердить email пользователя");
                 }
-                
-                _logger.Log(LogLevel.Information, "Не удалось найти пользователя в системе {UserId}, {ConfirmTokin}", 
+
+                _logger.Log(LogLevel.Information, "Не удалось найти пользователя в системе {UserId}, {ConfirmTokin}",
                     userId, confirmToken);
                 return BadRequest("Не удалось найти пользователя в системе");
             }
@@ -263,8 +269,8 @@ public class AccountController : Controller
                 return BadRequest("Произошла ошибка при подтверждении почты");
             }
         }
-        
-        _logger.Log(LogLevel.Information, "Некорректные данные {UserId}, {ConfirmTokin}", 
+
+        _logger.Log(LogLevel.Information, "Некорректные данные {UserId}, {ConfirmTokin}",
             userId, confirmToken);
         return BadRequest("Некорректные данные");
     }
@@ -287,7 +293,7 @@ public class AccountController : Controller
                 {
                     return Ok("Роль для пользователя успешно создана");
                 }
-                
+
                 _logger.Log(LogLevel.Information, "Не удалось создать роль");
                 return BadRequest("Не удалось создать роль");
             }
@@ -301,7 +307,7 @@ public class AccountController : Controller
         _logger.Log(LogLevel.Information, "Некорректно введены данные {RoleName}", roleName);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод получения всех ролей в системе
     /// </summary>
@@ -327,7 +333,7 @@ public class AccountController : Controller
             return BadRequest("Произошла ошибка при запросе ролей");
         }
     }
-    
+
     /// <summary>
     /// Метод получения роли по идентификатору
     /// </summary>
@@ -356,11 +362,11 @@ public class AccountController : Controller
                 return BadRequest("Произошла ошибка при запросе роли");
             }
         }
-        
+
         _logger.Log(LogLevel.Information, "Некорректно введены данные {RoleId}", roleId);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод редактирования роли по идентификатору
     /// </summary>
@@ -378,13 +384,13 @@ public class AccountController : Controller
             {
                 var foundRole = await _roleManager.FindByIdAsync(roleId);
                 foundRole.Name = roleName;
-            
+
                 var identityResult = await _roleManager.UpdateAsync(foundRole);
                 if (identityResult.Succeeded)
                 {
                     return Ok($"Роль успешно изменена с {foundRole} на {roleName}");
                 }
-                
+
                 _logger.Log(LogLevel.Information, "Не удалось изменить роль");
                 return BadRequest("Не удалось изменить роль");
             }
@@ -394,12 +400,12 @@ public class AccountController : Controller
                 return BadRequest("Произошла ошибка при редактировании роли");
             }
         }
-        
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {RoleId}, {RoleName}", 
+
+        _logger.Log(LogLevel.Information, "Некорректно введены данные {RoleId}, {RoleName}",
             roleId, roleName);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод удаления роли по идентификатору
     /// </summary>
@@ -421,11 +427,11 @@ public class AccountController : Controller
                     {
                         return Ok("Роль успешно удалена");
                     }
-                    
+
                     _logger.Log(LogLevel.Information, "Не удалось удалить роль");
                     return BadRequest("Не удалось удалить роль");
                 }
-                
+
                 _logger.Log(LogLevel.Information, "Не удалось найти роль");
                 return BadRequest("Не удалось найти роль");
             }
@@ -435,11 +441,11 @@ public class AccountController : Controller
                 return BadRequest("Произошла ошибка при удалении роли");
             }
         }
-        
+
         _logger.Log(LogLevel.Information, "Некорректно введены данные");
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод добавления роли к пользователю
     /// </summary>
@@ -459,7 +465,7 @@ public class AccountController : Controller
                 var systemRolesList = await _roleManager.Roles.ToListAsync();
                 if (!userRolesList.Contains(roleName))
                 {
-                    var isRoleContainsInSystem = systemRolesList.Select(x => 
+                    var isRoleContainsInSystem = systemRolesList.Select(x =>
                         x.Name.Contains(roleName.ToLower()));
                     foreach (var isRole in isRoleContainsInSystem)
                     {
@@ -484,11 +490,11 @@ public class AccountController : Controller
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}", 
+        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}",
             email, roleName);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод удаления роли у пользователя
     /// </summary>
@@ -508,7 +514,7 @@ public class AccountController : Controller
                 var systemRolesList = await _roleManager.Roles.ToListAsync();
                 if (userRolesList.Contains(roleName))
                 {
-                    var isRoleContainsInSystem = systemRolesList.Select(x => 
+                    var isRoleContainsInSystem = systemRolesList.Select(x =>
                         x.Name.Contains(roleName));
                     foreach (var isRole in isRoleContainsInSystem)
                     {
@@ -523,7 +529,7 @@ public class AccountController : Controller
                     }
                 }
 
-                _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}", 
+                _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}",
                     email, roleName);
                 return BadRequest("Некорректно введены данные");
             }
@@ -563,7 +569,7 @@ public class AccountController : Controller
                     return BadRequest("Не удалось получить список ролей");
                 }
 
-                _logger.Log(LogLevel.Information, 
+                _logger.Log(LogLevel.Information,
                     "Данного пользователя {IdentityUser} нет в системе, либо некорректно введены данные пользователя " +
                     "{Email}", identityUser, email);
                 return BadRequest("Данного пользователя нет в системе, либо некорректно введены данные пользователя");
@@ -578,7 +584,7 @@ public class AccountController : Controller
         _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}", email);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод создания пользователя админом
     /// </summary>
@@ -588,8 +594,8 @@ public class AccountController : Controller
     [HttpPost(AuthApiRoute.CreateUser)]
     public async Task<IActionResult> CreateUserAsync([FromBody] UserRequest create)
     {
-        if (!string.IsNullOrEmpty(create.Email) || 
-            !string.IsNullOrEmpty(create.Password) || 
+        if (!string.IsNullOrEmpty(create.Email) ||
+            !string.IsNullOrEmpty(create.Password) ||
             !string.IsNullOrEmpty(create.PhoneNumber))
         {
             var actionResult = await RegisterAsync(create);
@@ -599,7 +605,7 @@ public class AccountController : Controller
         _logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
         return BadRequest("Некорректно введены данные пользователя");
     }
-    
+
     /// <summary>
     /// Метод получения информации о пользователе
     /// </summary>
@@ -632,7 +638,7 @@ public class AccountController : Controller
         _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}", email);
         return BadRequest("Некорректно введены данные");
     }
-    
+
     /// <summary>
     /// Метод получения всех пользователей в системе админом (на свой страх и риск >_<
     /// </summary>
@@ -652,7 +658,7 @@ public class AccountController : Controller
             return BadRequest("Произошла ошибка при получении пользователя");
         }
     }
-    
+
     /// <summary>
     /// Метод редактирования информации о пользователе
     /// </summary>
@@ -684,7 +690,7 @@ public class AccountController : Controller
                     return BadRequest("Не удалось обновить информацию пользователя");
                 }
 
-                _logger.Log(LogLevel.Information, 
+                _logger.Log(LogLevel.Information,
                     "Не удалось найти пользователя {Email} или некорректно введены данные", email);
                 return BadRequest("Не удалось найти данного пользователя или некорректно введены данные пользователя");
             }
@@ -694,11 +700,11 @@ public class AccountController : Controller
                 return BadRequest("Произошла ошибка при обновлении информации о пользователе");
             }
         }
-        
+
         _logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
         return BadRequest("Некорректно введены данные пользователя");
     }
-    
+
     /// <summary>
     /// Метод удаления пользователя
     /// </summary>
@@ -720,7 +726,7 @@ public class AccountController : Controller
                     {
                         return Ok("Пользователь успешно удален");
                     }
-                    
+
                     _logger.Log(LogLevel.Information, "Не удалось удалить пользователя {Email}", email);
                     return BadRequest("Не удалось удалить пользователя");
                 }
@@ -750,7 +756,7 @@ public class AccountController : Controller
         try
         {
             var usersWithOutConfirmationEmail = await _userManager
-                .Users.Where(x => 
+                .Users.Where(x =>
                     x.EmailConfirmed.Equals(false))
                 .ToListAsync();
             foreach (var user in usersWithOutConfirmationEmail)
