@@ -17,7 +17,8 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services
     .AddAuthorizationCore()
     .AddScoped<IAuthenticationService, TestAuthenticationService>()
-    .AddScoped<AuthenticationStateProvider, TestAuthenticationStateProvider>();
+    .AddScoped<AuthenticationStateProvider, TestAuthenticationStateProvider>()
+    .AddSingleton<AuthenticationCache>();
 
 builder.Services
     .AddSingleton<FileUploadScheduleService>();

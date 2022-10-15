@@ -1,8 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Security.Claims;
-using System.Text.Json;
-
-using Blazored.LocalStorage;
+﻿using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -14,51 +10,35 @@ public class TestAuthenticationService : IAuthenticationService
 {
     private readonly ILocalStorageService _localStorageService;
     private readonly AuthenticationStateProvider _authenticationStateProvider;
-    private static ConcurrentDictionary<string, SignUpForm> _users = new();
+    private readonly AuthenticationCache _authenticationCache;
 
-    public TestAuthenticationService(ILocalStorageService localStorageService, AuthenticationStateProvider authenticationStateProvider)
+    public TestAuthenticationService(
+        ILocalStorageService localStorageService,
+        AuthenticationStateProvider authenticationStateProvider,
+        AuthenticationCache authenticationCache)
     {
         _localStorageService = localStorageService;
         _authenticationStateProvider = authenticationStateProvider;
+        _authenticationCache = authenticationCache;
     }
 
-    public async Task SignUp(SignUpForm formData)
+    public Task<bool> SignUp(SignUpForm formData)
     {
-        if (!_users.TryAdd(formData.Email, formData)) return;
-
-        Claim[] userClaims = {
-            new(ClaimTypes.Name, formData.Username),
-            new(ClaimTypes.Email, formData.Email),
-            new(ClaimTypes.Role, "User")
-        };
-
-        await SetUserSignIn(userClaims, new(formData.Username, formData.Email));
+        return Task.FromResult(_authenticationCache.TryAdd(formData.Email!, formData.Password!, formData.Username!));
     }
 
     public async Task SignIn(SignInForm formData)
     {
-        if (!_users.TryGetValue(formData.Email, out var form) || form.Password != formData.Password) return;
+        if (!_authenticationCache.TryGetIdentity(formData.Email!, formData.Password!, out var identity, out var userId)) return;
 
-        Claim[] userClaims = {
-            new(ClaimTypes.Name, form.Username),
-            new(ClaimTypes.Email, formData.Email),
-            new(ClaimTypes.Role, "User")
-        };
+        await _localStorageService.SetItemAsStringAsync("authToken", userId.ToString());
 
-        await SetUserSignIn(userClaims, new(form.Username, form.Email));
+        ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserSignIn(identity);
     }
 
     public async Task Logout()
     {
         await _localStorageService.RemoveItemAsync("authToken");
         ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserLogout();
-    }
-
-    private async Task SetUserSignIn(Claim[] userClaims, TestAuthenticationStateProvider.UserInfo userInfo)
-    {
-        await _localStorageService.SetItemAsStringAsync("authToken", JsonSerializer.Serialize(userInfo));
-
-        ClaimsIdentity userData = new(userClaims, "Some Auth Policy Type");
-        ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserSignIn(userData);
     }
 }

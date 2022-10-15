@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Text.Json;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -8,29 +7,25 @@ namespace SciMaterials.UI.BWASM.Services;
 public class TestAuthenticationStateProvider : AuthenticationStateProvider
 {
     private readonly ILocalStorageService _localStorageService;
+    private readonly AuthenticationCache _authenticationCache;
     private static readonly AuthenticationState Anonymous;
 
     static TestAuthenticationStateProvider() => Anonymous = new(new(new ClaimsIdentity()));
 
-    public TestAuthenticationStateProvider(ILocalStorageService localStorageService)
+    public TestAuthenticationStateProvider(ILocalStorageService localStorageService, AuthenticationCache authenticationCache)
     {
         _localStorageService = localStorageService;
+        _authenticationCache = authenticationCache;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var token = await _localStorageService.GetItemAsync<string>("authToken");
+        var token = await _localStorageService.GetItemAsStringAsync("authToken");
         if (string.IsNullOrWhiteSpace(token)) return Anonymous;
-
-        var userData = JsonSerializer.Deserialize<UserInfo>(token);
-        if (userData is null) return Anonymous;
-
-        return new(new(new ClaimsIdentity(new []
-        {
-            new Claim(ClaimTypes.Name, userData.Nick),
-            new Claim(ClaimTypes.Email, userData.Email),
-            new Claim(ClaimTypes.Role, "User")
-        }, "Some Auth Policy Type")));
+        
+        if (!Guid.TryParse(token, out var userId) || !_authenticationCache.TryGetIdentity(userId, out var identity)) return Anonymous;
+        
+        return new(new(identity));
     }
 
     public void NotifyUserSignIn(ClaimsIdentity userClaims)
@@ -42,6 +37,4 @@ public class TestAuthenticationStateProvider : AuthenticationStateProvider
     {
         NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
     }
-
-    public record UserInfo(string Nick, string Email);
 }

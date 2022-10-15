@@ -6,6 +6,6 @@ namespace SciMaterials.UI.BWASM.Services
     {
         Task Logout();
         Task SignIn(SignInForm formData);
-        Task SignUp(SignUpForm formData);
+        Task<bool> SignUp(SignUpForm formData);
     }
 }

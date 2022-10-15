@@ -59,7 +59,7 @@ public class JwtAuthenticationService : IAuthenticationService
         //((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserSignIn(userData);
     }
 
-    public async Task SignUp(SignUpForm formData)
+    public async Task<bool> SignUp(SignUpForm formData)
     {
         UserRequest request = new(formData.Email!, formData.Password!);
         var response = await _client.PostAsJsonAsync(SignUpRoute, request);
@@ -67,6 +67,7 @@ public class JwtAuthenticationService : IAuthenticationService
 
         // notify registration success
         // navigate to login page
+        return false;
     }
 
     // TODO: Use contract model
