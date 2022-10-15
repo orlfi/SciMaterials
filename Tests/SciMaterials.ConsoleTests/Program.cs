@@ -7,10 +7,10 @@ using SciMaterials.ConsoleTests;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.Result;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.InitializationDb.Implementation;
-using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Services.API.Extensions;
+using SciMaterials.Services.Database.Services;
+using SciMaterials.Services.Database.Services.DbInitialization;
 using File = SciMaterials.DAL.Models.File;
 #endregion
 
