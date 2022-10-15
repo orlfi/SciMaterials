@@ -1,4 +1,4 @@
-﻿namespace SciMaterials.Services.Database.Services
+﻿namespace SciMaterials.Contracts.Database.Initialization
 {
     public interface IDbInitializer
     {

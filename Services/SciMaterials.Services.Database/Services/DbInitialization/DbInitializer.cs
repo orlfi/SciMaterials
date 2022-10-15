@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SciMaterials.Contracts.Database.Initialization;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Services;
 

@@ -1,4 +1,4 @@
-﻿namespace SciMaterials.Services.Database.Enums
+﻿namespace SciMaterials.Contracts.Database.Enums
 {
     public enum DbProviders
     {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SciMaterials.Contracts.Database.Configuration;
+using SciMaterials.Contracts.Database.Enums;
+using SciMaterials.Contracts.Database.Initialization;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.Services.Database.Configuration;
-using SciMaterials.Services.Database.Enums;
-using SciMaterials.Services.Database.Services;
 using SciMaterials.Services.Database.Services.DbInitialization;
 
 namespace SciMaterials.Services.Database.Extensions

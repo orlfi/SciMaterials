@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SciMaterials.Contracts.Database.Configuration;
+using SciMaterials.Contracts.Database.Initialization;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.Services.Database.Configuration;
-using SciMaterials.Services.Database.Services;
 
 namespace SciMaterials.Services.Database.Extensions
 {
