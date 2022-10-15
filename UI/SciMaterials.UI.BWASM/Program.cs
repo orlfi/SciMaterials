@@ -10,16 +10,22 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddMudServices();
-builder.Services.AddBlazoredLocalStorage();
+// Nuget
+builder.Services
+    .AddMudServices()
+    .AddBlazoredLocalStorage();
 
+// Api
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
+// Authentication
 builder.Services
     .AddAuthorizationCore()
     .AddScoped<IAuthenticationService, TestAuthenticationService>()
     .AddScoped<AuthenticationStateProvider, TestAuthenticationStateProvider>()
     .AddSingleton<AuthenticationCache>();
 
+// Background
 builder.Services
     .AddSingleton<FileUploadScheduleService>();
 
