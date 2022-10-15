@@ -19,10 +19,10 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Services\SciMaterials.Contracts.Database\SciMaterials.Contracts.Database.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj" />
+    <ProjectReference Include="..\..\Services\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj" />
     <ProjectReference Include="..\SciMaterials.UI.BWASM\SciMaterials.UI.BWASM.csproj" />
     <ProjectReference Include="..\..\data\migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj" />
   </ItemGroup>
