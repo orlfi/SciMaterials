@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using SciMaterials.Auth.Registrations;
+using SciMaterials.DAL.AUTH.Interfaces;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Interfaces;
+using SciMaterials.Services.API.Configuration;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
-using SciMaterials.Services.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.ConfigureApplication(builder.Configuration);
 builder.Services.AddApiServices(builder.Configuration);
+builder.Services.AddAuthApiServices(builder.Configuration);
+builder.Services.AddDbInitializer();
 
 var app = builder.Build();
 
@@ -32,8 +36,11 @@ await using (var scope = app.Services.CreateAsyncScope())
         await context.Database.MigrateAsync().ConfigureAwait(false);
     }
     
+    var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
+    await authDb.InitializeAsync(builder.Configuration);
+    
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    await dbInitializer.InitializeDbAsync(removeAtStart: true).ConfigureAwait(false);
+    await dbInitializer.InitializeDbAsync(removeAtStart: false, useDataSeeder: false).ConfigureAwait(false);
 }
 
 
@@ -63,3 +70,7 @@ app.MapFallbackToFile("index.html");
 app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
 
 app.Run();
+
+
+// Required mark for integration tests
+public partial class Program{}

@@ -9,14 +9,7 @@ public class Resource : NamedModel
     public Category Category { get; set; } = null!;
     public User Owner { get; set; } = null!;
 
-    public ICollection<Comment> Comments { get; set; }
-    public ICollection<Tag> Tags { get; set; }
-    public ICollection<Rating> Ratings { get; set; }
-
-    public Resource()
-    {
-        Comments = new HashSet<Comment>();
-        Tags = new HashSet<Tag>();
-        Ratings = new HashSet<Rating>();
-    }
+    public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
+    public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+    public ICollection<Rating> Ratings { get; set; } = new HashSet<Rating>();
 }

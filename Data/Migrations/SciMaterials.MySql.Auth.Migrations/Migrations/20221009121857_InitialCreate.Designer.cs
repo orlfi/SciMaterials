@@ -10,7 +10,7 @@ using SciMaterials.DAL.AUTH.Context;
 
 namespace SciMaterials.MySql.Auth.Migrations.Migrations
 {
-    [DbContext(typeof(AuthMySqlDbContext))]
+    [DbContext(typeof(AuthDbContext))]
     [Migration("20221009121857_InitialCreate")]
     partial class InitialCreate
     {

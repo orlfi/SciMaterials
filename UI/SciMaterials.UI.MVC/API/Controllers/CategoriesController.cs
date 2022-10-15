@@ -35,13 +35,22 @@ public class CategoriesController : ApiBaseController<CategoriesController>
         return Ok(products);
     }
 
-    /// <summary> Add/Edit a Category. </summary>
-    /// <param name="request"> Add/edit Request DTO. </param>
+    /// <summary> Add a Category. </summary>
+    /// <param name="request"> Add Request DTO. </param>
     /// <returns> Status 200 OK. </returns>
-    [HttpPost]
-    public async Task<IActionResult> PostAsync([FromBody] AddEditCategoryRequest request)
+    [HttpPost("Add")]
+    public async Task<IActionResult> AddAsync([FromBody] AddCategoryRequest request)
     {
-        return Ok(await _сategoryService.AddEditAsync(request));
+        return Ok(await _сategoryService.AddAsync(request));
+    }
+
+    /// <summary> Edit a Category. </summary>
+    /// <param name="request"> Edit Request DTO. </param>
+    /// <returns> Status 200 OK. </returns>
+    [HttpPost("Edit")]
+    public async Task<IActionResult> EditAsync([FromBody] EditCategoryRequest request)
+    {
+        return Ok(await _сategoryService.EditAsync(request));
     }
 
     /// <summary> Delete a Category. </summary>
@@ -52,4 +61,19 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     {
         return Ok(await _сategoryService.DeleteAsync(id));
     }
+
+    [HttpGet("tree/{Id}")]
+    //[ProducesResponseType(typeof(CategoryTree), StatusCodes.Status200OK)]
+    [ProducesDefaultResponseType(typeof(CategoryTree))]
+    public IActionResult GetCategoryTree(Guid Id)
+    {
+        var result = new CategoryTree(Guid.NewGuid(), "Test", Enumerable.Empty<CategotyTreeInfo>(), Enumerable.Empty<CategoryTreeFile>());
+        return Ok(result);
+    }
+
+    public record CategotyTreeInfo(Guid Id, string Name);
+
+    public record CategoryTree(Guid Id, string Name, IEnumerable<CategotyTreeInfo> SubCategories, IEnumerable<CategoryTreeFile> Files);
+
+    public record CategoryTreeFile(Guid Id, string Name);
 }
