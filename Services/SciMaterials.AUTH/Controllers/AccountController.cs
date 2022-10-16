@@ -198,7 +198,7 @@ public class AccountController : Controller
 
                 var identityUser = await _userManager.FindByNameAsync(currentUserName);
                 var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(identityUser);
-                if (!string.IsNullOrEmpty(currentUserName) ||
+                if (currentUserName is not { Length: > 0 } ||
                     identityUser is not null ||
                     isEmailConfirmed)
                 {
