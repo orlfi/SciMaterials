@@ -6,13 +6,13 @@
 <MudGrid>
 	@*Groups*@
 	<MudItem xs="6">
-		@foreach (var group in authorityGroups)
+		@foreach (var group in _authorityGroups)
 		{
 			<MudPaper Class="pa-4 ma-2">
 				<MudStack>
 					<MudStack Row="true">
 						<MudText>@group.Name</MudText>
-						<MudIconButton Icon="@Icons.Filled.Delete" OnClick="() => Delete(group)"></MudIconButton>
+						<MudIconButton Icon="@Icons.Filled.Delete" Disabled="@(group.Name is "Admin" or "User")" OnClick="() => Delete(group)"></MudIconButton>
 					</MudStack>
 					
 					@foreach (var authority in group.Authorities)
@@ -34,7 +34,7 @@
 	@*Authorities*@
 	<MudItem xs="6">
 		<MudPaper Class="pa-4 ma-2">
-			@foreach (var authority in authorities)
+			@foreach (var authority in _authorities)
 			{
 				<MudStack Row="true">
 					<MudText>@authority.Name</MudText>
@@ -49,23 +49,25 @@
 </MudGrid>
 
 @code {
-	private List<AuthorityGroup> authorityGroups = null!;
-	private List<Authority> authorities = null!;
+	private List<AuthorityGroup> _authorityGroups = null!;
+	private List<Authority> _authorities = null!;
 
 	protected override void OnInitialized()
 	{
-		authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
-		authorities = AuthoritiesService.AuthoritiesList();
+		_authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
+		_authorities = AuthoritiesService.AuthoritiesList();
 	}
 
 	protected override void OnAfterRender(bool firstRender)
 	{
-		authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
-		authorities = AuthoritiesService.AuthoritiesList();
+		_authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
+		_authorities = AuthoritiesService.AuthoritiesList();
 	}
 
 	private void Delete(Authority authority)
 	{
+		AuthoritiesService.Delete(authority);
+		StateHasChanged();
 	}
 
 	private void AddAuthority()
@@ -82,6 +84,8 @@
 
 	private void Delete(AuthorityGroup group)
 	{
+		AuthoritiesService.Delete(group);
+		StateHasChanged();
 	}
 
 }

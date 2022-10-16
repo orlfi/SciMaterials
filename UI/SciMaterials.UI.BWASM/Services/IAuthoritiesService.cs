@@ -6,4 +6,6 @@ public interface IAuthoritiesService
 {
     List<AuthorityGroup> AuthoritiesGroupsList();
     List<Authority> AuthoritiesList();
+    void Delete(AuthorityGroup authorityGroup);
+    void Delete(Authority authority);
 }

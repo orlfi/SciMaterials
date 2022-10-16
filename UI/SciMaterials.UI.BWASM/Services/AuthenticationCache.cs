@@ -109,4 +109,28 @@ public class AuthenticationCache
     {
         return Authorities.Values.ToList();
     }
+
+    public void DeleteAuthority(Guid authorityId)
+    {
+        if (!Authorities.TryRemove(authorityId, out var existedAuthority)) return;
+
+        foreach (var authorityGroup in AuthorityGroups.Values)
+        {
+            authorityGroup.Authorities.Remove(existedAuthority);
+        }
+    }
+
+    public void DeleteAuthorityGroup(Guid authorityGroupId, string authorityGroupName)
+    {
+
+        if(authorityGroupName is "User" or "Admin" || !AuthorityGroups.TryRemove(authorityGroupName, out _)) return;
+
+        var userGroup = AuthorityGroups["User"];
+
+        foreach (var user in Users.Values.Where(x=>x.AuthorityGroupId == authorityGroupId))
+        {
+            user.AuthorityGroupId = userGroup.Id;
+            user.Authority = userGroup.Name;
+        }
+    }
 }
