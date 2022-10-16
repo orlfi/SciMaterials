@@ -1,6 +1,7 @@
 ﻿@page "/signup"
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
 <EditForm Model="@_model" OnValidSubmit="OnValidSubmit" >
     <DataAnnotationsValidator />
@@ -32,29 +33,21 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
-        <MudItem xs="12">
-            @if (_success)
-            {
-                <MudText Color="Color.Success">Success</MudText>
-            }
-            else
-            {
-                <MudText Color="@Color.Error" Align="Align.Center">
-                    <ValidationSummary />
-                </MudText>
-            }
-        </MudItem>
     </MudGrid>
 </EditForm>
 
 
 @code {
 	  readonly SignUpForm _model = new();
-    bool _success;
 
     private async Task OnValidSubmit(EditContext context)
     {
-	      await AuthenticationService.SignUp(_model);
+	    if (!await AuthenticationService.SignUp(_model))
+	    {
+		    Snackbar.Add("Fail on registration");
+		    return;
+	    }
+        
         NavigationManager.NavigateTo("/");
     }
 }
