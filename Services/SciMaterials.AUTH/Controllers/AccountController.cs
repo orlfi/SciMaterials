@@ -242,7 +242,7 @@ public class AccountController : Controller
     [HttpGet(AuthApiRoute.ConfirmEmail)]
     public async Task<IActionResult> ConfirmEmailAsync(string userId, string confirmToken)
     {
-        if (!string.IsNullOrEmpty(userId) || !string.IsNullOrEmpty(confirmToken))
+        if (userId is not { Length: > 0 } || confirmToken is not { Length: > 0 })
         {
             try
             {
