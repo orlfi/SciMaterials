@@ -33,4 +33,14 @@ public class TestAuthoritiesService : IAuthoritiesService
     {
         _authenticationCache.DeleteAuthority(authority.Id);
     }
+
+    public void AddAuthorityToGroup(AuthorityGroup group, Authority authority)
+    {
+        _authenticationCache.AddAuthorityToGroup(group.Id, group.Name, authority.Id);
+    }
+
+    public void AddAuthority(string authorityName)
+    {
+        _authenticationCache.AddAuthority(authorityName);
+    }
 }

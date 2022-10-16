@@ -133,4 +133,20 @@ public class AuthenticationCache
             user.Authority = userGroup.Name;
         }
     }
+
+    public void AddAuthorityToGroup(Guid groupId, string groupName, Guid authorityId)
+    {
+        if(!AuthorityGroups.TryGetValue(groupName, out var group) || !Authorities.TryGetValue(authorityId, out var authority)) return;
+        // check that authority already exist
+        if(group.Authorities.Contains(authority)) return;
+        group.Authorities.Add(authority);
+    }
+
+    public void AddAuthority(string authorityName)
+    {
+        if(Authorities.Values.FirstOrDefault(x=>x.Name == authorityName) is not null) return;
+
+        Authority newOne = Authority.Create(authorityName);
+        Authorities.TryAdd(newOne.Id, newOne);
+    }
 }

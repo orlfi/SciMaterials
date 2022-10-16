@@ -8,4 +8,6 @@ public interface IAuthoritiesService
     List<Authority> AuthoritiesList();
     void Delete(AuthorityGroup authorityGroup);
     void Delete(Authority authority);
+    void AddAuthorityToGroup(AuthorityGroup group, Authority authority);
+    void AddAuthority(string authorityName);
 }
