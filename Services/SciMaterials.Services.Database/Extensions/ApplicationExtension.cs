@@ -23,7 +23,10 @@ namespace SciMaterials.Services.Database.Extensions
             }
 
             var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-            await dbInitializer.InitializeDbAsync(removeAtStart: dbSetting.RemoveAtStart, useDataSeeder: dbSetting.UseDataSeeder).ConfigureAwait(false);
+            await dbInitializer.InitializeDbAsync(
+                removeAtStart: dbSetting.RemoveAtStart, 
+                useDataSeeder: dbSetting.UseDataSeeder)
+                .ConfigureAwait(false);
 
             return app;
         }
