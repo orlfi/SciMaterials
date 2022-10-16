@@ -36,6 +36,5 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services) =>
         services.AddTransient<IDbInitializer, DbInitializer>()
-            
         ;
 }

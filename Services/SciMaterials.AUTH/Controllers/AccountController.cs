@@ -122,7 +122,7 @@ public class AccountController : Controller
     [HttpPost(AuthApiRoute.Login)]
     public async Task<IActionResult> LoginAsync(string email, string password)
     {
-        if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(password))
+        if (email is not { Length: > 0 } || password is not { Length: > 0 })
         {
             try
             {
@@ -190,7 +190,7 @@ public class AccountController : Controller
     [HttpPost(AuthApiRoute.ChangePassword)]
     public async Task<IActionResult> ChangePasswordAsync(string oldPassword, string newPassword)
     {
-        if (!string.IsNullOrEmpty(oldPassword) || !string.IsNullOrEmpty(newPassword))
+        if (oldPassword is not { Length: > 0 } || newPassword is not { Length: > 0 })
         {
             try
             {
@@ -198,7 +198,7 @@ public class AccountController : Controller
 
                 var identityUser = await _userManager.FindByNameAsync(currentUserName);
                 var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(identityUser);
-                if (!string.IsNullOrEmpty(currentUserName) ||
+                if (currentUserName is not { Length: > 0 } ||
                     identityUser is not null ||
                     isEmailConfirmed)
                 {
@@ -242,7 +242,7 @@ public class AccountController : Controller
     [HttpGet(AuthApiRoute.ConfirmEmail)]
     public async Task<IActionResult> ConfirmEmailAsync(string userId, string confirmToken)
     {
-        if (!string.IsNullOrEmpty(userId) || !string.IsNullOrEmpty(confirmToken))
+        if (userId is not { Length: > 0 } || confirmToken is not { Length: > 0 })
         {
             try
             {
@@ -284,7 +284,7 @@ public class AccountController : Controller
     [HttpPost(AuthApiRoute.CreateRole)]
     public async Task<IActionResult> CreateRoleAsync(string roleName)
     {
-        if (!string.IsNullOrEmpty(roleName))
+        if (roleName is not { Length: > 0 })
         {
             try
             {
