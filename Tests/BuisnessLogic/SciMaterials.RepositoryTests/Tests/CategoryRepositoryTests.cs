@@ -36,7 +36,7 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
         const EntityState expecedState = EntityState.Detached;
 
         //act
-        var categories = _categoryRepository.GetAll();
+        var categories = _categoryRepository.GetAll(true, true);
         int count = 0;
         if(categories is not null)
             count = categories.Count();

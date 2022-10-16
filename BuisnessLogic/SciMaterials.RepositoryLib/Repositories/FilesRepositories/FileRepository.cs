@@ -135,7 +135,7 @@ public class FileRepository : IFileRepository
         IQueryable<File> query = _context.Files.Where(f => !f.IsDeleted);
 
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -156,7 +156,7 @@ public class FileRepository : IFileRepository
         IQueryable<File> query = _context.Files.Where(f => !f.IsDeleted);
 
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -178,7 +178,7 @@ public class FileRepository : IFileRepository
             .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -200,7 +200,7 @@ public class FileRepository : IFileRepository
             .Where(c => c.Id == id);
         
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -268,7 +268,7 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -290,7 +290,7 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -312,7 +312,7 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Hash == hash && !c.IsDeleted);
         
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -334,7 +334,7 @@ public class FileRepository : IFileRepository
                 .Where(c => c.Hash == hash && !c.IsDeleted);
 
         if (include)
-            query.Include(f => f.ContentType)
+            query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)

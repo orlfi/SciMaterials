@@ -130,7 +130,7 @@ public class TagRepository : ITagRepository
         IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -146,7 +146,7 @@ public class TagRepository : ITagRepository
         IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -163,7 +163,7 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -180,7 +180,7 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -246,7 +246,7 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)
@@ -263,7 +263,7 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
         if (disableTracking)

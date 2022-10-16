@@ -132,7 +132,7 @@ public class ContentTypeRepository : IContentTypeRepository
         IQueryable<ContentType> query = _context.ContentTypes.Where(c => !c.IsDeleted);
 
         if (include)
-            query.Include(ct => ct.Files);
+            query = query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -147,7 +147,7 @@ public class ContentTypeRepository : IContentTypeRepository
         IQueryable<ContentType> query = _context.ContentTypes.Where(c => !c.IsDeleted);
 
         if (include)
-            query.Include(ct => ct.Files);
+            query = query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -163,7 +163,7 @@ public class ContentTypeRepository : IContentTypeRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(ct => ct.Files);
+            query = query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -179,7 +179,7 @@ public class ContentTypeRepository : IContentTypeRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(ct => ct.Files);
+            query = query.Include(ct => ct.Files);
 
         if (disableTracking)
             query = query.AsNoTracking();

@@ -130,7 +130,7 @@ public class AuthorRepository : IAuthorRepository
         IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
 
         if (include)
-            query.Include(u => u.Comments)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
@@ -148,7 +148,7 @@ public class AuthorRepository : IAuthorRepository
         IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
 
         if (include)
-            query.Include(u => u.Comments)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
@@ -167,7 +167,7 @@ public class AuthorRepository : IAuthorRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(u => u.Comments)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
@@ -186,7 +186,7 @@ public class AuthorRepository : IAuthorRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(u => u.Comments)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
@@ -253,7 +253,7 @@ public class AuthorRepository : IAuthorRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
         
         if (include)
-            query.Include(u => u.Comments)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
@@ -272,7 +272,7 @@ public class AuthorRepository : IAuthorRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(u => u.Comments)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);

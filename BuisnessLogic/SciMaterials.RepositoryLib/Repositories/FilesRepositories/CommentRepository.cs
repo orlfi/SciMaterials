@@ -133,7 +133,7 @@ public class CommentRepository : ICommentRepository
         IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
         
         if (include)
-            query.Include(c => c.File)
+            query = query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 
@@ -150,7 +150,7 @@ public class CommentRepository : ICommentRepository
         IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.File)
+            query = query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 
@@ -168,7 +168,7 @@ public class CommentRepository : ICommentRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.File)
+            query = query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 
@@ -186,7 +186,7 @@ public class CommentRepository : ICommentRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.File)
+            query = query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 

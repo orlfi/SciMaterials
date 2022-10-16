@@ -121,7 +121,7 @@ public class CategoryRepository : ICategoryRepository
         IQueryable<Category> query = _context.Categories.Where(c => !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.Files)
+            query = query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -137,7 +137,7 @@ public class CategoryRepository : ICategoryRepository
         IQueryable<Category> query = _context.Categories.Where(c => !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.Files)
+            query = query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -154,7 +154,7 @@ public class CategoryRepository : ICategoryRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.Files)
+            query = query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -171,7 +171,7 @@ public class CategoryRepository : ICategoryRepository
                  .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.Files)
+            query = query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -188,7 +188,7 @@ public class CategoryRepository : ICategoryRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.Files)
+            query = query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -205,7 +205,7 @@ public class CategoryRepository : ICategoryRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(c => c.Files)
+            query = query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)

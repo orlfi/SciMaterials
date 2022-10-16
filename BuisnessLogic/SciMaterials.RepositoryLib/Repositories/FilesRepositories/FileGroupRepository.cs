@@ -132,7 +132,7 @@ public class FileGroupRepository : IFileGroupRepository
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
@@ -152,7 +152,7 @@ public class FileGroupRepository : IFileGroupRepository
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
@@ -173,7 +173,7 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
@@ -194,7 +194,7 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
@@ -265,7 +265,7 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
@@ -286,7 +286,7 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
