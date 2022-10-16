@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BuisnessLogic\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     <ProjectReference Include="..\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj" />

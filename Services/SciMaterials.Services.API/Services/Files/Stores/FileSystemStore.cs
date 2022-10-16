@@ -2,7 +2,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 

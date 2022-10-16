@@ -1,10 +1,8 @@
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.DTO.Files;
-using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;

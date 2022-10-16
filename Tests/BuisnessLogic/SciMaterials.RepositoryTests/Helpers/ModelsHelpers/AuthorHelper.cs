@@ -1,5 +1,4 @@
-﻿
-using SciMaterials.DAL.Models;
+﻿using SciMaterials.DAL.Models;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.RepositoryTests.Helpers.ModelsHelpers;
@@ -13,28 +12,28 @@ internal static class AuthorHelper
 
     public static Author GetOne()
     {
-        return new Author()
+        return new Author
         {
             Id = Guid.NewGuid(),
             Name = "AuthorName",
             Surname = "AuthorSureName",
             Email = "AuthorEmail",
             Phone = "+7 (123) 456-78-90",
-            User = new User()
+            User = new User
             {
                 Id= Guid.NewGuid(),
             },
             Files =
             {
-                new File() { Id = Guid.NewGuid(), }
+                new File { Id = Guid.NewGuid(), }
             },
             Comments =
             {
-                new Comment() { Id = Guid.NewGuid(), }
+                new Comment { Id = Guid.NewGuid(), }
             },
             Ratings =
             {
-                new Rating() {Id = Guid.NewGuid(), }
+                new Rating {Id = Guid.NewGuid(), }
             }
         };
     }

@@ -1,0 +1,71 @@
+﻿@page "/files_storage"
+
+@inject NavigationManager NavigationManager
+
+<MudText Class="mb-5" Typo="Typo.h3" Align="Align.Start">Files</MudText>
+
+<MudNavLink Class="rounded-lg" Href="files_upload" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.UploadFile">Upload</MudNavLink>
+<FilesFilter ItemsPresentationMode="_itemsPresentationMode" OnItemsPresentationModeChanged="ChangeItemsPresentationMode"/>
+
+@switch (_itemsPresentationMode)
+{
+	case ItemsPresentationMode.Table:
+		<TableView Data="Files">
+			<TableHeader>
+				<MudTh></MudTh>
+				<MudTh>Name</MudTh>
+				<MudTh>Size</MudTh>
+				<MudTh></MudTh>
+			</TableHeader>
+
+			<RowTemplate>
+				@if (true)
+				{
+					<MudTd><MudIcon Icon="@Icons.Material.Filled.FilePresent" /></MudTd>
+				}
+				else
+				{
+					<MudTd><MudIcon Icon="@Icons.Material.Filled.Folder"/></MudTd>
+				}
+
+				<MudTd DataLabel="Name">@($"Name #{context}")</MudTd>
+				<MudTd DataLabel="Size">@($"{context} gb")</MudTd>
+				<MudTh>
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => NavigateToFileDetailsUrl(context)">Edit</MudButton>
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
+				</MudTh>
+			</RowTemplate>
+		</TableView>
+		break;
+	case ItemsPresentationMode.LargeGrid:
+		<FilesGridView Files="Files" OnFileSelected="NavigateToFileDetailsUrl"/>
+		break;
+}
+
+
+@code {
+	private List<int> Files = new();
+
+    private string filterValue { get; set; }
+    private string sortValue { get; set; }
+	private ItemsPresentationMode _itemsPresentationMode;
+
+    protected override async Task OnInitializedAsync()
+    {
+	    Files = Enumerable.Range(1, 20).ToList();
+    }
+
+    private void NavigateToFileDetailsUrl(int id)
+    {
+        NavigationManager.NavigateTo($"/filedetails/{id}");
+    }
+
+	private void ChangeItemsPresentationMode(ItemsPresentationMode mode)
+	{
+		_itemsPresentationMode = mode;
+	}
+
+	private void Delete(int context)
+	{
+	}
+}

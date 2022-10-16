@@ -16,18 +16,17 @@ public class Result : IResult
 
     /// <summary> Возращает успешный результат выполнения операции. </summary>
     /// <returns> Результат операции. </returns>
-    public static Result Success() => new Result() { Succeeded = true };
+    public static Result Success() => new() { Succeeded = true };
 
     /// <summary> Возращает успешный результат выполнения операции. </summary>
     /// <param name="message"> Текствое сообщение о результате выполнения операции. </param>
     /// <returns> Результат операции. </returns>
-    public static Result Success(string message) => new Result() { Succeeded = true, Messages = new List<string> { message } };
+    public static Result Success(string message) => new() { Succeeded = true, Messages = new List<string> { message } };
 
     /// <summary> Возращает успешный результат выполнения операции. Асинхронный. </summary>
     /// <returns> Результат операции. </returns>
     public static Task<Result> SuccessAsync() => Task.FromResult(Success());
-
-
+    
     /// <summary> Возращает успешный результат выполнения операции. Асинхронный. </summary>
     /// <param name="message"> Текствое сообщение о результате выполнения операции. </param>
     /// <returns> Результат операции. </returns>
@@ -36,13 +35,13 @@ public class Result : IResult
     /// <summary> Возращает результат с ошибкой выполнения операции. </summary>
     /// <param name="code"> Код ошибки. </param>
     /// <returns> Результат с ошибкой операции. </returns>
-    public static Result Error(int code) => new Result() { Succeeded = false, Code = code };
+    public static Result Error(int code) => new() { Succeeded = false, Code = code };
 
     /// <summary> Возращает результат с ошибкой выполнения операции. </summary>
     /// <param name="code"> Код ошибки. </param>
     /// <param name="message"> Дополнительно сообщение об ошибке. </param>
     /// <returns> Результат с ошибкой операции. </returns>
-    public static Result Error(int code, string message) => new Result() { Succeeded = false, Code = code, Messages = new List<string> { message } };
+    public static Result Error(int code, string message) => new() { Succeeded = false, Code = code, Messages = new List<string> { message } };
 
     /// <summary> Возращает результат с ошибкой выполнения операции. </summary>
     /// <param name="code"> Код ошибки. </param>
@@ -72,13 +71,13 @@ public class Result<TData> : Result, IResult<TData>
 {
     public TData? Data { get; set; }
 
-    public static new Result<TData> Success() => new Result<TData>() { Succeeded = true };
+    public static new Result<TData> Success() => new() { Succeeded = true };
 
-    public static new Result<TData> Success(string message) => new Result<TData>() { Succeeded = true, Messages = new List<string> { message } };
+    public static new Result<TData> Success(string message) => new() { Succeeded = true, Messages = new List<string> { message } };
 
-    public static Result<TData> Success(TData data) => new Result<TData>() { Data = data, Succeeded = true };
+    public static Result<TData> Success(TData data) => new() { Data = data, Succeeded = true };
 
-    public static Result<TData> Success(TData data, string message) => new Result<TData>() { Data = data, Succeeded = true, Messages = new List<string> { message } };
+    public static Result<TData> Success(TData data, string message) => new() { Data = data, Succeeded = true, Messages = new List<string> { message } };
 
     public static new Task<Result<TData>> SuccessAsync() => Task.FromResult(Success());
 
@@ -88,9 +87,9 @@ public class Result<TData> : Result, IResult<TData>
 
     public static Task<Result<TData>> SuccessAsync(TData data, string message) => Task.FromResult(Success(data, message));
 
-    public static new Result<TData> Error(int code) => new Result<TData>() { Succeeded = false, Code = code };
+    public static new Result<TData> Error(int code) => new() { Succeeded = false, Code = code };
 
-    public static new Result<TData> Error(int code, string message) => new Result<TData>() { Succeeded = false, Code = code, Messages = new List<string> { message } };
+    public static new Result<TData> Error(int code, string message) => new() { Succeeded = false, Code = code, Messages = new List<string> { message } };
 
     public static new Result<TData> Error(int code, ICollection<string> messages) => new Result<TData>() { Succeeded = false, Code = code, Messages = messages };
 
@@ -103,5 +102,4 @@ public class Result<TData> : Result, IResult<TData>
     public static implicit operator Result<TData>(TData data) => new() { Succeeded = true, Data = data };
 
     public static implicit operator Result<TData>(ApiException exception) => new() { Succeeded = false, Code = exception.Code, Messages = new List<string> { exception.Message } };
-
 }

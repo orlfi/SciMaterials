@@ -24,24 +24,24 @@ public class FileUploadFilter : IOperationFilter
         }
         if (context.ApiDescription.HttpMethod == HttpMethod.Post.Method)
         {
-            var uploadFileMediaType = new OpenApiMediaType()
+            var uploadFileMediaType = new OpenApiMediaType
             {
-                Schema = new OpenApiSchema()
+                Schema = new OpenApiSchema
                 {
                     Type = "object",
                     Properties =
                     {
-                        ["files"] = new OpenApiSchema()
+                        ["files"] = new OpenApiSchema
                         {
                             Type = "array",
-                            Items = new OpenApiSchema()
+                            Items = new OpenApiSchema
                             {
                                 Type = "string",
                                 Format = "binary"
                             }
                         }
                     },
-                    Required = new HashSet<string>() { "files" }
+                    Required = new HashSet<string> { "files" }
                 }
             };
 

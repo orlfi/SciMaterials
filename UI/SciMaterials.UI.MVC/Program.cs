@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using SciMaterials.Auth.Registrations;
+using SciMaterials.DAL.AUTH.Interfaces;
+using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.InitializationDb.Interfaces;
+using SciMaterials.Services.API.Configuration;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
@@ -19,12 +25,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddSwagger(builder.Configuration);
 builder.Services.ConfigureApplication(builder.Configuration);
 builder.Services.AddApiServices(builder.Configuration);
+builder.Services.AddAuthApiServices(builder.Configuration);
+builder.Services.AddDbInitializer();
 
 var app = builder.Build();
 
 await app.UseInitializationDbAsync(builder.Configuration);
 
-// Configure the HTTP request pipeline.
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/MVC/Error");
@@ -51,3 +59,7 @@ app.MapFallbackToFile("index.html");
 app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
 
 app.Run();
+
+
+// Required mark for integration tests
+public partial class Program{}

@@ -1,0 +1,49 @@
+﻿@using System.Diagnostics.CodeAnalysis
+@typeparam TItem
+
+<style type="text/css">
+	.mud-table-head .header-centered th {
+		text-align: center;
+		font-size: 1.2em;
+	}
+
+	.mud-table-foot .bold-text .mud-table-cell {
+		font-weight: 500;
+	}
+</style>
+
+<MudTable Items="@Data" MultiSelection="true" @bind-SelectedItems="Selected" Hover="true" Breakpoint="Breakpoint.Sm" Striped="true" Bordered="false"
+          CustomHeader="true" CustomFooter="true" HeaderClass="table-head-bordered" FooterClass="table-foot-bordered">
+	<HeaderContent>
+		<MudTHeadRow IsCheckable="true">
+			@TableHeader
+		</MudTHeadRow>
+	</HeaderContent>
+
+	<RowTemplate>
+		@RowTemplate?.Invoke(context)
+	</RowTemplate>
+
+	<FooterContent>
+		<MudTFootRow>
+			<MudTd colspan="5">Selected: @Selected.Count</MudTd>
+		</MudTFootRow>
+	</FooterContent>
+
+	<PagerContent>
+		<MudTablePager/>
+	</PagerContent>
+</MudTable>
+
+@code {
+	[Parameter, AllowNull]
+	public IReadOnlyList<TItem> Data { get; set; }
+
+	[Parameter]
+	public RenderFragment? TableHeader { get; set; }
+
+	[Parameter]
+	public RenderFragment<TItem>? RowTemplate { get; set; }
+
+	public HashSet<TItem> Selected { get; set; } = new();
+}

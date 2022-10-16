@@ -7,7 +7,6 @@ using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace SciMaterials.Services.API.Services.Categories;
 

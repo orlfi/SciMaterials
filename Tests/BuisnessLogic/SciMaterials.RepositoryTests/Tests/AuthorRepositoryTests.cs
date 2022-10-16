@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
@@ -37,9 +36,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = _authorRepository.GetAll();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -56,9 +55,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = _authorRepository.GetAll(false);
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -79,9 +78,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = await _authorRepository.GetAllAsync();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -98,9 +97,9 @@ public class AuthorRepositoryTests
 
         //act
         var authors = await _authorRepository.GetAllAsync(false);
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         //assert
         Assert.Equal(expected, count);
@@ -116,34 +115,34 @@ public class AuthorRepositoryTests
     public async void AddAsync_ItShould_contains_category_increase_by_1()
     {
         //arrange
-        int expected = _authorRepository.GetAll()!.Count + 1;
-        var author = AuthorHelper.GetOne();
+        var expected = (await _authorRepository.GetAllAsync())!.Count + 1;
+        var author   = AuthorHelper.GetOne();
 
         //act
         await _authorRepository.AddAsync(author);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
         var authors = await _authorRepository.GetAllAsync();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
-        var authorDb = _authorRepository.GetById(author.Id);
+        var authorDb = await _authorRepository.GetByIdAsync(author.Id);
 
-        ICollection<int> coll = new List<int>() { 1, 2, 3 };
+        ICollection<int> coll = new List<int> { 1, 2, 3 };
 
         //assert
         Assert.Equal(expected, count);
         Assert.NotNull(authorDb);
         Assert.Equal(author.Id, authorDb!.Id);
-        Assert.Equal(author.Name, authorDb!.Name);
-        Assert.Equal(author.Surname, authorDb!.Surname);
-        Assert.Equal(author.Email, authorDb!.Email);
-        Assert.Equal(author.Phone, authorDb!.Phone);
-        Assert.Equal(author.User!.Id, authorDb!.User!.Id);
-        Assert.Equal(author.Files.ToList()[0].Id, authorDb!.Files.ToList()[0].Id);
-        Assert.Equal(author.Comments.ToList()[0].Id, authorDb!.Comments.ToList()[0].Id);
-        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb!.Ratings.ToList()[0].Id);
+        Assert.Equal(author.Name, authorDb.Name);
+        Assert.Equal(author.Surname, authorDb.Surname);
+        Assert.Equal(author.Email, authorDb.Email);
+        Assert.Equal(author.Phone, authorDb.Phone);
+        Assert.Equal(author.User!.Id, authorDb.User!.Id);
+        Assert.Equal(author.Files.ToList()[0].Id, authorDb.Files.ToList()[0].Id);
+        Assert.Equal(author.Comments.ToList()[0].Id, authorDb.Comments.ToList()[0].Id);
+        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb.Ratings.ToList()[0].Id);
     }
 
     [Fact]
@@ -151,7 +150,7 @@ public class AuthorRepositoryTests
     public void Add_ItShould_contains_category_3()
     {
         //arrange
-        int expected = _authorRepository.GetAll()!.Count + 1;
+        var expected = _authorRepository.GetAll()!.Count + 1;
         var author = AuthorHelper.GetOne();
 
         //act
@@ -159,9 +158,9 @@ public class AuthorRepositoryTests
         _context.SaveChanges();
 
         var authors = _authorRepository.GetAll();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         var authorDb = _authorRepository.GetById(author.Id);
 
@@ -169,14 +168,14 @@ public class AuthorRepositoryTests
         Assert.Equal(expected, count);
         Assert.NotNull(authorDb);
         Assert.Equal(author.Id, authorDb!.Id);
-        Assert.Equal(author.Name, authorDb!.Name);
-        Assert.Equal(author.Surname, authorDb!.Surname);
-        Assert.Equal(author.Email, authorDb!.Email);
-        Assert.Equal(author.Phone, authorDb!.Phone);
-        Assert.Equal(author.User!.Id, authorDb!.User!.Id);
-        Assert.Equal(author.Files.ToList()[0].Id, authorDb!.Files.ToList()[0].Id);
-        Assert.Equal(author.Comments.ToList()[0].Id, authorDb!.Comments.ToList()[0].Id);
-        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb!.Ratings.ToList()[0].Id);
+        Assert.Equal(author.Name, authorDb.Name);
+        Assert.Equal(author.Surname, authorDb.Surname);
+        Assert.Equal(author.Email, authorDb.Email);
+        Assert.Equal(author.Phone, authorDb.Phone);
+        Assert.Equal(author.User!.Id, authorDb.User!.Id);
+        Assert.Equal(author.Files.ToList()[0].Id, authorDb.Files.ToList()[0].Id);
+        Assert.Equal(author.Comments.ToList()[0].Id, authorDb.Comments.ToList()[0].Id);
+        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb.Ratings.ToList()[0].Id);
     }
 
     #endregion
@@ -189,20 +188,20 @@ public class AuthorRepositoryTests
     {
         //arrange
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
-        int expected = _authorRepository.GetAll()!.Count - 1;
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
+        var expected = (await _authorRepository.GetAllAsync())!.Count - 1;
 
         //act
         await _authorRepository.DeleteAsync(author.Id);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
-        var authors = _authorRepository.GetAll();
-        int count = 0;
+        var authors = await _authorRepository.GetAllAsync();
+        var count   = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
-        var removedAuthor = _authorRepository.GetById(author.Id);
+        var removedAuthor = await _authorRepository.GetByIdAsync(author.Id);
 
         //assert
         Assert.Equal(expected, count);
@@ -217,16 +216,16 @@ public class AuthorRepositoryTests
         var author = AuthorHelper.GetOne();
         _authorRepository.Add(author);
         _context.SaveChanges();
-        int expected = _authorRepository.GetAll()!.Count - 1;
+        var expected = _authorRepository.GetAll()!.Count - 1;
 
         //act
         _authorRepository.Delete(author.Id);
         _context.SaveChanges();
 
         var authors = _authorRepository.GetAll();
-        int count = 0;
+        var count = 0;
         if (authors is not null)
-            count = authors.Count();
+            count = authors.Count;
 
         var removedAuthor = _authorRepository.GetById(author.Id);
 
@@ -246,8 +245,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Unchanged;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByIdAsync(author.Id, false);
@@ -265,8 +264,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Detached;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByIdAsync(author.Id, true);
@@ -321,8 +320,8 @@ public class AuthorRepositoryTests
     {
         //arrange
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByIdAsync(author.Id);
@@ -330,14 +329,14 @@ public class AuthorRepositoryTests
         //assert
         Assert.NotNull(authorDb);
         Assert.Equal(author.Id, authorDb!.Id);
-        Assert.Equal(author.Name, authorDb!.Name);
-        Assert.Equal(author.Surname, authorDb!.Surname);
-        Assert.Equal(author.Email, authorDb!.Email);
-        Assert.Equal(author.Phone, authorDb!.Phone);
-        Assert.Equal(author.User!.Id, authorDb!.User!.Id);
-        Assert.Equal(author.Files.ToList()[0].Id, authorDb!.Files.ToList()[0].Id);
-        Assert.Equal(author.Comments.ToList()[0].Id, authorDb!.Comments.ToList()[0].Id);
-        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb!.Ratings.ToList()[0].Id);
+        Assert.Equal(author.Name, authorDb.Name);
+        Assert.Equal(author.Surname, authorDb.Surname);
+        Assert.Equal(author.Email, authorDb.Email);
+        Assert.Equal(author.Phone, authorDb.Phone);
+        Assert.Equal(author.User!.Id, authorDb.User!.Id);
+        Assert.Equal(author.Files.ToList()[0].Id, authorDb.Files.ToList()[0].Id);
+        Assert.Equal(author.Comments.ToList()[0].Id, authorDb.Comments.ToList()[0].Id);
+        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb.Ratings.ToList()[0].Id);
     }
 
     [Fact]
@@ -355,14 +354,14 @@ public class AuthorRepositoryTests
         //assert
         Assert.NotNull(authorDb);
         Assert.Equal(author.Id, authorDb!.Id);
-        Assert.Equal(author.Name, authorDb!.Name);
-        Assert.Equal(author.Surname, authorDb!.Surname);
-        Assert.Equal(author.Email, authorDb!.Email);
-        Assert.Equal(author.Phone, authorDb!.Phone);
-        Assert.Equal(author.User!.Id, authorDb!.User!.Id);
-        Assert.Equal(author.Files.ToList()[0].Id, authorDb!.Files.ToList()[0].Id);
-        Assert.Equal(author.Comments.ToList()[0].Id, authorDb!.Comments.ToList()[0].Id);
-        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb!.Ratings.ToList()[0].Id);
+        Assert.Equal(author.Name, authorDb.Name);
+        Assert.Equal(author.Surname, authorDb.Surname);
+        Assert.Equal(author.Email, authorDb.Email);
+        Assert.Equal(author.Phone, authorDb.Phone);
+        Assert.Equal(author.User!.Id, authorDb.User!.Id);
+        Assert.Equal(author.Files.ToList()[0].Id, authorDb.Files.ToList()[0].Id);
+        Assert.Equal(author.Comments.ToList()[0].Id, authorDb.Comments.ToList()[0].Id);
+        Assert.Equal(author.Ratings.ToList()[0].Id, authorDb.Ratings.ToList()[0].Id);
     }
 
     #endregion
@@ -376,8 +375,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Detached;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByNameAsync(author.Name, true);
@@ -414,8 +413,8 @@ public class AuthorRepositoryTests
         //arrange
         const EntityState expecedState = EntityState.Unchanged;
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByNameAsync(author.Name, false);
@@ -451,8 +450,8 @@ public class AuthorRepositoryTests
     {
         //arrange
         var author = AuthorHelper.GetOne();
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         var authorDb = await _authorRepository.GetByNameAsync(author.Name);
@@ -460,13 +459,13 @@ public class AuthorRepositoryTests
         //assert
         Assert.NotNull(authorDb);
         Assert.Equal(author.Name, authorDb!.Name);
-        Assert.NotNull(authorDb!.Surname);
-        Assert.NotNull(authorDb!.Email);
-        Assert.NotNull(authorDb!.Phone);
-        Assert.NotNull(authorDb!.User!);
-        Assert.NotNull(authorDb!.Files.ToList()[0]);
-        Assert.NotNull(authorDb!.Comments.ToList()[0]);
-        Assert.NotNull(authorDb!.Ratings.ToList()[0]);
+        Assert.NotNull(authorDb.Surname);
+        Assert.NotNull(authorDb.Email);
+        Assert.NotNull(authorDb.Phone);
+        Assert.NotNull(authorDb.User!);
+        Assert.NotNull(authorDb.Files.ToList()[0]);
+        Assert.NotNull(authorDb.Comments.ToList()[0]);
+        Assert.NotNull(authorDb.Ratings.ToList()[0]);
     }
 
     [Fact]
@@ -484,12 +483,12 @@ public class AuthorRepositoryTests
         //assert
         Assert.NotNull(authorDb);
         Assert.Equal(author.Name, authorDb!.Name);
-        Assert.NotNull(authorDb!.Surname);
-        Assert.NotNull(authorDb!.Email);
-        Assert.NotNull(authorDb!.Phone);
-        Assert.NotNull(authorDb!.Files.ToList()[0]);
-        Assert.NotNull(authorDb!.Comments.ToList()[0]);
-        Assert.NotNull(authorDb!.Ratings.ToList()[0]);
+        Assert.NotNull(authorDb.Surname);
+        Assert.NotNull(authorDb.Email);
+        Assert.NotNull(authorDb.Phone);
+        Assert.NotNull(authorDb.Files.ToList()[0]);
+        Assert.NotNull(authorDb.Comments.ToList()[0]);
+        Assert.NotNull(authorDb.Ratings.ToList()[0]);
     }
 
     #endregion
@@ -501,15 +500,15 @@ public class AuthorRepositoryTests
     public async void UpdateAsync_ItShould_properties_updated()
     {
         //arrange
-        var expectedName = "new name";
-        var expectedSurname = "new surname";
-        var expectedEmail = "newEmail@mail.ru";
-        var expectedPhone = "+0 (987) 654-32-10";
-        var expectedFiles = new List<File>() { new File() { Id = Guid.NewGuid() } };
-        var expectedComments = new List<Comment>() { new Comment() { Id = Guid.NewGuid() } };
-        var expectedRatings = new List<Rating>() { new Rating() { Id = Guid.NewGuid() } };
+        var expectedName     = "new name";
+        var expectedSurname  = "new surname";
+        var expectedEmail    = "newEmail@mail.ru";
+        var expectedPhone    = "+0 (987) 654-32-10";
+        var expectedFiles    = new List<File> { new() { Id    = Guid.NewGuid() } };
+        var expectedComments = new List<Comment> { new() { Id = Guid.NewGuid() } };
+        var expectedRatings  = new List<Rating> { new() { Id  = Guid.NewGuid() } };
 
-        var author = new Author()
+        var author = new Author
         {
             Id = Guid.NewGuid(),
             Name = expectedName,
@@ -520,28 +519,28 @@ public class AuthorRepositoryTests
             Comments = expectedComments,
             Ratings = expectedRatings,
         };
-        _authorRepository.Add(author);
-        _context.SaveChanges();
+        await _authorRepository.AddAsync(author);
+        await _context.SaveChangesAsync();
 
         //act
         author.Name = expectedName;
         await _authorRepository.UpdateAsync(author);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
 
-        var authorDb = _authorRepository.GetById(author.Id);
+        var authorDb = await _authorRepository.GetByIdAsync(author.Id);
 
         //assert
         Assert.Equal(author.Id, authorDb!.Id);
-        Assert.Equal(expectedName, authorDb!.Name);
-        Assert.Equal(expectedSurname, authorDb!.Surname);
-        Assert.Equal(expectedEmail, authorDb!.Email);
-        Assert.Equal(expectedPhone, authorDb!.Phone);
-        Assert.Equal(expectedFiles[0].Id, authorDb!.Files.ToList()[0].Id);
-        Assert.Equal(expectedFiles.Count, authorDb!.Files.Count);
-        Assert.Equal(expectedComments[0].Id, authorDb!.Comments.ToList()[0].Id);
-        Assert.Equal(expectedComments.Count, authorDb!.Comments.Count);
-        Assert.Equal(expectedRatings[0].Id, authorDb!.Ratings.ToList()[0].Id);
-        Assert.Equal(expectedRatings.Count, authorDb!.Ratings.Count);
+        Assert.Equal(expectedName, authorDb.Name);
+        Assert.Equal(expectedSurname, authorDb.Surname);
+        Assert.Equal(expectedEmail, authorDb.Email);
+        Assert.Equal(expectedPhone, authorDb.Phone);
+        Assert.Equal(expectedFiles[0].Id, authorDb.Files.ToList()[0].Id);
+        Assert.Equal(expectedFiles.Count, authorDb.Files.Count);
+        Assert.Equal(expectedComments[0].Id, authorDb.Comments.ToList()[0].Id);
+        Assert.Equal(expectedComments.Count, authorDb.Comments.Count);
+        Assert.Equal(expectedRatings[0].Id, authorDb.Ratings.ToList()[0].Id);
+        Assert.Equal(expectedRatings.Count, authorDb.Ratings.Count);
     }
 
     [Fact]
@@ -549,15 +548,15 @@ public class AuthorRepositoryTests
     public void Update_ItShould_properties_updated()
     {
         //arrange
-        var expectedName = "new name";
-        var expectedSurname = "new surname";
-        var expectedEmail = "newEmail@mail.ru";
-        var expectedPhone = "+0 (987) 654-32-10";
-        var expectedFiles = new List<File>() { new File() { Id = Guid.NewGuid() } };
-        var expectedComments = new List<Comment>() { new Comment() { Id = Guid.NewGuid() } };
-        var expectedRatings = new List<Rating>() { new Rating() { Id = Guid.NewGuid() } };
+        var expectedName     = "new name";
+        var expectedSurname  = "new surname";
+        var expectedEmail    = "newEmail@mail.ru";
+        var expectedPhone    = "+0 (987) 654-32-10";
+        var expectedFiles    = new List<File> { new() { Id    = Guid.NewGuid() } };
+        var expectedComments = new List<Comment> { new() { Id = Guid.NewGuid() } };
+        var expectedRatings  = new List<Rating> { new() { Id  = Guid.NewGuid() } };
 
-        var author = new Author()
+        var author = new Author
         {
             Id = Guid.NewGuid(),
             Name = expectedName,
@@ -580,16 +579,16 @@ public class AuthorRepositoryTests
 
         //assert
         Assert.Equal(author.Id, authorDb!.Id);
-        Assert.Equal(expectedName, authorDb!.Name);
-        Assert.Equal(expectedSurname, authorDb!.Surname);
-        Assert.Equal(expectedEmail, authorDb!.Email);
-        Assert.Equal(expectedPhone, authorDb!.Phone);
-        Assert.Equal(expectedFiles[0].Id, authorDb!.Files.ToList()[0].Id);
-        Assert.Equal(expectedFiles.Count, authorDb!.Files.Count);
-        Assert.Equal(expectedComments[0].Id, authorDb!.Comments.ToList()[0].Id);
-        Assert.Equal(expectedComments.Count, authorDb!.Comments.Count);
-        Assert.Equal(expectedRatings[0].Id, authorDb!.Ratings.ToList()[0].Id);
-        Assert.Equal(expectedRatings.Count, authorDb!.Ratings.Count);
+        Assert.Equal(expectedName, authorDb.Name);
+        Assert.Equal(expectedSurname, authorDb.Surname);
+        Assert.Equal(expectedEmail, authorDb.Email);
+        Assert.Equal(expectedPhone, authorDb.Phone);
+        Assert.Equal(expectedFiles[0].Id, authorDb.Files.ToList()[0].Id);
+        Assert.Equal(expectedFiles.Count, authorDb.Files.Count);
+        Assert.Equal(expectedComments[0].Id, authorDb.Comments.ToList()[0].Id);
+        Assert.Equal(expectedComments.Count, authorDb.Comments.Count);
+        Assert.Equal(expectedRatings[0].Id, authorDb.Ratings.ToList()[0].Id);
+        Assert.Equal(expectedRatings.Count, authorDb.Ratings.Count);
     }
 
     #endregion

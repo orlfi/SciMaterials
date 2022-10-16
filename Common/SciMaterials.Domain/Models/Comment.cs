@@ -13,8 +13,4 @@ public class Comment : BaseModel
     public User Owner { get; set; } = null!;
     public File FileResource { get; set; } = null!;
     public FileGroup FileGroupResource { get; set; } = null!;
-
-    public Comment()
-    {
-    }
 }

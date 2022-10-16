@@ -11,17 +11,17 @@ namespace SciMaterials.Services.Database.Services.DbInitialization
         private readonly SciMaterialsContext _db;
         private readonly ILogger<SciMaterialsContext> _logger;
 
-        public DbInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
-        {
-            _db = db;
-            _logger = logger;
-        }
+    public DbInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
+    {
+        _db     = db;
+        _logger = logger;
+    }
 
-        public async Task<bool> DeleteDbAsync(CancellationToken cancel = default)
-        {
-            _logger.LogInformation("Deleting a database...");
+    public async Task<bool> DeleteDbAsync(CancellationToken cancel = default)
+    {
+        _logger.LogInformation("Deleting a database...");
 
-            cancel.ThrowIfCancellationRequested();
+        cancel.ThrowIfCancellationRequested();
 
             try
             {
@@ -40,22 +40,22 @@ namespace SciMaterials.Services.Database.Services.DbInitialization
             }
         }
 
-        public async Task InitializeDbAsync(bool removeAtStart = false, bool useDataSeeder = false, CancellationToken cancel = default)
+    public async Task InitializeDbAsync(bool removeAtStart = false, bool useDataSeeder = false, CancellationToken cancel = default)
+    {
+        _logger.LogInformation("Database initialization...");
+
+        cancel.ThrowIfCancellationRequested();
+
+        try
         {
-            _logger.LogInformation("Database initialization...");
+            if (removeAtStart) await DeleteDbAsync(cancel).ConfigureAwait(false);
 
-            cancel.ThrowIfCancellationRequested();
+            var pendingMigration = await _db.Database.GetPendingMigrationsAsync(cancel).ConfigureAwait(false);
 
-            try
+            if (pendingMigration.Any())
             {
-                if (removeAtStart) await DeleteDbAsync(cancel).ConfigureAwait(false);
-
-                var pendingMigration = await _db.Database.GetPendingMigrationsAsync(cancel).ConfigureAwait(false);
-
-                if (pendingMigration.Any())
-                {
-                    await _db.Database.MigrateAsync(cancel).ConfigureAwait(false);
-                }
+                await _db.Database.MigrateAsync(cancel).ConfigureAwait(false);
+            }
 
                 if (useDataSeeder)
                     await InitializeDbAsync(cancel).ConfigureAwait(false);
@@ -72,11 +72,10 @@ namespace SciMaterials.Services.Database.Services.DbInitialization
             }
         }
 
-        private async Task InitializeDbAsync(CancellationToken cancel = default)
-        {
-            cancel.ThrowIfCancellationRequested();
+    private async Task InitializeDbAsync(CancellationToken cancel = default)
+    {
+        cancel.ThrowIfCancellationRequested();
 
-            await DataSeeder.SeedAsync(_db, cancel).ConfigureAwait(false);
-        }
+        await DataSeeder.SeedAsync(_db, cancel).ConfigureAwait(false);
     }
 }

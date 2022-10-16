@@ -353,6 +353,7 @@ MigrationBackup/
 ### VisualStudioCode ###
 **/.vscode/**/*
 **/tmp/*
+
 *.db
 *.db-shm
 *.db-wal

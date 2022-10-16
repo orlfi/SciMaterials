@@ -31,13 +31,12 @@ namespace SciMaterials.Services.Database.Extensions
                 _ => throw new Exception($"Unsupported provider: {dbSettings.DbProvider}")
             });
 
-            return services;
-        }
+        return services;
+    }
 
-        public static IServiceCollection AddDatabaseServices(this IServiceCollection services)
-        {
-            services.AddTransient<IDbInitializer, DbInitializer>();
-            return services;
-        }
+    public static IServiceCollection AddDatabaseServices(this IServiceCollection services)
+    {
+        services.AddTransient<IDbInitializer, DbInitializer>();
+        return services;
     }
 }
