@@ -3,13 +3,16 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using SciMaterials.DAL.AUTH.Interfaces;
+using SciMaterials.Contracts.Auth;
 
-namespace SciMaterials.Auth.Utilits;
+namespace SciMaterials.AUTH.Services;
 
 public interface IAuthUtils : IAuthUtils<IdentityUser>
 { }
 
+/// <summary>
+/// Утилиты по работе с jwt токенами
+/// </summary>
 public class AuthUtils : IAuthUtils
 {
     private readonly IConfiguration _configuration;
@@ -20,6 +23,12 @@ public class AuthUtils : IAuthUtils
         _configuration = configuration;
     }
     
+    /// <summary>
+    /// Метод создает jwt токен сессии
+    /// </summary>
+    /// <param name="user">Пользователь</param>
+    /// <param name="roles">Список ролей в системе</param>
+    /// <returns>Возращает токен</returns>
     public string CreateSessionToken(IdentityUser user, IList<string> roles)
     {
         var config = _configuration.GetSection("AuthApiSettings:SecretTokenKey");
@@ -47,8 +56,7 @@ public class AuthUtils : IAuthUtils
                 
             Expires = DateTime.Now.AddMinutes(15),
 
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
             
         SecurityToken securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);

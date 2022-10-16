@@ -21,8 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj" />
-      <ProjectReference Include="..\Migrations\SciMaterials.PostgresqlMigrations\SciMaterials.PostgresqlMigrations.csproj" />
+      <ProjectReference Include="..\..\Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     </ItemGroup>
 
 </Project>

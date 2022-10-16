@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using SciMaterials.Auth.Registrations;
-using SciMaterials.DAL.AUTH.Interfaces;
+using SciMaterials.AUTH.Extensions;
+using SciMaterials.Contracts.Auth;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.Services.API.Configuration;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
+using SciMaterials.WebApi.Clients.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,9 @@ builder.Services.AddSwagger(builder.Configuration);
 builder.Services.ConfigureApplication(builder.Configuration);
 builder.Services.AddApiServices(builder.Configuration);
 builder.Services.AddAuthApiServices(builder.Configuration);
-builder.Services.AddDbInitializer();
+builder.Services.AddAuthDbInitializer();
+builder.Services.AddAuthUtils();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -37,7 +40,7 @@ await using (var scope = app.Services.CreateAsyncScope())
     }
     
     var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
-    await authDb.InitializeAsync(builder.Configuration);
+    await authDb.InitializeAsync();
     
     var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
     await dbInitializer.InitializeDbAsync(removeAtStart: false, useDataSeeder: false).ConfigureAwait(false);

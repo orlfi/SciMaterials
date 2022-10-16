@@ -1,4 +1,4 @@
-namespace SciMaterials.DAL.AUTH.Interfaces;
+namespace SciMaterials.Contracts.Auth;
 
 public interface IAuthUtils<TUser>
 {
