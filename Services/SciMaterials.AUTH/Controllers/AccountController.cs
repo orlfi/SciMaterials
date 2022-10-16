@@ -190,7 +190,7 @@ public class AccountController : Controller
     [HttpPost(AuthApiRoute.ChangePassword)]
     public async Task<IActionResult> ChangePasswordAsync(string oldPassword, string newPassword)
     {
-        if (!string.IsNullOrEmpty(oldPassword) || !string.IsNullOrEmpty(newPassword))
+        if (oldPassword is not { Length: > 0 } || newPassword is not { Length: > 0 })
         {
             try
             {
