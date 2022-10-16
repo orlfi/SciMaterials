@@ -194,7 +194,13 @@ public class FileService : IFileService
             file.Categories = verifyCategoriesResult.Data;
 
         if (!string.IsNullOrEmpty(metadata.Tags))
-            file.Tags = (await GetTagsFromSeparatedStringAsync(_separator, metadata.Tags)).Data;
+        {    
+            var tags = await GetTagsFromSeparatedStringAsync(
+                _separator, 
+                metadata.Tags);
+            file.Tags = tags.Data;
+        
+
 
         await _unitOfWork.GetRepository<File>().AddAsync(file);
         if (await _unitOfWork.SaveContextAsync() > 0)
