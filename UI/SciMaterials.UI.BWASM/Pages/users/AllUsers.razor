@@ -1,9 +1,54 @@
 ﻿@page "/users"
-@using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
 
-<h3>Users</h3>
+@attribute [Authorize]
+@inject IAccountsService AccountsService
+@inject IDialogService DialogService
+
+<TableView Data="_users">
+	<TableHeader>
+		<MudTh>Name</MudTh>
+		<MudTh>Email</MudTh>
+		<MudTh>Authority</MudTh>
+		<MudTh></MudTh>
+	</TableHeader>
+
+	<RowTemplate>
+		<MudTd DataLabel="Name">@context.UserName</MudTd>
+		<MudTd DataLabel="Email">@context.Email</MudTd>
+		<MudTd DataLabel="Authority">@context.Authority</MudTd>
+		<MudTh>
+			<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => ChangeAuthority(context)">Change Authority Group</MudButton>
+			<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
+		</MudTh>
+	</RowTemplate>
+</TableView>
 
 @code {
+	private List<UserInfo> _users = null!;
 
+	protected override void OnInitialized()
+	{
+		_users = AccountsService.UsersList();
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+    {
+		_users.Clear();
+		_users.AddRange(AccountsService.UsersList());
+	}
+
+	private async Task ChangeAuthority(UserInfo context)
+	{
+		var reference = DialogService.Show<AuthorityGroupSelection>("Select user authority");
+		var result = await reference.Result;
+		if (result.Cancelled || result.Data is not Guid authorityId) return;
+		AccountsService.ChangeAuthority(context.Id, authorityId);
+		StateHasChanged();
+	}
+
+	private void Delete(UserInfo context)
+	{
+		AccountsService.Delete(context.Id);
+		StateHasChanged();
+	}
 }
