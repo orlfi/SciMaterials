@@ -27,13 +27,18 @@ public class TestAuthenticationService : IAuthenticationService
         return Task.FromResult(_authenticationCache.TryAdd(formData.Email!, formData.Password!, formData.Username!));
     }
 
-    public async Task SignIn(SignInForm formData)
+    public async Task<bool> SignIn(SignInForm formData)
     {
-        if (!_authenticationCache.TryGetIdentity(formData.Email!, formData.Password!, out var identity, out var userId)) return;
+        if (!_authenticationCache.TryGetIdentity(formData.Email!, formData.Password!, out var identity, out var userId))
+        {
+            return false;
+        }
 
         await _localStorageService.SetItemAsStringAsync("authToken", userId.ToString());
 
         ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserSignIn(identity);
+
+        return true;
     }
 
     public async Task Logout()

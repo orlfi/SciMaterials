@@ -1,6 +1,7 @@
 ﻿@page "/signin"
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
 
 <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -36,31 +37,22 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
-
-        <MudItem xs="12">
-            @if (_success)
-            {
-                <MudText Color="Color.Success">Success</MudText>
-            }
-            else
-            {
-                <MudText Color="@Color.Error" Align="Align.Center">
-                    <ValidationSummary />
-                </MudText>
-            }
-        </MudItem>
     </MudGrid>
 </EditForm>
 
 
 @code {
 	readonly SignInForm _model = new ();
-  bool _success;
+    // TODO: react to remember me
 	private bool RememberMe { get; set; } = true;
   
 	private async Task OnValidSubmit(EditContext context)
 	{
-		    await AuthenticationService.SignIn(_model);
+		if (!await AuthenticationService.SignIn(_model))
+		{
+			Snackbar.Add("Fail to Login");
+            return;
+		}
         NavigationManager.NavigateTo("/");
   }
 }

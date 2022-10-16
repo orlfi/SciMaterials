@@ -37,7 +37,7 @@ public class JwtAuthenticationService : IAuthenticationService
         ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserLogout();
     }
 
-    public async Task SignIn(SignInForm formData)
+    public async Task<bool> SignIn(SignInForm formData)
     {
         FormUrlEncodedContent content = new(new KeyValuePair<string, string>[]
         {
@@ -48,6 +48,7 @@ public class JwtAuthenticationService : IAuthenticationService
         response.EnsureSuccessStatusCode();
         var someWhereToken = response.Content.ReadAsStringAsync();
 
+        return false;
         // get token
         // parse token
 
