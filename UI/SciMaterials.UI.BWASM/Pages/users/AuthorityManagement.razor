@@ -1,9 +1,85 @@
 ﻿@page "/authority"
 
 @attribute [Authorize]
+@inject IAuthoritiesService AuthoritiesService
 
-<h3>Authority</h3>
+<MudGrid>
+	@*Groups*@
+	<MudItem xs="6">
+		@foreach (var group in authorityGroups)
+		{
+			<MudPaper Class="pa-4 ma-2">
+				<MudStack>
+					<MudStack Row="true">
+						<MudText>@group.Name</MudText>
+						<MudIconButton Icon="@Icons.Filled.Delete" OnClick="() => Delete(group)"></MudIconButton>
+					</MudStack>
+					
+					@foreach (var authority in group.Authorities)
+					{
+						<MudStack Row="true">
+							<MudText>@authority.Name</MudText>
+							<MudIconButton Icon="@Icons.Filled.Delete" OnClick="() => RemoveAuthorityFromGroup(group, authority)"/>
+						</MudStack>
+					}
+
+					<MudStack Row="true">
+						<MudIconButton Icon="@Icons.Filled.Add" OnClick="() => AddAuthorityToGroup(group)"></MudIconButton>
+					</MudStack>
+				</MudStack>
+			</MudPaper>
+		}
+	</MudItem>
+
+	@*Authorities*@
+	<MudItem xs="6">
+		<MudPaper Class="pa-4 ma-2">
+			@foreach (var authority in authorities)
+			{
+				<MudStack Row="true">
+					<MudText>@authority.Name</MudText>
+					<MudIconButton Icon="@Icons.Filled.Delete" OnClick="() => Delete(authority)"/>
+				</MudStack>
+			}
+			<MudStack Row="true">
+				<MudIconButton Icon="@Icons.Filled.Add" OnClick="AddAuthority"></MudIconButton>
+			</MudStack>
+		</MudPaper>
+	</MudItem>
+</MudGrid>
 
 @code {
+	private List<AuthorityGroup> authorityGroups = null!;
+	private List<Authority> authorities = null!;
+
+	protected override void OnInitialized()
+	{
+		
+	}
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		base.OnAfterRender(firstRender);
+	}
+
+	private void Delete(Authority authority)
+	{
+	}
+
+	private void AddAuthority()
+	{
+	}
+
+	private void RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority)
+	{
+	}
+
+	private void AddAuthorityToGroup(AuthorityGroup group)
+	{
+	}
+
+	private void Delete(AuthorityGroup group)
+	{
+	}
 
 }
