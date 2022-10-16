@@ -1,13 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using SciMaterials.Auth.Registrations;
-using SciMaterials.DAL.AUTH.Interfaces;
-using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.Services.API.Configuration;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
-using SciMaterials.Services.Configuration;
 using SciMaterials.Services.Database.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);

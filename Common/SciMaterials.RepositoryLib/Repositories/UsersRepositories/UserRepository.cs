@@ -129,7 +129,7 @@ public class UserRepository : IUserRepository
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.ToList();
@@ -141,7 +141,7 @@ public class UserRepository : IUserRepository
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.ToListAsync();
@@ -154,7 +154,7 @@ public class UserRepository : IUserRepository
         IQueryable<User> query = _context.Users
             .Where(c => c.Id == id && !c.IsDeleted);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -167,7 +167,7 @@ public class UserRepository : IUserRepository
         IQueryable<User> query = _context.Users
             .Where(c => c.Id == id && !c.IsDeleted);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -227,7 +227,7 @@ public class UserRepository : IUserRepository
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -239,7 +239,7 @@ public class UserRepository : IUserRepository
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
 
-        if (DisableTracking) 
+        if (disableTracking) 
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();

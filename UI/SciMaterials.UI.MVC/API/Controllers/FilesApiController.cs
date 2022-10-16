@@ -33,9 +33,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     public async Task<IActionResult> DownloadByHash([FromRoute] string hash)
     {
         _logger.LogDebug("Get file by hash");
-
         var fileStreamInfoResult = await _fileService.DownloadByHash(hash);
-
         return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
     }
 
@@ -44,7 +42,6 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     {
         _logger.LogDebug("Download by Id");
         var fileStreamInfoResult = await _fileService.DownloadById(id);
-
         return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
     }
 
@@ -102,6 +99,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        return Ok(await _fileService.DeleteAsync(id));
+        var result = await _fileService.DeleteAsync(id);
+        return Ok(result);
     }
 }

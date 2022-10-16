@@ -99,8 +99,7 @@ public class FileSystemStore : IFileStore
 
     public void Delete(string filePath)
     {
-        if (File.Exists(filePath))
-            File.Delete(filePath);
+        File.Delete(filePath);
     }
 
     private static string GetMetadataPath(string filePath)

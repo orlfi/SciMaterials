@@ -22,8 +22,8 @@ public class SendFileTest
 
     public async Task SendFileAsync(string path)
     {
-        Guid categoryId;
-        categoryId = (await _unitOfWork.GetRepository<Category>().GetAllAsync()).First().Id;
+        var allCategories= await _unitOfWork.GetRepository<Category>().GetAllAsync();
+        var categoryId = allCategories.First().Id;
 
         var fileInfo = new FileInfo(path);
         using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);

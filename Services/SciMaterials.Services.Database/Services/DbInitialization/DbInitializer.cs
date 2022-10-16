@@ -4,16 +4,16 @@ using SciMaterials.Contracts.Database.Initialization;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Services;
 
-namespace SciMaterials.Services.Database.Services.DbInitialization
+namespace SciMaterials.Services.Database.Services.DbInitialization;
+
+public class DbInitializer : IDbInitializer
 {
-    public class DbInitializer : IDbInitializer
-    {
-        private readonly SciMaterialsContext _db;
-        private readonly ILogger<SciMaterialsContext> _logger;
+    private readonly SciMaterialsContext _db;
+    private readonly ILogger<SciMaterialsContext> _logger;
 
     public DbInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
     {
-        _db     = db;
+        _db = db;
         _logger = logger;
     }
 
@@ -23,22 +23,22 @@ namespace SciMaterials.Services.Database.Services.DbInitialization
 
         cancel.ThrowIfCancellationRequested();
 
-            try
-            {
-                var result = await _db.Database.EnsureDeletedAsync(cancel).ConfigureAwait(false);
-                return result;
-            }
-            catch (OperationCanceledException e)
-            {
-                _logger.LogError(e, "Interrupting an operation when deleting a database");
-                throw;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error during database initialization");
-                throw;
-            }
+        try
+        {
+            var result = await _db.Database.EnsureDeletedAsync(cancel).ConfigureAwait(false);
+            return result;
         }
+        catch (OperationCanceledException e)
+        {
+            _logger.LogError(e, "Interrupting an operation when deleting a database");
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error during database initialization");
+            throw;
+        }
+    }
 
     public async Task InitializeDbAsync(bool removeAtStart = false, bool useDataSeeder = false, CancellationToken cancel = default)
     {
@@ -57,20 +57,20 @@ namespace SciMaterials.Services.Database.Services.DbInitialization
                 await _db.Database.MigrateAsync(cancel).ConfigureAwait(false);
             }
 
-                if (useDataSeeder)
-                    await InitializeDbAsync(cancel).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException e)
-            {
-                _logger.LogError(e, "Interrupting an operation when deleting a database");
-                throw;
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error during database initialization");
-                throw;
-            }
+            if (useDataSeeder)
+                await InitializeDbAsync(cancel).ConfigureAwait(false);
         }
+        catch (OperationCanceledException e)
+        {
+            _logger.LogError(e, "Interrupting an operation when deleting a database");
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error during database initialization");
+            throw;
+        }
+    }
 
     private async Task InitializeDbAsync(CancellationToken cancel = default)
     {

@@ -129,10 +129,10 @@ public class TagRepository : ITagRepository
         IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.ToList();
@@ -145,10 +145,10 @@ public class TagRepository : ITagRepository
         IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.ToListAsync();
@@ -162,10 +162,10 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -179,10 +179,10 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -245,10 +245,10 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -262,10 +262,10 @@ public class TagRepository : ITagRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(t => t.Files)
+            query = query.Include(t => t.Files)
                 .Include(t => t.FileGroups);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();

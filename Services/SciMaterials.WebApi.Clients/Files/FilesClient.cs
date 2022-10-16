@@ -26,7 +26,7 @@ public class FilesClient : IFilesClient
         var matadata = JsonSerializer.Serialize(uploadFileRequest);
 
         using var multipartFormDataContent = new MultipartFormDataContent("Upload----" + DateTime.Now.ToString(CultureInfo.InvariantCulture));
-        var streamContent = new StreamContent(fileStream);
+        using var streamContent = new StreamContent(fileStream);
         streamContent.Headers.Add("Metadata", matadata);
         multipartFormDataContent.Add(streamContent, "file", uploadFileRequest.Name);
 

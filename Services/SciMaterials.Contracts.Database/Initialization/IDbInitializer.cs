@@ -1,12 +1,12 @@
-﻿namespace SciMaterials.Contracts.Database.Initialization
+﻿namespace SciMaterials.Contracts.Database.Initialization;
+
+public interface IDbInitializer
 {
-    public interface IDbInitializer
-    {
-        /// <summary> Асинхронно удаляет базу данных, если она существует. </summary>
-        /// <param name="cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/></param>
-        /// <returns>Создает Task с типом параметра <typeparam name="TResult">bool</typeparam>, которая завершается удачно с указанным результатом. См. <see cref="Task"/></returns>
-        /// <exception cref="OperationCanceledException"></exception>
-        Task<bool> DeleteDbAsync(CancellationToken cancel = default);
+    /// <summary> Асинхронно удаляет базу данных, если она существует. </summary>
+    /// <param name="cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/></param>
+    /// <returns>Создает Task с типом параметра <typeparam name="TResult">bool</typeparam>, которая завершается удачно с указанным результатом. См. <see cref="Task"/></returns>
+    /// <exception cref="OperationCanceledException"></exception>
+    Task<bool> DeleteDbAsync(CancellationToken cancel = default);
 
     /// <summary> Асинхронно инициализирует новую базу данных. </summary>
     /// <param name="removeAtStart">Указывает, стоит ли удалять базу данных при инициализации. Значение по умолчанию: <value>false</value></param>

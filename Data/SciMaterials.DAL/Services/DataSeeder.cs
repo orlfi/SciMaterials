@@ -7,20 +7,20 @@ using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Properties;
 using File = SciMaterials.DAL.Models.File;
 
-namespace SciMaterials.DAL.Services
-{
-    public static class DataSeeder
-    {
-        //data generation was carried out by https://generatedata.com
+namespace SciMaterials.DAL.Services;
 
-        /// <summary> Асинхронно выполняет транзакцию заполнения таблиц базы данных тестовыми данными. В случае ошибки транзакция не выполняется.</summary>
-        /// <param name="db">Контекст базы данных.</param>
-        /// <param name="cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/> Значение по умолчанию: <value>default</value></param>
-        /// <returns>Задача, которая представляет работу в очереди на выполнение в ThreadPool. См. <see cref="Task"/></returns>
-        /// <exception cref="OperationCanceledException"></exception>
-        public static async Task SeedAsync(SciMaterialsContext db, CancellationToken cancel = default)
-        {
-            await using var transaction = await db.Database.BeginTransactionAsync(cancel).ConfigureAwait(false);
+public static class DataSeeder
+{
+    //data generation was carried out by https://generatedata.com
+
+    /// <summary> Асинхронно выполняет транзакцию заполнения таблиц базы данных тестовыми данными. В случае ошибки транзакция не выполняется.</summary>
+    /// <param name="db">Контекст базы данных.</param>
+    /// <param name="cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/> Значение по умолчанию: <value>default</value></param>
+    /// <returns>Задача, которая представляет работу в очереди на выполнение в ThreadPool. См. <see cref="Task"/></returns>
+    /// <exception cref="OperationCanceledException"></exception>
+    public static async Task SeedAsync(SciMaterialsContext db, CancellationToken cancel = default)
+    {
+        await using var transaction = await db.Database.BeginTransactionAsync(cancel).ConfigureAwait(false);
 
         if (!await db.Users.AnyAsync(cancel))
         {
@@ -51,7 +51,7 @@ namespace SciMaterials.DAL.Services
                 throw;
             }
         }
-          
+
         if (!await db.ContentTypes.AnyAsync(cancel))
         {
             try

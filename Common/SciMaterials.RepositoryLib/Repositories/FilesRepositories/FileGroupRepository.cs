@@ -131,14 +131,14 @@ public class FileGroupRepository : IFileGroupRepository
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.ToList();
@@ -151,14 +151,14 @@ public class FileGroupRepository : IFileGroupRepository
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.ToListAsync();
@@ -172,14 +172,14 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -193,14 +193,14 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -264,14 +264,14 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -285,14 +285,14 @@ public class FileGroupRepository : IFileGroupRepository
                 .Where(c => c.Name == name && !c.IsDeleted);
 
         if (include)
-            query.Include(fg => fg.Files)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();

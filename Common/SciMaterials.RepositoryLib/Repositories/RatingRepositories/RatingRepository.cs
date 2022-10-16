@@ -132,11 +132,11 @@ public class RatingRepository : IRatingRepository
         IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
 
         if (include)
-            query.Include(r => r.File)
+            query = query.Include(r => r.File)
                 .Include(r => r.User)
                 .Include(r => r.FileGroup);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.ToList();
@@ -149,11 +149,11 @@ public class RatingRepository : IRatingRepository
         IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
 
         if (include)
-            query.Include(r => r.File)
+            query = query.Include(r => r.File)
                 .Include(r => r.User)
                 .Include(r => r.FileGroup);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.ToListAsync();
@@ -167,11 +167,11 @@ public class RatingRepository : IRatingRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(r => r.File)
+            query = query.Include(r => r.File)
             .Include(r => r.User)
             .Include(r => r.FileGroup);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -185,11 +185,11 @@ public class RatingRepository : IRatingRepository
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query.Include(r => r.File)
+            query = query.Include(r => r.File)
             .Include(r => r.User)
             .Include(r => r.FileGroup);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();

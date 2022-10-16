@@ -41,7 +41,8 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     [HttpPost("Add")]
     public async Task<IActionResult> AddAsync([FromBody] AddCategoryRequest request)
     {
-        return Ok(await _сategoryService.AddAsync(request));
+        var result = await _сategoryService.AddAsync(request);
+        return Ok(result);
     }
 
     /// <summary> Edit a Category. </summary>
@@ -50,7 +51,8 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     [HttpPost("Edit")]
     public async Task<IActionResult> EditAsync([FromBody] EditCategoryRequest request)
     {
-        return Ok(await _сategoryService.EditAsync(request));
+        var result = await _сategoryService.EditAsync(request);
+        return Ok(result);
     }
 
     /// <summary> Delete a Category. </summary>
@@ -59,7 +61,8 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        return Ok(await _сategoryService.DeleteAsync(id));
+        var result = await _сategoryService.DeleteAsync(id);
+        return Ok(result);
     }
 
     [HttpGet("tree/{Id}")]
