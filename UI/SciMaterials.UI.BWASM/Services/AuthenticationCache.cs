@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+using SciMaterials.Contracts.Result;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services;
@@ -68,4 +69,39 @@ public class AuthenticationCache
         new(ClaimTypes.Email, user.Email),
         new(ClaimTypes.Role, user.Authority),
     }, "InMemoryScheme");
+
+    public List<AuthorityGroup> AuthorityGroupsList()
+    {
+        return AuthorityGroups.Values.ToList();
+    }
+
+    public List<UserInfo> UsersList()
+    {
+        return Users.Values.ToList();
+    }
+
+    public Result ChangeAuthorityGroup(Guid userId, Guid authorityGroupId)
+    {
+        if (AuthorityGroups.Values.FirstOrDefault(x => x.Id == authorityGroupId) is not { } authorityGroup)
+        {
+            // just random
+            return Result.Error(242);
+        }
+
+        if (!Users.TryGetValue(userId, out var user))
+        {
+            return Result.Error(243);
+        }
+
+        user.Authority = authorityGroup.Name;
+        user.AuthorityGroupId = authorityGroupId;
+        return Result.Success();
+    }
+
+    public Result DeleteUser(Guid userId)
+    {
+        return !Users.TryRemove(userId, out _) 
+            ? Result.Error(243) 
+            : Result.Success();
+    }
 }
