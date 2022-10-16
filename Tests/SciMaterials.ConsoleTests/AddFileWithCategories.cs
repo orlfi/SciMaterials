@@ -28,7 +28,11 @@ public class AddFileWithCategories
             var author = await _context.Set<Author>().FirstAsync();
             var contentType = await _context.Set<ContentType>().FirstAsync();
             // var category = await _context.Set<Category>().FirstAsync();
-            var category = await _context.Set<Category>().Where(c => c.Id == new Guid("a8edbade-efe7-2a15-30a7-16c737c71190")).AsNoTracking().SingleAsync();
+            var category = await _context.Set<Category>()
+                .Where(c => c.Id == new Guid("a8edbade-efe7-2a15-30a7-16c737c71190"))
+                .AsNoTracking()
+                .SingleAsync();
+
 
             var fileInfo = new FileInfo(path);
             var file = new DAL.Models.File
