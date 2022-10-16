@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -5,29 +6,28 @@ using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.UnitOfWork;
+using SciMaterials.WebApi.Clients.Files;
 
 namespace SciMaterials.ConsoleTests;
 
 public class SendFileTest
 {
-    private readonly FilesClient _filesClient;
-    private readonly IServiceProvider _services;
+    private readonly IFilesClient _filesClient;
+    private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
 
-    public SendFileTest(HttpClient httpClient, IServiceProvider services)
+    public SendFileTest(IFilesClient filesClient, IUnitOfWork<SciMaterialsContext> unitOfWork)
     {
-        _filesClient = new FilesClient(httpClient);
-        _services = services;
+        _filesClient = filesClient;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task SendFile(string path)
+    public async Task SendFileAsync(string path)
     {
         Guid categoryId;
-        await using (var scope = _services.CreateAsyncScope())
-        {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<SciMaterialsContext>>();
-            categoryId = (await unitOfWork.GetRepository<Category>().GetAllAsync()).First().Id;
-        }
+        categoryId = (await _unitOfWork.GetRepository<Category>().GetAllAsync()).First().Id;
+
         var fileInfo = new FileInfo(path);
+        using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
         // var fileName = Path.GetFileNameWithoutExtension(fileInfo.Name) + ".ee";
         var fileName = fileInfo.Name;
         var uploadFileRequest = new UploadFileRequest
@@ -40,9 +40,8 @@ public class SendFileTest
             Categories = categoryId.ToString(),
             ContentTypeName = "text/plain"
         };
-        var metadataJson = JsonSerializer.Serialize(uploadFileRequest);
 
-        var result = await _filesClient.UploadAsync(path, metadataJson);
+        var result = await _filesClient.UploadAsync(fileStream, uploadFileRequest);
         Console.WriteLine(string.Join(";", result.Messages));
     }
 }
