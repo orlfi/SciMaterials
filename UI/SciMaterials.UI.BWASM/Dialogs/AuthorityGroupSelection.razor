@@ -1,0 +1,37 @@
+﻿@inject IAccountsService AccountsService
+
+<MudDialog>
+	<DialogContent>
+		<div class="d-flex flex-column py-1">
+			@foreach (var authority in _authorities)
+			{
+				<MudButton OnClick="() => SelectOption(authority.Id)">@authority.Name</MudButton>
+			}
+		</div>
+	</DialogContent>
+</MudDialog>
+
+@code {
+
+	[CascadingParameter]
+	public MudDialogInstance MudDialog { get; set; } = null!;
+
+	private List<AuthorityGroup> _authorities = new();
+
+	protected override void OnInitialized()
+	{
+		MudDialog.SetOptions(new DialogOptions()
+		{
+			CloseButton = true,
+			CloseOnEscapeKey = true,
+			MaxWidth = MaxWidth.ExtraSmall,
+			FullWidth = true
+		});
+		_authorities = AccountsService.AuthorityGroupsList();
+	}
+
+	private void SelectOption(Guid authorityId)
+	{
+		MudDialog.Close(DialogResult.Ok(authorityId));
+	}
+}
