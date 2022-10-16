@@ -21,10 +21,14 @@ public class TestAuthenticationStateProvider : AuthenticationStateProvider
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var token = await _localStorageService.GetItemAsStringAsync("authToken");
-        if (string.IsNullOrWhiteSpace(token)) return Anonymous;
-        
-        if (!Guid.TryParse(token, out var userId) || !_authenticationCache.TryGetIdentity(userId, out var identity)) return Anonymous;
-        
+        if (string.IsNullOrWhiteSpace(token)
+            || !Guid.TryParse(token, out var userId)
+            || !_authenticationCache.TryGetIdentity(userId, out var identity))
+        {
+            await _localStorageService.RemoveItemAsync("authToken");
+            return Anonymous;
+        }
+
         return new(new(identity));
     }
 
