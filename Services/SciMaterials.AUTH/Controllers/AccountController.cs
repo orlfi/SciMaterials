@@ -122,7 +122,7 @@ public class AccountController : Controller
     [HttpPost(AuthApiRoute.Login)]
     public async Task<IActionResult> LoginAsync(string email, string password)
     {
-        if (!string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(password))
+        if (email is not { Length: > 0 } || password is not { Length: > 0 })
         {
             try
             {
