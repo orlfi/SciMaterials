@@ -284,7 +284,7 @@ public class AccountController : Controller
     [HttpPost(AuthApiRoute.CreateRole)]
     public async Task<IActionResult> CreateRoleAsync(string roleName)
     {
-        if (!string.IsNullOrEmpty(roleName))
+        if (roleName is not { Length: > 0 })
         {
             try
             {
