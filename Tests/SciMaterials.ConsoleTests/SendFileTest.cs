@@ -28,9 +28,11 @@ public class SendFileTest
             categoryId = (await unitOfWork.GetRepository<Category>().GetAllAsync()).First().Id;
         }
         var fileInfo = new FileInfo(path);
+        // var fileName = Path.GetFileNameWithoutExtension(fileInfo.Name) + ".ee";
+        var fileName = fileInfo.Name;
         var uploadFileRequest = new UploadFileRequest
         {
-            Name = fileInfo.Name,
+            Name = fileName,
             Title = "Файл " + fileInfo.Name,
             Description = "Содержит файл " + fileInfo.Name,
             Size = fileInfo.Length,
@@ -39,6 +41,8 @@ public class SendFileTest
             ContentTypeName = "text/plain"
         };
         var metadataJson = JsonSerializer.Serialize(uploadFileRequest);
-        await _filesClient.UploadAsync(path, metadataJson);
+
+        var result = await _filesClient.UploadAsync(path, metadataJson);
+        Console.WriteLine(string.Join(";", result.Messages));
     }
 }

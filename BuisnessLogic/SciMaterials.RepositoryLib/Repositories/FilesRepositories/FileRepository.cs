@@ -59,7 +59,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        await _context.Files.AddAsync(entity);
+        await _context.Set<File>().AddAsync(entity);
     }
 
     ///
@@ -130,10 +130,12 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<File>? GetAll(bool disableTracking = true)
+    public List<File>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<File> query = _context.Files
-                .Include(f => f.ContentType)
+        IQueryable<File> query = _context.Files.Where(f => !f.IsDeleted);
+
+        if (include)
+            query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -149,10 +151,12 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<File>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<File>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<File> query = _context.Files
-                .Include(f => f.ContentType)
+        IQueryable<File> query = _context.Files.Where(f => !f.IsDeleted);
+
+        if (include)
+            query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -168,17 +172,19 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public File? GetById(Guid id, bool disableTracking = true)
+    public File? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
-            .Where(c => c.Id == id)
-            .Include(f => f.ContentType)
-            .Include(f => f.FileGroup)
-            .Include(f => f.Categories)
-            .Include(f => f.Author)
-            .Include(f => f.Comments)
-            .Include(f => f.Tags)
-            .Include(f => f.Ratings);
+            .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -188,17 +194,19 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<File?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<File?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
-            .Where(c => c.Id == id)
-            .Include(f => f.ContentType)
-            .Include(f => f.FileGroup)
-            .Include(f => f.Categories)
-            .Include(f => f.Author)
-            .Include(f => f.Comments)
-            .Include(f => f.Tags)
-            .Include(f => f.Ratings);
+            .Where(c => c.Id == id);
+        
+        if (include)
+            query.Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -218,7 +226,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        var entityDb = GetById(entity.Id, false);
+        var entityDb = _context.Set<File>().Find(entity.Id);
 
         if (entityDb is null)
         {
@@ -226,8 +234,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Files.Update(entityDb);
+        _context.Entry(entityDb).CurrentValues.SetValues(entity);
     }
 
     ///
@@ -242,7 +249,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        var entityDb = await GetByIdAsync(entity.Id, false);
+        var entityDb = await _context.Set<File>().FindAsync(entity.Id);
 
         if (entityDb is null)
         {
@@ -250,17 +257,18 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Files.Update(entityDb);
+        _context.Entry(entityDb).CurrentValues.SetValues(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<File?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<File?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
-                .Where(c => c.Name == name)
-                .Include(f => f.ContentType)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -276,11 +284,13 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public File? GetByName(string name, bool disableTracking = true)
+    public File? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
-                .Where(c => c.Name == name)
-                .Include(f => f.ContentType)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -296,11 +306,13 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<File?> GetByHashAsync(string hash, bool disableTracking = true)
+    public async Task<File?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
-                .Where(c => c.Hash == hash)
-                .Include(f => f.ContentType)
+                .Where(c => c.Hash == hash && !c.IsDeleted);
+        
+        if (include)
+            query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -316,11 +328,13 @@ public class FileRepository : IFileRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public File? GetByHash(string hash, bool disableTracking = true)
+    public File? GetByHash(string hash, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
-                .Where(c => c.Hash == hash)
-                .Include(f => f.ContentType)
+                .Where(c => c.Hash == hash && !c.IsDeleted);
+
+        if (include)
+            query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
@@ -332,34 +346,5 @@ public class FileRepository : IFileRepository
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
-    }
-
-    /// <summary> Обновить данные экземпляра каегории. </summary>
-    /// <param name="sourse"> Источник. </param>
-    /// <param name="recipient"> Получатель. </param>
-    /// <returns> Обновленный экземпляр. </returns>
-    private File UpdateCurrentEntity(File sourse, File recipient)
-    {
-        recipient.Name = sourse.Name;
-
-        recipient.Title = sourse.Title;
-        recipient.Description = sourse.Description;
-        recipient.AuthorId = sourse.AuthorId;
-        recipient.CreatedAt = sourse.CreatedAt;
-        recipient.Author = sourse.Author;
-        recipient.Comments = sourse.Comments;
-        recipient.Tags = sourse.Tags;
-        recipient.Categories = sourse.Categories;
-        recipient.Ratings = sourse.Ratings;
-
-        recipient.Url = sourse.Url;
-        recipient.Size = sourse.Size;
-        recipient.Hash = sourse.Hash;
-        recipient.ContentTypeId = sourse.ContentTypeId;
-        recipient.FileGroupId = sourse.FileGroupId;
-        recipient.ContentType = sourse.ContentType;
-        recipient.FileGroup = sourse.FileGroup;
-
-        return recipient;
     }
 }

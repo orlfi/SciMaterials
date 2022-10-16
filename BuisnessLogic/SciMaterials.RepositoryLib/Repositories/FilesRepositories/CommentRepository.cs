@@ -128,10 +128,12 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Comment>? GetAll(bool disableTracking = true)
+    public List<Comment>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments
-                .Include(c => c.File)
+        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
+        
+        if (include)
+            query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 
@@ -143,10 +145,12 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments
-                .Include(c => c.File)
+        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 
@@ -158,11 +162,13 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Comment? GetById(Guid id, bool disableTracking = true)
+    public Comment? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Comment> query = _context.Comments
-                .Where(c => c.Id == id)
-                .Include(c => c.File)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 
@@ -174,11 +180,13 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Comment> query = _context.Comments
-                .Where(c => c.Id == id)
-                .Include(c => c.File)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.File)
                 .Include(c => c.FileGroup)
                 .Include(c => c.Author);
 
@@ -238,19 +246,19 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true) => null;
+    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Comment? GetByName(string name, bool disableTracking = true) => null;
+    public Comment? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true) => null;
+    public async Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Comment? GetByHash(string hash, bool disableTracking = true) => null;
+    public Comment? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>

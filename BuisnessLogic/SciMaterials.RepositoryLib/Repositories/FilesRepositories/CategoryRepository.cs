@@ -116,10 +116,12 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Category>? GetAll(bool disableTracking = true)
+    public List<Category>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Category> query = _context.Categories
-                .Include(c => c.Files)
+        IQueryable<Category> query = _context.Categories.Where(c => !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -130,10 +132,12 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Category>?> GetAllAsync(bool disableTracking = true)
+    public async Task<List<Category>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Category> query = _context.Categories
-                .Include(c => c.Files)
+        IQueryable<Category> query = _context.Categories.Where(c => !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -144,11 +148,13 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Category? GetById(Guid id, bool disableTracking = true)
+    public Category? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
-                .Where(c => c.Id == id)
-                .Include(c => c.Files)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -159,11 +165,13 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Category?> GetByIdAsync(Guid id, bool disableTracking = true)
+    public async Task<Category?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
-                .Where(c => c.Id == id)
-                .Include(c => c.Files)
+                 .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -174,11 +182,13 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Category?> GetByNameAsync(string name, bool disableTracking = true)
+    public async Task<Category?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
-                .Where(c => c.Name == name)
-                .Include(c => c.Files)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -189,11 +199,13 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Category? GetByName(string name, bool disableTracking = true)
+    public Category? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
-                .Where(c => c.Name == name)
-                .Include(c => c.Files)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query.Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -252,11 +264,11 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Category?> GetByHashAsync(string hash, bool disableTracking = true) => null;
+    public async Task<Category?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Category? GetByHash(string hash, bool disableTracking = true) => null;
+    public Category? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
