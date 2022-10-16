@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
+using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services;
 
@@ -11,5 +12,15 @@ public class TestAuthoritiesService : IAuthoritiesService
     {
         _authenticationCache = authenticationCache;
         _authenticationStateProvider = authenticationStateProvider;
+    }
+
+    public List<AuthorityGroup> AuthoritiesGroupsList()
+    {
+        return _authenticationCache.AuthorityGroupsList();
+    }
+
+    public List<Authority> AuthoritiesList()
+    {
+        return _authenticationCache.AuthoritiesList();
     }
 }

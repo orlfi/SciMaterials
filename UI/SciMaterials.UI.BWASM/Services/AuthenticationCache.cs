@@ -104,4 +104,9 @@ public class AuthenticationCache
             ? Result.Error(243) 
             : Result.Success();
     }
+
+    public List<Authority> AuthoritiesList()
+    {
+        return Authorities.Values.ToList();
+    }
 }

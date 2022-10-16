@@ -54,12 +54,14 @@
 
 	protected override void OnInitialized()
 	{
-		
+		authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
+		authorities = AuthoritiesService.AuthoritiesList();
 	}
 
 	protected override void OnAfterRender(bool firstRender)
 	{
-		base.OnAfterRender(firstRender);
+		authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
+		authorities = AuthoritiesService.AuthoritiesList();
 	}
 
 	private void Delete(Authority authority)
