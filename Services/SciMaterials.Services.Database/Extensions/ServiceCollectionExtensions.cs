@@ -34,10 +34,9 @@ namespace SciMaterials.Services.Database.Extensions
             return services;
         }
 
-        public static IServiceCollection AddDatabaseServices(this IServiceCollection services)
-        {
-            services.AddTransient<IDbInitializer, DbInitializer>();
-            return services;
+        public static IServiceCollection AddDatabaseServices(this IServiceCollection services) => services
+            .AddTransient<IDbInitializer, DbInitializer>()
+            ;
         }
     }
 }
