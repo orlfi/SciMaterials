@@ -1,11 +1,11 @@
-﻿@inject IAccountsService AccountsService
+﻿@typeparam TItem
 
 <MudDialog>
 	<DialogContent>
 		<div class="d-flex flex-column py-1">
-			@foreach (var authority in _authorities)
+			@foreach (var item in Items)
 			{
-				<MudButton OnClick="() => SelectOption(authority.Id)">@authority.Name</MudButton>
+				<MudButton OnClick="() => SelectOption(item)">@OptionLabel.Invoke(item)</MudButton>
 			}
 		</div>
 	</DialogContent>
@@ -16,7 +16,11 @@
 	[CascadingParameter]
 	public MudDialogInstance MudDialog { get; set; } = null!;
 
-	private List<AuthorityGroup> _authorities = new();
+	[Parameter]
+	public List<TItem> Items { get; set; } = new();
+
+	[Parameter]
+	public Func<TItem, string> OptionLabel { get; set; } = null!;
 
 	protected override void OnInitialized()
 	{
@@ -27,11 +31,10 @@
 			MaxWidth = MaxWidth.ExtraSmall,
 			FullWidth = true
 		});
-		_authorities = AccountsService.AuthorityGroupsList();
 	}
 
-	private void SelectOption(Guid authorityId)
+	private void SelectOption(TItem item)
 	{
-		MudDialog.Close(DialogResult.Ok(authorityId));
+		MudDialog.Close(DialogResult.Ok(item));
 	}
 }

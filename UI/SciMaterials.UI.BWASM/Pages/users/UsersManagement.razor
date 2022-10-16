@@ -38,7 +38,15 @@
 
 	private async Task ChangeAuthority(UserInfo context)
 	{
-		var reference = DialogService.Show<AuthorityGroupSelection>("Select user authority");
+		string LabelSelection(AuthorityGroup authority) => authority.Name;
+
+		var parameters = new DialogParameters
+		{
+			["Items"] = AccountsService.AuthorityGroupsList(),
+			["OptionLabel"] = (Func<AuthorityGroup, string>)LabelSelection
+		};
+
+		var reference = DialogService.Show<ListSelectionDialog<AuthorityGroup>>("Select user authority", parameters);
 		var result = await reference.Result;
 		if (result.Cancelled || result.Data is not Guid authorityId) return;
 		AccountsService.ChangeAuthority(context.Id, authorityId);
