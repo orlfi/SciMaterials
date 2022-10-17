@@ -34,6 +34,8 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddScoped<GetFileByIdTest>();
     services.AddScoped<EditFilesTest>();
     services.AddScoped<SendFileTest>();
+    services.AddScoped<DownloadFileByIdTest>();
+
     services.AddHttpClient<IFilesClient, FilesClient>("FilesClient",
         client =>
         {
@@ -48,32 +50,35 @@ await using (var scope = host.Services.CreateAsyncScope())
     // var service = scope.ServiceProvider.GetRequiredService<AddFileWithCategories>();
     // await service.AddFileToDatabase("test.txt");
 
-    Console.WriteLine("Get all files:");
-    var getAllFilesTest = scope.ServiceProvider.GetRequiredService<GetAllFilesTest>();
-    await getAllFilesTest.Get();
+    //Console.WriteLine("Get all files:");
+    //var getAllFilesTest = scope.ServiceProvider.GetRequiredService<GetAllFilesTest>();
+    //await getAllFilesTest.Get();
 
     Console.WriteLine("Get file by Id:");
     var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<SciMaterialsContext>>();
     var allFiles = await unitOfWork.GetRepository<File>().GetAllAsync();
     var fileId = allFiles.First().Id;
-    var getFileByIdTest = scope.ServiceProvider.GetRequiredService<GetFileByIdTest>();
-    await getFileByIdTest.Get(fileId);
+    //var getFileByIdTest = scope.ServiceProvider.GetRequiredService<GetFileByIdTest>();
+    //await getFileByIdTest.Get(fileId);
 
-    var file = allFiles.First();
-    var editFileRequest = new EditFileRequest
-    {
-        Id = file.Id,
-        Categories = string.Join(",", file.Categories.Select(item => item.Id)) ?? "",
-        Tags = string.Join(",", file.Tags.Select(item => item.Name)) ?? "",
-        Description = "Тестовое описание",
-        Title = "Тестовый заголовок"
-    };
-    var editFilesTest = scope.ServiceProvider.GetRequiredService<EditFilesTest>();
-    await editFilesTest.Edit(editFileRequest);
-    await getFileByIdTest.Get(file.Id);
+    //var file = allFiles.First();
+    //var editFileRequest = new EditFileRequest
+    //{
+    //    Id = file.Id,
+    //    Categories = string.Join(",", file.Categories.Select(item => item.Id)) ?? "",
+    //    Tags = string.Join(",", file.Tags.Select(item => item.Name)) ?? "",
+    //    Description = "Тестовое описание",
+    //    Title = "Тестовый заголовок"
+    //};
+    //var editFilesTest = scope.ServiceProvider.GetRequiredService<EditFilesTest>();
+    //await editFilesTest.Edit(editFileRequest);
+    //await getFileByIdTest.Get(file.Id);
 
     // var sendFileTest = scope.ServiceProvider.GetRequiredService<SendFileTest>();
     // await sendFileTest.SendFileAsync("test.txt");
+
+    var downloadFileByIdTest = scope.ServiceProvider.GetRequiredService<DownloadFileByIdTest>();
+    await downloadFileByIdTest.Download(Guid.Parse("29ED78FA-AE3E-4A5E-9981-F1816EE4E664"));
 }
 
 Console.WriteLine("Press any key to exit...");

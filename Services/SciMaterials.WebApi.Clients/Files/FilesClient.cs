@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Net.Http.Json;
 using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.API.Models;
 
 namespace SciMaterials.WebApi.Clients.Files;
 
@@ -59,22 +60,6 @@ public class FilesClient : IFilesClient
         return result;
     }
 
-    // [HttpGet("DownloadByHash/{hash}")]
-    // public async Task<IActionResult> DownloadByHash([FromRoute] string hash)
-    // {
-    //     _logger.LogDebug("Get file by hash");
-    //     var fileStreamInfoResult = await _fileService.DownloadByHash(hash);
-    //     return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
-    // }
-
-    // [HttpGet("DownloadById/{id}")]
-    // public async Task<IActionResult> DownloadByIdAsync([FromRoute] Guid id)
-    // {
-    //     _logger.LogDebug("Download by Id");
-    //     var fileStreamInfoResult = await _fileService.DownloadById(id);
-    //     return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
-    // }
-
     public async Task<Result<Guid>> UploadAsync(Stream fileStream, UploadFileRequest uploadFileRequest, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Upload file {file}", uploadFileRequest.Name);
@@ -107,5 +92,43 @@ public class FilesClient : IFilesClient
             .ReadFromJsonAsync<Result<Guid>>(cancellationToken: cancellationToken)
             ?? throw new InvalidOperationException("No response received from the server.");
         return result;
+    }
+
+    public async Task<Result<FileStreamInfo>> DownloadByHashAsync(string hash, CancellationToken cancellationToken = default)
+    {
+        _logger.LogDebug("Download by hash {hash}", hash);
+
+        return await Download(WebApiRoute.Files + "/DownloadByHash/" + hash, cancellationToken);
+    }
+
+    public async Task<Result<FileStreamInfo>> DownloadByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        _logger.LogDebug("Download by Id {id}", id);
+
+        return await Download(WebApiRoute.Files + "/DownloadById/" + id.ToString(), cancellationToken);
+    }
+
+    private async Task<Result<FileStreamInfo>> Download(string path, CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.GetAsync(path, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        if (response.Content.Headers.ContentType is not null
+            && response.Content.Headers.ContentDisposition is not null
+            && response.Content.Headers.ContentDisposition.DispositionType.Equals("attachment"))
+        {
+            var stream = await response.Content.ReadAsStreamAsync()
+                ?? throw new InvalidOperationException("No response received from the server.");
+
+            return new FileStreamInfo(
+                response.Content.Headers.ContentDisposition.FileName,
+                response.Content.Headers.ContentType.MediaType,
+                stream);
+        }
+
+        var result = await response.Content.ReadFromJsonAsync<Result<FileStreamInfo>>(cancellationToken: cancellationToken)
+            ?? throw new InvalidOperationException("No response received from the server.");
+        return result;
+
     }
 }
