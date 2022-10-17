@@ -15,17 +15,17 @@ public static class AuthConnectionStrings
     /// <returns>Сформированную строку подключения</returns>
     public static string MySql(IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("AuthDbConnection");
-        var dbConfig = configuration.GetSection("AuthApiSettings:MySqlDbConfig");
-        var builder = new MySqlConnectionStringBuilder(connectionString);
-        builder.Server = dbConfig["server"];
-        builder.Database = dbConfig["database"];
-        builder.Port = Convert.ToUInt32(dbConfig["port"]);
-        builder.UserID = dbConfig["userid"];
-        builder.Password = dbConfig["password"];
-        connectionString = builder.ConnectionString;
+        var connection_string = configuration.GetConnectionString("AuthDbConnection");
+        var db_config = configuration.GetSection("AuthApiSettings:MySqlDbConfig");
+        var builder = new MySqlConnectionStringBuilder(connection_string);
+        builder.Server = db_config["server"];
+        builder.Database = db_config["database"];
+        builder.Port = Convert.ToUInt32(db_config["port"]);
+        builder.UserID = db_config["userid"];
+        builder.Password = db_config["password"];
+        connection_string = builder.ConnectionString;
 
-        return connectionString;
+        return connection_string;
     }
 
     /// <summary>
@@ -35,12 +35,12 @@ public static class AuthConnectionStrings
     /// <returns>Сформированную строку подключения</returns>
     public static string Sqlite(IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("AuthDbConnection");
-        var dbConfig = configuration.GetSection("AuthApiSettings:SqliteDbConfig");
-        var builder = new SqliteConnectionStringBuilder(connectionString);
-        builder.DataSource = dbConfig["datasource"];
-        connectionString = builder.ConnectionString;
+        var connection_string = configuration.GetConnectionString("AuthDbConnection");
+        var db_config = configuration.GetSection("AuthApiSettings:SqliteDbConfig");
+        var builder = new SqliteConnectionStringBuilder(connection_string);
+        builder.DataSource = db_config["datasource"];
+        connection_string = builder.ConnectionString;
 
-        return connectionString;
+        return connection_string;
     }
 }

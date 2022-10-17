@@ -1,5 +1,3 @@
-using SciMaterials.Contracts.API.DTO.Files;
-using SciMaterials.Contracts.Result;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.WebApi.Clients.Files;
@@ -8,18 +6,18 @@ namespace SciMaterials.ConsoleTests;
 
 public class GetFileByIdTest
 {
-    private readonly IFilesClient _filesClient;
+    private readonly IFilesClient _FilesClient;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
 
-    public GetFileByIdTest(IFilesClient filesClient, IUnitOfWork<SciMaterialsContext> unitOfWork)
+    public GetFileByIdTest(IFilesClient FilesClient, IUnitOfWork<SciMaterialsContext> UnitOfWork)
     {
-        _filesClient = filesClient;
-        _unitOfWork = unitOfWork;
+        _FilesClient = FilesClient;
+        _unitOfWork = UnitOfWork;
     }
 
     public async Task Get(Guid fileId)
     {
-        var result = await _filesClient.GetByIdAsync(fileId);
+        var result = await _FilesClient.GetByIdAsync(fileId);
         if (result.Succeeded)
             Console.WriteLine($"{result.Data.Id} >>> {result.Data.Name}");
         else

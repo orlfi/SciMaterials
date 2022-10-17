@@ -15,14 +15,14 @@ public static class AuthServiceCollectionExtensions
         
         services.AddDbContext<AuthDbContext>(opt => _ = provider switch
         {
-            "Sqlite" => opt.UseSqlite(AuthConnectionStrings.Sqlite(configuration), optionsBuilder =>
+            "Sqlite" => opt.UseSqlite(AuthConnectionStrings.Sqlite(configuration), OptionsBuilder =>
             {
-                optionsBuilder.MigrationsAssembly("SciMaterials.SqlLite.Auth.Migrations");
+                OptionsBuilder.MigrationsAssembly("SciMaterials.SqlLite.Auth.Migrations");
             }),
             "MySql" => opt.UseMySql(AuthConnectionStrings.MySql(configuration), new MySqlServerVersion(new Version(8,0,30)), 
-            optionBuilder =>
+            OptionBuilder =>
             {
-                optionBuilder.MigrationsAssembly("SciMaterials.MySql.Auth.Migrations");
+                OptionBuilder.MigrationsAssembly("SciMaterials.MySql.Auth.Migrations");
             }),
             _ => throw new Exception($"Unsupported provider: {provider}")
         });

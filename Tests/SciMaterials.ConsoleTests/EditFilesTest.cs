@@ -7,18 +7,18 @@ namespace SciMaterials.ConsoleTests;
 
 public class EditFilesTest
 {
-    private readonly IFilesClient _filesClient;
+    private readonly IFilesClient _FilesClient;
 
-    public EditFilesTest(IFilesClient filesClient, IUnitOfWork<SciMaterialsContext> unitOfWork)
+    public EditFilesTest(IFilesClient FilesClient, IUnitOfWork<SciMaterialsContext> UnitOfWork)
     {
-        _filesClient = filesClient;
+        _FilesClient = FilesClient;
     }
 
     public async Task Edit(EditFileRequest request)
     {
-        var result = await _filesClient.EditAsync(request);
+        var result = await _FilesClient.EditAsync(request);
         if (result.Succeeded)
-            Console.WriteLine($"Updated success >>> {result.Data.ToString()}");
+            Console.WriteLine($"Updated success >>> {result.Data}");
         else
             Console.WriteLine(string.Join(";", result.Messages));
     }

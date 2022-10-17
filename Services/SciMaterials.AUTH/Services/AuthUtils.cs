@@ -3,24 +3,20 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using SciMaterials.Contracts.Auth;
 
 namespace SciMaterials.AUTH.Services;
-
-public interface IAuthUtils : IAuthUtils<IdentityUser>
-{ }
 
 /// <summary>
 /// Утилиты по работе с jwt токенами
 /// </summary>
 public class AuthUtils : IAuthUtils
 {
-    private readonly IConfiguration _configuration;
-    private string _secretKey;
+    private readonly IConfiguration _Configuration;
+    private string _SecretKey;
 
     public AuthUtils(IConfiguration configuration)
     {
-        _configuration = configuration;
+        _Configuration = configuration;
     }
     
     /// <summary>
@@ -31,26 +27,24 @@ public class AuthUtils : IAuthUtils
     /// <returns>Возращает токен</returns>
     public string CreateSessionToken(IdentityUser user, IList<string> roles)
     {
-        var config = _configuration.GetSection("AuthApiSettings:SecretTokenKey");
-        _secretKey = config["key"];
+        var config = _Configuration.GetSection("AuthApiSettings:SecretTokenKey");
+        _SecretKey = config["key"];
         
-        JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        var jwt_security_token_handler = new JwtSecurityTokenHandler();
         
-        byte[] key = Encoding.ASCII.GetBytes(_secretKey);
+        var key = Encoding.ASCII.GetBytes(_SecretKey);
 
         //Claims
-        var claims = new List<Claim>();
-
-        claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
-        claims.Add(new Claim(ClaimTypes.Name, user.Email));
-        claims.Add(new Claim(ClaimTypes.Email, user.Email));
-        
-        foreach (var role in roles)
+        var claims = new List<Claim>
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Name, user.Email),
+            new(ClaimTypes.Email, user.Email)
+        };
 
-        var securityTokenDescriptor = new SecurityTokenDescriptor()
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+        var security_token_descriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims.ToArray()),
                 
@@ -59,8 +53,8 @@ public class AuthUtils : IAuthUtils
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
             
-        SecurityToken securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
+        var security_token = jwt_security_token_handler.CreateToken(security_token_descriptor);
 
-        return jwtSecurityTokenHandler.WriteToken(securityToken);
+        return jwt_security_token_handler.WriteToken(security_token);
     }
 }

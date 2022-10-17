@@ -25,7 +25,7 @@ public class Program
                 Title = "Сервис аутентификации SciMaterials",
                 Version = "v1.1",
             });
-            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "JWT Authorization header using the Bearer scheme(Example: 'Bearer 12345abcdef')",
                 Name = "Authorization",
@@ -33,12 +33,12 @@ public class Program
                 Type = SecuritySchemeType.Http,
                 Scheme = "Bearer"
             });
-            opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
-                    new OpenApiSecurityScheme()
+                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference()
+                        Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = "Bearer"

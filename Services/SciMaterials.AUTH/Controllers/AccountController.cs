@@ -20,61 +20,61 @@ namespace SciMaterials.Auth.Controllers;
 [Route(AuthApiRoute.AuthControllerName)]
 public class AccountController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
-    private readonly IHttpContextAccessor _contextAccessor;
-    private readonly ILogger<AccountController> _logger;
-    private readonly IAuthUtils _authUtils;
+    private readonly UserManager<IdentityUser> _UserManager;
+    private readonly SignInManager<IdentityUser> _SignInManager;
+    private readonly RoleManager<IdentityRole> _RoleManager;
+    private readonly IHttpContextAccessor _ContextAccessor;
+    private readonly ILogger<AccountController> _Logger;
+    private readonly IAuthUtils _AuthUtils;
 
     public AccountController(
-        UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager,
-        RoleManager<IdentityRole> roleManager,
+        UserManager<IdentityUser> UserManager,
+        SignInManager<IdentityUser> SignInManager,
+        RoleManager<IdentityRole> RoleManager,
         ILogger<AccountController> logger,
-        IHttpContextAccessor contextAccessor,
-        IAuthUtils authUtils)
+        IHttpContextAccessor ContextAccessor,
+        IAuthUtils AuthUtils)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
-        _roleManager = roleManager;
-        _logger = logger;
-        _contextAccessor = contextAccessor;
-        _authUtils = authUtils;
+        _UserManager = UserManager;
+        _SignInManager = SignInManager;
+        _RoleManager = RoleManager;
+        _Logger = logger;
+        _ContextAccessor = ContextAccessor;
+        _AuthUtils = AuthUtils;
     }
 
     /// <summary>
     /// Метод регистрации пользователя
     /// </summary>
-    /// <param name="userRequest">Запрос пользователя</param>
+    /// <param name="UserRequest">Запрос пользователя</param>
     /// <returns>Status 200 OK.</returns>
     [AllowAnonymous]
     [HttpPost(AuthApiRoute.Register)]
-    public async Task<IActionResult> RegisterAsync([FromBody] AuthUserRequest? userRequest)
+    public async Task<IActionResult> RegisterAsync([FromBody] AuthUserRequest? UserRequest)
     {
-        if (userRequest is null)
+        if (UserRequest is null)
         {
-            _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}",
-                userRequest?.Email, userRequest?.Password);
+            _Logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}",
+                UserRequest?.Email, UserRequest?.Password);
             return Ok(new {Message = $"{ResultCodes.ValidationError}"});
         }
         
         try
         {
-            var identityUser = new IdentityUser{Email = userRequest.Email, UserName = userRequest.Email};
+            var identity_user = new IdentityUser{Email = UserRequest.Email, UserName = UserRequest.Email};
 
-            var identityResult = await _userManager.CreateAsync(identityUser, userRequest.Password);
-            if (identityResult.Succeeded)
+            var identity_result = await _UserManager.CreateAsync(identity_user, UserRequest.Password);
+            if (identity_result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(identityUser, AuthApiRoles.User);
-                await _signInManager.SignInAsync(identityUser, false);
+                await _UserManager.AddToRoleAsync(identity_user, AuthApiRoles.User);
+                await _SignInManager.SignInAsync(identity_user, false);
 
-                var emailConfirmToken = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
+                var email_confirm_token = await _UserManager.GenerateEmailConfirmationTokenAsync(identity_user);
 
-                var callbackUrl = Url.Action(
+                var callback_url = Url.Action(
                     "ConfirmEmail",
                     "Account",
-                    new { userId = identityUser.Id, confirmToken = emailConfirmToken }, protocol:
+                    new { userId = identity_user.Id, confirmToken = email_confirm_token }, protocol:
                     HttpContext.Request.Scheme);
 
                 return Ok(new RegisterResponse
@@ -82,70 +82,70 @@ public class AccountController : Controller
                     Succeeded = true,
                     Code = (int)ResultCodes.Ok,
                     Message = "Пройдите по ссылке, чтобы подтвердить ваш email",
-                    ConfirmEmail = callbackUrl,
+                    ConfirmEmail = callback_url,
                 });
             }
 
-            _logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}",
-                userRequest.Email);
-            return Ok(new RegisterResponse(){Succeeded = false, Code = (int)ResultCodes.NotFound});
+            _Logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}",
+                UserRequest.Email);
+            return Ok(new RegisterResponse {Succeeded = false, Code = (int)ResultCodes.NotFound});
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Information, "Пользователя не удалось зарегистрировать {Ex}", ex);
-            return Ok(new RegisterResponse(){Succeeded = false, Code = (int)ResultCodes.ServerError});
+            _Logger.Log(LogLevel.Information, "Пользователя не удалось зарегистрировать {Ex}", ex);
+            return Ok(new RegisterResponse {Succeeded = false, Code = (int)ResultCodes.ServerError});
         }
     }
 
     /// <summary>
     /// Метод авторизации пользователя
     /// </summary>
-    /// <param name="userRequest">Запрос пользователя</param>
+    /// <param name="UserRequest">Запрос пользователя</param>
     /// <returns>Status 200 OK.</returns>
     [AllowAnonymous]
     [HttpPost(AuthApiRoute.Login)]
-    public async Task<IActionResult> LoginAsync([FromBody] AuthUserRequest? userRequest)
+    public async Task<IActionResult> LoginAsync([FromBody] AuthUserRequest? UserRequest)
     {
-        if (userRequest is not null)
+        if (UserRequest is not null)
         {
             try
             {
-                var identityUser = await _userManager.FindByEmailAsync(userRequest.Email);
-                if (identityUser is not null)
+                var identity_user = await _UserManager.FindByEmailAsync(UserRequest.Email);
+                if (identity_user is not null)
                 {
-                    var identityRoles = await _userManager.GetRolesAsync(identityUser);
+                    var identity_roles = await _UserManager.GetRolesAsync(identity_user);
 
-                    var signInResult = await _signInManager.PasswordSignInAsync(
-                        userName: userRequest.Email,
-                        password: userRequest.Password,
+                    var sign_in_result = await _SignInManager.PasswordSignInAsync(
+                        userName: UserRequest.Email,
+                        password: UserRequest.Password,
                         isPersistent: true,
                         lockoutOnFailure: false);
 
-                    if (signInResult.Succeeded)
+                    if (sign_in_result.Succeeded)
                     {
-                        var sessionToken = _authUtils.CreateSessionToken(identityUser, identityRoles);
+                        var session_token = _AuthUtils.CreateSessionToken(identity_user, identity_roles);
 
                         return Ok(new LoginResponse
                         {
                             Succeeded = true,
                             Code = (int) ResultCodes.Ok,
-                            Message = Response.Headers.Authorization = $"Bearer {sessionToken}"
+                            Message = Response.Headers.Authorization = $"Bearer {session_token}"
                         });
                     }
 
-                    _logger.Log(LogLevel.Information, "Не удалось авторизовать пользователя {Email}", userRequest.Email);
+                    _Logger.Log(LogLevel.Information, "Не удалось авторизовать пользователя {Email}", UserRequest.Email);
                     return Ok(new LoginResponse{Succeeded = false, Code = (int)ResultCodes.NotFound});
                 }
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Не удалось авторизовать пользователя {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Не удалось авторизовать пользователя {Ex}", ex);
                 return Ok(new LoginResponse{Succeeded = false, Code = (int)ResultCodes.ServerError});
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}",
-            userRequest?.Email, userRequest?.Password);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {Password}",
+            UserRequest?.Email, UserRequest?.Password);
         return Ok(new LoginResponse{Succeeded = false, Code = (int)ResultCodes.ValidationError});
     }
 
@@ -159,12 +159,12 @@ public class AccountController : Controller
     {
         try
         {
-            await _signInManager.SignOutAsync();
+            await _SignInManager.SignOutAsync();
             return Ok(new LogoutResponse{Succeeded = true, Code = (int)ResultCodes.Ok});
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Information, "Не удалось выйти из системы {Ex}", ex);
+            _Logger.Log(LogLevel.Information, "Не удалось выйти из системы {Ex}", ex);
             return Ok(new LogoutResponse{Succeeded = false, Code = (int)ResultCodes.ServerError});
         }
     }
@@ -172,127 +172,127 @@ public class AccountController : Controller
     /// <summary>
     /// Метод смены пароля пользователя
     /// </summary>
-    /// <param name="passwordRequest">Запрос на смену пароля</param>
+    /// <param name="PasswordRequest">Запрос на смену пароля</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin, user")]
     [HttpPost(AuthApiRoute.ChangePassword)]
-    public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest? passwordRequest)
+    public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordRequest? PasswordRequest)
     {
-        if (passwordRequest is not null)
+        if (PasswordRequest is not null)
         {
             try
             {
-                var currentUserName = _contextAccessor.HttpContext?.User.Identity?.Name;
+                var current_user_name = _ContextAccessor.HttpContext?.User.Identity?.Name;
 
-                var identityUser = await _userManager.FindByNameAsync(currentUserName);
-                var isEmailConfirmed = await _userManager.IsEmailConfirmedAsync(identityUser);
-                if (currentUserName is not { Length: > 0 } ||
-                    identityUser is not null ||
-                    isEmailConfirmed)
+                var identity_user = await _UserManager.FindByNameAsync(current_user_name);
+                var is_email_confirmed = await _UserManager.IsEmailConfirmedAsync(identity_user);
+                if (current_user_name is not { Length: > 0 } ||
+                    identity_user is not null ||
+                    is_email_confirmed)
                 {
-                    var identityResult = await _userManager.ChangePasswordAsync(
-                        identityUser!,
-                        passwordRequest.CurrentPassword,
-                        passwordRequest.NewPassword);
-                    if (identityResult.Succeeded)
+                    var identity_result = await _UserManager.ChangePasswordAsync(
+                        identity_user!,
+                        PasswordRequest.CurrentPassword,
+                        PasswordRequest.NewPassword);
+                    if (identity_result.Succeeded)
                     {
                         return Ok(await Result.SuccessAsync("Пароль пользователя успешно изменен"));
                     }
 
-                    _logger.Log(LogLevel.Information, "Не удалось изменить пароль {CurrentPassword}, {NewPassword}",
-                        passwordRequest.CurrentPassword, passwordRequest.NewPassword);
+                    _Logger.Log(LogLevel.Information, "Не удалось изменить пароль {CurrentPassword}, {NewPassword}",
+                        PasswordRequest.CurrentPassword, PasswordRequest.NewPassword);
                     return Ok(await Result.SuccessAsync("Не удалось изменить пароль"));
                 }
 
-                _logger.Log(LogLevel.Information,
+                _Logger.Log(LogLevel.Information,
                     "Не удалось получить информацию о пользователе {IdentityUser} или ваша почта не подтверждена {isEmailCorfirmed}",
-                    identityUser, isEmailConfirmed);
+                    identity_user, is_email_confirmed);
                 return Ok(await Result.SuccessAsync("Не удалось получить информацию о пользователе или ваша почта не подтверждена"));
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при смене пароля {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при смене пароля {Ex}", ex);
                 return Ok(await Result.SuccessAsync("Произошла ошибка при смене пароля"));
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {CurrentPasswoprd}, {NewPassword}",
-            passwordRequest?.CurrentPassword, passwordRequest?.NewPassword);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {CurrentPasswoprd}, {NewPassword}",
+            PasswordRequest?.CurrentPassword, PasswordRequest?.NewPassword);
         return Ok(await Result.SuccessAsync("Некорректно введены данные"));
     }
 
     /// <summary>
     /// Метод подтверждения почты пользователя, когда пользователь проходит по сформированной ссылке
     /// </summary>
-    /// <param name="userId">Идентификатор пользователя в системе</param>
-    /// <param name="confirmToken">Токен подтверждения</param>
+    /// <param name="UserId">Идентификатор пользователя в системе</param>
+    /// <param name="ConfirmToken">Токен подтверждения</param>
     /// <returns>Status 200 OK.</returns>
     [HttpGet(AuthApiRoute.ConfirmEmail)]
-    public async Task<IActionResult> ConfirmEmailAsync(string userId, string confirmToken)
+    public async Task<IActionResult> ConfirmEmailAsync(string UserId, string ConfirmToken)
     {
-        if (userId is not { Length: > 0 } || confirmToken is not { Length: > 0 })
+        if (UserId is not { Length: > 0 } || ConfirmToken is not { Length: > 0 })
         {
             try
             {
-                var identityUser = await _userManager.FindByIdAsync(userId);
-                if (identityUser is not null)
+                var identity_user = await _UserManager.FindByIdAsync(UserId);
+                if (identity_user is not null)
                 {
-                    var identityResult = await _userManager.ConfirmEmailAsync(identityUser, confirmToken);
-                    if (identityResult.Succeeded)
+                    var identity_result = await _UserManager.ConfirmEmailAsync(identity_user, ConfirmToken);
+                    if (identity_result.Succeeded)
                     {
                         return Ok("Почта успешно подтверждена");
                     }
 
-                    _logger.Log(LogLevel.Information, "Не удалось подтвердить email пользователя");
+                    _Logger.Log(LogLevel.Information, "Не удалось подтвердить email пользователя");
                     return Ok("Не удалось подтвердить email пользователя");
                 }
 
-                _logger.Log(LogLevel.Information, "Не удалось найти пользователя в системе {UserId}, {ConfirmTokin}",
-                    userId, confirmToken);
+                _Logger.Log(LogLevel.Information, "Не удалось найти пользователя в системе {UserId}, {ConfirmTokin}",
+                    UserId, ConfirmToken);
                 return Ok("Не удалось найти пользователя в системе");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при подтверждении почты {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при подтверждении почты {Ex}", ex);
                 return Ok("Произошла ошибка при подтверждении почты");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректные данные {UserId}, {ConfirmTokin}",
-            userId, confirmToken);
+        _Logger.Log(LogLevel.Information, "Некорректные данные {UserId}, {ConfirmTokin}",
+            UserId, ConfirmToken);
         return Ok("Некорректные данные");
     }
 
     /// <summary>
     /// Метод создания роли для пользователя
     /// </summary>
-    /// <param name="roleRequest">Запро на создание роли</param>
+    /// <param name="RoleRequest">Запро на создание роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpPost(AuthApiRoute.CreateRole)]
-    public async Task<IActionResult> CreateRoleAsync([FromBody] AuthRoleRequest? roleRequest)
+    public async Task<IActionResult> CreateRoleAsync([FromBody] AuthRoleRequest? RoleRequest)
     {
-        if (roleRequest is not null)
+        if (RoleRequest is not null)
         {
             try
             {
-                var identityResult = await _roleManager.CreateAsync(new IdentityRole(roleRequest.RoleName));
-                if (identityResult.Succeeded)
+                var identity_result = await _RoleManager.CreateAsync(new IdentityRole(RoleRequest.RoleName));
+                if (identity_result.Succeeded)
                 {
                     return Ok("Роль для пользователя успешно создана");
                 }
 
-                _logger.Log(LogLevel.Information, "Не удалось создать роль");
+                _Logger.Log(LogLevel.Information, "Не удалось создать роль");
                 return Ok("Не удалось создать роль");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при создании роли {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при создании роли {Ex}", ex);
                 return Ok("Произошла ошибка при создании роли");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {RoleName}", roleRequest);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {RoleName}", RoleRequest);
         return Ok("Некорректно введены данные");
     }
 
@@ -306,18 +306,18 @@ public class AccountController : Controller
     {
         try
         {
-            var identityRolesList = await _roleManager.Roles.ToListAsync();
-            if (identityRolesList.Count != 0)
+            var identity_roles_list = await _RoleManager.Roles.ToListAsync();
+            if (identity_roles_list.Count != 0)
             {
-                return Ok(identityRolesList);
+                return Ok(identity_roles_list);
             }
 
-            _logger.Log(LogLevel.Information, "Не удалось получить список ролей");
+            _Logger.Log(LogLevel.Information, "Не удалось получить список ролей");
             return Ok("Не удалось получить список ролей");
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Information, "Произошла ошибка при запросе ролей {Ex}", ex);
+            _Logger.Log(LogLevel.Information, "Произошла ошибка при запросе ролей {Ex}", ex);
             return Ok("Произошла ошибка при запросе ролей");
         }
     }
@@ -325,201 +325,201 @@ public class AccountController : Controller
     /// <summary>
     /// Метод получения роли по идентификатору
     /// </summary>
-    /// <param name="roleRequest">Запрос на получение информации о роли</param>
+    /// <param name="RoleRequest">Запрос на получение информации о роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpGet(AuthApiRoute.GetRoleById)]
-    public async Task<IActionResult> GetRoleByIdAsync([FromBody] AuthRoleRequest? roleRequest)
+    public async Task<IActionResult> GetRoleByIdAsync([FromBody] AuthRoleRequest? RoleRequest)
     {
-        if (roleRequest is not null)
+        if (RoleRequest is not null)
         {
             try
             {
-                var identityRole = await _roleManager.FindByIdAsync(roleRequest.RoleId);
-                if (identityRole is not null)
+                var identity_role = await _RoleManager.FindByIdAsync(RoleRequest.RoleId);
+                if (identity_role is not null)
                 {
-                    return Ok(identityRole);
+                    return Ok(identity_role);
                 }
 
-                _logger.Log(LogLevel.Information, "Не удалось получить роль");
+                _Logger.Log(LogLevel.Information, "Не удалось получить роль");
                 return Ok("Не удалось получить роль");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при запросе роли {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при запросе роли {Ex}", ex);
                 return Ok("Произошла ошибка при запросе роли");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {RoleId}", roleRequest?.RoleId);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {RoleId}", RoleRequest?.RoleId);
         return Ok("Некорректно введены данные");
     }
 
     /// <summary>
     /// Метод редактирования роли по идентификатору
     /// </summary>
-    /// <param name="roleRequest">Запрос на редактирование роли</param>
+    /// <param name="RoleRequest">Запрос на редактирование роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpPost(AuthApiRoute.EditRoleById)]
-    public async Task<IActionResult> EditRoleByIdAsync([FromBody] AuthRoleRequest? roleRequest)
+    public async Task<IActionResult> EditRoleByIdAsync([FromBody] AuthRoleRequest? RoleRequest)
     {
-        if (roleRequest is not null)
+        if (RoleRequest is not null)
         {
             try
             {
-                var foundRole = await _roleManager.FindByIdAsync(roleRequest.RoleId);
-                foundRole.Name = roleRequest.RoleName;
+                var found_role = await _RoleManager.FindByIdAsync(RoleRequest.RoleId);
+                found_role.Name = RoleRequest.RoleName;
 
-                var identityResult = await _roleManager.UpdateAsync(foundRole);
-                if (identityResult.Succeeded)
+                var identity_result = await _RoleManager.UpdateAsync(found_role);
+                if (identity_result.Succeeded)
                 {
-                    return Ok($"Роль успешно изменена с {foundRole} на {roleRequest.RoleName}");
+                    return Ok($"Роль успешно изменена с {found_role} на {RoleRequest.RoleName}");
                 }
 
-                _logger.Log(LogLevel.Information, "Не удалось изменить роль");
+                _Logger.Log(LogLevel.Information, "Не удалось изменить роль");
                 return Ok("Не удалось изменить роль");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при редактировании роли {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при редактировании роли {Ex}", ex);
                 return Ok("Произошла ошибка при редактировании роли");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {RoleId}, {RoleName}",
-            roleRequest?.RoleId, roleRequest.RoleName);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {RoleId}, {RoleName}",
+            RoleRequest?.RoleId, RoleRequest.RoleName);
         return Ok("Некорректно введены данные");
     }
 
     /// <summary>
     /// Метод удаления роли по идентификатору
     /// </summary>
-    /// <param name="roleRequest">Запрос на удаление роли</param>
+    /// <param name="RoleRequest">Запрос на удаление роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpDelete(AuthApiRoute.DeleteRoleById)]
-    public async Task<IActionResult> DeleteRoleByIdAsync([FromBody] AuthRoleRequest? roleRequest)
+    public async Task<IActionResult> DeleteRoleByIdAsync([FromBody] AuthRoleRequest? RoleRequest)
     {
-        if (roleRequest is not null)
+        if (RoleRequest is not null)
         {
             try
             {
-                var identityRole = await _roleManager.FindByIdAsync(roleRequest.RoleId);
-                if (identityRole is not null)
+                var identity_role = await _RoleManager.FindByIdAsync(RoleRequest.RoleId);
+                if (identity_role is not null)
                 {
-                    var identityResult = await _roleManager.DeleteAsync(identityRole);
-                    if (identityResult.Succeeded)
+                    var identity_result = await _RoleManager.DeleteAsync(identity_role);
+                    if (identity_result.Succeeded)
                     {
                         return Ok("Роль успешно удалена");
                     }
 
-                    _logger.Log(LogLevel.Information, "Не удалось удалить роль");
+                    _Logger.Log(LogLevel.Information, "Не удалось удалить роль");
                     return Ok("Не удалось удалить роль");
                 }
 
-                _logger.Log(LogLevel.Information, "Не удалось найти роль");
+                _Logger.Log(LogLevel.Information, "Не удалось найти роль");
                 return Ok("Не удалось найти роль");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при удалении роли {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при удалении роли {Ex}", ex);
                 return Ok("Произошла ошибка при удалении роли");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные");
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные");
         return Ok("Некорректно введены данные");
     }
 
     /// <summary>
     /// Метод добавления роли к пользователю
     /// </summary>
-    /// <param name="roleRequest">Запрос на добавление роли</param>
+    /// <param name="RoleRequest">Запрос на добавление роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpPost(AuthApiRoute.AddRoleToUser)]
-    public async Task<IActionResult> AddRoleToUserAsync([FromBody] AuthRoleRequest? roleRequest)
+    public async Task<IActionResult> AddRoleToUserAsync([FromBody] AuthRoleRequest? RoleRequest)
     {
-        if (roleRequest is not null)
+        if (RoleRequest is not null)
         {
             try
             {
-                var identityUser = await _userManager.FindByEmailAsync(roleRequest.Email);
-                var userRolesList = await _userManager.GetRolesAsync(identityUser);
-                var systemRolesList = await _roleManager.Roles.ToListAsync();
-                if (!userRolesList.Contains(roleRequest.RoleName))
+                var identity_user = await _UserManager.FindByEmailAsync(RoleRequest.Email);
+                var user_roles_list = await _UserManager.GetRolesAsync(identity_user);
+                var system_roles_list = await _RoleManager.Roles.ToListAsync();
+                if (!user_roles_list.Contains(RoleRequest.RoleName))
                 {
-                    var isRoleContainsInSystem = systemRolesList.Select(x =>
-                        x.Name.Contains(roleRequest.RoleName!.ToLower()));
-                    foreach (var isRole in isRoleContainsInSystem)
+                    var is_role_contains_in_system = system_roles_list.Select(x =>
+                        x.Name.Contains(RoleRequest.RoleName!.ToLower()));
+                    foreach (var is_role in is_role_contains_in_system)
                     {
-                        if (isRole)
+                        if (is_role)
                         {
-                            var roleAddedResult = await _userManager.AddToRoleAsync(identityUser, roleRequest.RoleName!.ToLower());
-                            if (roleAddedResult.Succeeded)
+                            var role_added_result = await _UserManager.AddToRoleAsync(identity_user, RoleRequest.RoleName!.ToLower());
+                            if (role_added_result.Succeeded)
                             {
-                                return Ok(roleAddedResult);
+                                return Ok(role_added_result);
                             }
                         }
                     }
                 }
 
-                _logger.Log(LogLevel.Information, "Некорректно введены данные");
+                _Logger.Log(LogLevel.Information, "Некорректно введены данные");
                 return Ok("Некорректно введены данные");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при добавлении роли к пользователю {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при добавлении роли к пользователю {Ex}", ex);
                 return Ok("Произошла ошибка при добавлении роли пользователю");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}",
-            roleRequest?.Email, roleRequest?.RoleName);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}",
+            RoleRequest?.Email, RoleRequest?.RoleName);
         return Ok("Некорректно введены данные");
     }
 
     /// <summary>
     /// Метод удаления роли у пользователя
     /// </summary>
-    /// <param name="roleRequest">Запрос на удаление роли</param>
+    /// <param name="RoleRequest">Запрос на удаление роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpDelete(AuthApiRoute.DeleteUserRole)]
-    public async Task<IActionResult> DeleteUserRoleAsync([FromBody] AuthRoleRequest? roleRequest)
+    public async Task<IActionResult> DeleteUserRoleAsync([FromBody] AuthRoleRequest? RoleRequest)
     {
-        if (roleRequest is not null)
+        if (RoleRequest is not null)
         {
             try
             {
-                var identityUser = await _userManager.FindByEmailAsync(roleRequest.Email);
-                var userRolesList = await _userManager.GetRolesAsync(identityUser);
-                var systemRolesList = await _roleManager.Roles.ToListAsync();
-                if (userRolesList.Contains(roleRequest.RoleName))
+                var identity_user = await _UserManager.FindByEmailAsync(RoleRequest.Email);
+                var user_roles_list = await _UserManager.GetRolesAsync(identity_user);
+                var system_roles_list = await _RoleManager.Roles.ToListAsync();
+                if (user_roles_list.Contains(RoleRequest.RoleName))
                 {
-                    var isRoleContainsInSystem = systemRolesList.Select(x =>
-                        x.Name.Contains(roleRequest.RoleName!));
-                    foreach (var isRole in isRoleContainsInSystem)
+                    var is_role_contains_in_system = system_roles_list.Select(x =>
+                        x.Name.Contains(RoleRequest.RoleName!));
+                    foreach (var is_role in is_role_contains_in_system)
                     {
-                        if (isRole)
+                        if (is_role)
                         {
-                            var roleRemovedResult = await _userManager.RemoveFromRoleAsync(identityUser, roleRequest.RoleName);
-                            if (roleRemovedResult.Succeeded)
+                            var role_removed_result = await _UserManager.RemoveFromRoleAsync(identity_user, RoleRequest.RoleName);
+                            if (role_removed_result.Succeeded)
                             {
-                                return Ok(roleRemovedResult);
+                                return Ok(role_removed_result);
                             }
                         }
                     }
                 }
 
-                _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}",
-                    roleRequest.Email, roleRequest.RoleName);
+                _Logger.Log(LogLevel.Information, "Некорректно введены данные {Email}, {RoleName}",
+                    RoleRequest.Email, RoleRequest.RoleName);
                 return Ok("Некорректно введены данные");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при удалении роли пользователю {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при удалении роли пользователю {Ex}", ex);
                 return Ok("Произошла ошибка при удалении роли пользователю");
             }
         }
@@ -530,94 +530,94 @@ public class AccountController : Controller
     /// <summary>
     /// Метод получения всех ролей пользователя
     /// </summary>
-    /// <param name="roleRequest">Запрос на получение списка ролей</param>
+    /// <param name="RoleRequest">Запрос на получение списка ролей</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpGet(AuthApiRoute.ListOfUserRoles)]
-    public async Task<IActionResult> ListOfUserRolesAsync([FromBody] AuthRoleRequest? roleRequest)
+    public async Task<IActionResult> ListOfUserRolesAsync([FromBody] AuthRoleRequest? RoleRequest)
     {
-        if (roleRequest is not null)
+        if (RoleRequest is not null)
         {
             try
             {
-                var identityUser = await _userManager.FindByEmailAsync(roleRequest.Email);
-                if (identityUser is not null)
+                var identity_user = await _UserManager.FindByEmailAsync(RoleRequest.Email);
+                if (identity_user is not null)
                 {
-                    var userRolesList = await _userManager.GetRolesAsync(identityUser);
-                    if (userRolesList.Count != 0)
+                    var user_roles_list = await _UserManager.GetRolesAsync(identity_user);
+                    if (user_roles_list.Count != 0)
                     {
-                        return Ok(userRolesList.ToList());
+                        return Ok(user_roles_list.ToList());
                     }
 
-                    _logger.Log(LogLevel.Information, "Не удалось получить список ролей");
+                    _Logger.Log(LogLevel.Information, "Не удалось получить список ролей");
                     return Ok("Не удалось получить список ролей");
                 }
 
-                _logger.Log(LogLevel.Information,
+                _Logger.Log(LogLevel.Information,
                     "Данного пользователя {IdentityUser} нет в системе, либо некорректно введены данные пользователя " +
-                    "{Email}", identityUser, roleRequest.Email);
+                    "{Email}", identity_user, RoleRequest.Email);
                 return Ok("Данного пользователя нет в системе, либо некорректно введены данные пользователя");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при получении списка ролей пользователей {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при получении списка ролей пользователей {Ex}", ex);
                 return Ok("Произошла ошибка при получении списка ролей пользователей");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}", roleRequest?.Email);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {Email}", RoleRequest?.Email);
         return Ok("Некорректно введены данные");
     }
 
     /// <summary>
     /// Метод создания пользователя админом
     /// </summary>
-    /// <param name="userRequest">Запрос админа</param>
+    /// <param name="UserRequest">Запрос админа</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpPost(AuthApiRoute.CreateUser)]
-    public async Task<IActionResult> CreateUserAsync([FromBody] AuthUserRequest? userRequest)
+    public async Task<IActionResult> CreateUserAsync([FromBody] AuthUserRequest? UserRequest)
     {
-        if (userRequest is not null)
+        if (UserRequest is not null)
         {
-            var actionResult = await RegisterAsync(userRequest);
-            return Ok(actionResult);
+            var action_result = await RegisterAsync(UserRequest);
+            return Ok(action_result);
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
         return Ok("Некорректно введены данные пользователя");
     }
 
     /// <summary>
     /// Метод получения информации о пользователе
     /// </summary>
-    /// <param name="userRequest">Запрос на получение информации о пользователе</param>
+    /// <param name="UserRequest">Запрос на получение информации о пользователе</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpPost(AuthApiRoute.GetUserByEmail)]
-    public async Task<IActionResult> GetUserByEmailAsync([FromBody] AuthUserRequest? userRequest)
+    public async Task<IActionResult> GetUserByEmailAsync([FromBody] AuthUserRequest? UserRequest)
     {
-        if (userRequest is not null)
+        if (UserRequest is not null)
         {
             try
             {
-                var identityUser = await _userManager.FindByEmailAsync(userRequest.Email);
-                if (identityUser is not null)
+                var identity_user = await _UserManager.FindByEmailAsync(UserRequest.Email);
+                if (identity_user is not null)
                 {
-                    return Ok(identityUser);
+                    return Ok(identity_user);
                 }
 
-                _logger.Log(LogLevel.Information, "Не удалось получить информации о пользователе");
+                _Logger.Log(LogLevel.Information, "Не удалось получить информации о пользователе");
                 return Ok("Не удалось получить информации о пользователе");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при получении пользователей {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при получении пользователей {Ex}", ex);
                 return Ok("Произошла ошибка при получении пользователей");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные {Email}", userRequest?.Email);
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные {Email}", UserRequest?.Email);
         return Ok("Некорректно введены данные");
     }
 
@@ -631,12 +631,12 @@ public class AccountController : Controller
     {
         try
         {
-            var listOfAllUsers = await _userManager.Users.ToListAsync();
-            return Ok(listOfAllUsers);
+            var list_of_all_users = await _UserManager.Users.ToListAsync();
+            return Ok(list_of_all_users);
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Information, "Произошла ошибка при получении пользователя {Ex}", ex);
+            _Logger.Log(LogLevel.Information, "Произошла ошибка при получении пользователя {Ex}", ex);
             return Ok("Произошла ошибка при получении пользователя");
         }
     }
@@ -645,84 +645,84 @@ public class AccountController : Controller
     /// Метод редактирования информации о пользователе
     /// </summary>
     /// <param name="email">Почта пользователя</param>
-    /// <param name="editUserRequest">Запрос админа</param>
+    /// <param name="EditUserRequest">Запрос админа</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpPost(AuthApiRoute.EditUserByEmail)]
-    public async Task<IActionResult> EditUserByEmailAsync([FromBody] EditUserRequest? editUserRequest)
+    public async Task<IActionResult> EditUserByEmailAsync([FromBody] EditUserRequest? EditUserRequest)
     {
-        if (editUserRequest is not null)
+        if (EditUserRequest is not null)
         {
             try
             {
-                var identityUser = await _userManager.FindByEmailAsync(editUserRequest.Email);
-                if (identityUser is not null)
+                var identity_user = await _UserManager.FindByEmailAsync(EditUserRequest.Email);
+                if (identity_user is not null)
                 {
-                    identityUser.Email = editUserRequest.EditUserInfo?.Email;
-                    identityUser.UserName = editUserRequest.EditUserInfo?.Email;
+                    identity_user.Email = EditUserRequest.EditUserInfo?.Email;
+                    identity_user.UserName = EditUserRequest.EditUserInfo?.Email;
 
-                    var identityResult = await _userManager.UpdateAsync(identityUser);
-                    if (identityResult.Succeeded)
+                    var identity_result = await _UserManager.UpdateAsync(identity_user);
+                    if (identity_result.Succeeded)
                     {
                         return Ok("Информаци о пользователе успешно изменена");
                     }
 
-                    _logger.Log(LogLevel.Information, "Не удалось обновить информацию пользователя");
+                    _Logger.Log(LogLevel.Information, "Не удалось обновить информацию пользователя");
                     return Ok("Не удалось обновить информацию пользователя");
                 }
 
-                _logger.Log(LogLevel.Information,
-                    "Не удалось найти пользователя {Email} или некорректно введены данные", editUserRequest.Email);
+                _Logger.Log(LogLevel.Information,
+                    "Не удалось найти пользователя {Email} или некорректно введены данные", EditUserRequest.Email);
                 return Ok("Не удалось найти данного пользователя или некорректно введены данные пользователя");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при обновлении информации о пользователе {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при обновлении информации о пользователе {Ex}", ex);
                 return Ok("Произошла ошибка при обновлении информации о пользователе");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
         return Ok("Некорректно введены данные пользователя");
     }
 
     /// <summary>
     /// Метод удаления пользователя
     /// </summary>
-    /// <param name="userRequest">Запрос на удаление пользователя</param>
+    /// <param name="UserRequest">Запрос на удаление пользователя</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = "admin")]
     [HttpDelete(AuthApiRoute.DeleteUserByEmail)]
-    public async Task<IActionResult> DeleteUserByEmail([FromBody] AuthUserRequest? userRequest)
+    public async Task<IActionResult> DeleteUserByEmail([FromBody] AuthUserRequest? UserRequest)
     {
-        if (userRequest is not null)
+        if (UserRequest is not null)
         {
             try
             {
-                var identityUser = await _userManager.FindByEmailAsync(userRequest.Email);
-                if (identityUser is not null)
+                var identity_user = await _UserManager.FindByEmailAsync(UserRequest.Email);
+                if (identity_user is not null)
                 {
-                    var identityResult = await _userManager.DeleteAsync(identityUser);
-                    if (identityResult.Succeeded)
+                    var identity_result = await _UserManager.DeleteAsync(identity_user);
+                    if (identity_result.Succeeded)
                     {
                         return Ok("Пользователь успешно удален");
                     }
 
-                    _logger.Log(LogLevel.Information, "Не удалось удалить пользователя {Email}", userRequest.Email);
+                    _Logger.Log(LogLevel.Information, "Не удалось удалить пользователя {Email}", UserRequest.Email);
                     return Ok("Не удалось удалить пользователя");
                 }
 
-                _logger.Log(LogLevel.Information, "Не удалось получить информацию о пользователе {Email}", userRequest.Email);
+                _Logger.Log(LogLevel.Information, "Не удалось получить информацию о пользователе {Email}", UserRequest.Email);
                 return Ok("Не удалось получить информацию о пользователе");
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Information, "Произошла ошибка при удалении пользователя {Ex}", ex);
+                _Logger.Log(LogLevel.Information, "Произошла ошибка при удалении пользователя {Ex}", ex);
                 return Ok("Произошла ошибка при удалении пользователя");
             }
         }
 
-        _logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
+        _Logger.Log(LogLevel.Information, "Некорректно введены данные пользователя");
         return Ok("Некорректно введены данные пользователя");
     }
 
@@ -736,15 +736,15 @@ public class AccountController : Controller
     {
         try
         {
-            var usersToDeleteList = await _userManager
+            var users_to_delete_list = await _UserManager
                 .Users.Where(x =>
                     x.EmailConfirmed.Equals(false))
                 .ToListAsync();
-            foreach (var user in usersToDeleteList)
+            foreach (var user in users_to_delete_list)
             {
                 if (user.EmailConfirmed is false)
                 {
-                    await _userManager.DeleteAsync(user);
+                    await _UserManager.DeleteAsync(user);
                 }
             }
 
@@ -752,7 +752,7 @@ public class AccountController : Controller
         }
         catch (Exception ex)
         {
-            _logger.Log(LogLevel.Information, "Не удалось удалить пользователей из-за ошибки {Ex}", ex);
+            _Logger.Log(LogLevel.Information, "Не удалось удалить пользователей из-за ошибки {Ex}", ex);
             return Ok("Не удалось удалить пользователей из-за ошибки");
         }
     }

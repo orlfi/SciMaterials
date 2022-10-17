@@ -5,22 +5,22 @@ namespace SciMaterials.UI.MVC.Controllers;
 
 public class FilesController : Controller
 {
-    private readonly ILogger<FilesController> _logger;
-    private static string? _message;
-    private readonly IApiSettings _apiSettings;
+    private readonly ILogger<FilesController> _Logger;
+    private static string? _Message;
+    private readonly IApiSettings _ApiSettings;
 
-    public FilesController(ILogger<FilesController> logger, IApiSettings apiSettings)
+    public FilesController(IApiSettings ApiSettings, ILogger<FilesController> Logger)
     {
-        _logger = logger;
+        _Logger = Logger;
 
-        _apiSettings = apiSettings;
-        if (string.IsNullOrEmpty(apiSettings.BasePath))
-            throw new ArgumentNullException("Path");
+        _ApiSettings = ApiSettings;
+        if (string.IsNullOrEmpty(ApiSettings.BasePath))
+            throw new ArgumentNullException(nameof(ApiSettings));
     }
 
     public IActionResult Index()
     {
-        ViewBag.Message = _message;
+        ViewBag.Message = _Message;
         return View();
     }
 }
