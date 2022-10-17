@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
@@ -47,7 +48,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
 
     [DisableFormValueModelBinding]
     [HttpPost("Upload")]
-    public async Task<IActionResult> UploadAsync()
+    public async Task<IActionResult> UploadAsync([FromQuery] UploadFileRequest fileInfo)
     {
         _logger.LogDebug("Upload file");
         var request = HttpContext.Request;
@@ -68,6 +69,8 @@ public class FilesApiController : ApiBaseController<FilesApiController>
 
         var reader = new MultipartReader(boundaryValue, request.Body);
         var section = await reader.ReadNextSectionAsync();
+        var metadata = JsonSerializer.Serialize(fileInfo);
+        section.Headers.Add("Metadata", metadata);
 
         while (section != null)
         {
