@@ -1,10 +1,18 @@
 using Microsoft.Data.Sqlite;
 using MySqlConnector;
 
-namespace SciMaterials.AUTH.Utilits;
+namespace SciMaterials.AUTH.Services;
 
+/// <summary>
+/// Статический класс по формированию строк подключения к БД
+/// </summary>
 public static class AuthConnectionStrings
 {
+    /// <summary>
+    /// Метод формирует строку подключения для БД MYSQL
+    /// </summary>
+    /// <param name="configuration">Конфигурация</param>
+    /// <returns>Сформированную строку подключения</returns>
     public static string MySql(IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("AuthDbConnection");
@@ -20,6 +28,11 @@ public static class AuthConnectionStrings
         return connectionString;
     }
 
+    /// <summary>
+    /// Метод формирует строку подключения для БД SQLITE
+    /// </summary>
+    /// <param name="configuration">Конфигурация</param>
+    /// <returns>Сформированную строку подключения</returns>
     public static string Sqlite(IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("AuthDbConnection");

@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SciMaterials.AUTH.Utilits;
+using SciMaterials.AUTH.Services;
+using SciMaterials.Contracts.Auth;
 using SciMaterials.DAL.AUTH.Context;
 using SciMaterials.DAL.AUTH.InitializationDb;
-using SciMaterials.DAL.AUTH.Interfaces;
 
-namespace SciMaterials.Auth.Registrations;
+namespace SciMaterials.AUTH.Extensions;
 
-public static class AuthApiServices
+public static class AuthServiceCollectionExtensions
 {
     public static IServiceCollection AddAuthApiServices(this IServiceCollection services, IConfiguration configuration)
     {
@@ -43,8 +43,13 @@ public static class AuthApiServices
         return services;
     }
 
-    public static IServiceCollection AddDbInitializer(this IServiceCollection services)
+    public static IServiceCollection AddAuthDbInitializer(this IServiceCollection services)
     {
         return services.AddTransient<IAuthDbInitializer, AuthDbInitializer>();
+    }
+    
+    public static IServiceCollection AddAuthUtils(this IServiceCollection services)
+    {
+        return services.AddSingleton<IAuthUtils, AuthUtils>();
     }
 }
