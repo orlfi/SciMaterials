@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
@@ -29,23 +30,45 @@ public class FilesApiController : ApiBaseController<FilesApiController>
         return Ok(result);
     }
 
+    /// <summary> Get file metadata by Id. </summary>
+    /// <param name="id"> File Id. </param>
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        _logger.LogDebug("Get by id {id}", id);
+        var result = await _fileService.GetByIdAsync(id);
+        return Ok(result);
+    }
+
+    [HttpPut("Edit")]
+    public async Task<IActionResult> EditAsync([FromBody] EditFileRequest request)
+    {
+        var result = await _fileService.EditAsync(request);
+        return Ok(result);
+    }
+
     [HttpGet("DownloadByHash/{hash}")]
     public async Task<IActionResult> DownloadByHash([FromRoute] string hash)
     {
         _logger.LogDebug("Get file by hash");
 
         var fileStreamInfoResult = await _fileService.DownloadByHash(hash);
+        if (fileStreamInfoResult is { Succeeded: true })
+            return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
 
-        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
+        return Ok(fileStreamInfoResult);
     }
 
     [HttpGet("DownloadById/{id}")]
     public async Task<IActionResult> DownloadByIdAsync([FromRoute] Guid id)
     {
         _logger.LogDebug("Download by Id");
-        var fileStreamInfoResult = await _fileService.DownloadById(id);
 
-        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
+        var fileStreamInfoResult = await _fileService.DownloadById(id);
+        if (fileStreamInfoResult is { Succeeded: true })
+            return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
+
+        return Ok(fileStreamInfoResult);
     }
 
     [DisableFormValueModelBinding]
@@ -102,6 +125,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
-        return Ok(await _fileService.DeleteAsync(id));
+        var result = await _fileService.DeleteAsync(id);
+        return Ok(result);
     }
 }

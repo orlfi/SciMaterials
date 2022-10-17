@@ -19,7 +19,7 @@ public class FileSystemStore : IFileStore
 
     public async Task<FileWriteResult> WriteAsync(string path, string text, CancellationToken cancellationToken = default)
     {
-        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("string"));
+        using var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(text));
         return await WriteAsync(path, memoryStream, cancellationToken);
     }
 
@@ -99,12 +99,7 @@ public class FileSystemStore : IFileStore
 
     public void Delete(string filePath)
     {
-        if (File.Exists(filePath))
-            File.Delete(filePath);
-
-        var metadataPath = GetMetadataPath(filePath);
-        if (File.Exists(metadataPath))
-            File.Delete(metadataPath);
+        File.Delete(filePath);
     }
 
     private static string GetMetadataPath(string filePath)

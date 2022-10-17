@@ -125,15 +125,17 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Author>? GetAll(bool DisableTracking = true)
+    public List<Author>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors
-                .Include(u => u.Comments)
+        IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
+
+        if (include)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.ToList();
@@ -141,15 +143,17 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Author>?> GetAllAsync(bool DisableTracking = true)
+    public async Task<List<Author>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors
-                .Include(u => u.Comments)
+        IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
+
+        if (include)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.ToListAsync();
@@ -157,16 +161,18 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Author? GetById(Guid id, bool DisableTracking = true)
+    public Author? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
-                .Where(c => c.Id == id)
-                .Include(u => u.Comments)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -174,16 +180,18 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Author?> GetByIdAsync(Guid id, bool DisableTracking = true)
+    public async Task<Author?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
-                .Where(c => c.Id == id)
-                .Include(u => u.Comments)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -239,16 +247,18 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Author?> GetByNameAsync(string name, bool DisableTracking = true)
+    public async Task<Author?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
-                .Where(c => c.Name == name)
-                .Include(u => u.Comments)
+                .Where(c => c.Name == name && !c.IsDeleted);
+        
+        if (include)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -256,16 +266,18 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Author? GetByName(string name, bool DisableTracking = true)
+    public Author? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
-                .Where(c => c.Name == name)
-                .Include(u => u.Comments)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(u => u.Comments)
                 .Include(u => u.Files)
                 .Include(u => u.Ratings)
                 .Include(u => u.User);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -273,11 +285,11 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Author?> GetByHashAsync(string hash, bool DisableTracking = true) => null;
+    public async Task<Author?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Author? GetByHash(string hash, bool DisableTracking = true) => null;
+    public Author? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>

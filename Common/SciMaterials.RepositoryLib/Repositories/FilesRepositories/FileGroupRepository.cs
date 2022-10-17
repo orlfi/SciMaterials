@@ -126,17 +126,19 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<FileGroup>? GetAll(bool DisableTracking = true)
+    public List<FileGroup>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<FileGroup> query = _context.FileGroups
-                .Include(fg => fg.Files)
+        IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
+
+        if (include)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.ToList();
@@ -144,17 +146,19 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<FileGroup>?> GetAllAsync(bool DisableTracking = true)
+    public async Task<List<FileGroup>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<FileGroup> query = _context.FileGroups
-                .Include(fg => fg.Files)
+        IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
+
+        if (include)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.ToListAsync();
@@ -162,18 +166,20 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public FileGroup? GetById(Guid id, bool DisableTracking = true)
+    public FileGroup? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
-                .Where(c => c.Id == id)
-                .Include(fg => fg.Files)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -181,18 +187,20 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<FileGroup?> GetByIdAsync(Guid id, bool DisableTracking = true)
+    public async Task<FileGroup?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
-                .Where(c => c.Id == id)
-                .Include(fg => fg.Files)
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -250,18 +258,20 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<FileGroup?> GetByNameAsync(string name, bool DisableTracking = true)
+    public async Task<FileGroup?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
-                .Where(c => c.Name == name)
-                .Include(fg => fg.Files)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -269,18 +279,20 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public FileGroup? GetByName(string name, bool DisableTracking = true)
+    public FileGroup? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
-                .Where(c => c.Name == name)
-                .Include(fg => fg.Files)
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(fg => fg.Files)
                 .Include(fg => fg.Tags)
                 .Include(fg => fg.Ratings)
                 .Include(fg => fg.Comments)
                 .Include(fg => fg.Categories)
                 .Include(fg => fg.Author);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -288,11 +300,11 @@ public class FileGroupRepository : IFileGroupRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<FileGroup?> GetByHashAsync(string hash, bool DisableTracking = true) => null;
+    public async Task<FileGroup?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public FileGroup? GetByHash(string hash, bool DisableTracking = true) => null;
+    public FileGroup? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>

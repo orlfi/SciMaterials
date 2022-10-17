@@ -6,7 +6,8 @@ namespace SciMaterials.Contracts.API.Services.Files;
 
 public interface IFileService : IService<Guid, GetFileResponse>
 {
-    Task<Result<GetFileResponse>> GetByHashAsync(string hash);
+    Task<Result<GetFileResponse>> GetByHashAsync(string hash, CancellationToken cancellationToken = default);
+    Task<Result<Guid>> EditAsync(EditFileRequest editFileRequest, CancellationToken cancellationToken = default);
     Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     Task<Result<Guid>> UploadAsync(Stream fileStream, UploadFileRequest uploadFileRequest, CancellationToken cancellationToken = default);
     Task<Result<FileStreamInfo>> DownloadById(Guid id);

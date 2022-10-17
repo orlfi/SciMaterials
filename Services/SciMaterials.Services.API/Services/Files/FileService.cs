@@ -11,6 +11,8 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -24,11 +26,11 @@ public class FileService : IFileService
     private readonly string _separator;
 
     public FileService(
-        ILogger<FileService> logger,
         IApiSettings apiSettings,
         IFileStore fileStore,
         IUnitOfWork<SciMaterialsContext> unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<FileService> logger)
     {
         _logger = logger;
         _fileStore = fileStore;
@@ -43,14 +45,14 @@ public class FileService : IFileService
 
     public async Task<Result<IEnumerable<GetFileResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var files = await _unitOfWork.GetRepository<File>().GetAllAsync();
+        var files = await _unitOfWork.GetRepository<File>().GetAllAsync(include: true);
         var result = _mapper.Map<List<GetFileResponse>>(files);
         return result;
     }
 
     public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if ((await _unitOfWork.GetRepository<File>().GetByIdAsync(id)) is File file)
+        if ((await _unitOfWork.GetRepository<File>().GetByIdAsync(id, include: true)) is File file)
         {
             return _mapper.Map<GetFileResponse>(file);
         }
@@ -58,14 +60,39 @@ public class FileService : IFileService
         return Result<GetFileResponse>.Error((int)ResultCodes.NotFound, $"File with ID {id} not found");
     }
 
-    public async Task<Result<GetFileResponse>> GetByHashAsync(string hash)
+    public async Task<Result<GetFileResponse>> GetByHashAsync(string hash, CancellationToken cancellationToken = default)
     {
-        if ((await _unitOfWork.GetRepository<File>().GetByHashAsync(hash)) is File file)
+        if ((await _unitOfWork.GetRepository<File>().GetByHashAsync(hash, include: true)) is File file)
         {
             return _mapper.Map<GetFileResponse>(file);
         }
 
         return await Result<GetFileResponse>.ErrorAsync((int)ResultCodes.NotFound, $"File with hash {hash} not found");
+    }
+
+
+    public async Task<Result<Guid>> EditAsync(EditFileRequest editFileRequest, CancellationToken cancellationToken = default)
+    {
+        var verifyCategoriesResult = await VerifyCategories(editFileRequest.Categories);
+        if (!verifyCategoriesResult.Succeeded)
+            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
+
+        var file = _mapper.Map<File>(editFileRequest);
+
+        if (verifyCategoriesResult.Data is { })
+            file.Categories = verifyCategoriesResult.Data;
+
+        if (editFileRequest.Tags is { Length: > 0 })
+        {
+            var getTagsResult = await GetTagsFromSeparatedStringAsync(_separator, editFileRequest.Tags);
+            file.Tags = getTagsResult.Data;
+        }
+
+        await _unitOfWork.GetRepository<File>().UpdateAsync(file);
+        if (await _unitOfWork.SaveContextAsync() > 0)
+            return await Result<Guid>.SuccessAsync(file.Id, "File updated");
+
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 
     public async Task<Result<FileStreamInfo>> DownloadByHash(string hash)
@@ -75,7 +102,16 @@ public class FileService : IFileService
             return Result<FileStreamInfo>.Error((int)ResultCodes.NotFound, $"File with hash {hash} not found");
 
         var readFromPath = Path.Combine(_path, getFileResponse.Data.Id.ToString());
-        return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, _fileStore.OpenRead(readFromPath));
+
+        try
+        {
+            var fileStream = _fileStore.OpenRead(readFromPath);
+            return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, fileStream);
+        }
+        catch (Exception ex)
+        {
+            return await Result<FileStreamInfo>.ErrorAsync((int)ResultCodes.ServerError, "Download error");
+        }
     }
 
 
@@ -85,8 +121,17 @@ public class FileService : IFileService
             return Result<FileStreamInfo>.Error((int)ResultCodes.NotFound, $"File with ID {id} not found");
 
         var readFromPath = Path.Combine(_path, id.ToString());
-        return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, _fileStore.OpenRead(readFromPath));
+        try
+        {
+            var fileStream = _fileStore.OpenRead(readFromPath);
+            return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, fileStream);
+        }
+        catch (Exception ex)
+        {
+            return await Result<FileStreamInfo>.ErrorAsync((int)ResultCodes.ServerError, "Download error");
+        }
     }
+
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if ((await DeleteFileFromFileSystem(id, cancellationToken)) is { Succeeded: false } deleteFromFileSystemResult)
@@ -117,6 +162,7 @@ public class FileService : IFileService
         }
         return writeToDatabaseResult;
     }
+
     private async Task<Result<Guid>> VerifyFileUploadRequest(UploadFileRequest uploadFileRequest)
     {
         if (await VerifyContentType(uploadFileRequest.ContentTypeName) is { Succeeded: false } verifyContentTypeResult)
@@ -124,6 +170,9 @@ public class FileService : IFileService
 
         if (await VerifyCategories(uploadFileRequest.Categories) is { Succeeded: false } verifyCategoriesResult)
             return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
+
+        if (await VerifyAuthor(uploadFileRequest.AuthorId) is { Succeeded: false } verifyAuthorResult)
+            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Messages);
 
         if (await _unitOfWork.GetRepository<File>().GetByNameAsync(uploadFileRequest.Name) is { })
             return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, $"File with name {uploadFileRequest.Name} alredy exist");
@@ -141,15 +190,26 @@ public class FileService : IFileService
 
     private async Task<Result<ICollection<Category>>> VerifyCategories(string categoriesString)
     {
+        if (categoriesString is not { Length: > 0 })
+            return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.ServerError, "Categories are not specified");
+
         var categoryIdArray = categoriesString.Split(",").Select(c => Guid.Parse(c)).ToArray();
         var result = new List<Category>(categoryIdArray.Length);
         foreach (var categoryId in categoryIdArray)
         {
-            if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId) is not { } category)
-                return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.NotFound, $"Категория with ID {categoryId} not found");
+            if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, disableTracking: false) is not { } category)
+                return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {categoryId} not found");
             result.Add(category);
         }
         return await Result<ICollection<Category>>.SuccessAsync(result);
+    }
+
+    private async Task<Result<Author>> VerifyAuthor(Guid authorId)
+    {
+        if (await _unitOfWork.GetRepository<Author>().GetByIdAsync(authorId) is { } author)
+            return author;
+
+        return await Result<Author>.ErrorAsync((int)ResultCodes.NotFound, $"Author with ID {authorId} not found");
     }
 
     private async Task<Result<ICollection<Tag>>> GetTagsFromSeparatedStringAsync(string separator, string tagsSeparatedString)
@@ -158,19 +218,21 @@ public class FileService : IFileService
         var result = new List<Tag>(tagsStrings.Length);
         foreach (var tagString in tagsStrings)
         {
-            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString) is not { } tag)
+            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString, disableTracking: false) is not { } tag)
             {
                 tag = new Tag { Name = tagString.ToLower().Trim() };
                 await _unitOfWork.GetRepository<Tag>().AddAsync(tag);
             }
             result.Add(tag);
         }
-
         return result;
     }
 
     private async Task<Result<Guid>> WriteToDatabase(FileMetadata metadata, CancellationToken cancellationToken = default)
     {
+        if (await VerifyAuthor(metadata.AuthorId) is { Succeeded: false } verifyAuthorResult)
+            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Messages);
+
         var verifyContentTypeResult = await VerifyContentType(metadata.ContentTypeName);
         if (!verifyContentTypeResult.Succeeded)
             return await Result<Guid>.ErrorAsync(verifyContentTypeResult.Code, verifyContentTypeResult.Messages);
@@ -179,20 +241,18 @@ public class FileService : IFileService
         if (!verifyCategoriesResult.Succeeded)
             return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
 
-        // TODO: Change to AspNet Core User                
-        var author = (await _unitOfWork.GetRepository<Author>().GetAllAsync()).First();
-        if (author is null)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Author not found.");
-
         var file = _mapper.Map<File>(metadata);
 
         file.ContentTypeId = verifyContentTypeResult.Data.Id;
-        file.AuthorId = author.Id;
 
-        // TODO: Many to many error... Разобраться
-        // file.Categories = verifyCategoriesResult.Data ?? new List<Category>();
-        // if (!string.IsNullOrEmpty(metadata.Tags))
-        //     file.Tags = (await GetTagsFromSeparatedStringAsync(_separator, metadata.Tags)).Data;
+        if (verifyCategoriesResult.Data is { })
+            file.Categories = verifyCategoriesResult.Data;
+
+        if (metadata.Tags is { Length: > 0 })
+        {
+            var getTagsResult = await GetTagsFromSeparatedStringAsync(_separator, metadata.Tags);
+            file.Tags = getTagsResult.Data;
+        }
 
         await _unitOfWork.GetRepository<File>().AddAsync(file);
         if (await _unitOfWork.SaveContextAsync() > 0)
@@ -214,9 +274,6 @@ public class FileService : IFileService
             metadata.Size = fileWriteResult.Size;
             metadata.Hash = fileWriteResult.Hash;
 
-            var metadataJsonString = JsonSerializer.Serialize(metadata);
-            _ = await _fileStore.WriteAsync(GetMetadataPath(path), metadataJsonString, cancellationToken).ConfigureAwait(false);
-
             if (await _unitOfWork.GetRepository<File>().GetByHashAsync(metadata.Hash) is { } existingFile)
             {
                 string message = $"File with the same hash {existingFile.Hash} already exists with id: {existingFile.Id.ToString()}";
@@ -224,6 +281,9 @@ public class FileService : IFileService
                 _logger.LogError(message);
                 return await Result<FileMetadata>.ErrorAsync((int)ResultCodes.FileAlreadyExist, message);
             }
+
+            var metadataJsonString = JsonSerializer.Serialize(metadata);
+            _ = await _fileStore.WriteAsync(GetMetadataPath(path), metadataJsonString, cancellationToken).ConfigureAwait(false);
 
             return metadata;
         }
@@ -238,8 +298,11 @@ public class FileService : IFileService
     {
         try
         {
-            var deletePath = Path.Combine(_path, id.ToString());
-            _fileStore.Delete(deletePath);
+            var filePath = Path.Combine(_path, id.ToString());
+            _fileStore.Delete(filePath);
+
+            var metadataPath = GetMetadataPath(filePath);
+            _fileStore.Delete(metadataPath);
 
             return await Result<Guid>.SuccessAsync(id, $"File with ID {id} deleted");
         }

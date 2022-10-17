@@ -1,12 +1,9 @@
-using Microsoft.EntityFrameworkCore;
 using SciMaterials.Auth.Registrations;
-using SciMaterials.DAL.AUTH.Interfaces;
-using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.InitializationDb.Interfaces;
 using SciMaterials.Services.API.Configuration;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
+using SciMaterials.Services.Database.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,20 +25,7 @@ builder.Services.AddDbInitializer();
 
 var app = builder.Build();
 
-await using (var scope = app.Services.CreateAsyncScope())
-{
-    if (builder.Configuration["DbProvider"].Equals("SQLite"))
-    {
-        var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
-        await context.Database.MigrateAsync().ConfigureAwait(false);
-    }
-    
-    var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
-    await authDb.InitializeAsync(builder.Configuration);
-    
-    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-    await dbInitializer.InitializeDbAsync(removeAtStart: false, useDataSeeder: false).ConfigureAwait(false);
-}
+await app.UseInitializationDbAsync(builder.Configuration);
 
 
 if (!app.Environment.IsDevelopment())

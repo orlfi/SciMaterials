@@ -16,7 +16,7 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.9")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("CategoryFile", b =>
@@ -89,6 +89,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -123,6 +126,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -153,6 +159,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.Property<Guid?>("FileId")
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("char(36)");
 
@@ -180,6 +189,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.Property<string>("FileExtension")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -213,6 +225,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
 
                     b.Property<string>("Hash")
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -254,6 +269,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -284,6 +302,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.Property<Guid?>("FileId")
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("RatingValue")
                         .HasColumnType("int");
 
@@ -304,6 +325,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -318,6 +342,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 

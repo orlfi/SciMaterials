@@ -41,7 +41,8 @@ public class AuthorsController : ApiBaseController<CategoriesController>
     [HttpPost("Add")]
     public async Task<IActionResult> AddAsync([FromBody] AddAuthorRequest request)
     {
-        return Ok(await _authorService.AddAsync(request));
+        var result = await _authorService.AddAsync(request);
+        return Ok(result);
     }
 
     /// <summary> Edit a Author. </summary>
@@ -50,7 +51,8 @@ public class AuthorsController : ApiBaseController<CategoriesController>
     [HttpPost("Edit")]
     public async Task<IActionResult> EditAsync([FromBody] EditAuthorRequest request)
     {
-        return Ok(await _authorService.EditAsync(request));
+        var result = await _authorService.EditAsync(request);
+        return Ok(result);
     }
 
     /// <summary> Delete a Author. </summary>
@@ -59,6 +61,7 @@ public class AuthorsController : ApiBaseController<CategoriesController>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        return Ok(await _authorService.DeleteAsync(id));
+        var result = await _authorService.DeleteAsync(id);
+        return Ok(result);
     }
 }
