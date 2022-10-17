@@ -63,13 +63,6 @@ public class AuthenticationCache
         return true;
     }
 
-    private static ClaimsIdentity GenerateIdentity(UserInfo user) => new(new Claim[]
-    {
-        new(ClaimTypes.Name, user.UserName),
-        new(ClaimTypes.Email, user.Email),
-        new(ClaimTypes.Role, user.Authority),
-    }, "InMemoryScheme");
-
     public List<AuthorityGroup> AuthorityGroupsList()
     {
         return AuthorityGroups.Values.ToList();
@@ -149,4 +142,18 @@ public class AuthenticationCache
         Authority newOne = Authority.Create(authorityName);
         Authorities.TryAdd(newOne.Id, newOne);
     }
+    
+    public void RemoveAuthorityFromGroup(Guid groupId, string groupName, Guid authorityId)
+    {
+        if (!AuthorityGroups.TryGetValue(groupName, out var group) || !Authorities.TryGetValue(authorityId, out var authority)) return;
+
+        group.Authorities.Remove(authority);
+    }
+
+    private static ClaimsIdentity GenerateIdentity(UserInfo user) => new(new Claim[]
+    {
+        new(ClaimTypes.Name, user.UserName),
+        new(ClaimTypes.Email, user.Email),
+        new(ClaimTypes.Role, user.Authority),
+    }, "InMemoryScheme");
 }

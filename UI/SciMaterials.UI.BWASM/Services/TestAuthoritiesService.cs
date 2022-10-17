@@ -27,11 +27,13 @@ public class TestAuthoritiesService : IAuthoritiesService
     public void Delete(AuthorityGroup authorityGroup)
     {
         _authenticationCache.DeleteAuthorityGroup(authorityGroup.Id, authorityGroup.Name);
+        // TODO: update current user claims
     }
 
     public void Delete(Authority authority)
     {
         _authenticationCache.DeleteAuthority(authority.Id);
+        // TODO: update current user claims
     }
 
     public void AddAuthorityToGroup(AuthorityGroup group, Authority authority)
@@ -42,5 +44,11 @@ public class TestAuthoritiesService : IAuthoritiesService
     public void AddAuthority(string authorityName)
     {
         _authenticationCache.AddAuthority(authorityName);
+    }
+
+    public void RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority)
+    {
+        _authenticationCache.RemoveAuthorityFromGroup(group.Id, group.Name, authority.Id);
+        // TODO: update current user claims
     }
 }

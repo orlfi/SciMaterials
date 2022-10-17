@@ -84,6 +84,8 @@
 
 	private void RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority)
 	{
+		AuthoritiesService.RemoveAuthorityFromGroup(group, authority);
+		StateHasChanged();
 	}
 
 	private async Task AddAuthorityToGroup(AuthorityGroup group)
