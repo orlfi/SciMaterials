@@ -12,6 +12,7 @@ using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -101,7 +102,16 @@ public class FileService : IFileService
             return Result<FileStreamInfo>.Error((int)ResultCodes.NotFound, $"File with hash {hash} not found");
 
         var readFromPath = Path.Combine(_path, getFileResponse.Data.Id.ToString());
-        return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, _fileStore.OpenRead(readFromPath));
+
+        try
+        {
+            var fileStream = _fileStore.OpenRead(readFromPath);
+            return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, fileStream);
+        }
+        catch (Exception ex)
+        {
+            return await Result<FileStreamInfo>.ErrorAsync((int)ResultCodes.ServerError, "Download error");
+        }
     }
 
 
@@ -111,8 +121,17 @@ public class FileService : IFileService
             return Result<FileStreamInfo>.Error((int)ResultCodes.NotFound, $"File with ID {id} not found");
 
         var readFromPath = Path.Combine(_path, id.ToString());
-        return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, _fileStore.OpenRead(readFromPath));
+        try
+        {
+            var fileStream = _fileStore.OpenRead(readFromPath);
+            return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, fileStream);
+        }
+        catch (Exception ex)
+        {
+            return await Result<FileStreamInfo>.ErrorAsync((int)ResultCodes.ServerError, "Download error");
+        }
     }
+
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if ((await DeleteFileFromFileSystem(id, cancellationToken)) is { Succeeded: false } deleteFromFileSystemResult)
@@ -171,6 +190,9 @@ public class FileService : IFileService
 
     private async Task<Result<ICollection<Category>>> VerifyCategories(string categoriesString)
     {
+        if (categoriesString is not { Length: > 0 })
+            return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.ServerError, "Categories are not specified");
+
         var categoryIdArray = categoriesString.Split(",").Select(c => Guid.Parse(c)).ToArray();
         var result = new List<Category>(categoryIdArray.Length);
         foreach (var categoryId in categoryIdArray)

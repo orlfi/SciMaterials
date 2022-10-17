@@ -51,16 +51,24 @@ public class FilesApiController : ApiBaseController<FilesApiController>
     public async Task<IActionResult> DownloadByHash([FromRoute] string hash)
     {
         _logger.LogDebug("Get file by hash");
+
         var fileStreamInfoResult = await _fileService.DownloadByHash(hash);
-        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
+        if (fileStreamInfoResult is { Succeeded: true })
+            return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
+
+        return Ok(fileStreamInfoResult);
     }
 
     [HttpGet("DownloadById/{id}")]
     public async Task<IActionResult> DownloadByIdAsync([FromRoute] Guid id)
     {
         _logger.LogDebug("Download by Id");
+
         var fileStreamInfoResult = await _fileService.DownloadById(id);
-        return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
+        if (fileStreamInfoResult is { Succeeded: true })
+            return File(fileStreamInfoResult.Data.FileStream, fileStreamInfoResult.Data.ContentTypeName, fileStreamInfoResult.Data.FileName);
+
+        return Ok(fileStreamInfoResult);
     }
 
     [DisableFormValueModelBinding]
