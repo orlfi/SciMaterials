@@ -44,14 +44,14 @@ public class FileService : IFileService
 
     public async Task<Result<IEnumerable<GetFileResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var files = await _unitOfWork.GetRepository<File>().GetAllAsync();
+        var files = await _unitOfWork.GetRepository<File>().GetAllAsync(include: true);
         var result = _mapper.Map<List<GetFileResponse>>(files);
         return result;
     }
 
     public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        if ((await _unitOfWork.GetRepository<File>().GetByIdAsync(id)) is File file)
+        if ((await _unitOfWork.GetRepository<File>().GetByIdAsync(id, include: true)) is File file)
         {
             return _mapper.Map<GetFileResponse>(file);
         }
@@ -59,9 +59,9 @@ public class FileService : IFileService
         return Result<GetFileResponse>.Error((int)ResultCodes.NotFound, $"File with ID {id} not found");
     }
 
-    public async Task<Result<GetFileResponse>> GetByHashAsync(string hash)
+    public async Task<Result<GetFileResponse>> GetByHashAsync(string hash, CancellationToken cancellationToken = default)
     {
-        if ((await _unitOfWork.GetRepository<File>().GetByHashAsync(hash)) is File file)
+        if ((await _unitOfWork.GetRepository<File>().GetByHashAsync(hash, include: true)) is File file)
         {
             return _mapper.Map<GetFileResponse>(file);
         }

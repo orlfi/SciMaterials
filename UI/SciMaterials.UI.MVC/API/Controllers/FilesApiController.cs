@@ -30,6 +30,23 @@ public class FilesApiController : ApiBaseController<FilesApiController>
         return Ok(result);
     }
 
+    /// <summary> Get file metadata by Id. </summary>
+    /// <param name="id"> File Id. </param>
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        _logger.LogDebug("Get by id {id}", id);
+        var result = await _fileService.GetByIdAsync(id);
+        return Ok(result);
+    }
+
+    [HttpPut("Edit")]
+    public async Task<IActionResult> EditAsync([FromBody] EditFileRequest request)
+    {
+        var result = await _fileService.EditAsync(request);
+        return Ok(result);
+    }
+
     [HttpGet("DownloadByHash/{hash}")]
     public async Task<IActionResult> DownloadByHash([FromRoute] string hash)
     {
@@ -48,7 +65,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
 
     [DisableFormValueModelBinding]
     [HttpPost("Upload")]
-    public async Task<IActionResult> UploadAsync([FromQuery] UploadFileRequest fileInfo)
+    public async Task<IActionResult> UploadAsync()
     {
         _logger.LogDebug("Upload file");
         var request = HttpContext.Request;
@@ -69,8 +86,6 @@ public class FilesApiController : ApiBaseController<FilesApiController>
 
         var reader = new MultipartReader(boundaryValue, request.Body);
         var section = await reader.ReadNextSectionAsync();
-        var metadata = JsonSerializer.Serialize(fileInfo);
-        section.Headers.Add("Metadata", metadata);
 
         while (section != null)
         {

@@ -22,8 +22,11 @@ public class SendFileTest
 
     public async Task SendFileAsync(string path)
     {
-        var allCategories= await _unitOfWork.GetRepository<Category>().GetAllAsync();
+        var allCategories = await _unitOfWork.GetRepository<Category>().GetAllAsync();
         var categoryId = allCategories.First().Id;
+
+        var allAuthors = await _unitOfWork.GetRepository<Author>().GetAllAsync();
+        var authorId = allAuthors.First().Id;
 
         var fileInfo = new FileInfo(path);
         using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
@@ -37,7 +40,8 @@ public class SendFileTest
             Size = fileInfo.Length,
             Tags = "текст,книга,txt",
             Categories = categoryId.ToString(),
-            ContentTypeName = "text/plain"
+            ContentTypeName = "text/plain",
+            AuthorId = authorId
         };
 
         var result = await _filesClient.UploadAsync(fileStream, uploadFileRequest);
