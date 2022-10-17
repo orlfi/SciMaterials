@@ -129,7 +129,7 @@ public class AccountController : Controller
                         {
                             Succeeded = true,
                             Code = (int) ResultCodes.Ok,
-                            Message = Response.Headers.Authorization = "Bearer " + $"{sessionToken}"
+                            Message = Response.Headers.Authorization = $"Bearer {sessionToken}"
                         });
                     }
 
