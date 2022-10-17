@@ -16,7 +16,7 @@ public class TagService : ITagService
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
 
-    public TagService(ILogger<TagService> logger, IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper)
+    public TagService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<TagService> logger)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

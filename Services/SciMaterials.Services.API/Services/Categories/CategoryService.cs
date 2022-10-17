@@ -16,7 +16,7 @@ public class CategoryService : ICategoryService
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
 
-    public CategoryService(ILogger<CategoryService> logger, IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper)
+    public CategoryService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<CategoryService> logger)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

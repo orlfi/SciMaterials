@@ -16,7 +16,7 @@ public class ContentTypeService : IContentTypeService
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
 
-    public ContentTypeService(ILogger<ContentTypeService> logger, IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper)
+    public ContentTypeService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<ContentTypeService> logger)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

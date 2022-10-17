@@ -16,7 +16,7 @@ public class CommentService : ICommentService
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
 
-    public CommentService(ILogger<CommentService> logger, IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper)
+    public CommentService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<CommentService> logger)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

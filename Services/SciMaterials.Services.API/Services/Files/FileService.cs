@@ -25,11 +25,11 @@ public class FileService : IFileService
     private readonly string _separator;
 
     public FileService(
-        ILogger<FileService> logger,
         IApiSettings apiSettings,
         IFileStore fileStore,
         IUnitOfWork<SciMaterialsContext> unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<FileService> logger)
     {
         _logger = logger;
         _fileStore = fileStore;
@@ -67,6 +67,31 @@ public class FileService : IFileService
         }
 
         return await Result<GetFileResponse>.ErrorAsync((int)ResultCodes.NotFound, $"File with hash {hash} not found");
+    }
+
+
+    public async Task<Result<Guid>> EditAsync(EditFileRequest editFileRequest, CancellationToken cancellationToken = default)
+    {
+        var verifyCategoriesResult = await VerifyCategories(editFileRequest.Categories);
+        if (!verifyCategoriesResult.Succeeded)
+            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
+
+        var file = _mapper.Map<File>(editFileRequest);
+
+        if (verifyCategoriesResult.Data is { })
+            file.Categories = verifyCategoriesResult.Data;
+
+        if (editFileRequest.Tags is { Length: > 0 })
+        {
+            var getTagsResult = await GetTagsFromSeparatedStringAsync(_separator, editFileRequest.Tags);
+            file.Tags = getTagsResult.Data;
+        }
+
+        await _unitOfWork.GetRepository<File>().UpdateAsync(file);
+        if (await _unitOfWork.SaveContextAsync() > 0)
+            return await Result<Guid>.SuccessAsync(file.Id, "File updated");
+
+        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
 
     public async Task<Result<FileStreamInfo>> DownloadByHash(string hash)
@@ -118,6 +143,7 @@ public class FileService : IFileService
         }
         return writeToDatabaseResult;
     }
+
     private async Task<Result<Guid>> VerifyFileUploadRequest(UploadFileRequest uploadFileRequest)
     {
         if (await VerifyContentType(uploadFileRequest.ContentTypeName) is { Succeeded: false } verifyContentTypeResult)
@@ -125,6 +151,9 @@ public class FileService : IFileService
 
         if (await VerifyCategories(uploadFileRequest.Categories) is { Succeeded: false } verifyCategoriesResult)
             return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
+
+        if (await VerifyAuthor(uploadFileRequest.AuthorId) is { Succeeded: false } verifyAuthorResult)
+            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Messages);
 
         if (await _unitOfWork.GetRepository<File>().GetByNameAsync(uploadFileRequest.Name) is { })
             return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, $"File with name {uploadFileRequest.Name} alredy exist");
@@ -147,10 +176,18 @@ public class FileService : IFileService
         foreach (var categoryId in categoryIdArray)
         {
             if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, disableTracking: false) is not { } category)
-                return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.NotFound, $"Категория with ID {categoryId} not found");
+                return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {categoryId} not found");
             result.Add(category);
         }
         return await Result<ICollection<Category>>.SuccessAsync(result);
+    }
+
+    private async Task<Result<Author>> VerifyAuthor(Guid authorId)
+    {
+        if (await _unitOfWork.GetRepository<Author>().GetByIdAsync(authorId) is { } author)
+            return author;
+
+        return await Result<Author>.ErrorAsync((int)ResultCodes.NotFound, $"Author with ID {authorId} not found");
     }
 
     private async Task<Result<ICollection<Tag>>> GetTagsFromSeparatedStringAsync(string separator, string tagsSeparatedString)
@@ -159,19 +196,21 @@ public class FileService : IFileService
         var result = new List<Tag>(tagsStrings.Length);
         foreach (var tagString in tagsStrings)
         {
-            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString, disableTracking:false) is not { } tag)
+            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString, disableTracking: false) is not { } tag)
             {
                 tag = new Tag { Name = tagString.ToLower().Trim() };
                 await _unitOfWork.GetRepository<Tag>().AddAsync(tag);
             }
             result.Add(tag);
         }
-
         return result;
     }
 
     private async Task<Result<Guid>> WriteToDatabase(FileMetadata metadata, CancellationToken cancellationToken = default)
     {
+        if (await VerifyAuthor(metadata.AuthorId) is { Succeeded: false } verifyAuthorResult)
+            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Messages);
+
         var verifyContentTypeResult = await VerifyContentType(metadata.ContentTypeName);
         if (!verifyContentTypeResult.Succeeded)
             return await Result<Guid>.ErrorAsync(verifyContentTypeResult.Code, verifyContentTypeResult.Messages);
@@ -180,20 +219,14 @@ public class FileService : IFileService
         if (!verifyCategoriesResult.Succeeded)
             return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
 
-        // TODO: Change to AspNet Core User                
-        var author = (await _unitOfWork.GetRepository<Author>().GetAllAsync()).First();
-        if (author is null)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Author not found.");
-
         var file = _mapper.Map<File>(metadata);
 
         file.ContentTypeId = verifyContentTypeResult.Data.Id;
-        file.AuthorId = author.Id;
 
         if (verifyCategoriesResult.Data is { })
             file.Categories = verifyCategoriesResult.Data;
 
-        if (!string.IsNullOrEmpty(metadata.Tags))
+        if (metadata.Tags is { Length: > 0 })
         {
             var getTagsResult = await GetTagsFromSeparatedStringAsync(_separator, metadata.Tags);
             file.Tags = getTagsResult.Data;
