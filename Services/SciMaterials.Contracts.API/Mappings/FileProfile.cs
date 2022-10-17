@@ -16,7 +16,9 @@ public class FileProfile : Profile
             .ForMember(dest => dest.Categories, opt => opt.Ignore())
             .ForMember(dest => dest.Tags, opt => opt.Ignore())
             .ReverseMap();
-        //CreateMap<File, FileMetadata>().ReverseMap();
+        CreateMap<EditFileRequest, File>()
+            .ForMember(dest => dest.Categories, opt => opt.Ignore())
+            .ForMember(dest => dest.Tags, opt => opt.Ignore())
+            .ReverseMap();
     }
-
 }
