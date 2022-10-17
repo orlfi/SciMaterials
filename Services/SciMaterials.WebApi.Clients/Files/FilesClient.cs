@@ -13,7 +13,7 @@ public class FilesClient : IFilesClient
     private readonly ILogger<FilesClient> _logger;
     private readonly HttpClient _httpClient;
 
-    public FilesClient(ILogger<FilesClient> logger, HttpClient httpClient)
+    public FilesClient(HttpClient httpClient, ILogger<FilesClient> logger)
     {
         _logger = logger;
         _httpClient = httpClient;
