@@ -16,7 +16,7 @@ public class AuthorService : IAuthorService
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
 
-    public AuthorService(ILogger<AuthorService> logger, IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper)
+    public AuthorService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<AuthorService> logger)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;

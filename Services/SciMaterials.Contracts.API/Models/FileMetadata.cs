@@ -11,4 +11,5 @@ public class FileMetadata
     public string? Tags { get; set; }
     public string Categories { get; set; } = string.Empty;
     public string Hash { get; set; } = string.Empty;
+    public Guid AuthorId { get; set; }
 }

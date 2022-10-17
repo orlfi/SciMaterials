@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SciMaterials.Contracts.Database.Initialization;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.InitializationDb.Interfaces;
+using SciMaterials.DAL.Services;
 
-namespace SciMaterials.DAL.InitializationDb.Implementation;
+namespace SciMaterials.Services.Database.Services.DbInitialization;
 
 public class DbInitializer : IDbInitializer
 {
@@ -12,7 +13,7 @@ public class DbInitializer : IDbInitializer
 
     public DbInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
     {
-        _db     = db;
+        _db = db;
         _logger = logger;
     }
 
@@ -29,7 +30,7 @@ public class DbInitializer : IDbInitializer
         }
         catch (OperationCanceledException e)
         {
-            _logger.LogError(e,"Interrupting an operation when deleting a database");
+            _logger.LogError(e, "Interrupting an operation when deleting a database");
             throw;
         }
         catch (Exception e)
@@ -56,7 +57,7 @@ public class DbInitializer : IDbInitializer
                 await _db.Database.MigrateAsync(cancel).ConfigureAwait(false);
             }
 
-            if(useDataSeeder)
+            if (useDataSeeder)
                 await InitializeDbAsync(cancel).ConfigureAwait(false);
         }
         catch (OperationCanceledException e)
