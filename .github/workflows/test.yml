@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies...
-      run: dotnet restore SciMaterials/SciMaterials.sln
+      run: dotnet restore SciMaterials.sln
     - name: Build Project...
-      run: dotnet build --no-restore SciMaterials/SciMaterials.sln
+      run: dotnet build --no-restore SciMaterials.sln
     - name: Test Project...
-      run: dotnet test --no-build SciMaterials/SciMaterials.sln
+      run: dotnet test --no-build SciMaterials.sln
