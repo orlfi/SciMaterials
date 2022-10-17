@@ -25,11 +25,11 @@ public class FileService : IFileService
     private readonly string _separator;
 
     public FileService(
-        ILogger<FileService> logger,
         IApiSettings apiSettings,
         IFileStore fileStore,
         IUnitOfWork<SciMaterialsContext> unitOfWork,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<FileService> logger)
     {
         _logger = logger;
         _fileStore = fileStore;
@@ -159,7 +159,7 @@ public class FileService : IFileService
         var result = new List<Tag>(tagsStrings.Length);
         foreach (var tagString in tagsStrings)
         {
-            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString, disableTracking:false) is not { } tag)
+            if (await _unitOfWork.GetRepository<Tag>().GetByNameAsync(tagString, disableTracking: false) is not { } tag)
             {
                 tag = new Tag { Name = tagString.ToLower().Trim() };
                 await _unitOfWork.GetRepository<Tag>().AddAsync(tag);
