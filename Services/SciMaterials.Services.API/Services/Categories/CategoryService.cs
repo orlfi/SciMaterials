@@ -30,6 +30,11 @@ public class CategoryService : ICategoryService
         return result;
     }
 
+    public Task<PageResult<GetCategoryResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Result<GetCategoryResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is { } category)

@@ -30,6 +30,11 @@ public class TagService : ITagService
         return result;
     }
 
+    public Task<PageResult<GetTagResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Result<GetTagResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(id) is { } tag)

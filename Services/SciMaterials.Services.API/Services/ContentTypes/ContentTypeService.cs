@@ -30,6 +30,11 @@ public class ContentTypeService : IContentTypeService
         return result;
     }
 
+    public Task<PageResult<GetContentTypeResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Result<GetContentTypeResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if (await _unitOfWork.GetRepository<ContentType>().GetByIdAsync(id) is { } contentType)

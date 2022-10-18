@@ -30,6 +30,11 @@ public class AuthorService : IAuthorService
         return result;
     }
 
+    public Task<PageResult<GetAuthorResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<Result<GetAuthorResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         if (await _unitOfWork.GetRepository<Author>().GetByIdAsync(id) is { } author)

@@ -8,7 +8,7 @@ namespace SciMaterials.UI.MVC.API.Controllers;
 /// <summary> Service for working with authors. </summary>
 [ApiController]
 [Route(WebApiRoute.ContentTypes)]
-public class ContentTypesController : ApiBaseController<CategoriesController>
+public class ContentTypesController : ApiBaseController<ContentTypesController>
 {
     private readonly IContentTypeService _authorService;
 
@@ -17,7 +17,7 @@ public class ContentTypesController : ApiBaseController<CategoriesController>
         _authorService = authorService;
     }
 
-    /// <summary> Get All Categories. </summary>
+    /// <summary> Get All ContentTypes. </summary>
     /// <returns> Status 200 OK. </returns>
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
