@@ -16,17 +16,18 @@ public class AuthenticationCache
 
     public AuthenticationCache()
     {
-        Authority[] adminAuthorities =
+        Authority[] authorities =
         {
-            Authority.CanAccessUsers,
-            Authority.CanChangeUsersAuthority,
-            Authority.CanDeleteUsers
+            Authority.Create("CanAccessUsers"),
+            Authority.Create("CanChangeUsersAuthority"),
+            Authority.Create("CanDeleteUsers"),
+            Authority.Create("CanViewProfile")
         };
 
-        AuthorityGroup adminAuthorityGroup = AuthorityGroup.Create("Admin", adminAuthorities);
-        AuthorityGroup userAuthorityGroup = AuthorityGroup.Create("User");
+        AuthorityGroup adminAuthorityGroup = AuthorityGroup.Create("Admin", authorities[..2]);
+        AuthorityGroup userAuthorityGroup = AuthorityGroup.Create("User", authorities[3]);
 
-        Authorities = new(adminAuthorities.ToDictionary(e=>e.Id));
+        Authorities = new(authorities.ToDictionary(e=>e.Id));
         AuthorityGroups.TryAdd(adminAuthorityGroup.Name, adminAuthorityGroup);
         AuthorityGroups.TryAdd(userAuthorityGroup.Name, userAuthorityGroup);
 
@@ -160,6 +161,7 @@ public class AuthenticationCache
     {
         List<Claim> claims = new ()
         {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.UserName),
             new(ClaimTypes.Email, user.Email)
         };

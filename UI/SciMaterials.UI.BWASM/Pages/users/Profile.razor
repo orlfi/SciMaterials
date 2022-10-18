@@ -1,9 +1,30 @@
 ﻿@page "/profile"
+@using System.Security.Claims
 
-@attribute [Authorize(Policy = "NotHandled")]
+@attribute [Authorize(Policy = "CanViewProfile")]
 
 <h3>Profile</h3>
 
+<MudStack>
+	@foreach (var claim in _userClaims)
+	{
+		<MudPaper>
+			@claim.Type: @claim.Value
+		</MudPaper>
+	}
+</MudStack>
+
 @code {
+
+	[CascadingParameter]
+	public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
+	private List<Claim> _userClaims = null!;
+
+	protected override async Task OnInitializedAsync()
+	{
+		var state = await AuthenticationState;
+		_userClaims = state.User.Claims.ToList();
+	}
 
 }

@@ -14,6 +14,8 @@ public class TestAuthoritiesService : IAuthoritiesService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
+    private TestAuthenticationStateProvider ActualProvider => (TestAuthenticationStateProvider)_authenticationStateProvider;
+
     public List<AuthorityGroup> AuthoritiesGroupsList()
     {
         return _authenticationCache.AuthorityGroupsList();
@@ -24,21 +26,23 @@ public class TestAuthoritiesService : IAuthoritiesService
         return _authenticationCache.AuthoritiesList();
     }
 
-    public void Delete(AuthorityGroup authorityGroup)
+    public async Task Delete(AuthorityGroup authorityGroup)
     {
         _authenticationCache.DeleteAuthorityGroup(authorityGroup.Id, authorityGroup.Name);
-        // TODO: update current user claims
+        await ActualProvider.UpdateUserData();
     }
 
-    public void Delete(Authority authority)
+    public async Task Delete(Authority authority)
     {
         _authenticationCache.DeleteAuthority(authority.Id);
-        // TODO: update current user claims
+        await ActualProvider.UpdateUserData();
     }
 
-    public void AddAuthorityToGroup(AuthorityGroup group, Authority authority)
+    public async Task AddAuthorityToGroup(AuthorityGroup group, Authority authority)
     {
         _authenticationCache.AddAuthorityToGroup(group.Id, group.Name, authority.Id);
+
+        await ActualProvider.UpdateUserData();
     }
 
     public void AddAuthority(string authorityName)
@@ -46,10 +50,10 @@ public class TestAuthoritiesService : IAuthoritiesService
         _authenticationCache.AddAuthority(authorityName);
     }
 
-    public void RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority)
+    public async Task RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority)
     {
         _authenticationCache.RemoveAuthorityFromGroup(group.Id, group.Name, authority.Id);
-        // TODO: update current user claims
+        await ActualProvider.UpdateUserData();
     }
 
     public bool AuthoritiesExist(string[] authorities)

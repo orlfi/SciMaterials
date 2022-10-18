@@ -41,4 +41,14 @@ public class TestAuthenticationStateProvider : AuthenticationStateProvider
     {
         NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
     }
+
+    public async Task UpdateUserData()
+    {
+        var currentAuthenticationState = await GetAuthenticationStateAsync();
+        var identifier = currentAuthenticationState.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Guid.TryParse(identifier, out var userId) && _authenticationCache.TryGetIdentity(userId, out var identity))
+        {
+             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new(identity))));
+        }
+    }
 }

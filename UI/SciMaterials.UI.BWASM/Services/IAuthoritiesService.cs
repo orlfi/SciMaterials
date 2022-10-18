@@ -6,11 +6,11 @@ public interface IAuthoritiesService
 {
     List<AuthorityGroup> AuthoritiesGroupsList();
     List<Authority> AuthoritiesList();
-    void Delete(AuthorityGroup authorityGroup);
-    void Delete(Authority authority);
-    void AddAuthorityToGroup(AuthorityGroup group, Authority authority);
+    Task Delete(AuthorityGroup authorityGroup);
+    Task Delete(Authority authority);
+    Task AddAuthorityToGroup(AuthorityGroup group, Authority authority);
     void AddAuthority(string authorityName);
-    void RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority);
+    Task RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority);
     bool AuthoritiesExist(string[] authorities);
     void AddAuthorityGroup(string authorityName);
 }
