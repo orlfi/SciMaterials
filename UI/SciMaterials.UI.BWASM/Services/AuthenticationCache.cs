@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 using SciMaterials.Contracts.Result;
 using SciMaterials.UI.BWASM.Models;
@@ -8,11 +7,10 @@ namespace SciMaterials.UI.BWASM.Services;
 
 public class AuthenticationCache
 {
-    private ConcurrentDictionary<Guid, Authority> Authorities { get; }
-    private ConcurrentDictionary<string, AuthorityGroup> AuthorityGroups { get; } = new();
-    private ConcurrentDictionary<Guid, UserInfo> Users { get; } = new();
-
-    // On that girls and guys maybe required lock
+    private Dictionary<Guid, Authority> Authorities { get; }
+    private Dictionary<string, AuthorityGroup> AuthorityGroups { get; } = new();
+    private Dictionary<Guid, UserInfo> Users { get; } = new();
+    
     private HashSet<string> AuthoritiesNames { get; }
     private HashSet<string> AuthorityGroupsNames { get; }
 
@@ -72,12 +70,12 @@ public class AuthenticationCache
 
     public List<AuthorityGroup> AuthorityGroupsList()
     {
-        return AuthorityGroups.Values.ToList();
+        return AuthorityGroups.Values.Select(x=>AuthorityGroup.Create(x)).ToList();
     }
 
     public List<UserInfo> UsersList()
     {
-        return Users.Values.ToList();
+        return Users.Values.Select(x=>UserInfo.Create(x)).ToList();
     }
 
     public Result ChangeAuthorityGroup(Guid userId, Guid authorityGroupId)
@@ -100,7 +98,7 @@ public class AuthenticationCache
 
     public Result DeleteUser(Guid userId)
     {
-        return !Users.TryRemove(userId, out _) 
+        return !Users.Remove(userId, out _) 
             ? Result.Error(243) 
             : Result.Success();
     }
@@ -112,7 +110,7 @@ public class AuthenticationCache
 
     public void DeleteAuthority(Guid authorityId)
     {
-        if (!Authorities.TryRemove(authorityId, out var existedAuthority)) return;
+        if (!Authorities.Remove(authorityId, out var existedAuthority)) return;
         AuthoritiesNames.Remove(existedAuthority.Name);
         foreach (var authorityGroup in AuthorityGroups.Values)
         {
@@ -123,7 +121,7 @@ public class AuthenticationCache
     public void DeleteAuthorityGroup(Guid authorityGroupId, string authorityGroupName)
     {
 
-        if(authorityGroupName is "User" or "Admin" || !AuthorityGroups.TryRemove(authorityGroupName, out _)) return;
+        if(authorityGroupName is "User" or "Admin" || !AuthorityGroups.Remove(authorityGroupName, out _)) return;
         AuthorityGroupsNames.Remove(authorityGroupName);
         var userGroup = AuthorityGroups["User"];
 

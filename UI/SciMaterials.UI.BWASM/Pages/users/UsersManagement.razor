@@ -30,12 +30,6 @@
 		_users = AccountsService.UsersList();
 	}
 
-	protected override void OnAfterRender(bool firstRender)
-    {
-		_users.Clear();
-		_users.AddRange(AccountsService.UsersList());
-	}
-
 	private async Task ChangeAuthority(UserInfo context)
 	{
 		string LabelSelection(AuthorityGroup authority) => authority.Name;
@@ -50,12 +44,18 @@
 		var result = await reference.Result;
 		if (result.Cancelled || result.Data is not Guid authorityId) return;
 		AccountsService.ChangeAuthority(context.Id, authorityId);
-		StateHasChanged();
+		RefreshData();
 	}
 
 	private void Delete(UserInfo context)
 	{
 		AccountsService.Delete(context.Id);
+		RefreshData();
+	}
+
+	private void RefreshData()
+	{
+		_users = AccountsService.UsersList();
 		StateHasChanged();
 	}
 }

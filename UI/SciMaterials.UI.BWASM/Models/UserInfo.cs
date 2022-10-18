@@ -20,4 +20,15 @@ public class UserInfo
             Authority = authority.Name,
             AuthorityGroupId = authority.Id
         };
+
+    public static UserInfo Create(UserInfo origin) =>
+        new()
+        {
+            Id = origin.Id,
+            UserName = origin.UserName,
+            Email = origin.Email,
+            Password = origin.Password,
+            Authority = origin.Authority,
+            AuthorityGroupId = origin.AuthorityGroupId
+        };
 }

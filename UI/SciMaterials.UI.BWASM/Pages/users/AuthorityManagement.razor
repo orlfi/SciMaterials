@@ -60,16 +60,10 @@
 		_authorities = AuthoritiesService.AuthoritiesList();
 	}
 
-	protected override void OnAfterRender(bool firstRender)
-	{
-		_authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
-		_authorities = AuthoritiesService.AuthoritiesList();
-	}
-
 	private void Delete(Authority authority)
 	{
 		AuthoritiesService.Delete(authority);
-		StateHasChanged();
+		RefreshData();
 	}
 
 	private async Task AddAuthority()
@@ -80,13 +74,13 @@
 		if (result.Cancelled || result.Data is not string authorityName) return;
 
 		AuthoritiesService.AddAuthority(authorityName);
-		StateHasChanged();
+		RefreshData();
 	}
 
 	private void RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority)
 	{
 		AuthoritiesService.RemoveAuthorityFromGroup(group, authority);
-		StateHasChanged();
+		RefreshData();
 	}
 
 	private async Task AddAuthorityToGroup(AuthorityGroup group)
@@ -103,13 +97,13 @@
 
 		if (result.Cancelled || result.Data is not Authority selected) return;
 		AuthoritiesService.AddAuthorityToGroup(group, selected);
-		StateHasChanged();
+		RefreshData();
 	}
 
 	private void Delete(AuthorityGroup group)
 	{
 		AuthoritiesService.Delete(group);
-		StateHasChanged();
+		RefreshData();
 	}
 
 	private async Task AddAuthorityGroup()
@@ -119,7 +113,13 @@
 		if (result.Cancelled || result.Data is not string authorityName) return;
 
 		AuthoritiesService.AddAuthorityGroup(authorityName);
-		StateHasChanged();
+		RefreshData();
 	}
 
+	private void RefreshData()
+	{
+		_authorityGroups = AuthoritiesService.AuthoritiesGroupsList();
+		_authorities = AuthoritiesService.AuthoritiesList();
+		StateHasChanged();
+	}
 }
