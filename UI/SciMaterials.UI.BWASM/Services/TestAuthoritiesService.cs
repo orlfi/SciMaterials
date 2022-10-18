@@ -52,5 +52,13 @@ public class TestAuthoritiesService : IAuthoritiesService
         // TODO: update current user claims
     }
 
-    public bool AuthoritiesExist(string[] authorities) => _authenticationCache.AuthoritiesExist(authorities);
+    public bool AuthoritiesExist(string[] authorities)
+    {
+        return _authenticationCache.AuthoritiesExist(authorities);
+    }
+
+    public void AddAuthorityGroup(string authorityName)
+    {
+        _authenticationCache.AddAuthorityGroup(authorityName);
+    }
 }

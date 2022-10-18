@@ -179,6 +179,13 @@ public class AuthenticationCache
     {
         return authorities.All(x=>AuthorityGroupsNames.Contains(x) || AuthoritiesNames.Contains(x));
     }
+    
+    public void AddAuthorityGroup(string authorityName)
+    {
+        if (AuthorityGroups.Values.FirstOrDefault(x => x.Name == authorityName) is not null) return;
 
-    // TODO: add authority group
+        AuthorityGroup newOne = AuthorityGroup.Create(authorityName);
+        if (AuthorityGroups.TryAdd(newOne.Name, newOne))
+            AuthoritiesNames.Add(authorityName);
+    }
 }

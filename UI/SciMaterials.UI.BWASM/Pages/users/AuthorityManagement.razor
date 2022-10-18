@@ -30,6 +30,7 @@
 				</MudStack>
 			</MudPaper>
 		}
+		<MudButton StartIcon="@Icons.Filled.Add" OnClick="AddAuthorityGroup">Add Group</MudButton>
 	</MudItem>
 
 	@*Authorities*@
@@ -108,6 +109,16 @@
 	private void Delete(AuthorityGroup group)
 	{
 		AuthoritiesService.Delete(group);
+		StateHasChanged();
+	}
+
+	private async Task AddAuthorityGroup()
+	{
+		var reference = DialogService.Show<InputDialog>("With what name?");
+		var result = await reference.Result;
+		if (result.Cancelled || result.Data is not string authorityName) return;
+
+		AuthoritiesService.AddAuthorityGroup(authorityName);
 		StateHasChanged();
 	}
 
