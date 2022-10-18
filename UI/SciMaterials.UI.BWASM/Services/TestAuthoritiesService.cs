@@ -51,4 +51,6 @@ public class TestAuthoritiesService : IAuthoritiesService
         _authenticationCache.RemoveAuthorityFromGroup(group.Id, group.Name, authority.Id);
         // TODO: update current user claims
     }
+
+    public bool AuthoritiesExist(string[] authorities) => _authenticationCache.AuthoritiesExist(authorities);
 }

@@ -1,5 +1,5 @@
 ﻿@page "/users"
-@attribute [Authorize]
+@attribute [Authorize(Policy = "Admin, CanAccessUsers")]
 @inject IAccountsService AccountsService
 @inject IDialogService DialogService
 

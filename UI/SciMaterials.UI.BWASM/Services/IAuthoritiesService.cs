@@ -11,4 +11,5 @@ public interface IAuthoritiesService
     void AddAuthorityToGroup(AuthorityGroup group, Authority authority);
     void AddAuthority(string authorityName);
     void RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority);
+    bool AuthoritiesExist(string[] authorities);
 }

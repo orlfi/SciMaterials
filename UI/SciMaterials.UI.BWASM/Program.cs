@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -26,7 +27,9 @@ builder.Services
     .AddAuthorizationCore()
     .AddScoped<IAuthenticationService, TestAuthenticationService>()
     .AddScoped<AuthenticationStateProvider, TestAuthenticationStateProvider>()
-    .AddSingleton<AuthenticationCache>();
+    .AddSingleton<AuthenticationCache>()
+    .AddSingleton<IAuthorizationHandler, AuthorityHandler>()
+    .AddSingleton<IAuthorizationPolicyProvider, AuthorityPolicyProvider>();
 
 // Background
 builder.Services
