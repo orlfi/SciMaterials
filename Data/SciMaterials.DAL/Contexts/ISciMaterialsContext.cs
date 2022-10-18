@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using SciMaterials.DAL.Models;
 
 namespace SciMaterials.DAL.Contexts;
@@ -14,4 +15,7 @@ public interface ISciMaterialsContext
     DbSet<Tag> Tags { get; set; }
     DbSet<Author> Authors { get; set; }
     DbSet<User> Users { get; set; }
+    DbSet<T> Set<T>() where T :class;
+    EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity:class;
+    
 }

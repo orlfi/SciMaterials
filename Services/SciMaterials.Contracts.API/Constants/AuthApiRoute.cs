@@ -6,6 +6,11 @@ namespace SciMaterials.Contracts.API.Constants;
 public static class AuthApiRoute
 {
     /// <summary>
+    /// Uri адрес сервиса
+    /// </summary>
+    public const string AuthApiUri = "https://localhost:7183";
+    
+    /// <summary>
     /// Контроллер аутентификации
     /// </summary>
     public const string AuthControllerName = "auth/";

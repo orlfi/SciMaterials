@@ -1,9 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SciMaterials.Auth.Registrations;
+using SciMaterials.AUTH.Extensions;
 
 namespace SciMaterials.Auth;
 
@@ -26,33 +25,43 @@ public class Program
                 Title = "Сервис аутентификации SciMaterials",
                 Version = "v1.1",
             });
-            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Description = "JWT Authorization header using the Bearer scheme(Example: 'Bearer 12345abcdef')",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Scheme = "Bearer"
             });
-            opt.AddSecurityRequirement(new OpenApiSecurityRequirement()
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
-                    new OpenApiSecurityScheme()
+                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference()
+                        Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = "Bearer"
                         }
-                    }, 
+                    },
                     Array.Empty<string>()
                 }
             });
         });
-
-        builder.Services.RegisterAuthUtils();
         
+        builder.Services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.WithOrigins("http://localhost:5185")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
+
         builder.Services.AddAuthApiServices(builder.Configuration);
+        
+        builder.Services.AddAuthUtils();
         
         builder.Services.AddHttpContextAccessor();
         
@@ -69,11 +78,12 @@ public class Program
             x.SaveToken = true;
             x.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
                     builder.Configuration.GetSection("AuthApiSettings:SecretTokenKey:key").Value)),
                 ValidateIssuer = false,
                 ValidateAudience = false,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
                 ClockSkew = TimeSpan.Zero
             };
         });
@@ -95,8 +105,10 @@ public class Program
         
         app.UseAuthorization();
 
-        app.MapControllers();
+        app.UseCors();
 
+        app.MapControllers();
+        
         await app.RunAsync();
     }
 }

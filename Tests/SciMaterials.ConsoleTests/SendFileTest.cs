@@ -1,43 +1,47 @@
-using System.Text.Json;
-using Microsoft.Extensions.DependencyInjection;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.UnitOfWork;
+using SciMaterials.WebApi.Clients.Files;
 
 namespace SciMaterials.ConsoleTests;
 
 public class SendFileTest
 {
-    private readonly FilesClient _filesClient;
-    private readonly IServiceProvider _services;
+    private readonly IFilesClient _FilesClient;
+    private readonly IUnitOfWork<SciMaterialsContext> _UnitOfWork;
 
-    public SendFileTest(HttpClient httpClient, IServiceProvider services)
+    public SendFileTest(IFilesClient FilesClient, IUnitOfWork<SciMaterialsContext> UnitOfWork)
     {
-        _filesClient = new FilesClient(httpClient);
-        _services = services;
+        _FilesClient = FilesClient;
+        _UnitOfWork = UnitOfWork;
     }
 
-    public async Task SendFile(string path)
+    public async Task SendFileAsync(string path)
     {
-        Guid categoryId;
-        await using (var scope = _services.CreateAsyncScope())
+        var all_categories = await _UnitOfWork.GetRepository<Category>().GetAllAsync();
+        var category_id = all_categories.First().Id;
+
+        var all_authors = await _UnitOfWork.GetRepository<Author>().GetAllAsync();
+        var author_id = all_authors.First().Id;
+
+        var file_info = new FileInfo(path);
+        using var file_stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+        // var fileName = Path.GetFileNameWithoutExtension(fileInfo.Name) + ".ee";
+        var file_name = file_info.Name;
+        var upload_file_request = new UploadFileRequest
         {
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<SciMaterialsContext>>();
-            categoryId = (await unitOfWork.GetRepository<Category>().GetAllAsync()).First().Id;
-        }
-        var fileInfo = new FileInfo(path);
-        var uploadFileRequest = new UploadFileRequest
-        {
-            Name = fileInfo.Name,
-            Title = "Файл " + fileInfo.Name,
-            Description = "Содержит файл " + fileInfo.Name,
-            Size = fileInfo.Length,
+            Name = file_name,
+            Title = "Файл " + file_info.Name,
+            Description = "Содержит файл " + file_info.Name,
+            Size = file_info.Length,
             Tags = "текст,книга,txt",
-            Categories = categoryId.ToString(),
-            ContentTypeName = "text/plain"
+            Categories = category_id.ToString(),
+            ContentTypeName = "text/plain",
+            AuthorId = author_id
         };
-        var metadataJson = JsonSerializer.Serialize(uploadFileRequest);
-        await _filesClient.UploadAsync(path, metadataJson);
+
+        var result = await _FilesClient.UploadAsync(file_stream, upload_file_request);
+        Console.WriteLine(string.Join(";", result.Messages));
     }
 }

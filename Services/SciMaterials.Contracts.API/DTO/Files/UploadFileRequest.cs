@@ -9,4 +9,5 @@ public class UploadFileRequest
     public string ContentTypeName { get; set; } = string.Empty;
     public string? Tags { get; set; }
     public string Categories { get; set; } = string.Empty;
+    public Guid AuthorId { get; set; }
 }

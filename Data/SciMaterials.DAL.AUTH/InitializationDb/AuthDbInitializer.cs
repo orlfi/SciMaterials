@@ -2,37 +2,41 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using SciMaterials.Contracts.Auth;
 using SciMaterials.DAL.AUTH.Context;
-using SciMaterials.DAL.AUTH.Interfaces;
 
 namespace SciMaterials.DAL.AUTH.InitializationDb;
 
 public class AuthDbInitializer : IAuthDbInitializer
 {
-    private readonly ILogger<AuthDbContext> _logger;
-    private readonly AuthDbContext _dbContext;
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly ILogger<AuthDbContext> _Logger;
+    private readonly AuthDbContext _DBContext;
+    private readonly UserManager<IdentityUser> _UserManager;
+    private readonly RoleManager<IdentityRole> _RoleManager;
+    private readonly IConfiguration _Configuration;
 
     public AuthDbInitializer(
-        ILogger<AuthDbContext> logger,
-        AuthDbContext dbContext, 
-        UserManager<IdentityUser> userManager, 
-        RoleManager<IdentityRole> roleManager)
+        ILogger<AuthDbContext> Logger,
+        AuthDbContext DBContext, 
+        UserManager<IdentityUser> UserManager, 
+        RoleManager<IdentityRole> RoleManager, 
+        IConfiguration Configuration)
     {
-        _logger = logger;
-        _dbContext = dbContext;
-        _userManager = userManager;
-        _roleManager = roleManager;
+        _Logger = Logger;
+        _DBContext = DBContext;
+        _UserManager = UserManager;
+        _RoleManager = RoleManager;
+        _Configuration = Configuration;
     }
     
-    public async Task InitializeAsync(
-        IConfiguration configuration, 
-        CancellationToken cancellationToken = default)
+    public async Task InitializeAsync(CancellationToken CancellationToken = default)
     {
-        _logger.LogInformation("Initialize auth database start");
-        await _dbContext.Database.MigrateAsync(cancellationToken);
-        await AuthRolesInitializer.InitializeAsync(_userManager, _roleManager, configuration);
-        _logger.LogInformation("Initialize auth database stop");
+        _Logger.Log(LogLevel.Information,"Initialize auth database start {Time}", DateTime.Now);
+
+        await _DBContext.Database.MigrateAsync(CancellationToken);
+
+        await AuthRolesInitializer.InitializeAsync(_UserManager, _RoleManager, _Configuration);
+
+        _Logger.Log(LogLevel.Information,"Initialize auth database stop {Time}", DateTime.Now);
     }
 }

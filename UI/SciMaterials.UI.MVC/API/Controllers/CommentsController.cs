@@ -41,7 +41,8 @@ public class CommentsController : ApiBaseController<CategoriesController>
     [HttpPost("Add")]
     public async Task<IActionResult> AddAsync([FromBody] AddCommentRequest request)
     {
-        return Ok(await _commentService.AddAsync(request));
+        var result = await _commentService.AddAsync(request);
+        return Ok(result);
     }
 
     /// <summary> Edit a Comment. </summary>
@@ -50,7 +51,8 @@ public class CommentsController : ApiBaseController<CategoriesController>
     [HttpPost("Edit")]
     public async Task<IActionResult> EditAsync([FromBody] EditCommentRequest request)
     {
-        return Ok(await _commentService.EditAsync(request));
+        var result = await _commentService.EditAsync(request);
+        return Ok(result);
     }
 
     /// <summary> Delete a Comment. </summary>
@@ -59,6 +61,7 @@ public class CommentsController : ApiBaseController<CategoriesController>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        return Ok(await _commentService.DeleteAsync(id));
+        var result = await _commentService.DeleteAsync(id);
+        return Ok(result);
     }
 }

@@ -127,14 +127,16 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll"/>
-    public List<Rating>? GetAll(bool DisableTracking = true)
+    public List<Rating>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings
-                .Include(r => r.File)
+        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
+
+        if (include)
+            query = query.Include(r => r.File)
                 .Include(r => r.User)
                 .Include(r => r.FileGroup);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.ToList();
@@ -142,14 +144,16 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
-    public async Task<List<Rating>?> GetAllAsync(bool DisableTracking = true)
+    public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings
-                .Include(r => r.File)
+        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
+
+        if (include)
+            query = query.Include(r => r.File)
                 .Include(r => r.User)
                 .Include(r => r.FileGroup);
 
-        if (DisableTracking)
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.ToListAsync();
@@ -157,15 +161,17 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
-    public Rating? GetById(Guid id, bool DisableTracking = true)
+    public Rating? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings
-                .Where(c => c.Id == id)
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup);
+                .Where(c => c.Id == id && !c.IsDeleted);
 
-        if (DisableTracking)
+        if (include)
+            query = query.Include(r => r.File)
+            .Include(r => r.User)
+            .Include(r => r.FileGroup);
+
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -173,15 +179,17 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
-    public async Task<Rating?> GetByIdAsync(Guid id, bool DisableTracking = true)
+    public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings
-                .Where(c => c.Id == id)
-                .Include(r => r.File)
-                .Include(r => r.User)
-                .Include(r => r.FileGroup);
+                .Where(c => c.Id == id && !c.IsDeleted);
 
-        if (DisableTracking)
+        if (include)
+            query = query.Include(r => r.File)
+            .Include(r => r.User)
+            .Include(r => r.FileGroup);
+
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
@@ -237,19 +245,19 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Rating?> GetByNameAsync(string name, bool DisableTracking = true) => null;
+    public async Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
-    public Rating? GetByName(string name, bool DisableTracking = true) => null;
+    public Rating? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Rating?> GetByHashAsync(string hash, bool DisableTracking = true) => null;
+    public async Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
-    public Rating? GetByHash(string hash, bool DisableTracking = true) => null;
+    public Rating? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
