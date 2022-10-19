@@ -124,7 +124,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<Author>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
@@ -142,7 +142,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<Author>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
@@ -160,7 +160,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public Author? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -179,7 +179,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<Author?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -246,7 +246,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<Author?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -265,7 +265,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public Author? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -284,11 +284,11 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Author?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<Author?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public Author? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
@@ -354,15 +354,17 @@ public class AuthorRepository : IAuthorRepository
     /// <returns> Обновленный экземпляр. </returns>
     private Author UpdateCurrentEntity(Author sourse, Author recipient)
     {
-        recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
-        recipient.Surname = sourse.Surname;
-        recipient.Comments = sourse.Comments;
-        recipient.Phone = sourse.Phone;
+        recipient.IsDeleted = sourse.IsDeleted;
+
         recipient.Email = sourse.Email;
-        recipient.Ratings = sourse.Ratings;
-        recipient.User = sourse.User;
         recipient.UserId = sourse.UserId;
+        recipient.Phone = sourse.Phone;
+        recipient.Surname = sourse.Surname;
+        recipient.User = sourse.User;
+        recipient.Comments = sourse.Comments;
+        recipient.Files = sourse.Files;
+        recipient.Ratings = sourse.Ratings;
 
         return recipient;
     }

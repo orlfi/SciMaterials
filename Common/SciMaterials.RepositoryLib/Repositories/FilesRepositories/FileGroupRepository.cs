@@ -125,7 +125,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<FileGroup>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
@@ -145,7 +145,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<FileGroup>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
@@ -165,7 +165,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public FileGroup? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -186,7 +186,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<FileGroup?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -257,7 +257,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<FileGroup?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -278,7 +278,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public FileGroup? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -299,11 +299,11 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<FileGroup?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<FileGroup?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public FileGroup? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
@@ -366,7 +366,6 @@ public class FileGroupRepository : IFileGroupRepository
 
 
 
-
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
@@ -374,6 +373,7 @@ public class FileGroupRepository : IFileGroupRepository
     private FileGroup UpdateCurrentEntity(FileGroup sourse, FileGroup recipient)
     {
         recipient.Name = sourse.Name;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         recipient.Title = sourse.Title;
         recipient.Description = sourse.Description;

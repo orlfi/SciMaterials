@@ -126,7 +126,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<Rating>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
@@ -143,7 +143,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
@@ -160,7 +160,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public Rating? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings
@@ -178,7 +178,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings
@@ -244,19 +244,19 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
+    public Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public Rating? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public Rating? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
@@ -320,13 +320,14 @@ public class RatingRepository : IRatingRepository
     /// <returns> Обновленный экземпляр. </returns>
     private Rating UpdateCurrentEntity(Rating sourse, Rating recipient)
     {
-        recipient.File = sourse.File;
         recipient.FileId = sourse.FileId;
-        recipient.FileGroup = sourse.FileGroup;
         recipient.FileGroupId = sourse.FileGroupId;
-        recipient.RatingValue = sourse.RatingValue;
-        recipient.User = sourse.User;
         recipient.AuthorId = sourse.AuthorId;
+        recipient.RatingValue = sourse.RatingValue;
+        recipient.File = sourse.File;
+        recipient.FileGroup = sourse.FileGroup;
+        recipient.User = sourse.User;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         return recipient;
     }

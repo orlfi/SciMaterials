@@ -125,7 +125,7 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<ContentType>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes.Where(c => !c.IsDeleted);
@@ -140,7 +140,7 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<ContentType>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes.Where(c => !c.IsDeleted);
@@ -155,7 +155,7 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public ContentType? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
@@ -171,7 +171,7 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<ContentType?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
@@ -235,7 +235,7 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<ContentType?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
@@ -251,7 +251,7 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public ContentType? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<ContentType> query = _context.ContentTypes
@@ -267,11 +267,11 @@ public class ContentTypeRepository : IContentTypeRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<ContentType?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<ContentType?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public ContentType? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
@@ -333,6 +333,7 @@ public class ContentTypeRepository : IContentTypeRepository
         recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
         recipient.FileExtension = sourse.FileExtension;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         return recipient;
     }
