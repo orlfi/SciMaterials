@@ -274,6 +274,56 @@ public class ContentTypeRepository : IContentTypeRepository
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
     public ContentType? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<ContentType>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<ContentType> query = new List<ContentType>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(ct => ct.Files);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<ContentType>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<ContentType> query = new List<ContentType>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(ct => ct.Files);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>

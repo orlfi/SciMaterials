@@ -323,6 +323,69 @@ public class FileRepository : IFileRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<File>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<File> query = new List<File>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<File>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<File> query = new List<File>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
+
+
+    ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
     public File? GetByHash(string hash, bool disableTracking = true, bool include = false)
     {
