@@ -518,12 +518,12 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
 
     [Fact]
     [Trait("CategoryRepositoryTests", nameof(Category))]
-    public async void GetByHashAsync_ItShould_null()
+    public void GetByHashAsync_ItShould_null()
     {
         //arrange
 
         //act
-        var categoryDb = await _categoryRepository.GetByHashAsync(String.Empty);
+        var categoryDb = _categoryRepository.GetByHashAsync(String.Empty);
 
         //assert
         Assert.Null(categoryDb);
