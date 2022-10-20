@@ -1,18 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
+using SciMaterials.DAL.Models;
 using SciMaterials.DAL.Repositories.CommentsRepositories;
 using SciMaterials.Data.UnitOfWork;
 using SciMaterials.RepositoryTests.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SciMaterials.DAL.Models;
-using Microsoft.EntityFrameworkCore;
 using SciMaterials.RepositoryTests.Helpers.ModelsHelpers;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SciMaterials.RepositoryTests.Tests;
 
@@ -41,14 +34,14 @@ public class CommentRepositoryTests
         const EntityState expecedState = EntityState.Detached;
 
         //act
-        var categories = _comentRepository.GetAll();
+        var comments = _comentRepository.GetAll();
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         //assert
         Assert.Equal(expected, count);
-        Assert.Equal(expecedState, _context.Entry(categories![0]).State);
+        Assert.Equal(expecedState, _context.Entry(comments![0]).State);
     }
 
     [Fact]
@@ -60,14 +53,14 @@ public class CommentRepositoryTests
         const EntityState expecedSstate = EntityState.Unchanged;
 
         //act
-        var categories = _comentRepository.GetAll(false);
+        var comments = _comentRepository.GetAll(false);
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         //assert
         Assert.Equal(expected, count);
-        Assert.Equal(expecedSstate, _context.Entry(categories![0]).State);
+        Assert.Equal(expecedSstate, _context.Entry(comments![0]).State);
     }
 
     #endregion
@@ -83,14 +76,14 @@ public class CommentRepositoryTests
         const EntityState expecedSstate = EntityState.Detached;
 
         //act
-        var categories = await _comentRepository.GetAllAsync();
+        var comments = await _comentRepository.GetAllAsync();
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         //assert
         Assert.Equal(expected, count);
-        Assert.Equal(expecedSstate, _context.Entry(categories![0]).State);
+        Assert.Equal(expecedSstate, _context.Entry(comments![0]).State);
     }
 
     [Fact]
@@ -102,14 +95,14 @@ public class CommentRepositoryTests
         const EntityState expecedSstate = EntityState.Unchanged;
 
         //act
-        var categories = await _comentRepository.GetAllAsync(false);
+        var comments = await _comentRepository.GetAllAsync(false);
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         //assert
         Assert.Equal(expected, count);
-        Assert.Equal(expecedSstate, _context.Entry(categories![0]).State);
+        Assert.Equal(expecedSstate, _context.Entry(comments![0]).State);
     }
 
     #endregion
@@ -128,10 +121,10 @@ public class CommentRepositoryTests
         await _comentRepository.AddAsync(comment);
         await _context.SaveChangesAsync();
 
-        var categories = await _comentRepository.GetAllAsync();
+        var comments = await _comentRepository.GetAllAsync();
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         var commentDb = await _comentRepository.GetByIdAsync(comment.Id, include: true);
 
@@ -161,10 +154,10 @@ public class CommentRepositoryTests
         _comentRepository.Add(comment);
         _context.SaveChanges();
 
-        var categories = _comentRepository.GetAll();
+        var comments = _comentRepository.GetAll();
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         var commentDb = _comentRepository.GetById(comment.Id, include: true);
 
@@ -200,10 +193,10 @@ public class CommentRepositoryTests
         await _comentRepository.DeleteAsync(comment.Id);
         await _context.SaveChangesAsync();
 
-        var categories = await _comentRepository.GetAllAsync();
+        var comments = await _comentRepository.GetAllAsync();
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         var removedCategory = await _comentRepository.GetByIdAsync(comment.Id);
 
@@ -226,10 +219,10 @@ public class CommentRepositoryTests
         _comentRepository.Delete(comment.Id);
         _context.SaveChanges();
 
-        var categories = _comentRepository.GetAll();
+        var comments = _comentRepository.GetAll();
         var count = 0;
-        if (categories is not null)
-            count = categories.Count;
+        if (comments is not null)
+            count = comments.Count;
 
         var removedCategory = _comentRepository.GetById(comment.Id);
 
@@ -354,7 +347,7 @@ public class CommentRepositoryTests
 
     #endregion
 
-    #region GetByName
+    #region GetByName данные методы в репозитории не реализованы
 
     //[Fact]
     //[Trait("CommentRepositoryTests", nameof(Comment))]
@@ -456,7 +449,7 @@ public class CommentRepositoryTests
 
     #endregion
 
-    #region GetByHash
+    #region GetByHash данные методы в репозитории не реализованы
 
     //[Fact]
     //[Trait("CommentRepositoryTests", nameof(Comment))]
