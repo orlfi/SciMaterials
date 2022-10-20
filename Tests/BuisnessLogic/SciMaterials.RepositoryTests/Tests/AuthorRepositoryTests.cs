@@ -127,7 +127,7 @@ public class AuthorRepositoryTests
         if (authors is not null)
             count = authors.Count;
 
-        var authorDb = await _authorRepository.GetByIdAsync(author.Id);
+        var authorDb = await _authorRepository.GetByIdAsync(author.Id, include: true);
 
         ICollection<int> coll = new List<int> { 1, 2, 3 };
 
@@ -162,7 +162,7 @@ public class AuthorRepositoryTests
         if (authors is not null)
             count = authors.Count;
 
-        var authorDb = _authorRepository.GetById(author.Id);
+        var authorDb = _authorRepository.GetById(author.Id, include: true);
 
         //assert
         Assert.Equal(expected, count);
@@ -324,7 +324,7 @@ public class AuthorRepositoryTests
         await _context.SaveChangesAsync();
 
         //act
-        var authorDb = await _authorRepository.GetByIdAsync(author.Id);
+        var authorDb = await _authorRepository.GetByIdAsync(author.Id, include: true);
 
         //assert
         Assert.NotNull(authorDb);
@@ -349,7 +349,7 @@ public class AuthorRepositoryTests
         _context.SaveChanges();
 
         //act
-        var authorDb = _authorRepository.GetById(author.Id);
+        var authorDb = _authorRepository.GetById(author.Id, include: true);
 
         //assert
         Assert.NotNull(authorDb);
@@ -454,7 +454,7 @@ public class AuthorRepositoryTests
         await _context.SaveChangesAsync();
 
         //act
-        var authorDb = await _authorRepository.GetByNameAsync(author.Name);
+        var authorDb = await _authorRepository.GetByNameAsync(author.Name, include: true);
 
         //assert
         Assert.NotNull(authorDb);
@@ -478,7 +478,7 @@ public class AuthorRepositoryTests
         _context.SaveChanges();
 
         //act
-        var authorDb = _authorRepository.GetByName(author.Name);
+        var authorDb = _authorRepository.GetByName(author.Name, include: true);
 
         //assert
         Assert.NotNull(authorDb);
@@ -527,7 +527,7 @@ public class AuthorRepositoryTests
         await _authorRepository.UpdateAsync(author);
         await _context.SaveChangesAsync();
 
-        var authorDb = await _authorRepository.GetByIdAsync(author.Id);
+        var authorDb = await _authorRepository.GetByIdAsync(author.Id, include: true);
 
         //assert
         Assert.Equal(author.Id, authorDb!.Id);
@@ -575,7 +575,7 @@ public class AuthorRepositoryTests
         _authorRepository.Update(author);
         _context.SaveChanges();
 
-        var authorDb = _authorRepository.GetById(author.Id);
+        var authorDb = _authorRepository.GetById(author.Id, include: true);
 
         //assert
         Assert.Equal(author.Id, authorDb!.Id);
