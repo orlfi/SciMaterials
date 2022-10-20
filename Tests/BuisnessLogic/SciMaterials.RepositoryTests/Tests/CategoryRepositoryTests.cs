@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.Data.UnitOfWork;
+using SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 using SciMaterials.RepositoryTests.Fixtures;
 using SciMaterials.RepositoryTests.Helpers;
 using SciMaterials.RepositoryTests.Helpers.ModelsHelpers;

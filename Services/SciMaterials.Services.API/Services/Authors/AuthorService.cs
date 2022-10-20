@@ -12,9 +12,9 @@ namespace SciMaterials.Services.API.Services.Authors;
 
 public class AuthorService : IAuthorService
 {
-    private readonly ILogger<AuthorService> _logger;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogger<AuthorService> _logger;
 
     public AuthorService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<AuthorService> logger)
     {

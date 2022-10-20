@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.CategorysRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 
 /// <summary> Интерфейс репозитория для <see cref="Category"/>. </summary>
@@ -13,8 +12,8 @@ public interface ICategoryRepository : IRepository<Category> { }
 /// <summary> Репозиторий для <see cref="Category"/>. </summary>
 public class CategoryRepository : ICategoryRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>

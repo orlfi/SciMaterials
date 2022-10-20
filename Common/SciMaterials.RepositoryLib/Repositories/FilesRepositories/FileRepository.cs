@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.Data.Repositories;
 using File = SciMaterials.DAL.Models.File;
 
-namespace SciMaterials.DAL.Repositories.FilesRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="File"/>. </summary>
 public interface IFileRepository : IRepository<File> { }
@@ -12,8 +11,8 @@ public interface IFileRepository : IRepository<File> { }
 /// <summary> Репозиторий для <see cref="File"/>. </summary>
 public class FileRepository : IFileRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -24,7 +23,6 @@ public class FileRepository : IFileRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(FileRepository)}");
-
         _context = context;
     }
 

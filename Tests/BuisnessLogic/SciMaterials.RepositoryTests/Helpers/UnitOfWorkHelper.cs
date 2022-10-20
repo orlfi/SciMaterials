@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.UnitOfWork;
-using SciMaterials.Data.Repositories.AuthorRepositories;
+using SciMaterials.RepositoryLib.Repositories.FilesRepositories;
+using SciMaterials.RepositoryLib.Repositories.UsersRepositories;
 
 namespace SciMaterials.RepositoryTests.Helpers;
 

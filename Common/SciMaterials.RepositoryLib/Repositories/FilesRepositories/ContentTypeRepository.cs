@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.ContentTypesRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="ContentType"/>. </summary>
 public interface IContentTypeRepository : IRepository<ContentType> { }
@@ -12,8 +11,8 @@ public interface IContentTypeRepository : IRepository<ContentType> { }
 /// <summary> Репозиторий для <see cref="ContentType"/>. </summary>
 public class ContentTypeRepository : IContentTypeRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -24,7 +23,6 @@ public class ContentTypeRepository : IContentTypeRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(ContentTypeRepository)}");
-
         _context = context;
     }
 

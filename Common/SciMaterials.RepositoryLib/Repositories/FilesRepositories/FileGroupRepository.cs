@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.FilesRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="FileGroup"/>. </summary>
 public interface IFileGroupRepository : IRepository<FileGroup> { }
@@ -12,8 +11,8 @@ public interface IFileGroupRepository : IRepository<FileGroup> { }
 /// <summary> Репозиторий для <see cref="FileGroup"/>. </summary>
 public class FileGroupRepository : IFileGroupRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>

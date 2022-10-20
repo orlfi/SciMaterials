@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 
-namespace SciMaterials.Data.Repositories.UserRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.UsersRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="User"/>. </summary>
 public interface IUserRepository : IRepository<User> { }
@@ -11,8 +11,8 @@ public interface IUserRepository : IRepository<User> { }
 /// <summary> Репозиторий для <see cref="User"/>. </summary>
 public class UserRepository : IUserRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
