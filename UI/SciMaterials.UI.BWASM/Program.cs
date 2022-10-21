@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -35,7 +36,7 @@ builder.Services
 
 // Validators // TODO: register with assembly scan
 builder.Services
-    .AddScoped<IMudBlazorValidator<SignUpForm>, SignUpFormValidator>();
+    .AddScoped<IValidator<SignUpForm>, SignUpFormValidator>();
 
 // Background
 builder.Services

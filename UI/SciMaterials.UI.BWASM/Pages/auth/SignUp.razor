@@ -1,11 +1,12 @@
 ﻿@page "/signup"
+@using Severity = MudBlazor.Severity
 
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
 @inject ISnackbar Snackbar
-@inject IMudBlazorValidator<SignUpForm> Validator
+@inject IValidator<SignUpForm> Validator
 
-<MudForm Model="@_model" @ref="@_form" Validation="@(Validator.ValidateValue)" ValidationDelay="5">
+<MudForm Model="@_model" @ref="@_form" Validation="@(Validator.ValidateValue())" ValidationDelay="5">
     <MudGrid Justify="Justify.Center">
         <MudItem xs="12" sm="7">
             <MudCard Elevation="0">

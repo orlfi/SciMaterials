@@ -2,7 +2,7 @@
 
 namespace SciMaterials.UI.BWASM.Models.Validations;
 
-public class SignUpFormValidator : MudBlazorValidator<SignUpForm>
+public class SignUpFormValidator : AbstractValidator<SignUpForm>
 {
     public SignUpFormValidator()
     {
