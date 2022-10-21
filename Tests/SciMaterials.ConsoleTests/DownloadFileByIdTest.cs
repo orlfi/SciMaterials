@@ -1,6 +1,7 @@
 using System.Reflection;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.Result;
+using SciMaterials.Contracts.WebApi.Clients.Files;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.WebApi.Clients.Files;

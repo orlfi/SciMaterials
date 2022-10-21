@@ -6,10 +6,11 @@ using System.Text.Json;
 using System.Net.Http.Json;
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.Models;
+using SciMaterials.Contracts.WebApi.Clients.Files;
 
 namespace SciMaterials.WebApi.Clients.Files;
 
-public class FilesClient : ApiClientBase<FilesClient, EditFileRequest, Guid, GetFileResponse>, IFilesClient
+public class FilesClient : ApiClientBase<FilesClient, Guid>, IFilesClient
 {
     private readonly ILogger<FilesClient> _logger;
     private readonly HttpClient _httpClient;

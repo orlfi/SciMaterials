@@ -69,6 +69,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.Data
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.Database", "Services\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj", "{A3A19FBA-0BC5-4BB9-8437-27678BC8CC6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.Contracts.WebApi.Clients", "Services\SciMaterials.Contracts.WebApi.Clients\SciMaterials.Contracts.WebApi.Clients.csproj", "{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{A3A19FBA-0BC5-4BB9-8437-27678BC8CC6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3A19FBA-0BC5-4BB9-8437-27678BC8CC6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3A19FBA-0BC5-4BB9-8437-27678BC8CC6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,6 +210,7 @@ Global
 		{556FAED3-0ED4-4D95-8AAD-25F5681C6F8E} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 		{4BAC37BE-D6F4-4933-A44F-5092C7C43871} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 		{A3A19FBA-0BC5-4BB9-8437-27678BC8CC6D} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
+		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}

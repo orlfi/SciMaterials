@@ -1,6 +1,6 @@
 ﻿using SciMaterials.Contracts.Result;
 
-namespace SciMaterials.WebApi.Clients;
+namespace SciMaterials.Contracts.WebApi.Clients;
 
 public interface IApiDeleteClient<TId>
 {

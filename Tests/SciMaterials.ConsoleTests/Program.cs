@@ -12,6 +12,7 @@ using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.Services.Database.Services.DbInitialization;
+using SciMaterials.WebApi.Clients.Extensions;
 using SciMaterials.WebApi.Clients.Files;
 using File = SciMaterials.DAL.Models.File;
 #endregion
@@ -35,12 +36,8 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddScoped<EditFilesTest>();
     services.AddScoped<SendFileTest>();
     services.AddScoped<DownloadFileByIdTest>();
+    services.AddApiClients(new Uri(baseAddress));
 
-    services.AddHttpClient<IFilesClient, FilesClient>("FilesClient",
-        client =>
-        {
-            client.BaseAddress = new Uri(baseAddress);
-        });
 }
 using IHost host = CreateHostBuilder(args).Build();
 

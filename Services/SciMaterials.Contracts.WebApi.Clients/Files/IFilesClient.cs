@@ -2,11 +2,11 @@
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.Result;
 
-namespace SciMaterials.WebApi.Clients.Files;
+namespace SciMaterials.Contracts.WebApi.Clients.Files;
 
 public interface IFilesClient :
-    IApiReadonlyClient<Guid, GetFileResponse>,
-    IApiEditClient<EditFileRequest, Guid>,
+    IApiReadonlyClient<Guid>,
+    IApiEditClient<Guid>,
     IApiDeleteClient<Guid>
 {
     // Task<Result<Guid>> EditAsync(EditFileRequest request, CancellationToken cancellationToken = default);

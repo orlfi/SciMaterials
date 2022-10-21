@@ -1,11 +1,10 @@
 using Microsoft.Extensions.Logging;
-using SciMaterials.Contracts.API.DTO.Authors;
 using SciMaterials.Contracts.Result;
 using System.Net.Http.Json;
 
 namespace SciMaterials.WebApi.Clients;
 
-public abstract class ApiClientBase<TClient, TEditRequest, TId, TResponse>
+public abstract class ApiClientBase<TClient, TId>
 {
     protected readonly ILogger<TClient> _logger;
     protected readonly HttpClient _httpClient;
@@ -26,7 +25,7 @@ public abstract class ApiClientBase<TClient, TEditRequest, TId, TResponse>
         return result;
     }
 
-    public virtual async Task<Result<TId>> EditAsync(TEditRequest request, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<TId>> EditAsync<TRequest>(TRequest request, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Edit entity {request}.", request);
 
@@ -39,29 +38,29 @@ public abstract class ApiClientBase<TClient, TEditRequest, TId, TResponse>
         return result;
     }
 
-    public virtual async Task<Result<IEnumerable<TResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<Result<IEnumerable<TResult>>> GetAllAsync<TResult>(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Get all entities");
 
-        var result = await _httpClient.GetFromJsonAsync<Result<IEnumerable<TResponse>>>(_webApiRoute, cancellationToken)
+        var result = await _httpClient.GetFromJsonAsync<Result<IEnumerable<TResult>>>(_webApiRoute, cancellationToken)
             ?? throw new InvalidOperationException("No response received from the server.");
         return result;
     }
 
-    public virtual async Task<Result<TResponse>> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<TResult>> GetByIdAsync<TResult>(TId id, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Get entity by id {id}", id);
 
-        var result = await _httpClient.GetFromJsonAsync<Result<TResponse>>($"{_webApiRoute}/{id}", cancellationToken)
+        var result = await _httpClient.GetFromJsonAsync<Result<TResult>>($"{_webApiRoute}/{id}", cancellationToken)
             ?? throw new InvalidOperationException("No response received from the server.");
         return result;
     }
 
-    public virtual async Task<PageResult<TResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public virtual async Task<PageResult<TResult>> GetPageAsync<TResult>(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Get paged entities >>> Page number:{pageNumber}; Page dize {pageSize}", pageNumber, pageSize);
 
-        var result = await _httpClient.GetFromJsonAsync<PageResult<TResponse>>($"{_webApiRoute}/page/{pageNumber}/{pageSize}", cancellationToken)
+        var result = await _httpClient.GetFromJsonAsync<PageResult<TResult>>($"{_webApiRoute}/page/{pageNumber}/{pageSize}", cancellationToken)
             ?? throw new InvalidOperationException("No response received from the server.");
         return result;
     }
