@@ -36,7 +36,8 @@ builder.Services
 
 // Validators // TODO: register with assembly scan
 builder.Services
-    .AddScoped<IValidator<SignUpForm>, SignUpFormValidator>();
+    .AddScoped<IValidator<SignUpForm>, SignUpFormValidator>()
+    .AddScoped<IValidator<SignInForm>, SignInFormValidator>();
 
 // Background
 builder.Services

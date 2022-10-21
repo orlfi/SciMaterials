@@ -2,14 +2,10 @@
 
 namespace SciMaterials.UI.BWASM.Models.Validations;
 
-public class SignUpFormValidator : AbstractValidator<SignUpForm>
+public class SignInFormValidator : AbstractValidator<SignInForm>
 {
-    public SignUpFormValidator()
+    public SignInFormValidator()
     {
-        RuleFor(x => x.Username)
-            .NotEmpty()
-            .MaximumLength(255).WithMessage("Name length can't be more than 255.");
-
         RuleFor(x => x.Email)
             .NotEmpty()
             .EmailAddress();
