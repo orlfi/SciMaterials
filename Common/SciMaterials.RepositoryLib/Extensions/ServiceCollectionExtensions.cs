@@ -2,7 +2,7 @@
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.UnitOfWork;
 
-namespace SciMaterials.Data.Extensions;
+namespace SciMaterials.RepositoryLib.Extensions;
 
 public static class ServiceCollectionExtensions
 {

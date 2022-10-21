@@ -4,6 +4,8 @@ using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Database.Extensions;
 using SciMaterials.AUTH.Extensions;
+using SciMaterials.Contracts.API.Services.Identity;
+using SciMaterials.WebApi.Clients.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(opt =>
@@ -24,6 +26,7 @@ services.AddAuthApiServices(builder.Configuration);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
 services.AddHttpClient();
+services.AddSingleton<IIdentityClient, IdentityClient>();
 
 var app = builder.Build();
 

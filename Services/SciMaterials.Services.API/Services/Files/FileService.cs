@@ -16,12 +16,12 @@ namespace SciMaterials.Services.API.Services.Files;
 
 public class FileService : IFileService
 {
-    private readonly ILogger<FileService> _logger;
     private readonly IFileStore _fileStore;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
     private readonly string _path;
     private readonly string _separator;
+    private readonly ILogger<FileService> _logger;
 
     public FileService(
         IApiSettings apiSettings,
@@ -46,6 +46,13 @@ public class FileService : IFileService
         var files = await _unitOfWork.GetRepository<File>().GetAllAsync(include: true);
         var result = _mapper.Map<List<GetFileResponse>>(files);
         return result;
+    }
+
+    public async Task<PageResult<GetFileResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var files = await _unitOfWork.GetRepository<File>().GetPageAsync(pageNumber, pageSize, include: true);
+        var result = _mapper.Map<List<GetFileResponse>>(files);
+        return await PageResult<GetFileResponse>.SuccessAsync(result);
     }
 
     public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

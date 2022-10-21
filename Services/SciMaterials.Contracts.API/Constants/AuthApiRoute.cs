@@ -8,7 +8,7 @@ public static class AuthApiRoute
     /// <summary>
     /// Uri адрес сервиса
     /// </summary>
-    public const string AuthApiUri = "https://localhost:7183";
+    public const string AuthApiUri = "https://localhost:7183/";
     
     /// <summary>
     /// Контроллер аутентификации
@@ -33,80 +33,80 @@ public static class AuthApiRoute
     /// <summary>
     /// Смена пароля пользователя
     /// </summary>
-    public const string ChangePassword = "changepassword";
+    public const string ChangePassword = "change_password";
     
     /// <summary>
     /// Подтверждение почты при регистрации
     /// </summary>
-    public const string ConfirmEmail = "confirmemail";
+    public const string ConfirmEmail = "confirm_email";
     
     /// <summary>
     /// Создание роли пользователя
     /// </summary>
-    public const string CreateRole = "createrole";
+    public const string CreateRole = "create_role";
     
     /// <summary>
     /// Получение всех ролей в системе
     /// </summary>
-    public const string GetAllRoles = "getallroles";
+    public const string GetAllRoles = "get_all_roles";
     
     /// <summary>
     /// Получение роли по идентификатору
     /// </summary>
-    public const string GetRoleById = "getrolebyid";
+    public const string GetRoleById = "get_role_by_id/";
 
     /// <summary>
     /// Изменение названия роли по идентификатору роли
     /// </summary>
-    public const string EditRoleById = "editrolebyid";
+    public const string EditRoleById = "edit_role_by_id";
     
     /// <summary>
     /// Удаление роли по идентификатору
     /// </summary>
-    public const string DeleteRoleById = "deleterolebyid";
+    public const string DeleteRoleById = "delete_role_by_id/";
     
     /// <summary>
     /// Добавление роли к пользователю
     /// </summary>
-    public const string AddRoleToUser = "addroletouser";
+    public const string AddRoleToUser = "add_role_to_user";
     
     /// <summary>
     /// Удаление роли у пользователя
     /// </summary>
-    public const string DeleteUserRole = "deleteuserrole";
+    public const string DeleteUserRoleByEmail = "delete_user_role_by_email/";
     
     /// <summary>
     /// Получение списка всех ролей у конкретного пользователя
     /// </summary>
-    public const string ListOfUserRoles = "listofuserroles";
+    public const string ListOfUserRolesByEmail = "list_of_user_roles_by_email/";
     
     /// <summary>
     /// Создание пользователя админом
     /// </summary>
-    public const string CreateUser = "createuser";
+    public const string CreateUser = "create_user";
     
     /// <summary>
     /// Получение инф. о пользовател по email
     /// </summary>
-    public const string GetUserByEmail = "getuserbyemail";
+    public const string GetUserByEmail = "get_user_by_email/";
     
     /// <summary>
     /// Получение инф. о всех пользователях в системе
     /// </summary>
-    public const string GetAllUsers = "getallusers";
+    public const string GetAllUsers = "get_all_users";
     
     /// <summary>
     /// Редактирование инф. о пользователе по его email
     /// </summary>
-    public const string EditUserByEmail = "edituserbyemail";
+    public const string EditUserByEmail = "edit_user_by_email";
     
     /// <summary>
     /// Удаление пользователя по email
     /// </summary>
-    public const string DeleteUserByEmail = "deleteuserbyemail";
+    public const string DeleteUserByEmail = "delete_user_by_email/";
     
     /// <summary>
     /// Удаление всех не подтвердивших свою почту пользователей в системе (для чистки БД админом)
     /// </summary>
-    public const string DeleteUserWithoutConfirmation = "deleteuserwithoutconfirmation";
+    public const string DeleteUserWithoutConfirm = "delete_user_without_confirm";
 }

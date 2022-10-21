@@ -1,8 +1,8 @@
 using SciMaterials.Contracts.API.DTO.Files;
+using SciMaterials.Contracts.WebApi.Clients.Files;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 using SciMaterials.DAL.UnitOfWork;
-using SciMaterials.WebApi.Clients.Files;
 
 namespace SciMaterials.ConsoleTests;
 

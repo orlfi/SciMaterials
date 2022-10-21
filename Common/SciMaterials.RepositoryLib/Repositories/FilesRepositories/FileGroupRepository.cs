@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.FilesRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="FileGroup"/>. </summary>
 public interface IFileGroupRepository : IRepository<FileGroup> { }
@@ -12,8 +11,8 @@ public interface IFileGroupRepository : IRepository<FileGroup> { }
 /// <summary> Репозиторий для <see cref="FileGroup"/>. </summary>
 public class FileGroupRepository : IFileGroupRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -125,7 +124,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<FileGroup>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
@@ -145,7 +144,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<FileGroup>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups.Where(f => !f.IsDeleted);
@@ -165,7 +164,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public FileGroup? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -186,7 +185,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<FileGroup?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -257,7 +256,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<FileGroup?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -278,7 +277,7 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public FileGroup? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<FileGroup> query = _context.FileGroups
@@ -299,12 +298,72 @@ public class FileGroupRepository : IFileGroupRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<FileGroup?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<FileGroup?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public FileGroup? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<FileGroup>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<FileGroup> query = new List<FileGroup>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<FileGroup>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<FileGroup> query = new List<FileGroup>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(fg => fg.Files)
+                .Include(fg => fg.Tags)
+                .Include(fg => fg.Ratings)
+                .Include(fg => fg.Comments)
+                .Include(fg => fg.Categories)
+                .Include(fg => fg.Author);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
@@ -313,6 +372,7 @@ public class FileGroupRepository : IFileGroupRepository
     private FileGroup UpdateCurrentEntity(FileGroup sourse, FileGroup recipient)
     {
         recipient.Name = sourse.Name;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         recipient.Title = sourse.Title;
         recipient.Description = sourse.Description;

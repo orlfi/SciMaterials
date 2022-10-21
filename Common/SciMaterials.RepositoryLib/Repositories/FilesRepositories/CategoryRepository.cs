@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.CategorysRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 
 /// <summary> Интерфейс репозитория для <see cref="Category"/>. </summary>
@@ -13,8 +12,8 @@ public interface ICategoryRepository : IRepository<Category> { }
 /// <summary> Репозиторий для <see cref="Category"/>. </summary>
 public class CategoryRepository : ICategoryRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -114,7 +113,7 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<Category>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories.Where(c => !c.IsDeleted);
@@ -130,7 +129,7 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<Category>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories.Where(c => !c.IsDeleted);
@@ -146,14 +145,15 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public Category? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(c => c.Files)
+            query = query
+                .Include(c => c.Files)
                 .Include(c => c.FileGroups);
 
         if (disableTracking)
@@ -163,7 +163,7 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<Category?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
@@ -180,7 +180,7 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<Category?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
@@ -197,7 +197,7 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public Category? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Category> query = _context.Categories
@@ -262,12 +262,61 @@ public class CategoryRepository : ICategoryRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Category?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<Category?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public Category? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount() 
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<Category>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Category> query = new List<Category>().AsQueryable();
+
+        if (include)
+            query = query.Include(c => c.Files)
+                .Include(c => c.FileGroups);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<Category>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Category> query = new List<Category>().AsQueryable();
+
+        if (include)
+            query = query.Include(c => c.Files)
+                .Include(c => c.FileGroups);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
@@ -281,6 +330,7 @@ public class CategoryRepository : ICategoryRepository
         recipient.FileGroups = sourse.FileGroups;
         recipient.ParentId = sourse.ParentId;
         recipient.Name = sourse.Name;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         return recipient;
     }

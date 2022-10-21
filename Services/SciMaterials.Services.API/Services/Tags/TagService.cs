@@ -7,14 +7,15 @@ using SciMaterials.Contracts.API.Services.Tags;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.Tags;
+using SciMaterials.Contracts.API.DTO.ContentTypes;
 
 namespace SciMaterials.Services.API.Services.Tags;
 
 public class TagService : ITagService
 {
-    private readonly ILogger<TagService> _logger;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogger<TagService> _logger;
 
     public TagService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<TagService> logger)
     {
@@ -28,6 +29,13 @@ public class TagService : ITagService
         var categories = await _unitOfWork.GetRepository<Tag>().GetAllAsync();
         var result = _mapper.Map<List<GetTagResponse>>(categories);
         return result;
+    }
+
+    public async Task<PageResult<GetTagResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var categories = await _unitOfWork.GetRepository<Tag>().GetPageAsync(pageNumber, pageSize);
+        var result = _mapper.Map<List<GetTagResponse>>(categories);
+        return await PageResult<GetTagResponse>.SuccessAsync(result);
     }
 
     public async Task<Result<GetTagResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

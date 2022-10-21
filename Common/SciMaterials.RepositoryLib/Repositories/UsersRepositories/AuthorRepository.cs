@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 
-namespace SciMaterials.Data.Repositories.AuthorRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.UsersRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="Author"/>. </summary>
 public interface IAuthorRepository : IRepository<Author> { }
@@ -11,8 +11,8 @@ public interface IAuthorRepository : IRepository<Author> { }
 /// <summary> Репозиторий для <see cref="Author"/>. </summary>
 public class AuthorRepository : IAuthorRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -23,7 +23,6 @@ public class AuthorRepository : IAuthorRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(AuthorRepository)}");
-
         _context = context;
     }
 
@@ -124,7 +123,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<Author>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
@@ -142,7 +141,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<Author>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
@@ -160,7 +159,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public Author? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -179,7 +178,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<Author?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -246,7 +245,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<Author?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -265,7 +264,7 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public Author? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<Author> query = _context.Authors
@@ -284,12 +283,69 @@ public class AuthorRepository : IAuthorRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Author?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<Author?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public Author? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<Author>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Author> query = new List<Author>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<Author>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Author> query = new List<Author>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(u => u.Comments)
+                .Include(u => u.Files)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
+
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
@@ -297,15 +353,17 @@ public class AuthorRepository : IAuthorRepository
     /// <returns> Обновленный экземпляр. </returns>
     private Author UpdateCurrentEntity(Author sourse, Author recipient)
     {
-        recipient.Files = sourse.Files;
         recipient.Name = sourse.Name;
-        recipient.Surname = sourse.Surname;
-        recipient.Comments = sourse.Comments;
-        recipient.Phone = sourse.Phone;
+        recipient.IsDeleted = sourse.IsDeleted;
+
         recipient.Email = sourse.Email;
-        recipient.Ratings = sourse.Ratings;
-        recipient.User = sourse.User;
         recipient.UserId = sourse.UserId;
+        recipient.Phone = sourse.Phone;
+        recipient.Surname = sourse.Surname;
+        recipient.User = sourse.User;
+        recipient.Comments = sourse.Comments;
+        recipient.Files = sourse.Files;
+        recipient.Ratings = sourse.Ratings;
 
         return recipient;
     }

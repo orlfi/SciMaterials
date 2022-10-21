@@ -8,7 +8,7 @@ namespace SciMaterials.UI.MVC.API.Controllers;
 /// <summary> Service for working with comments. </summary>
 [ApiController]
 [Route(WebApiRoute.Comments)]
-public class CommentsController : ApiBaseController<CategoriesController>
+public class CommentsController : ApiBaseController<CommentsController>
 {
     private readonly ICommentService _commentService;
 
@@ -17,7 +17,7 @@ public class CommentsController : ApiBaseController<CategoriesController>
         _commentService = commentService;
     }
 
-    /// <summary> Get All Categories. </summary>
+    /// <summary> Get All Comments. </summary>
     /// <returns> Status 200 OK. </returns>
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
