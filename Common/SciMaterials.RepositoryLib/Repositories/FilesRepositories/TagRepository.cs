@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.FilesRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="Tag"/>. </summary>
 public interface ITagRepository : IRepository<Tag> { }
@@ -12,8 +11,8 @@ public interface ITagRepository : IRepository<Tag> { }
 /// <summary> Репозиторий для <see cref="Tag"/>. </summary>
 public class TagRepository : ITagRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -24,7 +23,6 @@ public class TagRepository : ITagRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(TagRepository)}");
-
         _context = context;
     }
 

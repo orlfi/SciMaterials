@@ -13,9 +13,9 @@ namespace SciMaterials.Services.API.Services.Tags;
 
 public class TagService : ITagService
 {
-    private readonly ILogger<TagService> _logger;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogger<TagService> _logger;
 
     public TagService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<TagService> logger)
     {

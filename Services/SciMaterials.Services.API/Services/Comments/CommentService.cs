@@ -13,9 +13,9 @@ namespace SciMaterials.Services.API.Services.Comments;
 
 public class CommentService : ICommentService
 {
-    private readonly ILogger<CommentService> _logger;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogger<CommentService> _logger;
 
     public CommentService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<CommentService> logger)
     {

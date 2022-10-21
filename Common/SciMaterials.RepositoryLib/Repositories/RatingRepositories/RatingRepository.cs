@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.RatingRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.RatingRepositories;
 
 
 /// <summary> Интерфейс репозитория для <see cref="Rating"/>. </summary>
@@ -13,8 +12,8 @@ public interface IRatingRepository : IRepository<Rating> { }
 /// <summary> Репозиторий для <see cref="Rating"/>. </summary>
 public class RatingRepository : IRatingRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -25,7 +24,6 @@ public class RatingRepository : IRatingRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(RatingRepository)}");
-
         _context = context;
     }
 

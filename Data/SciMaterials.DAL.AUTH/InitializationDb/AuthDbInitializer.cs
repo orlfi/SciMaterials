@@ -9,24 +9,24 @@ namespace SciMaterials.DAL.AUTH.InitializationDb;
 
 public class AuthDbInitializer : IAuthDbInitializer
 {
-    private readonly ILogger<AuthDbContext> _Logger;
     private readonly AuthDbContext _DBContext;
     private readonly UserManager<IdentityUser> _UserManager;
     private readonly RoleManager<IdentityRole> _RoleManager;
     private readonly IConfiguration _Configuration;
+    private readonly ILogger<AuthDbContext> _Logger;
 
     public AuthDbInitializer(
-        ILogger<AuthDbContext> Logger,
         AuthDbContext DBContext, 
         UserManager<IdentityUser> UserManager, 
         RoleManager<IdentityRole> RoleManager, 
-        IConfiguration Configuration)
+        IConfiguration Configuration,
+        ILogger<AuthDbContext> Logger)
     {
-        _Logger = Logger;
         _DBContext = DBContext;
         _UserManager = UserManager;
         _RoleManager = RoleManager;
         _Configuration = Configuration;
+        _Logger = Logger;
     }
     
     public async Task InitializeAsync(CancellationToken CancellationToken = default)

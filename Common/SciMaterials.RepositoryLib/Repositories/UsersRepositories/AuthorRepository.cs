@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 
-namespace SciMaterials.Data.Repositories.AuthorRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.UsersRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="Author"/>. </summary>
 public interface IAuthorRepository : IRepository<Author> { }
@@ -11,8 +11,8 @@ public interface IAuthorRepository : IRepository<Author> { }
 /// <summary> Репозиторий для <see cref="Author"/>. </summary>
 public class AuthorRepository : IAuthorRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -23,7 +23,6 @@ public class AuthorRepository : IAuthorRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(AuthorRepository)}");
-
         _context = context;
     }
 

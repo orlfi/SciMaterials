@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.CommentsRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="Comment"/>. </summary>
 public interface ICommentRepository : IRepository<Comment> { }
@@ -12,8 +11,8 @@ public interface ICommentRepository : IRepository<Comment> { }
 /// <summary> Репозиторий для <see cref="Comment"/>. </summary>
 public class CommentRepository : ICommentRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -24,7 +23,6 @@ public class CommentRepository : ICommentRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(CommentRepository)}");
-
         _context = context;
     }
 

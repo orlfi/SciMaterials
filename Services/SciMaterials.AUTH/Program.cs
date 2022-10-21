@@ -108,7 +108,7 @@ public class Program
         app.UseCors();
 
         app.MapControllers();
-        
+
         await app.RunAsync();
     }
 }

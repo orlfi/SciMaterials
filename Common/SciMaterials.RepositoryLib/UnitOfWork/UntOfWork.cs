@@ -3,14 +3,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Repositories.CategorysRepositories;
-using SciMaterials.DAL.Repositories.CommentsRepositories;
-using SciMaterials.DAL.Repositories.ContentTypesRepositories;
-using SciMaterials.DAL.Repositories.FilesRepositories;
-using SciMaterials.DAL.Repositories.RatingRepositories;
 using SciMaterials.DAL.UnitOfWork;
-using SciMaterials.Data.Repositories;
-using SciMaterials.Data.Repositories.AuthorRepositories;
+using SciMaterials.RepositoryLib.Repositories;
+using SciMaterials.RepositoryLib.Repositories.FilesRepositories;
+using SciMaterials.RepositoryLib.Repositories.RatingRepositories;
+using SciMaterials.RepositoryLib.Repositories.UsersRepositories;
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Data.UnitOfWork;

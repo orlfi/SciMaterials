@@ -12,8 +12,8 @@ namespace SciMaterials.WebApi.Clients.Files;
 
 public class FilesClient : ApiClientBase<FilesClient, Guid>, IFilesClient
 {
-    private readonly ILogger<FilesClient> _logger;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<FilesClient> _logger;
 
     public FilesClient(HttpClient httpClient, ILogger<FilesClient> logger) : base(httpClient, logger)
         => _webApiRoute = WebApiRoute.Files;

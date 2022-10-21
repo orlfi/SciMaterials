@@ -13,9 +13,9 @@ namespace SciMaterials.Services.API.Services.ContentTypes;
 
 public class ContentTypeService : IContentTypeService
 {
-    private readonly ILogger<ContentTypeService> _logger;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogger<ContentTypeService> _logger;
 
     public ContentTypeService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<ContentTypeService> logger)
     {

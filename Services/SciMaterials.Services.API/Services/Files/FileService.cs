@@ -16,12 +16,12 @@ namespace SciMaterials.Services.API.Services.Files;
 
 public class FileService : IFileService
 {
-    private readonly ILogger<FileService> _logger;
     private readonly IFileStore _fileStore;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
     private readonly string _path;
     private readonly string _separator;
+    private readonly ILogger<FileService> _logger;
 
     public FileService(
         IApiSettings apiSettings,

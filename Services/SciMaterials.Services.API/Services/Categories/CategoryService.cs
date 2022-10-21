@@ -13,9 +13,9 @@ namespace SciMaterials.Services.API.Services.Categories;
 
 public class CategoryService : ICategoryService
 {
-    private readonly ILogger<CategoryService> _logger;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly ILogger<CategoryService> _logger;
 
     public CategoryService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<CategoryService> logger)
     {
