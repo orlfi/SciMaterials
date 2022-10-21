@@ -48,6 +48,7 @@ public class FileUploadFilter : IOperationFilter
             operation.RequestBody = new OpenApiRequestBody
             {
                 Content = { ["multipart/form-data"] = uploadFileMediaType }
+                
             };
         }
     }

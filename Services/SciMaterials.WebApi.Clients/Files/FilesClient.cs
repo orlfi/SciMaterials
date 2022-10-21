@@ -6,56 +6,23 @@ using System.Text.Json;
 using System.Net.Http.Json;
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.Models;
+using SciMaterials.Contracts.WebApi.Clients.Files;
 
 namespace SciMaterials.WebApi.Clients.Files;
 
-public class FilesClient : IFilesClient
+public class FilesClient : ApiClientBase<FilesClient, Guid>, IFilesClient
 {
-    private readonly ILogger<FilesClient> _logger;
     private readonly HttpClient _httpClient;
+    private readonly ILogger<FilesClient> _logger;
 
-    public FilesClient(HttpClient httpClient, ILogger<FilesClient> logger)
-    {
-        _logger = logger;
-        _httpClient = httpClient;
-    }
-
-    public async Task<Result<IEnumerable<GetFileResponse>>> GetAllAsync(CancellationToken cancellationToken = default)
-    {
-        _logger.LogInformation("Get all files");
-
-        var result = await _httpClient.GetFromJsonAsync<Result<IEnumerable<GetFileResponse>>>(WebApiRoute.Files, cancellationToken)
-            ?? throw new InvalidOperationException("No response received from the server."); ;
-        return result;
-    }
-
-    public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        _logger.LogInformation("Get file by id {id}", id);
-
-        var result = await _httpClient.GetFromJsonAsync<Result<GetFileResponse>>(WebApiRoute.Files + "/" + id.ToString(), cancellationToken)
-            ?? throw new InvalidOperationException("No response received from the server."); ;
-        return result;
-    }
+    public FilesClient(HttpClient httpClient, ILogger<FilesClient> logger) : base(httpClient, logger)
+        => _webApiRoute = WebApiRoute.Files;
 
     public async Task<Result<GetFileResponse>> GetByHashIdAsync(string hash, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Get file by hash {hash}", hash);
 
-        var result = await _httpClient.GetFromJsonAsync<Result<GetFileResponse>>(WebApiRoute.Files + "/" + hash, cancellationToken)
-            ?? throw new InvalidOperationException("No response received from the server."); ;
-        return result;
-    }
-
-    public async Task<Result<Guid>> EditAsync(EditFileRequest request, CancellationToken cancellationToken = default)
-    {
-        _logger.LogInformation("Edit file {name}", request.Name);
-
-        var response = await _httpClient.PutAsJsonAsync(WebApiRoute.Files + "/" + "Edit", request, cancellationToken);
-        var result = await response
-            .EnsureSuccessStatusCode()
-            .Content
-            .ReadFromJsonAsync<Result<Guid>>(cancellationToken: cancellationToken)
+        var result = await _httpClient.GetFromJsonAsync<Result<GetFileResponse>>($"{WebApiRoute.Files}/{hash}", cancellationToken)
             ?? throw new InvalidOperationException("No response received from the server.");
         return result;
     }
@@ -71,26 +38,13 @@ public class FilesClient : IFilesClient
         streamContent.Headers.Add("Metadata", matadata);
         multipartFormDataContent.Add(streamContent, "file", uploadFileRequest.Name);
 
-        var response = await _httpClient.PostAsync(WebApiRoute.Files + "/upload", multipartFormDataContent, cancellationToken);
+        var response = await _httpClient.PostAsync($"{WebApiRoute.Files}/upload", multipartFormDataContent, cancellationToken);
         var result = await response
             .EnsureSuccessStatusCode()
             .Content
             .ReadFromJsonAsync<Result<Guid>>(cancellationToken: cancellationToken)
             ?? throw new InvalidOperationException("No response received from the server.");
 
-        return result;
-    }
-
-    public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        _logger.LogInformation("Delete file with id {id}", id);
-
-        var response = await _httpClient.DeleteAsync(WebApiRoute.Files + "/" + id.ToString(), cancellationToken);
-        var result = await response
-            .EnsureSuccessStatusCode()
-            .Content
-            .ReadFromJsonAsync<Result<Guid>>(cancellationToken: cancellationToken)
-            ?? throw new InvalidOperationException("No response received from the server.");
         return result;
     }
 
@@ -98,14 +52,14 @@ public class FilesClient : IFilesClient
     {
         _logger.LogDebug("Download by hash {hash}", hash);
 
-        return await Download(WebApiRoute.Files + "/DownloadByHash/" + hash, cancellationToken);
+        return await Download($"{WebApiRoute.Files}/DownloadByHash/{hash}", cancellationToken);
     }
 
     public async Task<Result<FileStreamInfo>> DownloadByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         _logger.LogDebug("Download by Id {id}", id);
 
-        return await Download(WebApiRoute.Files + "/DownloadById/" + id.ToString(), cancellationToken);
+        return await Download($"{WebApiRoute.Files}/DownloadById/{id}", cancellationToken);
     }
 
     private async Task<Result<FileStreamInfo>> Download(string path, CancellationToken cancellationToken = default)
@@ -129,6 +83,5 @@ public class FilesClient : IFilesClient
         var result = await response.Content.ReadFromJsonAsync<Result<FileStreamInfo>>(cancellationToken: cancellationToken)
             ?? throw new InvalidOperationException("No response received from the server.");
         return result;
-
     }
 }

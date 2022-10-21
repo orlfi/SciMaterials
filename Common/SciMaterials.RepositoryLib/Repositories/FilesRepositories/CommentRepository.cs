@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.CommentsRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 /// <summary> Интерфейс репозитория для <see cref="Comment"/>. </summary>
 public interface ICommentRepository : IRepository<Comment> { }
@@ -12,8 +11,8 @@ public interface ICommentRepository : IRepository<Comment> { }
 /// <summary> Репозиторий для <see cref="Comment"/>. </summary>
 public class CommentRepository : ICommentRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -24,7 +23,6 @@ public class CommentRepository : ICommentRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(CommentRepository)}");
-
         _context = context;
     }
 
@@ -125,7 +123,7 @@ public class CommentRepository : ICommentRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<Comment>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
@@ -142,7 +140,7 @@ public class CommentRepository : ICommentRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
@@ -159,7 +157,7 @@ public class CommentRepository : ICommentRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public Comment? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Comment> query = _context.Comments
@@ -177,7 +175,7 @@ public class CommentRepository : ICommentRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Comment> query = _context.Comments
@@ -243,20 +241,73 @@ public class CommentRepository : ICommentRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Comment?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
+    public Task<Comment?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public Comment? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public Comment? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<Comment>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Comment> query = new List<Comment>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
+                .Include(c => c.Author);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<Comment>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Comment> query = new List<Comment>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(c => c.File)
+                .Include(c => c.FileGroup)
+                .Include(c => c.Author);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
@@ -273,6 +324,7 @@ public class CommentRepository : ICommentRepository
         recipient.FileGroup = sourse.FileGroup;
         recipient.Author = sourse.Author;
         recipient.AuthorId = sourse.AuthorId;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         return recipient;
     }

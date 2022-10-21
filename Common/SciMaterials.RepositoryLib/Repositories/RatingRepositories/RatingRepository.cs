@@ -2,9 +2,8 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
-using SciMaterials.Data.Repositories;
 
-namespace SciMaterials.DAL.Repositories.RatingRepositories;
+namespace SciMaterials.RepositoryLib.Repositories.RatingRepositories;
 
 
 /// <summary> Интерфейс репозитория для <see cref="Rating"/>. </summary>
@@ -13,8 +12,8 @@ public interface IRatingRepository : IRepository<Rating> { }
 /// <summary> Репозиторий для <see cref="Rating"/>. </summary>
 public class RatingRepository : IRatingRepository
 {
-    private readonly ILogger _logger;
     private readonly ISciMaterialsContext _context;
+    private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
@@ -25,7 +24,6 @@ public class RatingRepository : IRatingRepository
     {
         _logger = logger;
         _logger.LogTrace($"Логгер встроен в {nameof(RatingRepository)}");
-
         _context = context;
     }
 
@@ -126,7 +124,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<Rating>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
@@ -143,7 +141,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
@@ -160,7 +158,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public Rating? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings
@@ -178,7 +176,7 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<Rating> query = _context.Ratings
@@ -244,20 +242,75 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
-    public async Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
+    public Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public Rating? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public Rating? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<Rating>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Rating> query = new List<Rating>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .Include(r => r.FileGroup);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<Rating>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Rating> query = new List<Rating>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(r => r.File)
+                .Include(r => r.User)
+                .Include(r => r.FileGroup);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
+
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
@@ -265,13 +318,14 @@ public class RatingRepository : IRatingRepository
     /// <returns> Обновленный экземпляр. </returns>
     private Rating UpdateCurrentEntity(Rating sourse, Rating recipient)
     {
-        recipient.File = sourse.File;
         recipient.FileId = sourse.FileId;
-        recipient.FileGroup = sourse.FileGroup;
         recipient.FileGroupId = sourse.FileGroupId;
-        recipient.RatingValue = sourse.RatingValue;
-        recipient.User = sourse.User;
         recipient.AuthorId = sourse.AuthorId;
+        recipient.RatingValue = sourse.RatingValue;
+        recipient.File = sourse.File;
+        recipient.FileGroup = sourse.FileGroup;
+        recipient.User = sourse.User;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         return recipient;
     }

@@ -29,6 +29,17 @@ public class FilesApiController : ApiBaseController<FilesApiController>
         return Ok(result);
     }
 
+    /// <summary> Get paged file metadata . </summary>
+    /// <param name="pageNumber"> Page number. </param>
+    /// <param name="pageNumber"> Page size. </param>
+    [HttpGet("page/{pageNumber}/{pageSize}")]
+    public async Task<IActionResult> GetPageAsync([FromRoute] int pageNumber, [FromRoute] int pageSize)
+    {
+        _logger.LogDebug("Get paged files");
+        var result = await _fileService.GetPageAsync(pageNumber, pageSize);
+        return Ok(result);
+    }
+
     /// <summary> Get file metadata by Id. </summary>
     /// <param name="id"> File Id. </param>
     [HttpGet("{id}")]
