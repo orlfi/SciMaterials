@@ -95,6 +95,7 @@ public class IdentityClient : IIdentityClient
         
         var logoutResult = await _client.SendAsync(request, cancellationToken);
         var result = await logoutResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        _client.DefaultRequestHeaders.Authorization = null;
         return result;
     }
 
