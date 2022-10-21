@@ -6,6 +6,6 @@ public interface IAccountsService
 {
     List<AuthorityGroup> AuthorityGroupsList();
     List<UserInfo> UsersList();
-    void ChangeAuthority(Guid userId, Guid authorityId);
-    void Delete(Guid userId);
+    Task ChangeAuthority(Guid userId, Guid authorityId);
+    Task Delete(Guid userId);
 }

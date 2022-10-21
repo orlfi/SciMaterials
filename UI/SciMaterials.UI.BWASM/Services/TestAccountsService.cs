@@ -14,6 +14,8 @@ public class TestAccountsService : IAccountsService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
+    private TestAuthenticationStateProvider ActualProvider => (TestAuthenticationStateProvider)_authenticationStateProvider;
+
     public List<AuthorityGroup> AuthorityGroupsList()
     {
         // take view models
@@ -26,16 +28,24 @@ public class TestAccountsService : IAccountsService
         return _authenticationCache.UsersList();
     }
 
-    public void ChangeAuthority(Guid userId, Guid authorityId)
+    public async Task ChangeAuthority(Guid userId, Guid authorityId)
     {
-        // check that current user can change authority
         var result = _authenticationCache.ChangeAuthorityGroup(userId, authorityId);
-        // handle result
+        
+        if (!result.Succeeded)
+        {
+            // TODO: handle failure
+            return;
+        }
+        if(await ActualProvider.TakeCurrentUserId() != userId) return;
+        await ActualProvider.UpdateUserData();
     }
 
-    public void Delete(Guid userId)
+    public async Task Delete(Guid userId)
     {
-        // check that actual user and user to delete is not same
         _authenticationCache.DeleteUser(userId);
+
+        if (await ActualProvider.TakeCurrentUserId() != userId) return;
+        await ActualProvider.UpdateUserData();
     }
 }
