@@ -8,16 +8,17 @@ namespace SciMaterials.ConsoleTests;
 
 public class GetAllFilesTest
 {
-    private readonly IFilesClient _filesClient;
+    private readonly IFilesClient _FilesClient;
 
-    public GetAllFilesTest(IFilesClient filesClient, IUnitOfWork<SciMaterialsContext> unitOfWork)
+    public GetAllFilesTest(IFilesClient FilesClient, IUnitOfWork<SciMaterialsContext> UnitOfWork)
     {
-        _filesClient = filesClient;
+        _FilesClient = FilesClient;
     }
 
     public async Task Get()
     {
         var result = await _filesClient.GetAllAsync<GetFileResponse>();
+
         if (result.Succeeded)
             foreach (var item in result.Data)
                 Console.WriteLine($"{item.Id} >>> {item.Name}");

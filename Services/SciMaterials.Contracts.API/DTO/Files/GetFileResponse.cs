@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace SciMaterials.Contracts.API.DTO.Files;
 
 public class GetFileResponse

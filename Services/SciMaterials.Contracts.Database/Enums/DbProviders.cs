@@ -1,10 +1,9 @@
-﻿namespace SciMaterials.Contracts.Database.Enums
+﻿namespace SciMaterials.Contracts.Database.Enums;
+
+public enum DbProviders
 {
-    public enum DbProviders
-    {
-        SqlServer,
-        PostgreSQL,
-        MySQL,
-        SQLite
-    }
+    SqlServer,
+    PostgreSQL,
+    MySQL,
+    SQLite
 }

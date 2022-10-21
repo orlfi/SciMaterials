@@ -9,65 +9,65 @@ namespace SciMaterials.Services.Database.Services.DbInitialization;
 public class DbInitializer : IDbInitializer
 {
     private readonly SciMaterialsContext _db;
-    private readonly ILogger<SciMaterialsContext> _logger;
+    private readonly ILogger<SciMaterialsContext> _Logger;
 
     public DbInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
     {
         _db = db;
-        _logger = logger;
+        _Logger = logger;
     }
 
-    public async Task<bool> DeleteDbAsync(CancellationToken cancel = default)
+    public async Task<bool> DeleteDbAsync(CancellationToken Cancel = default)
     {
-        _logger.LogInformation("Deleting a database...");
+        _Logger.LogInformation("Deleting a database...");
 
-        cancel.ThrowIfCancellationRequested();
+        Cancel.ThrowIfCancellationRequested();
 
         try
         {
-            var result = await _db.Database.EnsureDeletedAsync(cancel).ConfigureAwait(false);
+            var result = await _db.Database.EnsureDeletedAsync(Cancel).ConfigureAwait(false);
             return result;
         }
         catch (OperationCanceledException e)
         {
-            _logger.LogError(e, "Interrupting an operation when deleting a database");
+            _Logger.LogError(e, "Interrupting an operation when deleting a database");
             throw;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error during database initialization");
+            _Logger.LogError(e, "Error during database initialization");
             throw;
         }
     }
 
-    public async Task InitializeDbAsync(bool removeAtStart = false, bool useDataSeeder = false, CancellationToken cancel = default)
+    public async Task InitializeDbAsync(bool RemoveAtStart = false, bool UseDataSeeder = false, CancellationToken Cancel = default)
     {
-        _logger.LogInformation("Database initialization...");
+        _Logger.LogInformation("Database initialization...");
 
-        cancel.ThrowIfCancellationRequested();
+        Cancel.ThrowIfCancellationRequested();
 
         try
         {
-            if (removeAtStart) await DeleteDbAsync(cancel).ConfigureAwait(false);
+            if (RemoveAtStart) await DeleteDbAsync(Cancel).ConfigureAwait(false);
 
-            var pendingMigration = await _db.Database.GetPendingMigrationsAsync(cancel).ConfigureAwait(false);
+            var pending_migrations = await _db.Database.GetPendingMigrationsAsync(Cancel).ConfigureAwait(false);
 
-            if (pendingMigration.Any())
+            if (pending_migrations.Any())
             {
-                await _db.Database.MigrateAsync(cancel).ConfigureAwait(false);
+                await _db.Database.MigrateAsync(Cancel).ConfigureAwait(false);
             }
 
-            if (useDataSeeder)
-                await InitializeDbAsync(cancel).ConfigureAwait(false);
+            if (UseDataSeeder)
+                await InitializeDbAsync(Cancel).ConfigureAwait(false);
         }
         catch (OperationCanceledException e)
         {
-            _logger.LogError(e, "Interrupting an operation when deleting a database");
+            _Logger.LogError(e, "Interrupting an operation when deleting a database");
             throw;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error during database initialization");
+            _Logger.LogError(e, "Error during database initialization");
             throw;
         }
     }

@@ -11,8 +11,6 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -283,7 +281,7 @@ public class FileService : IFileService
 
             if (await _unitOfWork.GetRepository<File>().GetByHashAsync(metadata.Hash) is { } existingFile)
             {
-                string message = $"File with the same hash {existingFile.Hash} already exists with id: {existingFile.Id.ToString()}";
+                string message = $"File with the same hash {existingFile.Hash} already exists with id: {existingFile.Id}";
                 _fileStore.Delete(path);
                 _logger.LogError(message);
                 return await Result<FileMetadata>.ErrorAsync((int)ResultCodes.FileAlreadyExist, message);

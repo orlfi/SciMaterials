@@ -1,4 +1,4 @@
-namespace SciMaterials.Contracts.API.DTO.Files;
+namespace SciMaterials.Contracts.API.DTO.Urls;
 
 public class EditUrlRequest
 {

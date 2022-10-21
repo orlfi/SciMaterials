@@ -47,7 +47,7 @@ public class Result : IResult
     /// <param name="code"> Код ошибки. </param>
     /// <param name="messages"> Дополнительные сообщения об ошибке. </param>
     /// <returns> Результат с ошибкой операции. </returns>
-    public static Result Error(int code, ICollection<string> messages) => new Result() { Succeeded = false, Code = code, Messages = messages };
+    public static Result Error(int code, ICollection<string> messages) => new Result { Succeeded = false, Code = code, Messages = messages };
 
     /// <summary> Возращает результат с ошибкой выполнения операции. Асинхронный. </summary>
     /// <param name="code"> Код ошибки. </param>
@@ -91,7 +91,7 @@ public class Result<TData> : Result, IResult<TData>
 
     public static new Result<TData> Error(int code, string message) => new() { Succeeded = false, Code = code, Messages = new List<string> { message } };
 
-    public static new Result<TData> Error(int code, ICollection<string> messages) => new Result<TData>() { Succeeded = false, Code = code, Messages = messages };
+    public static new Result<TData> Error(int code, ICollection<string> messages) => new Result<TData> { Succeeded = false, Code = code, Messages = messages };
 
     public static new Task<Result<TData>> ErrorAsync(int code) => Task.FromResult(Error(code));
 
