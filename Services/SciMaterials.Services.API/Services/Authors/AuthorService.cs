@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.Services.Authors;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.Authors;
+using SciMaterials.Contracts.API.DTO.Files;
 
 namespace SciMaterials.Services.API.Services.Authors;
 
@@ -28,6 +29,13 @@ public class AuthorService : IAuthorService
         var categories = await _unitOfWork.GetRepository<Author>().GetAllAsync();
         var result = _mapper.Map<List<GetAuthorResponse>>(categories);
         return result;
+    }
+
+    public async Task<PageResult<GetAuthorResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var categories = await _unitOfWork.GetRepository<Author>().GetPageAsync(pageNumber, pageSize);
+        var result = _mapper.Map<List<GetAuthorResponse>>(categories);
+        return await PageResult<GetAuthorResponse>.SuccessAsync(result); 
     }
 
     public async Task<Result<GetAuthorResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

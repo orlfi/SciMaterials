@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.Services.Comments;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.Comments;
+using SciMaterials.Contracts.API.DTO.Categories;
 
 namespace SciMaterials.Services.API.Services.Comments;
 
@@ -28,6 +29,13 @@ public class CommentService : ICommentService
         var categories = await _unitOfWork.GetRepository<Comment>().GetAllAsync();
         var result = _mapper.Map<List<GetCommentResponse>>(categories);
         return result;
+    }
+
+    public async Task<PageResult<GetCommentResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var categories = await _unitOfWork.GetRepository<Comment>().GetPageAsync(pageNumber, pageSize);
+        var result = _mapper.Map<List<GetCommentResponse>>(categories);
+        return await PageResult<GetCommentResponse>.SuccessAsync(result);
     }
 
     public async Task<Result<GetCommentResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

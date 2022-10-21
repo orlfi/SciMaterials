@@ -125,7 +125,7 @@ public class FileRepository : IFileRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<File>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files.Where(f => !f.IsDeleted);
@@ -146,7 +146,7 @@ public class FileRepository : IFileRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<File>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files.Where(f => !f.IsDeleted);
@@ -167,7 +167,7 @@ public class FileRepository : IFileRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public File? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
@@ -189,7 +189,7 @@ public class FileRepository : IFileRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<File?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
@@ -230,7 +230,8 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Entry(entityDb).CurrentValues.SetValues(entity);
+        entityDb = UpdateCurrentEntity(entity, entityDb);
+        _context.Files.Update(entityDb);
     }
 
     ///
@@ -253,11 +254,12 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Entry(entityDb).CurrentValues.SetValues(entity);
+        entityDb = UpdateCurrentEntity(entity, entityDb);
+        _context.Files.Update(entityDb);
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<File?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
@@ -279,7 +281,7 @@ public class FileRepository : IFileRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public File? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
@@ -301,7 +303,7 @@ public class FileRepository : IFileRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
     public async Task<File?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
@@ -323,7 +325,67 @@ public class FileRepository : IFileRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<File>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<File> query = new List<File>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<File>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<File> query = new List<File>().AsQueryable();
+
+        if (include)
+            query = query
+                .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public File? GetByHash(string hash, bool disableTracking = true, bool include = false)
     {
         IQueryable<File> query = _context.Files
@@ -342,5 +404,37 @@ public class FileRepository : IFileRepository
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
+    }
+
+
+    /// <summary> Обновить данные экземпляра каегории. </summary>
+    /// <param name="sourse"> Источник. </param>
+    /// <param name="recipient"> Получатель. </param>
+    /// <returns> Обновленный экземпляр. </returns>
+    private File UpdateCurrentEntity(File sourse, File recipient)
+    {
+        recipient.Name = sourse.Name;
+        recipient.IsDeleted = sourse.IsDeleted;
+
+        recipient.Title = sourse.Title;
+        recipient.Description = sourse.Description;
+        recipient.AuthorId = sourse.AuthorId;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.Author = sourse.Author;
+        recipient.Comments = sourse.Comments;
+        recipient.Tags = sourse.Tags;
+        recipient.Categories = sourse.Categories;
+        recipient.Ratings = sourse.Ratings;
+
+        recipient.Url = sourse.Url;
+        recipient.Size = sourse.Size;
+        recipient.Hash = sourse.Hash;
+        recipient.ContentTypeId = sourse.ContentTypeId;
+        recipient.FileGroupId = sourse.FileGroupId;
+        recipient.ContentType = sourse.ContentType;
+        recipient.FileGroup = sourse.FileGroup;
+
+
+        return recipient;
     }
 }

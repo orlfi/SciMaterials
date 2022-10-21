@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
+using SciMaterials.Contracts.API.DTO.Authors;
 
 namespace SciMaterials.Services.API.Services.Categories;
 
@@ -28,6 +29,13 @@ public class CategoryService : ICategoryService
         var categories = await _unitOfWork.GetRepository<Category>().GetAllAsync();
         var result = _mapper.Map<List<GetCategoryResponse>>(categories);
         return result;
+    }
+
+    public async Task<PageResult<GetCategoryResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var categories = await _unitOfWork.GetRepository<Category>().GetPageAsync(pageNumber, pageSize);
+        var result = _mapper.Map<List<GetCategoryResponse>>(categories);
+        return await PageResult<GetCategoryResponse>.SuccessAsync(result);
     }
 
     public async Task<Result<GetCategoryResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

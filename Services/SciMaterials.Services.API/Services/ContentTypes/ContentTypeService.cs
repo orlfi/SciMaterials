@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.Services.ContentTypes;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.ContentTypes;
+using SciMaterials.Contracts.API.DTO.Comments;
 
 namespace SciMaterials.Services.API.Services.ContentTypes;
 
@@ -28,6 +29,13 @@ public class ContentTypeService : IContentTypeService
         var categories = await _unitOfWork.GetRepository<ContentType>().GetAllAsync();
         var result = _mapper.Map<List<GetContentTypeResponse>>(categories);
         return result;
+    }
+
+    public async Task<PageResult<GetContentTypeResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    {
+        var categories = await _unitOfWork.GetRepository<ContentType>().GetPageAsync(pageNumber, pageSize);
+        var result = _mapper.Map<List<GetContentTypeResponse>>(categories);
+        return await PageResult<GetContentTypeResponse>.SuccessAsync(result);
     }
 
     public async Task<Result<GetContentTypeResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
