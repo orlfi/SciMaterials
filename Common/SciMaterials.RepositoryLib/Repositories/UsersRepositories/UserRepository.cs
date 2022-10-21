@@ -124,7 +124,7 @@ public class UserRepository : IUserRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAll"/>
+    /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
     public List<User>? GetAll(bool disableTracking = true, bool include = false)
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
@@ -136,7 +136,7 @@ public class UserRepository : IUserRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
     public async Task<List<User>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
@@ -148,7 +148,7 @@ public class UserRepository : IUserRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
     public User? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<User> query = _context.Users
@@ -161,7 +161,7 @@ public class UserRepository : IUserRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<User?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
         IQueryable<User> query = _context.Users
@@ -222,7 +222,7 @@ public class UserRepository : IUserRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
     public async Task<User?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
@@ -234,7 +234,7 @@ public class UserRepository : IUserRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
     public User? GetByName(string name, bool disableTracking = true, bool include = false)
     {
         IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
@@ -246,12 +246,54 @@ public class UserRepository : IUserRepository
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool)"/>
-    public async Task<User?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null;
+    /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
+    public Task<User?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool)"/>
+    /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
     public User? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCount()"/>
+    public int GetCount()
+        => _context.Categories.Count();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetCountAsync()"/>
+    public async Task<int> GetCountAsync()
+        => await _context.Categories.CountAsync();
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
+    public List<User>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<User> query = new List<User>().AsQueryable();
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
+    public async Task<List<User>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<User> query = new List<User>().AsQueryable();
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
@@ -259,6 +301,7 @@ public class UserRepository : IUserRepository
     /// <returns> Обновленный экземпляр. </returns>
     private User UpdateCurrentEntity(User sourse, User recipient)
     {
+        recipient.IsDeleted = sourse.IsDeleted;
         return recipient;
     }
 }
