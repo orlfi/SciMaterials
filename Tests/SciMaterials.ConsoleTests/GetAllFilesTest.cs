@@ -8,11 +8,11 @@ namespace SciMaterials.ConsoleTests;
 
 public class GetAllFilesTest
 {
-    private readonly IFilesClient _FilesClient;
+    private readonly IFilesClient _filesClient;
 
     public GetAllFilesTest(IFilesClient FilesClient, IUnitOfWork<SciMaterialsContext> UnitOfWork)
     {
-        _FilesClient = FilesClient;
+        _filesClient = FilesClient;
     }
 
     public async Task Get()

@@ -7,12 +7,12 @@ namespace SciMaterials.ConsoleTests;
 
 public class GetFileByIdTest
 {
-    private readonly IFilesClient _FilesClient;
+    private readonly IFilesClient _filesClient;
     private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
 
     public GetFileByIdTest(IFilesClient FilesClient, IUnitOfWork<SciMaterialsContext> UnitOfWork)
     {
-        _FilesClient = FilesClient;
+        _filesClient = FilesClient;
         _unitOfWork = UnitOfWork;
     }
 
