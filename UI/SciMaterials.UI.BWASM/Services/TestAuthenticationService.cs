@@ -24,7 +24,7 @@ public class TestAuthenticationService : IAuthenticationService
 
     public Task<bool> SignUp(SignUpForm formData)
     {
-        return Task.FromResult(_authenticationCache.TryAdd(formData.Email!, formData.Password!, formData.Username!));
+        return Task.FromResult(_authenticationCache.TryAdd(formData.Email, formData.Password, formData.Username));
     }
 
     public async Task<bool> SignIn(SignInForm formData)

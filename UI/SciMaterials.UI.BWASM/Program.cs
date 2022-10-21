@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 using SciMaterials.UI.BWASM;
+using SciMaterials.UI.BWASM.Models;
+using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -30,6 +32,10 @@ builder.Services
     .AddSingleton<AuthenticationCache>()
     .AddSingleton<IAuthorizationHandler, AuthorityHandler>()
     .AddSingleton<IAuthorizationPolicyProvider, AuthorityPolicyProvider>();
+
+// Validators // TODO: register with assembly scan
+builder.Services
+    .AddScoped<IMudBlazorValidator<SignUpForm>, SignUpFormValidator>();
 
 // Background
 builder.Services
