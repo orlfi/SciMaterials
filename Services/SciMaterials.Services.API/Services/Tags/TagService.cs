@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.Services.Tags;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.Tags;
+using SciMaterials.Contracts.API.DTO.ContentTypes;
 
 namespace SciMaterials.Services.API.Services.Tags;
 
@@ -30,9 +31,11 @@ public class TagService : ITagService
         return result;
     }
 
-    public Task<PageResult<GetTagResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public async Task<PageResult<GetTagResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var categories = await _unitOfWork.GetRepository<Tag>().GetPageAsync(pageNumber, pageSize);
+        var result = _mapper.Map<List<GetTagResponse>>(categories);
+        return await PageResult<GetTagResponse>.SuccessAsync(result);
     }
 
     public async Task<Result<GetTagResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)

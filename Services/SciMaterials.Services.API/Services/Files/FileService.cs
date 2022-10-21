@@ -50,9 +50,9 @@ public class FileService : IFileService
 
     public async Task<PageResult<GetFileResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
-        // var files = await _unitOfWork.GetRepository<File>().GetAllAsync(include: true);
-        // var result = _mapper.Map<List<GetFileResponse>>(files);
-        return await PageResult<GetFileResponse>.SuccessAsync(new List<GetFileResponse>());
+        var files = await _unitOfWork.GetRepository<File>().GetPageAsync(pageNumber, pageSize, include: true);
+        var result = _mapper.Map<List<GetFileResponse>>(files);
+        return await PageResult<GetFileResponse>.SuccessAsync(result);
     }
 
     public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
