@@ -69,7 +69,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.Data
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.Database", "Services\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj", "{A3A19FBA-0BC5-4BB9-8437-27678BC8CC6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.Contracts.WebApi.Clients", "Services\SciMaterials.Contracts.WebApi.Clients\SciMaterials.Contracts.WebApi.Clients.csproj", "{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.WebApi.Clients", "Services\SciMaterials.Contracts.WebApi.Clients\SciMaterials.Contracts.WebApi.Clients.csproj", "{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Services", ".Services", "{C28C639F-1F0B-4B71-9F87-981E78B9D4BB}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		ClearCache.bat = ClearCache.bat
+		ClearObjBin.bat = ClearObjBin.bat
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
