@@ -1,4 +1,7 @@
 using Blazored.LocalStorage;
+
+using Fluxor;
+
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -21,5 +24,12 @@ builder.Services
 
 builder.Services
     .AddSingleton<FileUploadScheduleService>();
+
+// State management
+builder.Services.AddFluxor(options =>
+{
+    options.ScanAssemblies(typeof(Program).Assembly);
+    options.UseReduxDevTools(reduxOptions => reduxOptions.Name = "SciMaterials");
+});
 
 await builder.Build().RunAsync();
