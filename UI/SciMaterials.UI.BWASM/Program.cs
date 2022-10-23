@@ -6,14 +6,19 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+
+using SciMaterials.Contracts.WebApi.Clients.Files;
 using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Services;
+using SciMaterials.WebApi.Clients.Files;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+// Api
+builder.Services.AddHttpClient<IFilesClient, FilesClient>(c => c.BaseAddress = new(BaseRoutes.FilesApi));
+
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
 
@@ -33,3 +38,9 @@ builder.Services.AddFluxor(options =>
 });
 
 await builder.Build().RunAsync();
+
+
+static class BaseRoutes
+{
+    public const string FilesApi = "http://localhost:5185";
+}
