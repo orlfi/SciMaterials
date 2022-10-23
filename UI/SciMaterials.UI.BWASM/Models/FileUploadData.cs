@@ -4,14 +4,9 @@ namespace SciMaterials.UI.BWASM.Models;
 
 public class FileUploadData
 {
-    public FileUploadData(IBrowserFile file)
-    {
-        File = file;
-        FileName = file.Name;
-    }
+    public Guid Id { get; init; }
+    public IBrowserFile File { get; init; } = null!;
+    public string FileName { get; init; } = null!;
 
-    public Guid Id { get; } = Guid.NewGuid();
-    public IBrowserFile File { get; }
-    public string FileName { get; set; }
-    public string? Category { get; set; }
+    public CancellationToken CancellationToken { get; init; }
 }
