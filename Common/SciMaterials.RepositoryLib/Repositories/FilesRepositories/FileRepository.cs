@@ -414,7 +414,7 @@ public class FileRepository : IFileRepository
         recipient.Name = sourse.Name;
         recipient.IsDeleted = sourse.IsDeleted;
 
-        recipient.Title = sourse.Title;
+        recipient.ShortInfo = sourse.ShortInfo;
         recipient.Description = sourse.Description;
         recipient.AuthorId = sourse.AuthorId;
         recipient.CreatedAt = sourse.CreatedAt;
