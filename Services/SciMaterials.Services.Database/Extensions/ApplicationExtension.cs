@@ -25,13 +25,13 @@ public static class ApplicationExtension
 
         var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
         await authDb.InitializeAsync();
-        
-        // var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        // await initializer.InitializeDbAsync(
-        //         RemoveAtStart: dbSetting.RemoveAtStart, 
-        //         UseDataSeeder: dbSetting.UseDataSeeder)
-        //    .ConfigureAwait(false);
-        
+
+        var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        await initializer.InitializeDbAsync(
+                RemoveAtStart: dbSetting.RemoveAtStart,
+                UseDataSeeder: dbSetting.UseDataSeeder)
+           .ConfigureAwait(false);
+
         return app;
     }
 }
