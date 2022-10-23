@@ -17,7 +17,8 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Api
-builder.Services.AddHttpClient<IFilesClient, FilesClient>(c => c.BaseAddress = new(BaseRoutes.FilesApi));
+builder.Services
+    .AddApiClient<IFilesClient, FilesClient>(BaseRoutes.FilesApi);
 
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
