@@ -1,42 +1,46 @@
 ﻿@page "/files_upload"
-@inject FileUploadScheduleService FileUploadScheduleService
+
+@using SciMaterials.UI.BWASM.States.FileUpload
+
+@inherits FluxorComponent
+
+@inject IDispatcher Dispatcher
+@inject IState<FilesUploadState> State
 
 <MudDrawerContainer>
 	<MudDrawer @bind-Open="@_openFileDetails" Width="300px" Anchor="Anchor.Right" Variant="@DrawerVariant.Persistent">
 		<MudIconButton Variant="Variant.Filled" Size="Size.Medium" Icon="@Icons.Material.Filled.Close" OnClick="CloseFileDetails" />
 		
 		<MudForm Model="@_formModel" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
-			<MudTextField T="string" Label="FileName" @bind-Value="_formModel.FileName"
-			              Required="true" RequiredError="File cannot live without it's name!'" />
+			<MudText T="string" Label="FileName"
+					 Required="true" RequiredError="File cannot live without it's name!'">@_formModel.FileName</MudText>
 
-			<MudTextField T="string" Label="Category" @bind-Value="_formModel.Category" />
+			<MudText T="string" Label="Category">@_formModel.Category</MudText>
 
 			<MudText>Size: @_formModel.Size</MudText>
-
-			<div>
-				<MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!_fileDetailsFormFilledCorrectly)" Class="ml-auto" OnClick="SaveFormData">Save</MudButton>
-			</div>
 		</MudForm>   
 	</MudDrawer>
 
 	<div>
 		<div>
 			<InputFile id="fileInput" hidden OnChange="OnFilesListChange" multiple/>
-			<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled" Size="Size.Small" OnClick="Upload">Add more</MudButton>
+			<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled" Size="Size.Small">Add more</MudButton>
 		</div>
 
-		<TableView Data="_files">
+		<TableView Data="State.Value.Files">
 			<TableHeader>
 				<MudTh>Name</MudTh>
 				<MudTh>Category</MudTh>
 				<MudTh>Size</MudTh>
+				<MudTh>State</MudTh>
 				<MudTh></MudTh>
 			</TableHeader>
 
 			<RowTemplate>
 				<MudTd DataLabel="Name">@context.FileName</MudTd>
 				<MudTd DataLabel="Category">@context.Category</MudTd>
-				<MudTd DataLabel="Size">@context.File.Size</MudTd>
+				<MudTd DataLabel="Size">@context.Size</MudTd>
+				<MudTd DataLabel="State">@context.State</MudTd>
 				<MudTd>
 					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Details(context)">Details</MudButton>
 					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
@@ -51,8 +55,6 @@
 </MudDrawerContainer>
 
 @code {
-	private readonly List<FileUploadData> _files = new();
-
 	private bool _cantUploadFiles = true;
 
 	private UploadFileDetailsForm _formModel = UploadFileDetailsForm.Empty;
@@ -62,45 +64,42 @@
 
 	protected override void OnAfterRender(bool firstRender)
 	{
-		_cantUploadFiles = _files.Count <= 0;
+		_cantUploadFiles = State.Value.Files.Length <= 0;
 	}
 
 	private void OnFilesListChange(InputFileChangeEventArgs e)
 	{
 		if (e.FileCount <= 0) return;
 
-		_files.AddRange(e.GetMultipleFiles().Select(file => new FileUploadData(file)));
-		StateHasChanged();
+		Dispatcher.Dispatch(new RegisterMultipleFilesUpload(e.GetMultipleFiles()));
 	}
 
 	private void Upload()
 	{
-		FileUploadScheduleService.ScheduleUpload(_files);
+		var toUpload = State.Value.Files.Where(x => x.State == UploadState.NotScheduled).ToList();
+		Dispatcher.Dispatch(new ScheduleFilesUpload(toUpload));
 	}
 
-	private void Delete(FileUploadData context)
+	private void Delete(FileUploadState context)
 	{
-		_files.Remove(context);
-		StateHasChanged();
+		Dispatcher.Dispatch(new DeleteFileUpload(context.Id));
 	}
 
-	private void Details(FileUploadData context)
+	private void Details(FileUploadState context)
 	{
 		_openFileDetails = true;
-		_formModel = context;
+		_formModel = new UploadFileDetailsForm()
+		{
+			Id = context.Id,
+			Category = context.Category,
+			FileName = context.FileName,
+			Size = context.Size
+		};
 	}
 
 	private void CloseFileDetails()
 	{
 		_formModel = UploadFileDetailsForm.Empty;
 		_openFileDetails = false;
-	}
-
-	private void SaveFormData()
-	{
-		var formData = _formModel;
-		CloseFileDetails();
-		var file = _files.Find(x => x.Id == formData.Id);
-		formData.UpdateSource(file);
 	}
 }
