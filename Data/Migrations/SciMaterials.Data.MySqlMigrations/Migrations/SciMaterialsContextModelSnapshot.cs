@@ -233,12 +233,11 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ShortInfo")
+                        .HasColumnType("longtext");
+
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Url")
                         .HasColumnType("longtext");
@@ -276,8 +275,7 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
+                    b.Property<string>("ShortInfo")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
