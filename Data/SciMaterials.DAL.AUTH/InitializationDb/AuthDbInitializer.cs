@@ -29,11 +29,16 @@ public class AuthDbInitializer : IAuthDbInitializer
         _Logger = Logger;
     }
     
-    public async Task InitializeAsync(CancellationToken CancellationToken = default)
+    public async Task InitializeAsync(bool RemoveAtStart = false, CancellationToken Cancel = default)
     {
         _Logger.Log(LogLevel.Information,"Initialize auth database start {Time}", DateTime.Now);
 
-        await _DBContext.Database.MigrateAsync(CancellationToken);
+        if (RemoveAtStart)
+            await _DBContext.Database.EnsureDeletedAsync(Cancel).ConfigureAwait(false);
+
+        var pending_migrations = await _DBContext.Database.GetPendingMigrationsAsync(Cancel).ConfigureAwait(false);
+        if(pending_migrations.Any())
+            await _DBContext.Database.MigrateAsync(Cancel);
 
         await AuthRolesInitializer.InitializeAsync(_UserManager, _RoleManager, _Configuration);
 
