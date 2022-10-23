@@ -2,6 +2,10 @@
 
 using Fluxor;
 
+using SciMaterials.Contracts.API.DTO.Files;
+using SciMaterials.Contracts.Result;
+using SciMaterials.Contracts.WebApi.Clients.Files;
+
 namespace SciMaterials.UI.BWASM.States.FilesStorage;
 
 [FeatureState]
@@ -15,14 +19,38 @@ public record FileStorageState(Guid Id, string FileName, string Category, long S
 public record struct LoadFiles();
 public record struct LoadFilesResult(ImmutableArray<FileStorageState> Files);
 public record struct DeleteFile(Guid Id);
+public record struct DeleteFileResult(Guid Id);
 
 public class FilesStorageEffects
 {
-    [EffectMethod(typeof(LoadFiles))]
-    public Task LoadFiles(IDispatcher dispatcher)
+    private readonly IFilesClient _filesClient;
+
+    public FilesStorageEffects(IFilesClient filesClient)
     {
-        dispatcher.Dispatch(new LoadFilesResult(Files.ToImmutableArray()));
-        return Task.CompletedTask;
+        _filesClient = filesClient;
+    }
+
+    [EffectMethod(typeof(LoadFiles))]
+    public async Task LoadFiles(IDispatcher dispatcher)
+    {
+        var result = await _filesClient.GetAllAsync<GetFileResponse>();
+        if (!result.Succeeded)
+        {
+            dispatcher.Dispatch(new LoadFilesResult());
+            return;
+        }
+
+        var files = result.Data!.Select(x => new FileStorageState(x.Id, x.Name, x.Categories, x.Size)).ToImmutableArray();
+        dispatcher.Dispatch(new LoadFilesResult(files));
+    }
+
+    [EffectMethod]
+    public async Task DeleteFile(DeleteFile action, IDispatcher dispatcher)
+    {
+        var result = await _filesClient.DeleteAsync(action.Id, CancellationToken.None);
+        if (!result.Succeeded) return;
+
+        dispatcher.Dispatch(new DeleteFileResult(action.Id));
     }
 
     private IEnumerable<FileStorageState> Files = new []
@@ -43,7 +71,7 @@ public static class FilesStorageReducers
     }
 
     [ReducerMethod]
-    public static FilesStorageState DeleteFile(FilesStorageState state, DeleteFile action)
+    public static FilesStorageState DeleteFile(FilesStorageState state, DeleteFileResult action)
     {
         if (state.Files.FirstOrDefault(x => x.Id == action.Id) is not { } toDelete) return state;
 
