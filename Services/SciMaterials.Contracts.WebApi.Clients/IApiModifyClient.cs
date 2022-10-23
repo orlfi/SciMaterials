@@ -1,7 +1,7 @@
 ﻿namespace SciMaterials.Contracts.WebApi.Clients;
 
-public interface IApiModifyClient<TId> :
-    IApiAddClient<TId>,
-    IApiEditClient<TId>,
+public interface IApiModifyClient<TId, TAddRequest, TEditRequest> :
+    IApiAddClient<TId, TAddRequest>,
+    IApiEditClient<TId,TEditRequest>,
     IApiDeleteClient<TId>
 { }

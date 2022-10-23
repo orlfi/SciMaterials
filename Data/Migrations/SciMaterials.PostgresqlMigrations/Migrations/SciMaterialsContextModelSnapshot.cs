@@ -236,12 +236,11 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ShortInfo")
+                        .HasColumnType("text");
+
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Url")
                         .HasColumnType("text");
@@ -279,8 +278,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
+                    b.Property<string>("ShortInfo")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

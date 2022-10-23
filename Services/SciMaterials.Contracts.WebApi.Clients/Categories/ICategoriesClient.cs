@@ -3,8 +3,8 @@
 namespace SciMaterials.Contracts.WebApi.Clients.Categories;
 
 public interface ICategoriesClient :
-    IApiReadonlyClient<Guid>,
-    IApiModifyClient<Guid>,
+    IApiReadonlyClient<Guid, GetCategoryResponse>,
+    IApiModifyClient<Guid, AddCategoryRequest, EditCategoryRequest>,
     IApiDeleteClient<Guid>
 {
 }

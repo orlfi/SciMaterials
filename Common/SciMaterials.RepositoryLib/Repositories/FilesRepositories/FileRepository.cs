@@ -361,7 +361,8 @@ public class FileRepository : IFileRepository
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
     public async Task<List<File>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<File> query = new List<File>().AsQueryable();
+        //IQueryable<File> query = new List<File>().AsQueryable();
+        IQueryable<File> query = _context.Files.Where(f => !f.IsDeleted);
 
         if (include)
             query = query
@@ -414,7 +415,7 @@ public class FileRepository : IFileRepository
         recipient.Name = sourse.Name;
         recipient.IsDeleted = sourse.IsDeleted;
 
-        recipient.Title = sourse.Title;
+        recipient.ShortInfo = sourse.ShortInfo;
         recipient.Description = sourse.Description;
         recipient.AuthorId = sourse.AuthorId;
         recipient.CreatedAt = sourse.CreatedAt;
