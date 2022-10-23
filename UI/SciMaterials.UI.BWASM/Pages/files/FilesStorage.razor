@@ -1,5 +1,11 @@
 ﻿@page "/files_storage"
 
+@using SciMaterials.UI.BWASM.States.FilesStorage
+@inherits FluxorComponent
+
+@inject IDispatcher Dispatcher
+@inject IState<FilesStorageState> State
+
 @inject NavigationManager NavigationManager
 
 <MudText Class="mb-5" Typo="Typo.h3" Align="Align.Start">Files</MudText>
@@ -10,26 +16,28 @@
 @switch (_itemsPresentationMode)
 {
 	case ItemsPresentationMode.Table:
-		<TableView Data="Files">
+		<TableView Data="State.Value.Files">
 			<TableHeader>
 				<MudTh></MudTh>
 				<MudTh>Name</MudTh>
+				<MudTh>Category</MudTh>
 				<MudTh>Size</MudTh>
 				<MudTh></MudTh>
 			</TableHeader>
 
 			<RowTemplate>
-				@if (true)
-				{
+				@*@if (true)
+				{*@
 					<MudTd><MudIcon Icon="@Icons.Material.Filled.FilePresent" /></MudTd>
-				}
+				@*}
 				else
 				{
 					<MudTd><MudIcon Icon="@Icons.Material.Filled.Folder"/></MudTd>
-				}
+				}*@
 
-				<MudTd DataLabel="Name">@($"Name #{context}")</MudTd>
-				<MudTd DataLabel="Size">@($"{context} gb")</MudTd>
+				<MudTd DataLabel="Name">@context.FileName</MudTd>
+				<MudTd DataLabel="Category">@context.Category</MudTd>
+				<MudTd DataLabel="Size">@context.Size</MudTd>
 				<MudTh>
 					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => NavigateToFileDetailsUrl(context)">Edit</MudButton>
 					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
@@ -37,27 +45,25 @@
 			</RowTemplate>
 		</TableView>
 		break;
-	case ItemsPresentationMode.LargeGrid:
-		<FilesGridView Files="Files" OnFileSelected="NavigateToFileDetailsUrl"/>
-		break;
+	@*case ItemsPresentationMode.LargeGrid:
+		<FilesGridView Files="State.Value.Files" OnFileSelected="NavigateToFileDetailsUrl"/>
+		break;*@
 }
 
 
 @code {
-	private List<int> Files = new();
-
-    private string filterValue { get; set; }
+	private string filterValue { get; set; }
     private string sortValue { get; set; }
 	private ItemsPresentationMode _itemsPresentationMode;
 
     protected override async Task OnInitializedAsync()
     {
-	    Files = Enumerable.Range(1, 20).ToList();
+	    Refresh();
     }
 
-    private void NavigateToFileDetailsUrl(int id)
+    private void NavigateToFileDetailsUrl(FileStorageState context)
     {
-        NavigationManager.NavigateTo($"/filedetails/{id}");
+        NavigationManager.NavigateTo($"/filedetails/{1}");
     }
 
 	private void ChangeItemsPresentationMode(ItemsPresentationMode mode)
@@ -65,7 +71,13 @@
 		_itemsPresentationMode = mode;
 	}
 
-	private void Delete(int context)
+	private void Delete(FileStorageState context)
 	{
+		Dispatcher.Dispatch(new DeleteFile(context.Id));
+	}
+
+	private void Refresh()
+	{
+		Dispatcher.Dispatch(new LoadFiles());
 	}
 }
