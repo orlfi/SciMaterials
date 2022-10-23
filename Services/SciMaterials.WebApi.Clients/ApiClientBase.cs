@@ -1,16 +1,22 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.Result;
+using SciMaterials.Contracts.WebApi.Clients;
+
 using System.Net.Http.Json;
 
 namespace SciMaterials.WebApi.Clients;
 
-public abstract class ApiClientBase<TClient, TId>
+public abstract class ApiClientBase<TId, TResult, TEditRequest> : 
+    IApiReadonlyClient<TId, TResult>,
+    IApiEditClient<TId, TEditRequest>,
+    IApiDeleteClient<TId>
 {
-    protected readonly ILogger<TClient> _logger;
+    protected readonly ILogger<ApiClientBase<TId, TResult, TEditRequest>> _logger;
     protected readonly HttpClient _httpClient;
     protected string _webApiRoute = string.Empty;
 
-    public ApiClientBase(HttpClient httpClient, ILogger<TClient> logger) => (_httpClient, _logger) = (httpClient, logger);
+    public ApiClientBase(HttpClient httpClient, ILogger<ApiClientBase<TId, TResult, TEditRequest>> logger) 
+        => (_httpClient, _logger) = (httpClient, logger);
 
     public virtual async Task<Result<TId>> DeleteAsync(TId id, CancellationToken cancellationToken = default)
     {
@@ -25,7 +31,7 @@ public abstract class ApiClientBase<TClient, TId>
         return result;
     }
 
-    public virtual async Task<Result<TId>> EditAsync<TRequest>(TRequest request, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<TId>> EditAsync(TEditRequest request, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Edit entity {request}.", request);
 
@@ -38,7 +44,7 @@ public abstract class ApiClientBase<TClient, TId>
         return result;
     }
 
-    public virtual async Task<Result<IEnumerable<TResult>>> GetAllAsync<TResult>(CancellationToken cancellationToken = default)
+    public virtual async Task<Result<IEnumerable<TResult>>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Get all entities");
 
@@ -47,7 +53,7 @@ public abstract class ApiClientBase<TClient, TId>
         return result;
     }
 
-    public virtual async Task<Result<TResult>> GetByIdAsync<TResult>(TId id, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<TResult>> GetByIdAsync(TId id, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Get entity by id {id}", id);
 
@@ -56,7 +62,7 @@ public abstract class ApiClientBase<TClient, TId>
         return result;
     }
 
-    public virtual async Task<PageResult<TResult>> GetPageAsync<TResult>(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
+    public virtual async Task<PageResult<TResult>> GetPageAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Get paged entities >>> Page number:{pageNumber}; Page dize {pageSize}", pageNumber, pageSize);
 

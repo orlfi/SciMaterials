@@ -1,12 +1,14 @@
-﻿using SciMaterials.Contracts.API.DTO.Files;
+﻿using System.Security.Cryptography;
+
+using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.Contracts.WebApi.Clients.Files;
 
 public interface IFilesClient :
-    IApiReadonlyClient<Guid>,
-    IApiEditClient<Guid>,
+    IApiReadonlyClient<Guid, GetFileResponse>,
+    IApiEditClient<Guid, EditFileRequest>,
     IApiDeleteClient<Guid>
 {
     // Task<Result<Guid>> EditAsync(EditFileRequest request, CancellationToken cancellationToken = default);

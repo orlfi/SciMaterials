@@ -1,8 +1,7 @@
-using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.WebApi.Clients.Files;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.UnitOfWork;
-using SciMaterials.WebApi.Clients.Files;
+
 
 namespace SciMaterials.ConsoleTests;
 
@@ -17,7 +16,7 @@ public class GetAllFilesTest
 
     public async Task Get()
     {
-        var result = await _filesClient.GetAllAsync<GetFileResponse>();
+        var result = await _filesClient.GetAllAsync();
 
         if (result.Succeeded)
             foreach (var item in result.Data)
