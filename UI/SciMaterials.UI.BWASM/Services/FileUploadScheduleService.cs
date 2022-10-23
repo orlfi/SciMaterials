@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.Result;
@@ -13,7 +12,7 @@ public class FileUploadScheduleService : IDisposable
     private readonly ILogger<FileUploadScheduleService> _logger;
     private const string FilesApiRoot = WebApiRoute.Files;
 
-    private readonly ConcurrentQueue<FileUploadData> _uploadRequests = new();
+    private readonly Queue<FileUploadData> _uploadRequests = new();
     private readonly PeriodicTimer _sender; 
 
 
@@ -22,7 +21,7 @@ public class FileUploadScheduleService : IDisposable
         _scopeFactory = scopeFactory;
         _logger = logger;
         _sender = new(TimeSpan.FromSeconds(30));
-        Upload();
+        _ = Upload();
     }
 
     public void ScheduleUpload(FileUploadData data)
@@ -31,18 +30,12 @@ public class FileUploadScheduleService : IDisposable
         _uploadRequests.Enqueue(data);
     }
 
-    public void ScheduleUpload(IEnumerable<FileUploadData> data)
-    {
-        foreach (var uploadData in data)
-            ScheduleUpload(uploadData);
-    }
-
     private async Task Upload()
     {
         while (true)
         {
             if(!await _sender.WaitForNextTickAsync()) return;
-            if(_uploadRequests.IsEmpty) continue;
+            if(_uploadRequests.Count <= 0) continue;
 
             if(!_uploadRequests.TryDequeue(out var data)) continue;
 
