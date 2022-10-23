@@ -46,7 +46,7 @@ public record struct ScheduleFilesUpload(IReadOnlyCollection<FileUploadState> Fi
 public record struct FileUploadScheduled(Guid Id, CancellationTokenSource CancellationTokenSource);
 public record struct FileUploading(Guid Id);
 public record struct FileUploaded(Guid Id);
-public record struct FileUploadFailed(Guid Id);
+public record struct FileUploadFailed(Guid Id, int ErrorCode);
 public record struct FileUploadCanceled(Guid Id);
 public record struct DeleteFileUpload(Guid Id);
 public record struct ChangeCategoryOfFileUpload(Guid Id, string? Category);
