@@ -236,12 +236,11 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ShortInfo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
@@ -279,8 +278,7 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
+                    b.Property<string>("ShortInfo")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
