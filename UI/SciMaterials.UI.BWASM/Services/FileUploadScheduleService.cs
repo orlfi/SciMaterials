@@ -1,26 +1,33 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.Result;
+﻿using Fluxor;
+
+using SciMaterials.Contracts.API.DTO.Files;
+using SciMaterials.Contracts.WebApi.Clients.Files;
 using SciMaterials.UI.BWASM.Models;
+using SciMaterials.UI.BWASM.States.FileUpload;
 
 namespace SciMaterials.UI.BWASM.Services;
 
 public class FileUploadScheduleService : IDisposable
 {
-    private readonly IServiceScopeFactory _scopeFactory;
+    private readonly IFilesClient _filesClient;
+    private readonly IDispatcher _dispatcher;
     private readonly ILogger<FileUploadScheduleService> _logger;
-    private const string FilesApiRoot = WebApiRoute.Files;
 
     private readonly Queue<FileUploadData> _uploadRequests = new();
     private readonly PeriodicTimer _sender; 
 
 
-    public FileUploadScheduleService(IServiceScopeFactory scopeFactory, ILogger<FileUploadScheduleService> logger)
+    public FileUploadScheduleService(
+        IFilesClient filesClient,
+        IDispatcher dispatcher,
+        ILogger<FileUploadScheduleService> logger)
     {
-        _scopeFactory = scopeFactory;
+        _filesClient = filesClient;
+        _dispatcher = dispatcher;
         _logger = logger;
+
         _sender = new(TimeSpan.FromSeconds(30));
+
         _ = Upload();
     }
 
@@ -37,49 +44,38 @@ public class FileUploadScheduleService : IDisposable
             if(!await _sender.WaitForNextTickAsync()) return;
             if(_uploadRequests.Count <= 0) continue;
 
-            if(!_uploadRequests.TryDequeue(out var data)) continue;
+            if(!_uploadRequests.TryDequeue(out FileUploadData? data)) continue;
 
             _logger.LogInformation("Building upload data for file {name}", data.FileName);
-
-            using MultipartFormDataContent content = new();
-            bool canUpload = false;
-
-            try
-            {
-                // add max file size rule and cancellation token
-                var fileContent = new StreamContent(data.File.OpenReadStream());
-                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse(
-                    data.File.ContentType is {Length:>0} contentType 
-                    ? contentType
-                    : "application/octet-stream");
-
-                content.Add(fileContent, "file", data.File.Name);
-                canUpload = true;
-                _logger.LogInformation("Builded upload data for file {name}", data.FileName);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Fail to build upload file data stream");
-                // log error
-                // send message with file upload status
-            }
-
-            if (!canUpload) continue;
-
-            await using (var scope = _scopeFactory.CreateAsyncScope())
-            {
-                try
+            _dispatcher.Dispatch(new FileUploading(data.Id));
+            
+            var result = await _filesClient.UploadAsync(
+                data.File.OpenReadStream(),
+                new UploadFileRequest()
                 {
-                    using var client = scope.ServiceProvider.GetRequiredService<HttpClient>();
-                    var response = await client.PostAsync(FilesApiRoot + "\\Upload", content);
-                    var result = await response.Content.ReadFromJsonAsync<Result<Guid>>();
-                    // TODO: parse result
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Fail to upload file data");
-                }
+                    Name = data.FileName,
+                    Size = data.File.Size,
+                    // TODO
+                    Categories = string.Empty,
+                    AuthorId = Guid.Empty,
+                    ContentTypeName = string.Empty,
+                    Title = string.Empty
+                },
+                data.CancellationToken);
+
+            if (data.CancellationToken.IsCancellationRequested)
+            {
+                _dispatcher.Dispatch(new FileUploadCanceled(data.Id));
+                continue;
             }
+
+            if (result.Succeeded)
+            {
+                _dispatcher.Dispatch(new FileUploaded(data.Id));
+                continue;
+            }
+
+            _dispatcher.Dispatch(new FileUploadFailed(data.Id, result.Code));
         }
     }
 
