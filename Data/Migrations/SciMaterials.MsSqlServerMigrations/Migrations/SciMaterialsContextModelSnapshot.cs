@@ -141,6 +141,8 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ParentId");
+
                     b.ToTable("Categories");
                 });
 
@@ -421,6 +423,15 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SciMaterials.DAL.Models.Category", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Category", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("SciMaterials.DAL.Models.Comment", b =>
                 {
                     b.HasOne("SciMaterials.DAL.Models.Author", "Author")
@@ -508,6 +519,11 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Navigation("Files");
 
                     b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("SciMaterials.DAL.Models.Category", b =>
+                {
+                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.ContentType", b =>
