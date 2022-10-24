@@ -11,26 +11,17 @@ namespace SciMaterials.Services.Database.Extensions;
 
 public static class ApplicationExtension
 {
-    public static async Task<IApplicationBuilder> UseInitializationDbAsync(this IApplicationBuilder app, IConfiguration configuration)
+    public static async Task<IApplicationBuilder> InitializeDbAsync(this IApplicationBuilder app, IConfiguration configuration)
     {
         await using var scope = app.ApplicationServices.CreateAsyncScope();
 
-        var dbSetting = configuration.GetSection("DbSettings").Get<DbSettings>();
+        var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
         
-        if (dbSetting.DbProvider.Equals("SQLite"))
-        {
-            var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
-            await context.Database.MigrateAsync().ConfigureAwait(false);
-        }
+        var db_domain = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+        await db_domain.InitializeDbAsync(db_setting.RemoveAtStart, db_setting.UseDataSeeder);
 
-        var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
-        await authDb.InitializeAsync();
-        
-        // var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        // await initializer.InitializeDbAsync(
-        //         RemoveAtStart: dbSetting.RemoveAtStart, 
-        //         UseDataSeeder: dbSetting.UseDataSeeder)
-        //    .ConfigureAwait(false);
+        var auth_db = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
+        await auth_db.InitializeAsync();
         
         return app;
     }

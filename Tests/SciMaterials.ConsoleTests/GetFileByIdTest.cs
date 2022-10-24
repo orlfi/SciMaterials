@@ -18,7 +18,7 @@ public class GetFileByIdTest
 
     public async Task Get(Guid fileId)
     {
-        var result = await _filesClient.GetByIdAsync<GetFileResponse>(fileId);
+        var result = await _filesClient.GetByIdAsync(fileId);
 
         if (result.Succeeded)
             Console.WriteLine($"{result.Data.Id} >>> {result.Data.Name}");

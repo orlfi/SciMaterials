@@ -45,14 +45,14 @@ await using (var scope = host.Services.CreateAsyncScope())
     // var service = scope.ServiceProvider.GetRequiredService<AddFileWithCategories>();
     // await service.AddFileToDatabase("test.txt");
 
-    //Console.WriteLine("Get all files:");
-    //var getAllFilesTest = scope.ServiceProvider.GetRequiredService<GetAllFilesTest>();
-    //await getAllFilesTest.Get();
+    Console.WriteLine("Get all files:");
+    var getAllFilesTest = scope.ServiceProvider.GetRequiredService<GetAllFilesTest>();
+    await getAllFilesTest.Get();
 
-    Console.WriteLine("Get file by Id:");
-    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<SciMaterialsContext>>();
-    var allFiles = await unitOfWork.GetRepository<File>().GetAllAsync();
-    var fileId = allFiles.First().Id;
+    //Console.WriteLine("Get file by Id:");
+    //var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork<SciMaterialsContext>>();
+    //var allFiles = await unitOfWork.GetRepository<File>().GetAllAsync();
+    //var fileId = allFiles.First().Id;
     //var getFileByIdTest = scope.ServiceProvider.GetRequiredService<GetFileByIdTest>();
     //await getFileByIdTest.Get(fileId);
 
@@ -72,8 +72,8 @@ await using (var scope = host.Services.CreateAsyncScope())
     // var sendFileTest = scope.ServiceProvider.GetRequiredService<SendFileTest>();
     // await sendFileTest.SendFileAsync("test.txt");
 
-    var downloadFileByIdTest = scope.ServiceProvider.GetRequiredService<DownloadFileByIdTest>();
-    await downloadFileByIdTest.Download(Guid.Parse("29ED78FA-AE3E-4A5E-9981-F1816EE4E664"));
+    //var downloadFileByIdTest = scope.ServiceProvider.GetRequiredService<DownloadFileByIdTest>();
+    //await downloadFileByIdTest.Download(Guid.Parse("29ED78FA-AE3E-4A5E-9981-F1816EE4E664"));
 }
 
 Console.WriteLine("Press any key to exit...");

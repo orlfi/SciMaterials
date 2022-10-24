@@ -30,9 +30,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IContentTypeService, ContentTypeService>();
         services.AddScoped<ITagService, TagService>();
+
         services.AddRepositoryServices();
-        services.AddContextMultipleProviders(configuration);
-        services.AddDatabaseServices();
+
+        services
+           .AddContextMultipleProviders(configuration)
+           .AddDatabaseServices();
+
         services.AddMappings();
         return services;
     }

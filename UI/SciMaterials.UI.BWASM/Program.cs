@@ -9,6 +9,7 @@ using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
+using SciMaterials.WebApi.Clients.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,6 +22,8 @@ builder.Services
 
 // Api
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddApiClients(new Uri(builder.HostEnvironment.BaseAddress));
+
 builder.Services
     .AddScoped<IAccountsService, TestAccountsService>()
     .AddScoped<IAuthoritiesService, TestAuthoritiesService>();

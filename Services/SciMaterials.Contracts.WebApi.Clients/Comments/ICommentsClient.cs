@@ -3,8 +3,8 @@
 namespace SciMaterials.Contracts.WebApi.Clients.Comments;
 
 public interface ICommentsClient :
-    IApiReadonlyClient<Guid>,
-    IApiModifyClient<Guid>,
+    IApiReadonlyClient<Guid, GetCommentResponse>,
+    IApiModifyClient<Guid, AddCommentRequest, EditCommentRequest>,
     IApiDeleteClient<Guid>
 {
 }
