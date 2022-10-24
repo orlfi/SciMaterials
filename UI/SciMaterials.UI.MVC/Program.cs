@@ -3,9 +3,7 @@ using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Database.Extensions;
-using SciMaterials.AUTH.Extensions;
-using SciMaterials.Contracts.API.Services.Identity;
-using SciMaterials.WebApi.Clients.Identity;
+using SciMaterials.UI.MVC.Identity.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,17 +20,14 @@ var services = builder.Services;
 services.AddControllersWithViews();
 services.AddRazorPages();
 
-services.AddSwagger();
-
 services.ConfigureApplication(config);
 services.AddApiServices(config);
 
 services.AddAuthApiServices(config);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
-
-services.AddHttpClient();
-services.AddSingleton<IIdentityClient, IdentityClient>();
+services.AddAuthHttpClient();
+services.AddAuthJwtAndSwaggerApiServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -54,14 +49,18 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+        
 app.UseAuthorization();
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapRazorPages();
+
 app.MapControllers();
 
 app.MapFallbackToFile("index.html");
+
 app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
 
 app.Run();

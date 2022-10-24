@@ -2,7 +2,6 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SciMaterials.AUTH.Extensions;
 using SciMaterials.Contracts.Auth;
 using SciMaterials.DAL.AUTH.InitializationDb;
 
@@ -55,9 +54,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddAuthApiServices(builder.Configuration);
-        
-builder.Services.AddAuthUtils();
+// builder.Services.AddAuthApiServices(builder.Configuration);
+//         
+// builder.Services.AddAuthUtils();
         
 builder.Services.AddHttpContextAccessor();
         
@@ -83,6 +82,8 @@ builder.Services.AddAuthentication(x =>
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         
 var app = builder.Build();
 
