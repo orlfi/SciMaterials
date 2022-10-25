@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 using System.Security.Claims;
 
-using SciMaterials.UI.BWASM.Utils;
-
 namespace SciMaterials.UI.BWASM.Services.Identity;
 
 public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
@@ -12,7 +10,7 @@ public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     private readonly ILocalStorageService _localStorageService;
     private static readonly AuthenticationState Anonymous;
 
-    static IdentityAuthenticationStateProvider() => Anonymous = new(new(new ClaimsIdentity("Fail")));
+    static IdentityAuthenticationStateProvider() => Anonymous = new(new(new ClaimsIdentity()));
 
     public IdentityAuthenticationStateProvider(ILocalStorageService localStorageService)
     {
@@ -22,7 +20,7 @@ public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var token = await _localStorageService.GetItemAsStringAsync("authToken");
-        if (string.IsNullOrWhiteSpace(token) || JwtParser.ParseClaimsFromJwt(token) is not {Count:>0} claims)
+        if (string.IsNullOrWhiteSpace(token) || token.ParseJwt() is not {Count:>0} claims)
         {
             await _localStorageService.RemoveItemAsync("authToken");
             return Anonymous;

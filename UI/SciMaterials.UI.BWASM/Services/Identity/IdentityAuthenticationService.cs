@@ -8,7 +8,6 @@ using SciMaterials.UI.BWASM.Models;
 using SciMaterials.Contracts.API.DTO.AuthUsers;
 using SciMaterials.Contracts.API.DTO.Clients;
 using SciMaterials.Contracts.API.Services.Identity;
-using SciMaterials.UI.BWASM.Utils;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;
 
@@ -44,13 +43,15 @@ public class IdentityAuthenticationService : IAuthenticationService
 
     public async Task<bool> SignIn(SignInForm formData)
     {
+        // get token
         var response = await _client.LoginUserAsync(
             new AuthUserRequest()
             {
                 Email = formData.Email,
                 Password = formData.Password
-            }, 
+            },
             CancellationToken.None);
+
         if (!response.Succeeded)
         {
             // TODO: handle failure
@@ -58,14 +59,11 @@ public class IdentityAuthenticationService : IAuthenticationService
         }
 
         var token = response.Content;
-        // get token
+
         // parse token
+        if (token.ParseJwt() is not { Count: > 0 } claims) return false;
 
         // set user signed with token claims
-
-        var claims = JwtParser.ParseClaimsFromJwt(token);
-        if (claims.Count <= 0) return false;
-
         await _localStorageService.SetItemAsStringAsync("authToken", token);
         ClaimsIdentity identity = new(claims, "Some Auth Policy Type");
         _authenticationStateProvider.NotifyUserSignIn(identity);
@@ -88,7 +86,7 @@ public class IdentityAuthenticationService : IAuthenticationService
             // TODO: handle failure
             return false;
         }
-        
+
         return true;
     }
 }
