@@ -7,15 +7,13 @@ namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 public class TestAccountsService : IAccountsService
 {
     private readonly AuthenticationCache _authenticationCache;
-    private readonly AuthenticationStateProvider _authenticationStateProvider;
+    private readonly IAuthenticationService _authenticationService;
 
-    public TestAccountsService(AuthenticationCache authenticationCache, AuthenticationStateProvider authenticationStateProvider)
+    public TestAccountsService(AuthenticationCache authenticationCache, IAuthenticationService authenticationService)
     {
         _authenticationCache = authenticationCache;
-        _authenticationStateProvider = authenticationStateProvider;
+        _authenticationService = authenticationService;
     }
-
-    private TestAuthenticationStateProvider ActualProvider => (TestAuthenticationStateProvider)_authenticationStateProvider;
 
     public Task<IReadOnlyList<UserInfo>> UsersList()
     {
@@ -24,22 +22,22 @@ public class TestAccountsService : IAccountsService
         return Task.FromResult<IReadOnlyList<UserInfo>>(data);
     }
 
-    public async Task ChangeAuthority(Guid userId, Guid authorityId)
+    public async Task ChangeAuthority(string userEmail, string authorityName)
     {
-        var result = _authenticationCache.ChangeAuthorityGroup(userId, authorityId);
+        var result = _authenticationCache.ChangeAuthorityGroup(userEmail, authorityName);
 
         if (!result.Succeeded)
             // TODO: handle failure
             return;
-        if (await ActualProvider.TakeCurrentUserId() != userId) return;
-        await ActualProvider.UpdateUserData();
+        if (await _authenticationService.IsCurrentUser(userEmail))
+            await _authenticationService.RefreshCurrentUser();
     }
 
-    public async Task Delete(Guid userId)
+    public async Task Delete(string userEmail)
     {
-        _authenticationCache.DeleteUser(userId);
+        _authenticationCache.DeleteUser(userEmail);
 
-        if (await ActualProvider.TakeCurrentUserId() != userId) return;
-        await ActualProvider.UpdateUserData();
+        if (await _authenticationService.IsCurrentUser(userEmail))
+            await _authenticationService.RefreshCurrentUser();
     }
 }

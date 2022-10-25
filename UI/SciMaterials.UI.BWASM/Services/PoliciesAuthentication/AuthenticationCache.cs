@@ -80,22 +80,23 @@ public class AuthenticationCache
         return Users.Values.Select(x => UserInfo.Create(x)).ToList();
     }
 
-    public Result ChangeAuthorityGroup(Guid userId, Guid authorityGroupId)
+    public Result ChangeAuthorityGroup(string userEmail, string authorityGroupName)
     {
-        if (AuthorityGroups.Values.FirstOrDefault(x => x.Id == authorityGroupId) is not { } authorityGroup)
+        if (AuthorityGroups.Values.FirstOrDefault(x => x.Name == authorityGroupName) is not { } authorityGroup)
             // just random
             return Result.Error(242);
 
-        if (!Users.TryGetValue(userId, out var user))
+        if (Users.Values.FirstOrDefault(x=>x.Email == userEmail) is not {} user)
             return Result.Error(243);
 
         user.Authority = authorityGroup.Name;
-        user.AuthorityGroupId = authorityGroupId;
+        user.AuthorityGroupId = authorityGroup.Id;
         return Result.Success();
     }
 
-    public Result DeleteUser(Guid userId)
+    public Result DeleteUser(string userEmail)
     {
+        if(Users.Values.FirstOrDefault(x=>x.Email == userEmail) is not {Id: var userId}) return Result.Success();
         return !Users.Remove(userId, out _)
             ? Result.Error(243)
             : Result.Success();

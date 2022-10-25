@@ -33,6 +33,7 @@
 
 	private async Task ChangeAuthority(UserInfo context)
 	{
+		// ReSharper disable once VariableHidesOuterVariable
 		string LabelSelection(AuthorityGroup authority) => authority.Name;
 
 		var parameters = new DialogParameters
@@ -43,14 +44,14 @@
 
 		var reference = DialogService.Show<ListSelectionDialog<AuthorityGroup>>("Select user authority", parameters);
 		var result = await reference.Result;
-		if (result.Cancelled || result.Data is not Guid authorityId) return;
-		AccountsService.ChangeAuthority(context.Id, authorityId);
+		if (result.Cancelled || result.Data is not AuthorityGroup authority) return;
+		AccountsService.ChangeAuthority(context.Email, authority.Name);
 		await RefreshData();
 	}
 
 	private async Task Delete(UserInfo context)
 	{
-		AccountsService.Delete(context.Id);
+		AccountsService.Delete(context.Email);
 		await RefreshData();
 	}
 
