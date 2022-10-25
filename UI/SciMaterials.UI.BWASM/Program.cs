@@ -17,6 +17,7 @@ using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
+using SciMaterials.UI.BWASM.Services.Identity;
 using SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 using SciMaterials.WebApi.Clients.Extensions;
 using SciMaterials.WebApi.Clients.Identity;
@@ -33,21 +34,23 @@ builder.Services
 // Api
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddApiClients(new Uri(builder.HostEnvironment.BaseAddress));
-builder.Services.AddHttpClient<IIdentityUserClient<IdentityClientResponse, AuthUserRequest>, IdentityClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
-builder.Services.AddHttpClient<IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest>, IdentityClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+string identityRoot = builder.HostEnvironment.BaseAddress;
+builder.Services.AddHttpClient<IIdentityUserClient<IdentityClientResponse, AuthUserRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot));
+builder.Services.AddHttpClient<IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot));
 
-builder.Services
-    .AddScoped<IAccountsService, TestAccountsService>()
-    .AddScoped<IAuthoritiesService, TestAuthoritiesService>();
+//builder.Services
+//    .AddScoped<IAccountsService, TestAccountsService>()
+//    .AddScoped<IAuthoritiesService, TestAuthoritiesService>();
 
 // Authentication
 builder.Services
     .AddAuthorizationCore()
-    .AddScoped<IAuthenticationService, TestAuthenticationService>()
-    .AddScoped<AuthenticationStateProvider, TestAuthenticationStateProvider>()
-    .AddSingleton<AuthenticationCache>()
-    .AddSingleton<IAuthorizationHandler, AuthorityHandler>()
-    .AddSingleton<IAuthorizationPolicyProvider, AuthorityPolicyProvider>();
+    .AddScoped<IAuthenticationService, IdentityAuthenticationService>()
+    .AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>()
+    //.AddSingleton<AuthenticationCache>()
+    //.AddSingleton<IAuthorizationHandler, AuthorityHandler>()
+    //.AddSingleton<IAuthorizationPolicyProvider, AuthorityPolicyProvider>()
+    ;
 
 // Validators // TODO: register with assembly scan
 builder.Services
