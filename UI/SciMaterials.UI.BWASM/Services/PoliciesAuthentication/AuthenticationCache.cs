@@ -1,16 +1,17 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
+
 using SciMaterials.Contracts.Result;
 using SciMaterials.UI.BWASM.Models;
 
-namespace SciMaterials.UI.BWASM.Services;
+namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 public class AuthenticationCache
 {
     private Dictionary<Guid, Authority> Authorities { get; }
     private Dictionary<string, AuthorityGroup> AuthorityGroups { get; } = new();
     private Dictionary<Guid, UserInfo> Users { get; } = new();
-    
+
     private HashSet<string> AuthoritiesNames { get; }
     private HashSet<string> AuthorityGroupsNames { get; }
 
@@ -27,7 +28,7 @@ public class AuthenticationCache
         AuthorityGroup adminAuthorityGroup = AuthorityGroup.Create("Admin", authorities[..2]);
         AuthorityGroup userAuthorityGroup = AuthorityGroup.Create("User", authorities[3]);
 
-        Authorities = new(authorities.ToDictionary(e=>e.Id));
+        Authorities = new(authorities.ToDictionary(e => e.Id));
         AuthorityGroups.TryAdd(adminAuthorityGroup.Name, adminAuthorityGroup);
         AuthorityGroups.TryAdd(userAuthorityGroup.Name, userAuthorityGroup);
 
@@ -50,11 +51,11 @@ public class AuthenticationCache
         return true;
     }
 
-    public bool TryGetIdentity(string email, string password,[NotNullWhen(true)] out ClaimsIdentity? claimsIdentity, out Guid userId)
+    public bool TryGetIdentity(string email, string password, [NotNullWhen(true)] out ClaimsIdentity? claimsIdentity, out Guid userId)
     {
         userId = Guid.Empty;
         claimsIdentity = null;
-        if(Users.Values.FirstOrDefault(x => x.Email == email && x.Password == password) is not {} user) return false;
+        if (Users.Values.FirstOrDefault(x => x.Email == email && x.Password == password) is not { } user) return false;
 
         claimsIdentity = GenerateIdentity(user);
         userId = user.Id;
@@ -71,26 +72,22 @@ public class AuthenticationCache
 
     public List<AuthorityGroup> AuthorityGroupsList()
     {
-        return AuthorityGroups.Values.Select(x=>AuthorityGroup.Create(x)).ToList();
+        return AuthorityGroups.Values.Select(x => AuthorityGroup.Create(x)).ToList();
     }
 
     public List<UserInfo> UsersList()
     {
-        return Users.Values.Select(x=>UserInfo.Create(x)).ToList();
+        return Users.Values.Select(x => UserInfo.Create(x)).ToList();
     }
 
     public Result ChangeAuthorityGroup(Guid userId, Guid authorityGroupId)
     {
         if (AuthorityGroups.Values.FirstOrDefault(x => x.Id == authorityGroupId) is not { } authorityGroup)
-        {
             // just random
             return Result.Error(242);
-        }
 
         if (!Users.TryGetValue(userId, out var user))
-        {
             return Result.Error(243);
-        }
 
         user.Authority = authorityGroup.Name;
         user.AuthorityGroupId = authorityGroupId;
@@ -99,8 +96,8 @@ public class AuthenticationCache
 
     public Result DeleteUser(Guid userId)
     {
-        return !Users.Remove(userId, out _) 
-            ? Result.Error(243) 
+        return !Users.Remove(userId, out _)
+            ? Result.Error(243)
             : Result.Success();
     }
 
@@ -114,19 +111,17 @@ public class AuthenticationCache
         if (!Authorities.Remove(authorityId, out var existedAuthority)) return;
         AuthoritiesNames.Remove(existedAuthority.Name);
         foreach (var authorityGroup in AuthorityGroups.Values)
-        {
             authorityGroup.Authorities.Remove(existedAuthority);
-        }
     }
 
     public void DeleteAuthorityGroup(Guid authorityGroupId, string authorityGroupName)
     {
 
-        if(authorityGroupName is "User" or "Admin" || !AuthorityGroups.Remove(authorityGroupName, out _)) return;
+        if (authorityGroupName is "User" or "Admin" || !AuthorityGroups.Remove(authorityGroupName, out _)) return;
         AuthorityGroupsNames.Remove(authorityGroupName);
         var userGroup = AuthorityGroups["User"];
 
-        foreach (var user in Users.Values.Where(x=>x.AuthorityGroupId == authorityGroupId))
+        foreach (var user in Users.Values.Where(x => x.AuthorityGroupId == authorityGroupId))
         {
             user.AuthorityGroupId = userGroup.Id;
             user.Authority = userGroup.Name;
@@ -135,21 +130,21 @@ public class AuthenticationCache
 
     public void AddAuthorityToGroup(Guid groupId, string groupName, Guid authorityId)
     {
-        if(!AuthorityGroups.TryGetValue(groupName, out var group) || !Authorities.TryGetValue(authorityId, out var authority)) return;
+        if (!AuthorityGroups.TryGetValue(groupName, out var group) || !Authorities.TryGetValue(authorityId, out var authority)) return;
         // check that authority already exist
-        if(group.Authorities.Contains(authority)) return;
+        if (group.Authorities.Contains(authority)) return;
         group.Authorities.Add(authority);
     }
 
     public void AddAuthority(string authorityName)
     {
-        if(Authorities.Values.FirstOrDefault(x=>x.Name == authorityName) is not null) return;
+        if (Authorities.Values.FirstOrDefault(x => x.Name == authorityName) is not null) return;
 
         Authority newOne = Authority.Create(authorityName);
         if (Authorities.TryAdd(newOne.Id, newOne))
             AuthoritiesNames.Add(authorityName);
     }
-    
+
     public void RemoveAuthorityFromGroup(Guid groupId, string groupName, Guid authorityId)
     {
         if (!AuthorityGroups.TryGetValue(groupName, out var group) || !Authorities.TryGetValue(authorityId, out var authority)) return;
@@ -159,7 +154,7 @@ public class AuthenticationCache
 
     private ClaimsIdentity GenerateIdentity(UserInfo user)
     {
-        List<Claim> claims = new ()
+        List<Claim> claims = new()
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Name, user.UserName),
@@ -169,7 +164,7 @@ public class AuthenticationCache
         if (AuthorityGroups.TryGetValue(user.Authority, out var group))
         {
             claims.Add(new(nameof(Authority), user.Authority));
-            claims.AddRange(group.Authorities.Select(x=>new Claim(nameof(Authority), x.Name)));
+            claims.AddRange(group.Authorities.Select(x => new Claim(nameof(Authority), x.Name)));
         }
 
         return new(claims, "InMemoryScheme");
@@ -177,9 +172,9 @@ public class AuthenticationCache
 
     public bool AuthoritiesExist(string[] authorities)
     {
-        return authorities.All(x=>AuthorityGroupsNames.Contains(x) || AuthoritiesNames.Contains(x));
+        return authorities.All(x => AuthorityGroupsNames.Contains(x) || AuthoritiesNames.Contains(x));
     }
-    
+
     public void AddAuthorityGroup(string authorityName)
     {
         if (AuthorityGroups.Values.FirstOrDefault(x => x.Name == authorityName) is not null) return;

@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
-using static SciMaterials.UI.BWASM.Services.AuthorityRules;
 
-namespace SciMaterials.UI.BWASM.Services;
+using static SciMaterials.UI.BWASM.Services.PoliciesAuthentication.AuthorityRules;
+
+namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 public class AuthorityRequirement : IAuthorizationRequirement
 {
@@ -69,9 +70,7 @@ public class AuthorityPolicyProvider : DefaultAuthorizationPolicyProvider
         var authoritiesService = scope.ServiceProvider.GetRequiredService<IAuthoritiesService>();
         // if one of authorities not registered, will handle section as default
         if (!authoritiesService.AuthoritiesExist(authorities))
-        {
-           return await base.GetPolicyAsync(policyName);
-        }
+            return await base.GetPolicyAsync(policyName);
 
         AuthorityRequirement requirement = new(authorities);
 

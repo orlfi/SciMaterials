@@ -1,8 +1,10 @@
 ﻿using System.Security.Claims;
+
 using Blazored.LocalStorage;
+
 using Microsoft.AspNetCore.Components.Authorization;
 
-namespace SciMaterials.UI.BWASM.Services;
+namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 public class TestAuthenticationStateProvider : AuthenticationStateProvider
 {
@@ -47,8 +49,8 @@ public class TestAuthenticationStateProvider : AuthenticationStateProvider
         var userId = await TakeCurrentUserId();
         if (userId != Guid.Empty && _authenticationCache.TryGetIdentity(userId, out var identity))
         {
-             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new(identity))));
-             return;
+            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new(identity))));
+            return;
         }
         NotifyUserLogout();
     }

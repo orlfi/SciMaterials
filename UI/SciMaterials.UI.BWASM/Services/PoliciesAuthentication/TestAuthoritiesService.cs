@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
+
 using SciMaterials.UI.BWASM.Models;
 
-namespace SciMaterials.UI.BWASM.Services;
+namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 public class TestAuthoritiesService : IAuthoritiesService
 {

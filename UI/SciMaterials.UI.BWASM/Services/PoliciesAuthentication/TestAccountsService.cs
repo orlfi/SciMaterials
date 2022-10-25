@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
+
 using SciMaterials.UI.BWASM.Models;
 
-namespace SciMaterials.UI.BWASM.Services;
+namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 public class TestAccountsService : IAccountsService
 {
@@ -16,12 +17,6 @@ public class TestAccountsService : IAccountsService
 
     private TestAuthenticationStateProvider ActualProvider => (TestAuthenticationStateProvider)_authenticationStateProvider;
 
-    public List<AuthorityGroup> AuthorityGroupsList()
-    {
-        // take view models
-        return _authenticationCache.AuthorityGroupsList();
-    }
-
     public List<UserInfo> UsersList()
     {
         // take view models
@@ -31,13 +26,11 @@ public class TestAccountsService : IAccountsService
     public async Task ChangeAuthority(Guid userId, Guid authorityId)
     {
         var result = _authenticationCache.ChangeAuthorityGroup(userId, authorityId);
-        
+
         if (!result.Succeeded)
-        {
             // TODO: handle failure
             return;
-        }
-        if(await ActualProvider.TakeCurrentUserId() != userId) return;
+        if (await ActualProvider.TakeCurrentUserId() != userId) return;
         await ActualProvider.UpdateUserData();
     }
 

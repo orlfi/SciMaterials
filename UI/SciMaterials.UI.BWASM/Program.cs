@@ -1,14 +1,19 @@
 using Blazored.LocalStorage;
+
 using FluentValidation;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+
 using MudBlazor.Services;
+
 using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
+using SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 using SciMaterials.WebApi.Clients.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

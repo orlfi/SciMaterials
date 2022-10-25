@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.Contracts.API.Constants;
+using SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 namespace SciMaterials.UI.BWASM.Services;
 

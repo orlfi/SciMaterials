@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 using SciMaterials.UI.BWASM.Models;
 
-namespace SciMaterials.UI.BWASM.Services;
+namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 public class TestAuthenticationService : IAuthenticationService
 {
@@ -30,9 +30,7 @@ public class TestAuthenticationService : IAuthenticationService
     public async Task<bool> SignIn(SignInForm formData)
     {
         if (!_authenticationCache.TryGetIdentity(formData.Email!, formData.Password!, out var identity, out var userId))
-        {
             return false;
-        }
 
         await _localStorageService.SetItemAsStringAsync("authToken", userId.ToString());
 

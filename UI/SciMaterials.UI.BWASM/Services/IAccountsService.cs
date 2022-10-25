@@ -4,7 +4,6 @@ namespace SciMaterials.UI.BWASM.Services;
 
 public interface IAccountsService
 {
-    List<AuthorityGroup> AuthorityGroupsList();
     List<UserInfo> UsersList();
     Task ChangeAuthority(Guid userId, Guid authorityId);
     Task Delete(Guid userId);
