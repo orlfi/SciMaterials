@@ -1,7 +1,8 @@
 using Microsoft.Data.Sqlite;
+
 using MySqlConnector;
 
-namespace SciMaterials.AUTH.Services;
+namespace SciMaterials.UI.MVC.Identity.Services;
 
 /// <summary>
 /// Статический класс по формированию строк подключения к БД
