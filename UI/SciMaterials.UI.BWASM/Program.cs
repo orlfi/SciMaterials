@@ -9,12 +9,17 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using MudBlazor.Services;
 
+using SciMaterials.Contracts.API.DTO.AuthRoles;
+using SciMaterials.Contracts.API.DTO.AuthUsers;
+using SciMaterials.Contracts.API.DTO.Clients;
+using SciMaterials.Contracts.API.Services.Identity;
 using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
 using SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 using SciMaterials.WebApi.Clients.Extensions;
+using SciMaterials.WebApi.Clients.Identity;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -28,6 +33,8 @@ builder.Services
 // Api
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddApiClients(new Uri(builder.HostEnvironment.BaseAddress));
+builder.Services.AddHttpClient<IIdentityUserClient<IdentityClientResponse, AuthUserRequest>, IdentityClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+builder.Services.AddHttpClient<IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest>, IdentityClient>(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
 
 builder.Services
     .AddScoped<IAccountsService, TestAccountsService>()
