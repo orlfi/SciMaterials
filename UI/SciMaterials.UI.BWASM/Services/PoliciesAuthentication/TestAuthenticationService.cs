@@ -1,4 +1,6 @@
-﻿using Blazored.LocalStorage;
+﻿using System.Security.Claims;
+
+using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -9,7 +11,7 @@ namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 public class TestAuthenticationService : IAuthenticationService
 {
     private readonly ILocalStorageService _localStorageService;
-    private readonly AuthenticationStateProvider _authenticationStateProvider;
+    private readonly TestAuthenticationStateProvider _authenticationStateProvider;
     private readonly AuthenticationCache _authenticationCache;
 
     public TestAuthenticationService(
@@ -18,7 +20,7 @@ public class TestAuthenticationService : IAuthenticationService
         AuthenticationCache authenticationCache)
     {
         _localStorageService = localStorageService;
-        _authenticationStateProvider = authenticationStateProvider;
+        _authenticationStateProvider = (TestAuthenticationStateProvider)authenticationStateProvider;
         _authenticationCache = authenticationCache;
     }
 
@@ -34,7 +36,7 @@ public class TestAuthenticationService : IAuthenticationService
 
         await _localStorageService.SetItemAsStringAsync("authToken", userId.ToString());
 
-        ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserSignIn(identity);
+        _authenticationStateProvider.NotifyUserSignIn(identity);
 
         return true;
     }
@@ -42,6 +44,25 @@ public class TestAuthenticationService : IAuthenticationService
     public async Task Logout()
     {
         await _localStorageService.RemoveItemAsync("authToken");
-        ((TestAuthenticationStateProvider)_authenticationStateProvider).NotifyUserLogout();
+        _authenticationStateProvider.NotifyUserLogout();
+    }
+
+    public async Task<bool> IsCurrentUser(string userEmail)
+    {
+        var currentAuthenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var identifier = currentAuthenticationState.User.FindFirstValue(ClaimTypes.Email);
+        return userEmail == identifier;
+    }
+
+    public async Task RefreshCurrentUser()
+    {
+        var currentAuthenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var identifier = currentAuthenticationState.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (Guid.TryParse(identifier, out var userId) && _authenticationCache.TryGetIdentity(userId, out var identity))
+        {
+            _authenticationStateProvider.NotifyUserSignIn(identity);
+            return;
+        }
+        _authenticationStateProvider.NotifyUserLogout();
     }
 }

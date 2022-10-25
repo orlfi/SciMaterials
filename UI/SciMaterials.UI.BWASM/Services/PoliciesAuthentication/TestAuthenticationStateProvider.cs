@@ -43,23 +43,4 @@ public class TestAuthenticationStateProvider : AuthenticationStateProvider
     {
         NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
     }
-
-    public async Task UpdateUserData()
-    {
-        var userId = await TakeCurrentUserId();
-        if (userId != Guid.Empty && _authenticationCache.TryGetIdentity(userId, out var identity))
-        {
-            NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(new(identity))));
-            return;
-        }
-        NotifyUserLogout();
-    }
-
-    public async Task<Guid> TakeCurrentUserId()
-    {
-        var currentAuthenticationState = await GetAuthenticationStateAsync();
-        var identifier = currentAuthenticationState.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        return Guid.TryParse(identifier, out var userId) ? userId : Guid.Empty;
-    }
 }

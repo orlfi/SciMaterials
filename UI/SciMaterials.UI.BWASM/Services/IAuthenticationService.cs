@@ -7,4 +7,6 @@ public interface IAuthenticationService
      Task Logout();
      Task<bool> SignIn(SignInForm formData);
      Task<bool> SignUp(SignUpForm formData);
+     Task<bool> IsCurrentUser(string userEmail);
+     Task RefreshCurrentUser();
 }

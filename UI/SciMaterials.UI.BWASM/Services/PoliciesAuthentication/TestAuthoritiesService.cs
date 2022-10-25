@@ -1,21 +1,17 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-
-using SciMaterials.UI.BWASM.Models;
+﻿using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.PoliciesAuthentication;
 
 public class TestAuthoritiesService : IAuthoritiesService
 {
     private readonly AuthenticationCache _authenticationCache;
-    private readonly AuthenticationStateProvider _authenticationStateProvider;
+    private readonly IAuthenticationService _authenticationService;
 
-    public TestAuthoritiesService(AuthenticationCache authenticationCache, AuthenticationStateProvider authenticationStateProvider)
+    public TestAuthoritiesService(AuthenticationCache authenticationCache, IAuthenticationService authenticationService)
     {
         _authenticationCache = authenticationCache;
-        _authenticationStateProvider = authenticationStateProvider;
+        _authenticationService = authenticationService;
     }
-
-    private TestAuthenticationStateProvider ActualProvider => (TestAuthenticationStateProvider)_authenticationStateProvider;
 
     public List<AuthorityGroup> AuthoritiesGroupsList()
     {
@@ -30,20 +26,20 @@ public class TestAuthoritiesService : IAuthoritiesService
     public async Task Delete(AuthorityGroup authorityGroup)
     {
         _authenticationCache.DeleteAuthorityGroup(authorityGroup.Id, authorityGroup.Name);
-        await ActualProvider.UpdateUserData();
+        await _authenticationService.RefreshCurrentUser();
     }
 
     public async Task Delete(Authority authority)
     {
         _authenticationCache.DeleteAuthority(authority.Id);
-        await ActualProvider.UpdateUserData();
+        await _authenticationService.RefreshCurrentUser();
     }
 
     public async Task AddAuthorityToGroup(AuthorityGroup group, Authority authority)
     {
         _authenticationCache.AddAuthorityToGroup(group.Id, group.Name, authority.Id);
 
-        await ActualProvider.UpdateUserData();
+        await _authenticationService.RefreshCurrentUser();
     }
 
     public void AddAuthority(string authorityName)
@@ -54,7 +50,7 @@ public class TestAuthoritiesService : IAuthoritiesService
     public async Task RemoveAuthorityFromGroup(AuthorityGroup group, Authority authority)
     {
         _authenticationCache.RemoveAuthorityFromGroup(group.Id, group.Name, authority.Id);
-        await ActualProvider.UpdateUserData();
+        await _authenticationService.RefreshCurrentUser();
     }
 
     public bool AuthoritiesExist(string[] authorities)

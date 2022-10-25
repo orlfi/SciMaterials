@@ -89,4 +89,22 @@ public class IdentityAuthenticationService : IAuthenticationService
 
         return true;
     }
+
+    public async Task<bool> IsCurrentUser(string userEmail)
+    {
+        var currentAuthenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var identifier = currentAuthenticationState.User.FindFirstValue(ClaimTypes.Email);
+        return userEmail == identifier;
+    }
+
+    public async Task RefreshCurrentUser()
+    {
+        var currentAuthenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        if(!currentAuthenticationState.User.Identity.IsAuthenticated) return;
+
+        var currentToken = await _localStorageService.GetItemAsStringAsync("authToken");
+        // TODO: Refresh Token
+
+        // TODO: Update user claims
+    }
 }
