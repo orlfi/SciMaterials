@@ -36,7 +36,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "RegisterUser {Email}", registerUser.Email);
         var content = JsonSerializer.Serialize(registerUser, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -61,7 +61,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "LoginUser {Email}", loginUser.Email);
         var content = JsonSerializer.Serialize(loginUser, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -85,7 +85,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> LogoutUserAsync(CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "LogoutUser");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -110,7 +110,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "ChangePassword");
         var content = JsonSerializer.Serialize(passwordRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -135,7 +135,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "CreateRole {RoleName}", roleRequest.RoleName);
         var content = JsonSerializer.Serialize(roleRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -157,7 +157,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> GetAllRolesAsync(CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "GetAllRoles");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -179,7 +179,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> GetRoleByIdAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "GetRoleById {RoleId}", roleRequest.RoleId);
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -204,7 +204,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "EditRoleById {RoleId}", roleRequest.RoleId);
         var content = JsonSerializer.Serialize(roleRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Put,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -227,7 +227,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> DeleteRoleByIdAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "DeleteRoleById {RoleId}", roleRequest.RoleId);
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -252,7 +252,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "AddRole {Role} ToUser {Email}", roleRequest.RoleName, roleRequest.Email);
         var content = JsonSerializer.Serialize(roleRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -275,7 +275,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> DeleteUserRoleByEmailAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "DeleteUserRoleByEmail {Email}", roleRequest.Email);
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -299,7 +299,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> ListOfUserRolesAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "ListOfUser {Email} Roles", roleRequest.Email);
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -324,7 +324,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "CreateUser {Email} {Name}", userRequest.Email, userRequest.Name);
         var content = JsonSerializer.Serialize(userRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -347,7 +347,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> GetUserByEmailAsync(AuthUserRequest userRequest, CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "GetUserByEmail {Email}", userRequest.Email);
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -369,7 +369,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> GetAllUsersAsync(CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "GetAllUsers");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -394,7 +394,7 @@ public class IdentityClient : IIdentityClient
             editUserRequest.EditUserInfo?.Name, editUserRequest.Email);
         var content = JsonSerializer.Serialize(editUserRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Put,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -419,7 +419,7 @@ public class IdentityClient : IIdentityClient
         _logger.Log(LogLevel.Information, "DeleteUserByEmail {Email}", userRequest.Email);
         var content = JsonSerializer.Serialize(userRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
@@ -442,7 +442,7 @@ public class IdentityClient : IIdentityClient
     public async Task<IdentityClientResponse> DeleteUsersWithOutConfirm(CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "DeleteUsersWithOutConfirm");
-        using var request = new HttpRequestMessage()
+        var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 

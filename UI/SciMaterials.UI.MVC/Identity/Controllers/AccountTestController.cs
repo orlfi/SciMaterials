@@ -5,12 +5,12 @@ using SciMaterials.Contracts.API.DTO.AuthUsers;
 using SciMaterials.Contracts.API.DTO.Passwords;
 using SciMaterials.Contracts.API.Services.Identity;
 
-namespace SciMaterials.UI.MVC.API.Controllers;
+namespace SciMaterials.UI.MVC.Identity.Controllers;
 
 /// <summary>
 /// Тестовый контроллер с IdentityClient
 /// </summary>
-[Route("api/[controller]")]
+[Route("account_test/")]
 [ApiController]
 public class AccountTestController : ControllerBase
 {
