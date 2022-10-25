@@ -37,20 +37,4 @@
     <ProjectReference Include="..\SciMaterials.UI.BWASM\SciMaterials.UI.BWASM.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Data Source=\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Data Source=\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Data Source=\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Data Source=\**" />
-  </ItemGroup>
-
 </Project>
