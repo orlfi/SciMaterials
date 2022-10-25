@@ -304,7 +304,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
     public List<Author>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = new List<Author>().AsQueryable();
+        IQueryable<Author> query = _context.Authors.AsQueryable();
 
         if (include)
             query = query
@@ -326,7 +326,7 @@ public class AuthorRepository : IAuthorRepository
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
     public async Task<List<Author>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = new List<Author>().AsQueryable();
+        IQueryable<Author> query = _context.Authors.AsQueryable();
 
         if (include)
             query = query
