@@ -2,7 +2,7 @@
     <MudSpacer />
     <MudNavLink Class="rounded-lg" Href="dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
 
-    <AuthorizeView Policy="Admin, CanAccessUsers">
+    <AuthorizeView Roles="Admin">
 	    <Authorized>
 		    <MudNavGroup Title="Identity" Icon="@Icons.Material.Filled.PermIdentity">
 			    <MudNavLink Class="rounded-lg" Href="users" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Users</MudNavLink>
