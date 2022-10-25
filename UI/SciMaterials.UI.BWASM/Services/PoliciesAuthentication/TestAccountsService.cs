@@ -17,10 +17,11 @@ public class TestAccountsService : IAccountsService
 
     private TestAuthenticationStateProvider ActualProvider => (TestAuthenticationStateProvider)_authenticationStateProvider;
 
-    public List<UserInfo> UsersList()
+    public Task<IReadOnlyList<UserInfo>> UsersList()
     {
         // take view models
-        return _authenticationCache.UsersList();
+        var data = _authenticationCache.UsersList();
+        return Task.FromResult<IReadOnlyList<UserInfo>>(data);
     }
 
     public async Task ChangeAuthority(Guid userId, Guid authorityId)

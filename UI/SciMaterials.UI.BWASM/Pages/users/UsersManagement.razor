@@ -24,11 +24,11 @@
 </TableView>
 
 @code {
-	private List<UserInfo> _users = null!;
+	private IReadOnlyList<UserInfo> _users = null!;
 
-	protected override void OnInitialized()
+	protected override async Task OnInitializedAsync()
 	{
-		_users = AccountsService.UsersList();
+		_users = await AccountsService.UsersList();
 	}
 
 	private async Task ChangeAuthority(UserInfo context)
@@ -45,18 +45,18 @@
 		var result = await reference.Result;
 		if (result.Cancelled || result.Data is not Guid authorityId) return;
 		AccountsService.ChangeAuthority(context.Id, authorityId);
-		RefreshData();
+		await RefreshData();
 	}
 
-	private void Delete(UserInfo context)
+	private async Task Delete(UserInfo context)
 	{
 		AccountsService.Delete(context.Id);
-		RefreshData();
+		await RefreshData();
 	}
 
-	private void RefreshData()
+	private async Task RefreshData()
 	{
-		_users = AccountsService.UsersList();
+		_users = await AccountsService.UsersList();
 		StateHasChanged();
 	}
 }
