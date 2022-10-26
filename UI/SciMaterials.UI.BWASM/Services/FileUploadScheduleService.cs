@@ -9,8 +9,7 @@ namespace SciMaterials.UI.BWASM.Services;
 
 public class FileUploadScheduleService : IDisposable
 {
-    private readonly IFilesClient _filesClient;
-    private readonly IDispatcher _dispatcher;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<FileUploadScheduleService> _logger;
 
     private readonly Queue<FileUploadData> _uploadRequests = new();
@@ -18,12 +17,10 @@ public class FileUploadScheduleService : IDisposable
 
 
     public FileUploadScheduleService(
-        IFilesClient filesClient,
-        IDispatcher dispatcher,
+        IServiceScopeFactory serviceScopeFactory,
         ILogger<FileUploadScheduleService> logger)
     {
-        _filesClient = filesClient;
-        _dispatcher = dispatcher;
+        _serviceScopeFactory = serviceScopeFactory;
         _logger = logger;
 
         _sender = new(TimeSpan.FromSeconds(30));
@@ -46,10 +43,15 @@ public class FileUploadScheduleService : IDisposable
 
             if(!_uploadRequests.TryDequeue(out FileUploadData? data)) continue;
 
+            using var scope = _serviceScopeFactory.CreateScope();
+
+            var dispatcher = scope.ServiceProvider.GetRequiredService<IDispatcher>();
+            var filesClient = scope.ServiceProvider.GetRequiredService<IFilesClient>();
+
             _logger.LogInformation("Building upload data for file {name}", data.FileName);
-            _dispatcher.Dispatch(new FileUploading(data.Id));
+            dispatcher.Dispatch(new FileUploading(data.Id));
             
-            var result = await _filesClient.UploadAsync(
+            var result = await filesClient.UploadAsync(
                 data.File.OpenReadStream(),
                 new UploadFileRequest()
                 {
@@ -65,17 +67,17 @@ public class FileUploadScheduleService : IDisposable
 
             if (data.CancellationToken.IsCancellationRequested)
             {
-                _dispatcher.Dispatch(new FileUploadCanceled(data.Id));
+                dispatcher.Dispatch(new FileUploadCanceled(data.Id));
                 continue;
             }
 
             if (result.Succeeded)
             {
-                _dispatcher.Dispatch(new FileUploaded(data.Id));
+                dispatcher.Dispatch(new FileUploaded(data.Id));
                 continue;
             }
 
-            _dispatcher.Dispatch(new FileUploadFailed(data.Id, result.Code));
+            dispatcher.Dispatch(new FileUploadFailed(data.Id, result.Code));
         }
     }
 
