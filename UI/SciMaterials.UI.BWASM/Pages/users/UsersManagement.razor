@@ -1,7 +1,8 @@
 ﻿@page "/users"
 @attribute [Authorize(Roles = "admin")]
 @inject IAccountsService AccountsService
-@inject IAuthoritiesService AuthoritiesService
+@inject IRolesService RolesService
+@*@inject IAuthoritiesService AuthoritiesService*@
 @inject IDialogService DialogService
 
 <TableView Data="_users">
@@ -33,18 +34,31 @@
 
 	private async Task ChangeAuthority(UserInfo context)
 	{
+		//// ReSharper disable once VariableHidesOuterVariable
+		//string LabelSelection(AuthorityGroup authority) => authority.Name;
+
+		//var parameters = new DialogParameters
+		//{
+		//	["Items"] = AuthoritiesService.AuthoritiesGroupsList(),
+		//	["OptionLabel"] = (Func<AuthorityGroup, string>)LabelSelection
+		//};
+
+		//var reference = DialogService.Show<ListSelectionDialog<AuthorityGroup>>("Select user authority", parameters);
+		//var result = await reference.Result;
+		//if (result.Cancelled || result.Data is not AuthorityGroup authority) return;
+
 		// ReSharper disable once VariableHidesOuterVariable
-		string LabelSelection(AuthorityGroup authority) => authority.Name;
+		string LabelSelection(UserRole authority) => authority.Name;
 
 		var parameters = new DialogParameters
 		{
-			["Items"] = AuthoritiesService.AuthoritiesGroupsList(),
-			["OptionLabel"] = (Func<AuthorityGroup, string>)LabelSelection
+			["Items"] = RolesService.RolesList(),
+			["OptionLabel"] = (Func<UserRole, string>)LabelSelection
 		};
 
-		var reference = DialogService.Show<ListSelectionDialog<AuthorityGroup>>("Select user authority", parameters);
+		var reference = DialogService.Show<ListSelectionDialog<UserRole>>("Select user authority", parameters);
 		var result = await reference.Result;
-		if (result.Cancelled || result.Data is not AuthorityGroup authority) return;
+		if (result.Cancelled || result.Data is not UserRole authority) return;
 		AccountsService.ChangeAuthority(context.Email, authority.Name);
 		await RefreshData();
 	}
