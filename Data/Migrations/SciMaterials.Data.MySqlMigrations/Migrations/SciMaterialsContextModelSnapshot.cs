@@ -287,6 +287,35 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.ToTable("FileGroups");
                 });
 
+            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Hash")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SourceAddress")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Links");
+                });
+
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
                 {
                     b.Property<Guid>("Id")
@@ -476,6 +505,17 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
                 {
                     b.HasOne("SciMaterials.DAL.Models.Author", "Author")
                         .WithMany()

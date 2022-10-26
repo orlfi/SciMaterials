@@ -290,6 +290,35 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.ToTable("FileGroups");
                 });
 
+            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Hash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SourceAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Links");
+                });
+
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
                 {
                     b.Property<Guid>("Id")
@@ -479,6 +508,17 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
                 {
                     b.HasOne("SciMaterials.DAL.Models.Author", "Author")
                         .WithMany()
