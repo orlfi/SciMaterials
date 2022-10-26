@@ -29,6 +29,8 @@ services.AddAuthUtils();
 services.AddAuthHttpClient();
 services.AddAuthJwtAndSwaggerApiServices(builder.Configuration);
 
+builder.Services.AddCors(o => o.AddPolicy("test", p => p.WithOrigins("http://localhost:5159").AllowAnyMethod().AllowAnyHeader()));
+
 var app = builder.Build();
 
 await app.InitializeDbAsync(config);
@@ -46,6 +48,8 @@ else
 app.UseBlazorFrameworkFiles();
 
 app.UseStaticFiles();
+
+app.UseCors("test");
 
 app.UseRouting();
 
