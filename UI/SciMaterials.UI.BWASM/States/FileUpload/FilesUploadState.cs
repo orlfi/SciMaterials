@@ -18,13 +18,15 @@ public record FilesUploadState(ImmutableArray<FileUploadState> Files)
     private FilesUploadState() : this(ImmutableArray<FileUploadState>.Empty) { }
 }
 
-public record FileUploadState(IBrowserFile BrowserFile, string? Category = null)
+public record FileUploadState(IBrowserFile BrowserFile, string Category = "")
 {
     public Guid Id { get; init; } = Guid.NewGuid();
     public string FileName { get; init; } = BrowserFile.Name;
     public long Size { get; init; } = BrowserFile.Size;
     public IBrowserFile BrowserFile { get; init; } = BrowserFile;
-    public string? Category { get; init; } = Category;
+    public string Category { get; init; } = Category;
+    public string Title { get; init; } = string.Empty;
+    public string ContentType { get; init; } = string.Empty;
     public UploadState State { get; init; } = UploadState.NotScheduled;
 }
 
@@ -81,6 +83,9 @@ public class FileUploadEffects
                 Id = data.Id,
                 File = data.BrowserFile,
                 FileName = data.FileName,
+                Category = data.Category,
+                Title = data.Title,
+                ContentType = data.ContentType,
                 CancellationToken = fileUploadCancellationSource.Token
             });
             dispatcher.Dispatch(new FileUploadScheduled(data.Id, fileUploadCancellationSource));

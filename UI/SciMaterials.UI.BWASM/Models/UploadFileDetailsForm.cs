@@ -6,6 +6,9 @@ public class UploadFileDetailsForm
 
     public Guid Id { get; init; }
     public string FileName { get; set; } = null!;
-    public string? Category { get; set; }
     public long Size { get; init; }
+
+    public string Category { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string ContentType { get; set; } = string.Empty;
 }

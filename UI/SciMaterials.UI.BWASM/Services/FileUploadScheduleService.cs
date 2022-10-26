@@ -58,10 +58,10 @@ public class FileUploadScheduleService : IDisposable
                     Name = data.FileName,
                     Size = data.File.Size,
                     // TODO
-                    Categories = string.Empty,
+                    Categories = data.Category,
                     AuthorId = Guid.Empty,
-                    ContentTypeName = string.Empty,
-                    Title = string.Empty
+                    ContentTypeName = data.ContentType,
+                    Title = data.Title
                 },
                 data.CancellationToken);
 
