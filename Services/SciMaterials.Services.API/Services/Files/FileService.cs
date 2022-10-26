@@ -78,11 +78,14 @@ public class FileService : IFileService
 
     public async Task<Result<Guid>> EditAsync(EditFileRequest editFileRequest, CancellationToken cancellationToken = default)
     {
+        if (await _unitOfWork.GetRepository<File>().GetByIdAsync(editFileRequest.Id) is not { } existingFile)
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, "File not found.");
+
         var verifyCategoriesResult = await VerifyCategories(editFileRequest.Categories);
         if (!verifyCategoriesResult.Succeeded)
             return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
 
-        var file = _mapper.Map<File>(editFileRequest);
+        var file = _mapper.Map(editFileRequest, existingFile);
 
         if (verifyCategoriesResult.Data is { })
             file.Categories = verifyCategoriesResult.Data;
