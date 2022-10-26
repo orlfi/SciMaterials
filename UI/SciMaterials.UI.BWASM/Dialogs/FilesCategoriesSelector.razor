@@ -8,7 +8,7 @@
 	<DialogContent>
 		<MudTreeView @bind-SelectedValue="SelectedValue" Items="State.Value.Tree">
 			<ItemTemplate>
-				<MudTreeViewItem Value="@context" Text="@context.Name" />
+				<MudTreeViewItem Value="@context" Items="@context.Categories" Text="@context.Name" />
 			</ItemTemplate>
 		</MudTreeView>
 	</DialogContent>
@@ -27,7 +27,8 @@
 
 	protected override void OnInitialized()
 	{
-		Dispatcher.Dispatch(new BuildTree());
+		base.OnInitialized();
+		Dispatcher.Dispatch(new LoadCategories());
 	}
 
 	private void Cancel() => MudDialog.Cancel();
