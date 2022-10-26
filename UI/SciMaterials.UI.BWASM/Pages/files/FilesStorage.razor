@@ -63,7 +63,7 @@
 
     private void NavigateToFileDetailsUrl(FileStorageState context)
     {
-        NavigationManager.NavigateTo($"/filedetails/{1}");
+        NavigationManager.NavigateTo($"/filedetails/{context.Id}");
     }
 
 	private void ChangeItemsPresentationMode(ItemsPresentationMode mode)
