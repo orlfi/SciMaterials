@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Settings;
+
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.Contracts.API.Mappings;
@@ -13,14 +15,16 @@ public class FileProfile : Profile
         CreateMap<File, GetFileResponse>()
             .ForMember(dest => dest.Tags, opt => opt.MapFrom<FileTagResolver>())
             .ForMember(dest => dest.Categories, opt => opt.MapFrom<FileCategoryResolver>())
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(f => f.ShortInfo))
             .ReverseMap();
-        CreateMap<File, EditFileRequest>().ReverseMap();
+        // CreateMap<File, EditFileRequest>().ReverseMap();
         CreateMap<UploadFileRequest, FileMetadata>().ReverseMap();
         CreateMap<FileMetadata, File>()
             .ForMember(dest => dest.Categories, opt => opt.Ignore())
             .ForMember(dest => dest.Tags, opt => opt.Ignore())
             .ReverseMap();
         CreateMap<EditFileRequest, File>()
+            .ForMember(dest => dest.ShortInfo, opt => opt.MapFrom(f => f.Title))
             .ForMember(dest => dest.Categories, opt => opt.Ignore())
             .ForMember(dest => dest.Tags, opt => opt.Ignore())
             .ReverseMap();
