@@ -2,7 +2,6 @@
 
 using Fluxor;
 
-using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.WebApi.Clients.Categories;
 
 namespace SciMaterials.UI.BWASM.States.Categories;
@@ -26,43 +25,17 @@ public record TreeFileCategory(Guid Id, string Name, string? Description, Guid? 
     }
 };
 
-public record struct BuildTree();
 public record struct BuildTreeResult(HashSet<TreeFileCategory> Tree);
 public record struct LoadCategories();
 public record struct LoadCategoriesResult(ImmutableArray<FileCategory> Categories);
 
 public class FilesCategoriesEffects
 {
-    private readonly IState<FilesCategoriesState> _state;
     private readonly ICategoriesClient _categoriesClient;
 
-    public FilesCategoriesEffects(IState<FilesCategoriesState> state, ICategoriesClient categoriesClient)
+    public FilesCategoriesEffects(ICategoriesClient categoriesClient)
     {
-        _state = state;
         _categoriesClient = categoriesClient;
-    }
-
-    [EffectMethod(typeof(BuildTree))]
-    public Task BuildTree(IDispatcher dispatcher)
-    {
-        if (_state.Value.NextServerCall > DateTime.Now)
-        {
-            dispatcher.Dispatch(new LoadCategories());
-        }
-
-        var categories = _state.Value.Categories;
-        if(categories.IsEmpty) return Task.CompletedTask;
-
-        var rootCategories = categories.Where(x => x.ParentId is null).ToList();
-
-        HashSet<TreeFileCategory> tree = new();
-        foreach (FileCategory category in rootCategories)
-        {
-            tree.Add(new(category, BuildBranch(categories, category.Id)));
-        }
-
-        dispatcher.Dispatch(new BuildTreeResult(tree));
-        return Task.CompletedTask;
     }
 
     [EffectMethod(typeof(LoadCategories))]
@@ -75,8 +48,27 @@ public class FilesCategoriesEffects
             return;
         }
 
-        var categories = result.Data?.Select(x => new FileCategory(x.Id, x.Name, x.Description, x.ParentId)).ToImmutableArray();
-        dispatcher.Dispatch(new LoadCategoriesResult(categories ?? ImmutableArray<FileCategory>.Empty));
+        var categories = result.Data?.Select(x => new FileCategory(x.Id, x.Name, x.Description, x.ParentId)).ToImmutableArray() ?? ImmutableArray<FileCategory>.Empty;
+        dispatcher.Dispatch(new LoadCategoriesResult(categories));
+        await BuildTree(dispatcher, categories);
+    }
+
+    private Task BuildTree(IDispatcher dispatcher, ImmutableArray<FileCategory> categories)
+    {
+        if (categories.IsEmpty) return Task.CompletedTask;
+
+        //var rootCategories = categories.Where(x => x.ParentId is null).ToList();
+
+        //HashSet<TreeFileCategory> tree = new();
+        //foreach (FileCategory category in rootCategories)
+        //{
+        //    tree.Add(new(category, BuildBranch(categories, category.Id)));
+        //}
+
+        var tree = categories.Select(x => new TreeFileCategory(x, new())).ToHashSet();
+
+        dispatcher.Dispatch(new BuildTreeResult(tree));
+        return Task.CompletedTask;
     }
 
     private HashSet<TreeFileCategory> BuildBranch(IReadOnlyCollection<FileCategory> categories, Guid root)
