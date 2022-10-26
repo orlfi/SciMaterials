@@ -2,10 +2,11 @@
     <MudSpacer />
     <MudNavLink Class="rounded-lg" Href="dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
 
-    <AuthorizeView Roles="Admin">
+	<AuthorizeView Roles="admin">
 	    <Authorized>
 		    <MudNavGroup Title="Identity" Icon="@Icons.Material.Filled.PermIdentity">
 			    <MudNavLink Class="rounded-lg" Href="users" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group">Users</MudNavLink>
+			    <MudNavLink Class="rounded-lg" Href="roles" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LocalPolice">Roles</MudNavLink>
 			    @*<MudNavLink Class="rounded-lg" Href="authority" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Policy">Authority</MudNavLink>*@
 		    </MudNavGroup>
 	    </Authorized>
