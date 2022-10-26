@@ -7,4 +7,8 @@
         <RootNamespace>SciMaterials.Contracts.LinkSearch.WebAPI</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
+    </ItemGroup>
+
 </Project>
