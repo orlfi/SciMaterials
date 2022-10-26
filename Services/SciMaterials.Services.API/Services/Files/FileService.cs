@@ -79,7 +79,7 @@ public class FileService : IFileService
     public async Task<Result<Guid>> EditAsync(EditFileRequest editFileRequest, CancellationToken cancellationToken = default)
     {
         if (await _unitOfWork.GetRepository<File>().GetByIdAsync(editFileRequest.Id) is not { } existingFile)
-            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, "File not found.");
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Resource with ID {editFileRequest.Id} not found");
 
         var verifyCategoriesResult = await VerifyCategories(editFileRequest.Categories);
         if (!verifyCategoriesResult.Succeeded)
