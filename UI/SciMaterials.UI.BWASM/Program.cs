@@ -38,9 +38,11 @@ string identityRoot = builder.HostEnvironment.BaseAddress;
 builder.Services.AddHttpClient<IIdentityUserClient<IdentityClientResponse, AuthUserRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot));
 builder.Services.AddHttpClient<IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot));
 
-//builder.Services
-//    .AddScoped<IAccountsService, TestAccountsService>()
-//    .AddScoped<IAuthoritiesService, TestAuthoritiesService>();
+builder.Services
+    .AddScoped<IRolesService, IdentityRolesService>()
+    .AddScoped<IAccountsService, IdentityAccountsService>()
+//    .AddScoped<IAuthoritiesService, TestAuthoritiesService>()
+ ;
 
 // Authentication
 builder.Services
