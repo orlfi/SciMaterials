@@ -14,6 +14,7 @@ using SciMaterials.Contracts.API.DTO.AuthUsers;
 using SciMaterials.Contracts.API.DTO.Clients;
 using SciMaterials.Contracts.API.Services.Identity;
 using SciMaterials.UI.BWASM;
+using SciMaterials.UI.BWASM.Extensions;
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
@@ -33,10 +34,14 @@ builder.Services
 
 // Api
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddApiClients(new Uri(builder.HostEnvironment.BaseAddress));
+builder.Services
+    .AddApiClients(new Uri(builder.HostEnvironment.BaseAddress))
+    .AddScoped<JwtAuthenticationHandler>();
 string identityRoot = builder.HostEnvironment.BaseAddress;
-builder.Services.AddHttpClient<IIdentityUserClient<IdentityClientResponse, AuthUserRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot));
-builder.Services.AddHttpClient<IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot));
+builder.Services.AddHttpClient<IIdentityUserClient<IdentityClientResponse, AuthUserRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot))
+    .AddHttpMessageHandler<JwtAuthenticationHandler>();
+builder.Services.AddHttpClient<IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot))
+    .AddHttpMessageHandler<JwtAuthenticationHandler>();
 
 builder.Services
     .AddScoped<IRolesService, IdentityRolesService>()
