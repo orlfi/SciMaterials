@@ -1,12 +1,16 @@
 ﻿@page "/files_storage"
 
 @using SciMaterials.UI.BWASM.States.FilesStorage
+@using SciMaterials.UI.BWASM.Dialogs
+@using SciMaterials.UI.BWASM.States.Categories
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
 @inject IState<FilesStorageState> State
 
 @inject NavigationManager NavigationManager
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 <MudText Class="mb-5" Typo="Typo.h3" Align="Align.Start">Files</MudText>
 
@@ -36,7 +40,10 @@
 				}*@
 
 				<MudTd DataLabel="Name">@context.FileName</MudTd>
-				<MudTd DataLabel="Category">@context.Category</MudTd>
+				<MudTd DataLabel="Category">
+					@context.Category
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => ChangeCategory(context)">Change</MudButton>
+				</MudTd>
 				<MudTd DataLabel="Size">@context.Size</MudTd>
 				<MudTh>
 					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => NavigateToFileDetailsUrl(context)">Edit</MudButton>
@@ -80,4 +87,13 @@
 	{
 		Dispatcher.Dispatch(new LoadFiles());
 	}
+
+	private async Task ChangeCategory(FileStorageState context)
+	{
+		var reference = DialogService.Show<FilesCategoriesSelector>();
+		var result = await reference.Result;
+		if(result.Cancelled || result.Data is not TreeFileCategory category) return;
+		Snackbar.Add($"Category {category}");
+	}
+
 }
