@@ -19,7 +19,7 @@
 </MudPaper>
 
 @code {
-	private IReadOnlyList<UserRole> _roles;
+	private IReadOnlyList<UserRole> _roles = Array.Empty<UserRole>();
 
 	protected override async Task OnInitializedAsync() => await RefreshData();
 
