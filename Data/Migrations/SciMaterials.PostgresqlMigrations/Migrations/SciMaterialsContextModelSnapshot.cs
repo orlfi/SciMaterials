@@ -290,6 +290,35 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                     b.ToTable("FileGroups");
                 });
 
+            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Hash")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SourceAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Links");
+                });
+
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
                 {
                     b.Property<Guid>("Id")
@@ -479,6 +508,17 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
+                {
+                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
                 {
                     b.HasOne("SciMaterials.DAL.Models.Author", "Author")
                         .WithMany()
