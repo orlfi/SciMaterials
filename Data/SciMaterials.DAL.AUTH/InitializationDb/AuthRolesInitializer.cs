@@ -16,39 +16,36 @@ public static class AuthRolesInitializer
         RoleManager<IdentityRole> RoleManager,
         IConfiguration Configuration)
     {
-        var admin_settings = Configuration.GetSection("AuthApiSettings:AdminSettings");
-        var admin_email = admin_settings["login"];
-        var admin_password = admin_settings["password"];
-        
-        //Роль админа
-        if (await RoleManager.FindByNameAsync("admin") is null)
+        async Task CheckRoleAsync(string RoleName)
         {
-            await RoleManager.CreateAsync(new IdentityRole("admin"));
+            if (await RoleManager.FindByNameAsync(RoleName) is null && 
+                await RoleManager.CreateAsync(new(RoleName)) is { Succeeded: false, Errors: var errors })
+                throw new InvalidOperationException(
+                    $"Ошибка создания роли {RoleName}: {string.Join(",", errors.Select(e => e.Description))}");
         }
 
-        //Роль пользователя
-        if (await RoleManager.FindByNameAsync("user") is null)
-        {
-            await RoleManager.CreateAsync(new IdentityRole("user"));
-        }
-        
+        await CheckRoleAsync("admin").ConfigureAwait(false);
+        await CheckRoleAsync("user");
+
+        var admin_settings = Configuration.GetSection("AuthApiSettings:AdminSettings");
+        var admin_email    = admin_settings["login"];
+        var admin_password = admin_settings["password"];
+
         //Супер админ
         if (await UserManager.FindByNameAsync(admin_email) is null)
         {
             var super_admin = new IdentityUser
             {
-                Email = admin_email, 
+                Email = admin_email,
                 UserName = admin_email
             };
-            
-            var identity_result = await UserManager.CreateAsync(super_admin, admin_password);
-                
-            if (identity_result.Succeeded)
-            {
-                await UserManager.AddToRoleAsync(super_admin, "admin");
-                var token_for_admin = await UserManager.GenerateEmailConfirmationTokenAsync(super_admin);
-                await UserManager.ConfirmEmailAsync(super_admin, token_for_admin);
-            }
+
+            if (await UserManager.CreateAsync(super_admin, admin_password) is { Succeeded: false, Errors: var errors })
+                throw new InvalidOperationException($"Ошибка создания администратора {string.Join(",", errors.Select(e => e.Description))}");
+
+            await UserManager.AddToRoleAsync(super_admin, "admin");
+            var token_for_admin = await UserManager.GenerateEmailConfirmationTokenAsync(super_admin);
+            await UserManager.ConfirmEmailAsync(super_admin, token_for_admin);
         }
     }
 }

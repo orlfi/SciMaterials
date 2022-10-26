@@ -1,10 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
-namespace SciMaterials.AUTH.Services;
+namespace SciMaterials.UI.MVC.Identity.Services;
 
 /// <summary>
 /// Утилиты по работе с jwt токенами

@@ -1,15 +1,21 @@
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.Result;
+using SciMaterials.Contracts.WebApi.Clients;
+
 using System.Net.Http.Json;
 
 namespace SciMaterials.WebApi.Clients;
 
-public abstract class ApiClientWithAddBase<TClient, TId> : ApiClientBase<TClient, TId>
+public abstract class ApiClientWithAddBase<TId, TResult, TAddRequest, TEditRequest> :
+    ApiClientBase<TId, TResult, TEditRequest>,
+    IApiReadonlyClient<TId, TResult>,
+    IApiModifyClient<TId, TAddRequest, TEditRequest>
 {
-    public ApiClientWithAddBase(HttpClient httpClient, ILogger<TClient> logger) : base(httpClient, logger)
+    public ApiClientWithAddBase(HttpClient httpClient, ILogger<ApiClientWithAddBase<TId, TResult, TAddRequest, TEditRequest>> logger) 
+        : base(httpClient, logger)
     { }
 
-    public virtual async Task<Result<TId>> AddAsync<TRequest>(TRequest request, CancellationToken cancellationToken = default)
+    public virtual async Task<Result<TId>> AddAsync(TAddRequest request, CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Add entity {request}", request);
 

@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>
+      1701;1702;
+      0414;0649;0162;0109;
+      1998;4014;
+      8766
+    </NoWarn>
+  </PropertyGroup>
+
 </Project>

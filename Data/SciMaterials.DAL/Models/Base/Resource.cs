@@ -2,7 +2,7 @@ namespace SciMaterials.DAL.Models.Base;
 
 public class Resource : NamedModel
 {
-    public string Title { get; set; } = string.Empty;
+    public string? ShortInfo { get; set; }
     public string? Description { get; set; }
     public Guid AuthorId { get; set; }
     public DateTime CreatedAt { get; set; }
