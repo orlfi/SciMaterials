@@ -3,8 +3,8 @@
 namespace SciMaterials.Contracts.WebApi.Clients.ContentTypes;
 
 public interface IContentTypesClient :
-    IApiReadonlyClient<Guid>,
-    IApiModifyClient<Guid>,
+    IApiReadonlyClient<Guid,GetContentTypeResponse>,
+    IApiModifyClient<Guid, AddContentTypeRequest, EditContentTypeRequest>,
     IApiDeleteClient<Guid>
 {
 }

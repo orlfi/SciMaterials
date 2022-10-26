@@ -17,12 +17,14 @@ using SciMaterials.WebApi.Clients.Categories;
 using SciMaterials.WebApi.Clients.ContentTypes;
 using SciMaterials.WebApi.Clients.Files;
 using SciMaterials.WebApi.Clients.Tags;
+using SciMaterials.WebApi.Clients.Extensions;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Api
+//builder.Services.AddApiClients(new Uri(builder.HostEnvironment.BaseAddress));
 builder.Services
     .AddApiClient<IFilesClient, FilesClient>(BaseRoutes.FilesApi)
     .AddApiClient<ITagsClient, TagsClient>(BaseRoutes.TagsApi)

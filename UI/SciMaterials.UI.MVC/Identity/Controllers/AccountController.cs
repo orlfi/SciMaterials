@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SciMaterials.AUTH.Services;
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.DTO.AuthRoles;
 using SciMaterials.Contracts.API.DTO.AuthUsers;
 using SciMaterials.Contracts.API.DTO.Clients;
 using SciMaterials.Contracts.API.DTO.Passwords;
 using SciMaterials.Contracts.Enums;
+using SciMaterials.UI.MVC.Identity.Services;
 
-namespace SciMaterials.Auth.Controllers;
+namespace SciMaterials.UI.MVC.Identity.Controllers;
 
 /// <summary>
 /// Контроллер для регистрации и авторизации в системе аутентификации

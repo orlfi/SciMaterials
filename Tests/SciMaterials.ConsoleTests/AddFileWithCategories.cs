@@ -34,7 +34,7 @@ public class AddFileWithCategories
             {
                 Id          = Guid.NewGuid(),
                 Name        = fileInfo.Name,
-                Title       = "Файл " + fileInfo.Name,
+                ShortInfo   = "Файл " + fileInfo.Name,
                 Description = "Содержит файл " + fileInfo.Name,
                 Size        = fileInfo.Length,
                 Tags        = null,

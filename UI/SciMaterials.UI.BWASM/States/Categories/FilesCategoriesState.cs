@@ -68,7 +68,7 @@ public class FilesCategoriesEffects
     [EffectMethod(typeof(LoadCategories))]
     public async Task LoadCategories(IDispatcher dispatcher)
     {
-        var result = await _categoriesClient.GetAllAsync<GetCategoryResponse>();
+        var result = await _categoriesClient.GetAllAsync();
         if (!result.Succeeded)
         {
             // TODO: handle failure response

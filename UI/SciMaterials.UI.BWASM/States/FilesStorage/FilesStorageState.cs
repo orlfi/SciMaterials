@@ -33,7 +33,7 @@ public class FilesStorageEffects
     [EffectMethod(typeof(LoadFiles))]
     public async Task LoadFiles(IDispatcher dispatcher)
     {
-        var result = await _filesClient.GetAllAsync<GetFileResponse>();
+        var result = await _filesClient.GetAllAsync();
         if (!result.Succeeded)
         {
             dispatcher.Dispatch(new LoadFilesResult());
