@@ -45,6 +45,7 @@ builder.Services
 // State management
 builder.Services.AddFluxor(options =>
 {
+    options.WithLifetime(StoreLifetime.Singleton);
     options.ScanAssemblies(typeof(Program).Assembly);
     options.UseReduxDevTools(reduxOptions => reduxOptions.Name = "SciMaterials");
 });
