@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 
+using SciMaterials.Contracts.WebApi.Clients.Authors;
 using SciMaterials.Contracts.WebApi.Clients.Categories;
 using SciMaterials.Contracts.WebApi.Clients.ContentTypes;
 using SciMaterials.Contracts.WebApi.Clients.Files;
 using SciMaterials.Contracts.WebApi.Clients.Tags;
 using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Services;
+using SciMaterials.WebApi.Clients.Authors;
 using SciMaterials.WebApi.Clients.Categories;
 using SciMaterials.WebApi.Clients.ContentTypes;
 using SciMaterials.WebApi.Clients.Files;
@@ -29,7 +31,8 @@ builder.Services
     .AddApiClient<IFilesClient, FilesClient>(BaseRoutes.FilesApi)
     .AddApiClient<ITagsClient, TagsClient>(BaseRoutes.TagsApi)
     .AddApiClient<ICategoriesClient, CategoriesClient>(BaseRoutes.CategoriesApi)
-    .AddApiClient<IContentTypesClient, ContentTypesClient>(BaseRoutes.ContentTypesApi);
+    .AddApiClient<IContentTypesClient, ContentTypesClient>(BaseRoutes.ContentTypesApi)
+    .AddApiClient<IAuthorsClient, AuthorsClient>(BaseRoutes.AuthorsApi);
 
 builder.Services.AddMudServices();
 builder.Services.AddBlazoredLocalStorage();
@@ -60,4 +63,5 @@ static class BaseRoutes
     public const string TagsApi = MvcRoute;
     public const string CategoriesApi = MvcRoute;
     public const string ContentTypesApi = MvcRoute;
+    public const string AuthorsApi = MvcRoute;
 }

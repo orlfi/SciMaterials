@@ -12,4 +12,6 @@ public class UploadFileDetailsForm
     public string Title { get; set; } = string.Empty;
     public string CategoryName { get; set; } = string.Empty;
     public Guid CategoryId { get; set; }
+    public string AuthorName { get; set; } = string.Empty;
+    public Guid AuthorId { get; set; }
 }

@@ -26,6 +26,8 @@ public record FileUploadState(IBrowserFile BrowserFile, string CategoryName = ""
     public IBrowserFile BrowserFile { get; init; } = BrowserFile;
     public string CategoryName { get; init; } = CategoryName;
     public Guid CategoryId { get; init; } = CategoryId;
+    public string AuthorName { get; init; } = string.Empty;
+    public Guid AuthorId { get; init; }
     public string Title { get; init; } = string.Empty;
     public string ContentType { get; init; } = BrowserFile.ContentType;
     public UploadState State { get; init; } = UploadState.NotScheduled;
@@ -87,6 +89,7 @@ public class FileUploadEffects
                 FileName = data.FileName,
                 Category = data.CategoryId,
                 Title = data.Title,
+                AuthorId = data.AuthorId,
                 CancellationToken = fileUploadCancellationSource.Token
             });
             dispatcher.Dispatch(new FileUploadScheduled(data.Id, fileUploadCancellationSource));
@@ -185,7 +188,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState ChangeCategoryOfFileUpload(FilesUploadState state, UpdateFileStateFromEditForm action)
+    public static FilesUploadState UpdateFileStateFromEditForm(FilesUploadState state, UpdateFileStateFromEditForm action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
@@ -195,6 +198,8 @@ public static class FileUploadReducers
                     Title = action.Form.Title,
                     CategoryName = action.Form.CategoryName,
                     CategoryId = action.Form.CategoryId,
+                    AuthorName = action.Form.AuthorName,
+                    AuthorId = action.Form.AuthorId
                 },
                 result: out ImmutableArray<FileUploadState> files)
             ? state 

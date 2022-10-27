@@ -12,4 +12,5 @@ public class FileUploadData
     public Guid Category { get; init; }
 
     public CancellationToken CancellationToken { get; init; }
+    public Guid AuthorId { get; init; }
 }

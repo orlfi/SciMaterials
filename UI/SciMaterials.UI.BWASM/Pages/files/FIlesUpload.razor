@@ -4,6 +4,7 @@
 @using SciMaterials.UI.BWASM.Dialogs
 @using SciMaterials.UI.BWASM.States.Categories
 @using System.Text.Json
+@using SciMaterials.UI.BWASM.States.Authors
 
 @inherits FluxorComponent
 
@@ -27,6 +28,12 @@
 				<MudText>Category:</MudText>
 				<MudText>@_formModel.CategoryName</MudText>
 				<MudButton OnClick="ChangeFormFileCategory">Change</MudButton>
+			</MudStack>
+			
+			<MudStack Row="true">
+				<MudText>Author:</MudText>
+				<MudText>@_formModel.AuthorName</MudText>
+				<MudButton OnClick="ChangeFormFileAuthor">Change</MudButton>
 			</MudStack>
 			
 			<MudText>ContentType: @_formModel.ContentType</MudText>
@@ -111,7 +118,9 @@
 			FileName = context.FileName,
 			Size = context.Size,
 			ContentType = context.ContentType,
-			Title = context.Title
+			Title = context.Title,
+			AuthorName = context.AuthorName,
+			AuthorId = context.AuthorId
 		};
 	}
 
@@ -135,4 +144,14 @@
 		var formCopy = JsonSerializer.Deserialize<UploadFileDetailsForm>(JsonSerializer.Serialize(_formModel));
 		Dispatcher.Dispatch(new UpdateFileStateFromEditForm(formCopy.Id, formCopy));
 	}
+
+	private async Task ChangeFormFileAuthor()
+	{
+		var reference = DialogService.Show<AuthorSelector>();
+		var result = await reference.Result;
+		if (result.Cancelled || result.Data is not AuthorState author) return;
+		_formModel.AuthorName = author.Name;
+		_formModel.AuthorId = author.Id;
+	}
+
 }
