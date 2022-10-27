@@ -17,7 +17,7 @@ namespace SciMaterials.WebAPI.LinkSearch.Extensions
             services.AddScoped<ILinkShortCut<Link>, LinkShortCut>();
             services
                 .AddOptions<LinkShortCutOptions>()
-                .Validate(options => options.HashAlgorithm is "SHA256")
+                .Validate(options => options.HashAlgorithm is "SHA512")
                 .Validate(options => options.Encoding is "UTF-8" or "UTF-32" or "Unicode" or "ASCII");
 
             return services;
