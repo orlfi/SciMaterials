@@ -1,23 +1,38 @@
 ﻿@page "/files_upload"
 
 @using SciMaterials.UI.BWASM.States.FileUpload
+@using SciMaterials.UI.BWASM.Dialogs
+@using SciMaterials.UI.BWASM.States.Categories
+@using System.Text.Json
 
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
 @inject IState<FilesUploadState> State
+@inject IDialogService DialogService
 
 <MudDrawerContainer>
 	<MudDrawer @bind-Open="@_openFileDetails" Width="300px" Anchor="Anchor.Right" Variant="@DrawerVariant.Persistent">
 		<MudIconButton Variant="Variant.Filled" Size="Size.Medium" Icon="@Icons.Material.Filled.Close" OnClick="CloseFileDetails" />
 		
 		<MudForm Model="@_formModel" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
-			<MudText T="string" Label="FileName"
-					 Required="true" RequiredError="File cannot live without it's name!'">@_formModel.FileName</MudText>
+			<MudTextField T="string" Label="FileName"
+			              @bind-Value="@_formModel.FileName"
+			              Required="true" RequiredError="File cannot live without it's name!'"/>
+			<MudTextField T="string" Label="Short info"
+			              @bind-Value="@_formModel.Title"
+			              Required="true" RequiredError="You must provide some information to identify file!'"/>
 
-			<MudText T="string" Label="Category">@_formModel.Category</MudText>
-
+			<MudStack Row="true">
+				<MudText>Category:</MudText>
+				<MudText>@_formModel.CategoryName</MudText>
+				<MudButton OnClick="ChangeFormFileCategory">Change</MudButton>
+			</MudStack>
+			
+			<MudText>ContentType: @_formModel.ContentType</MudText>
 			<MudText>Size: @_formModel.Size</MudText>
+			
+			<MudButton OnClick="SaveFormData">Save</MudButton>
 		</MudForm>   
 	</MudDrawer>
 
@@ -38,7 +53,7 @@
 
 			<RowTemplate>
 				<MudTd DataLabel="Name">@context.FileName</MudTd>
-				<MudTd DataLabel="Category">@context.Category</MudTd>
+				<MudTd DataLabel="Category">@context.CategoryName</MudTd>
 				<MudTd DataLabel="Size">@context.Size</MudTd>
 				<MudTd DataLabel="State">@context.State</MudTd>
 				<MudTd>
@@ -91,9 +106,12 @@
 		_formModel = new UploadFileDetailsForm()
 		{
 			Id = context.Id,
-			Category = context.Category,
+			CategoryName = context.CategoryName,
+			CategoryId = context.CategoryId,
 			FileName = context.FileName,
-			Size = context.Size
+			Size = context.Size,
+			ContentType = context.ContentType,
+			Title = context.Title
 		};
 	}
 
@@ -101,5 +119,20 @@
 	{
 		_formModel = UploadFileDetailsForm.Empty;
 		_openFileDetails = false;
+	}
+
+	private async Task ChangeFormFileCategory()
+	{
+		var reference = DialogService.Show<FilesCategoriesSelector>();
+		var result = await reference.Result;
+		if (result.Cancelled || result.Data is not TreeFileCategory category) return;
+		_formModel.CategoryName = category.Name;
+		_formModel.CategoryId = category.Id;
+	}
+
+	private void SaveFormData()
+	{
+		var formCopy = JsonSerializer.Deserialize<UploadFileDetailsForm>(JsonSerializer.Serialize(_formModel));
+		Dispatcher.Dispatch(new UpdateFileStateFromEditForm(formCopy.Id, formCopy));
 	}
 }
