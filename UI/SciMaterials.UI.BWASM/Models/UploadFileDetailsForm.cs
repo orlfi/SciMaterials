@@ -7,8 +7,9 @@ public class UploadFileDetailsForm
     public Guid Id { get; init; }
     public string FileName { get; set; } = null!;
     public long Size { get; init; }
-
-    public string Category { get; set; } = string.Empty;
+    public string ContentType { get; init; } = null!;
+    
     public string Title { get; set; } = string.Empty;
-    public string ContentType { get; set; } = string.Empty;
+    public string CategoryName { get; set; } = string.Empty;
+    public Guid CategoryId { get; set; }
 }

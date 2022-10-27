@@ -38,7 +38,7 @@ public class FileUploadScheduleService : IDisposable
     {
         while (true)
         {
-            if(!await _sender.WaitForNextTickAsync()) return;
+            if(!await _sender.WaitForNextTickAsync().ConfigureAwait(false)) return;
             if(_uploadRequests.Count <= 0) continue;
 
             if(!_uploadRequests.TryDequeue(out FileUploadData? data)) continue;
@@ -57,10 +57,10 @@ public class FileUploadScheduleService : IDisposable
                 {
                     Name = data.FileName,
                     Size = data.File.Size,
+                    ContentTypeName = data.File.ContentType,
                     // TODO
-                    Categories = data.Category,
+                    Categories = data.Category.ToString(),
                     AuthorId = Guid.Empty,
-                    ContentTypeName = data.ContentType,
                     Title = data.Title
                 },
                 data.CancellationToken);

@@ -18,15 +18,16 @@ public record FilesUploadState(ImmutableArray<FileUploadState> Files)
     private FilesUploadState() : this(ImmutableArray<FileUploadState>.Empty) { }
 }
 
-public record FileUploadState(IBrowserFile BrowserFile, string Category = "")
+public record FileUploadState(IBrowserFile BrowserFile, string CategoryName = "", Guid CategoryId = default)
 {
     public Guid Id { get; init; } = Guid.NewGuid();
     public string FileName { get; init; } = BrowserFile.Name;
     public long Size { get; init; } = BrowserFile.Size;
     public IBrowserFile BrowserFile { get; init; } = BrowserFile;
-    public string Category { get; init; } = Category;
+    public string CategoryName { get; init; } = CategoryName;
+    public Guid CategoryId { get; init; } = CategoryId;
     public string Title { get; init; } = string.Empty;
-    public string ContentType { get; init; } = string.Empty;
+    public string ContentType { get; init; } = BrowserFile.ContentType;
     public UploadState State { get; init; } = UploadState.NotScheduled;
 }
 
@@ -51,7 +52,8 @@ public record struct FileUploaded(Guid Id);
 public record struct FileUploadFailed(Guid Id, int ErrorCode);
 public record struct FileUploadCanceled(Guid Id);
 public record struct DeleteFileUpload(Guid Id);
-public record struct ChangeCategoryOfFileUpload(Guid Id, string? Category);
+public record struct ChangeCategoryOfFileUpload(Guid Id, string CategoryName, Guid CategoryId);
+public record struct UpdateFileStateFromEditForm(Guid Id, UploadFileDetailsForm Form);
 
 public class FileUploadEffects
 {
@@ -83,9 +85,8 @@ public class FileUploadEffects
                 Id = data.Id,
                 File = data.BrowserFile,
                 FileName = data.FileName,
-                Category = data.Category,
+                Category = data.CategoryId,
                 Title = data.Title,
-                ContentType = data.ContentType,
                 CancellationToken = fileUploadCancellationSource.Token
             });
             dispatcher.Dispatch(new FileUploadScheduled(data.Id, fileUploadCancellationSource));
@@ -173,7 +174,28 @@ public static class FileUploadReducers
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
-                replacement: x => x with { Category = action.Category },
+                replacement: x => x with
+                {
+                    CategoryName = action.CategoryName,
+                    CategoryId = action.CategoryId
+                },
+                result: out ImmutableArray<FileUploadState> files)
+            ? state 
+            : state with {Files = files};
+    }
+
+    [ReducerMethod]
+    public static FilesUploadState ChangeCategoryOfFileUpload(FilesUploadState state, UpdateFileStateFromEditForm action)
+    {
+        return !state.Files.ReplaceOne(
+                selector: x => x.Id == action.Id,
+                replacement: x => x with
+                {
+                    FileName = action.Form.FileName,
+                    Title = action.Form.Title,
+                    CategoryName = action.Form.CategoryName,
+                    CategoryId = action.Form.CategoryId,
+                },
                 result: out ImmutableArray<FileUploadState> files)
             ? state 
             : state with {Files = files};
