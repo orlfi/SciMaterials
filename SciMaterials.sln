@@ -81,10 +81,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Services", ".Services", "{
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.Contracts.WebAPI.LinkSearch", "Services\SciMaterials.Contracts.WebAPI.LinkSearch\SciMaterials.Contracts.WebAPI.LinkSearch.csproj", "{1F82958D-CF11-43C2-847B-CCAA7043EC78}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.WebAPI.LinkSearch", "Services\SciMaterials.WebAPI.LinkSearch\SciMaterials.WebAPI.LinkSearch.csproj", "{9BE204AA-B345-44EB-8977-F617B1756B70}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -191,14 +187,6 @@ Global
 		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F82958D-CF11-43C2-847B-CCAA7043EC78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F82958D-CF11-43C2-847B-CCAA7043EC78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F82958D-CF11-43C2-847B-CCAA7043EC78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F82958D-CF11-43C2-847B-CCAA7043EC78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9BE204AA-B345-44EB-8977-F617B1756B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9BE204AA-B345-44EB-8977-F617B1756B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9BE204AA-B345-44EB-8977-F617B1756B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9BE204AA-B345-44EB-8977-F617B1756B70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -233,8 +221,6 @@ Global
 		{4BAC37BE-D6F4-4933-A44F-5092C7C43871} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 		{A3A19FBA-0BC5-4BB9-8437-27678BC8CC6D} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 		{B4EECA3B-FD35-4CC8-94E7-2E88BAC3255E} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
-		{1F82958D-CF11-43C2-847B-CCAA7043EC78} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
-		{9BE204AA-B345-44EB-8977-F617B1756B70} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}
