@@ -68,6 +68,9 @@ public class AuthUtils : IAuthUtilits
         }
 
         var jwtToken = new JwtSecurityToken(token);
-        return (jwtToken is null) || (jwtToken.ValidFrom > DateTime.UtcNow) || (jwtToken.ValidTo < DateTime.UtcNow);
+        var now = DateTime.UtcNow;
+        return jwtToken is null 
+            || jwtToken.ValidFrom >  now 
+            || jwtToken.ValidTo < now;
     }
 }
