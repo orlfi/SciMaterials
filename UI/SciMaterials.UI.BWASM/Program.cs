@@ -9,10 +9,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using MudBlazor.Services;
 
-using SciMaterials.Contracts.API.DTO.AuthRoles;
 using SciMaterials.Contracts.API.DTO.AuthUsers;
-using SciMaterials.Contracts.API.DTO.Clients;
-using SciMaterials.Contracts.API.Services.Identity;
+using SciMaterials.Contracts.Identity.Clients.Clients;
 using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Extensions;
 using SciMaterials.UI.BWASM.Models;
@@ -38,9 +36,9 @@ builder.Services
     .AddApiClients(new Uri(builder.HostEnvironment.BaseAddress))
     .AddScoped<JwtAuthenticationHandler>();
 string identityRoot = builder.HostEnvironment.BaseAddress;
-builder.Services.AddHttpClient<IIdentityUserClient<IdentityClientResponse, AuthUserRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot))
+builder.Services.AddHttpClient<IIdentityClient, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot))
     .AddHttpMessageHandler<JwtAuthenticationHandler>();
-builder.Services.AddHttpClient<IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest>, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot))
+builder.Services.AddHttpClient<IRolesClient, IdentityClient>(c => c.BaseAddress = new Uri(identityRoot))
     .AddHttpMessageHandler<JwtAuthenticationHandler>();
 
 builder.Services

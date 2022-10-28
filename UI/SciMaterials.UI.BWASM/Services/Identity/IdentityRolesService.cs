@@ -1,37 +1,36 @@
 ﻿using System.Text.Json;
 
-using SciMaterials.Contracts.API.DTO.AuthRoles;
-using SciMaterials.Contracts.API.DTO.Clients;
-using SciMaterials.Contracts.API.Services.Identity;
+using Microsoft.AspNetCore.Identity;
+
+using SciMaterials.Contracts.Identity.Clients.Clients;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;
 
 public class IdentityRolesService : IRolesService
 {
-    private readonly IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest> _rolesClient;
+    private readonly IRolesClient _rolesClient;
     private readonly IAuthenticationService _authenticationService;
 
     public IdentityRolesService(
-        IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest> rolesClient,
+        IRolesClient rolesClient,
         IAuthenticationService authenticationService)
     {
         _rolesClient = rolesClient;
         _authenticationService = authenticationService;
     }
 
-    public async Task<IReadOnlyList<UserRole>> RolesList()
+    public async Task<List<IdentityRole>> RolesList()
     {
         var response = await _rolesClient.GetAllRolesAsync(CancellationToken.None);
-        if (!response.Succeeded) return Array.Empty<UserRole>();
+        if (!response.Succeeded) return new();
 
-        var roles = JsonSerializer.Deserialize<IReadOnlyList<UserRole>>(response.Content);
-        return roles ?? Array.Empty<UserRole>();
+        return response.Roles;
     }
 
     public async Task<bool> AddRole(string roleName)
     {
-        var response = await _rolesClient.CreateRoleAsync(new AuthRoleRequest() { RoleName = roleName });
+        var response = await _rolesClient.CreateRoleAsync(new() { RoleName = roleName });
         if (response.Succeeded) return true;
 
         // TODO: handle failure
@@ -41,7 +40,7 @@ public class IdentityRolesService : IRolesService
 
     public async Task<bool> DeleteRole(string roleId)
     {
-        var response = await _rolesClient.DeleteRoleByIdAsync(new AuthRoleRequest() { RoleId = roleId });
+        var response = await _rolesClient.DeleteRoleByIdAsync(roleId);
         if (!response.Succeeded)
         {
             // TODO: handle failure

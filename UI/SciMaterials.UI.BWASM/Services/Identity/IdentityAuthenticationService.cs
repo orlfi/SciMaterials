@@ -4,21 +4,20 @@ using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
-using SciMaterials.UI.BWASM.Models;
 using SciMaterials.Contracts.API.DTO.AuthUsers;
-using SciMaterials.Contracts.API.DTO.Clients;
-using SciMaterials.Contracts.API.Services.Identity;
+using SciMaterials.Contracts.Identity.Clients.Clients;
+using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;
 
 public class IdentityAuthenticationService : IAuthenticationService
 {
-    private readonly IIdentityUserClient<IdentityClientResponse, AuthUserRequest> _client;
+    private readonly IIdentityClient _client;
     private readonly ILocalStorageService _localStorageService;
     private readonly IdentityAuthenticationStateProvider _authenticationStateProvider;
 
     public IdentityAuthenticationService(
-        IIdentityUserClient<IdentityClientResponse, AuthUserRequest> client,
+        IIdentityClient client,
         ILocalStorageService localStorageService,
         AuthenticationStateProvider authenticationStateProvider)
     {
@@ -45,7 +44,7 @@ public class IdentityAuthenticationService : IAuthenticationService
     {
         // get token
         var response = await _client.LoginUserAsync(
-            new AuthUserRequest()
+            new LoginRequest
             {
                 Email = formData.Email,
                 Password = formData.Password
@@ -58,7 +57,7 @@ public class IdentityAuthenticationService : IAuthenticationService
             return false;
         }
 
-        var token = response.Content;
+        var token = response.SessionToken;
 
         // parse token
         if (token.ParseJwt() is not { Count: > 0 } claims) return false;
@@ -74,10 +73,10 @@ public class IdentityAuthenticationService : IAuthenticationService
     public async Task<bool> SignUp(SignUpForm formData)
     {
         var response = await _client.RegisterUserAsync(
-            new AuthUserRequest()
+            new RegisterRequest
             {
-                Email = formData.Email,
-                Name = formData.Username,
+                Email = formData.Email, 
+                NickName = formData.Username,
                 Password = formData.Password
             },
             CancellationToken.None);

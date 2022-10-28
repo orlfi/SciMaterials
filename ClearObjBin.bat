@@ -1,4 +1,5 @@
 @echo off
+
 echo Cleaning files in Obj and Bin directories
 
 for /f %%f in ('dir /s /b obj') do (del /f /s /q %%f > nul)

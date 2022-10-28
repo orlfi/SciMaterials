@@ -1,24 +1,19 @@
 ﻿using System.Text.Json;
 
-using Microsoft.AspNetCore.Components.Authorization;
-
-using SciMaterials.Contracts.API.DTO.AuthRoles;
-using SciMaterials.Contracts.API.DTO.AuthUsers;
-using SciMaterials.Contracts.API.DTO.Clients;
-using SciMaterials.Contracts.API.Services.Identity;
+using SciMaterials.Contracts.Identity.Clients.Clients;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;
 
 public class IdentityAccountsService : IAccountsService
 {
-    private readonly IIdentityUserClient<IdentityClientResponse, AuthUserRequest> _usersClient;
-    private readonly IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest> _rolesClient;
+    private readonly IIdentityClient _usersClient;
+    private readonly IRolesClient _rolesClient;
     private readonly IAuthenticationService _authenticationService;
 
     public IdentityAccountsService(
-        IIdentityUserClient<IdentityClientResponse, AuthUserRequest> usersClient, 
-        IIdentityRolesClient<IdentityClientResponse, AuthRoleRequest> rolesClient,
+        IIdentityClient usersClient,
+        IRolesClient rolesClient,
         IAuthenticationService authenticationService)
     {
         _usersClient = usersClient;
@@ -35,7 +30,7 @@ public class IdentityAccountsService : IAccountsService
             return Array.Empty<UserInfo>();
         }
 
-        var data = JsonSerializer.Deserialize<IEnumerable<User>>(response.Content);
+        var data = response.Users;
         if (data is null) return Array.Empty<UserInfo>();
         return data.Select(x=>new UserInfo()
         {
@@ -47,14 +42,8 @@ public class IdentityAccountsService : IAccountsService
 
     public async Task ChangeAuthority(string userEmail, string authorityName)
     {
-        _rolesClient.DeleteUserRoleByEmailAsync(
-            new AuthRoleRequest()
-            {
-                Email = userEmail,
-                RoleName = authorityName
-            },
-            CancellationToken.None);
-        _rolesClient.AddRoleToUserAsync(new AuthRoleRequest() { Email = userEmail, RoleName = authorityName }, CancellationToken.None);
+        await _rolesClient.DeleteUserRoleByEmailAsync(userEmail, authorityName);
+        await _rolesClient.AddRoleToUserAsync(new() { Email = userEmail, RoleName = authorityName }, CancellationToken.None);
 
         if(await _authenticationService.IsCurrentUser(userEmail))
             await _authenticationService.RefreshCurrentUser();
@@ -62,7 +51,7 @@ public class IdentityAccountsService : IAccountsService
 
     public async Task Delete(string userEmail)
     {
-        var response = await _usersClient.DeleteUserByEmail(new AuthUserRequest() { Email = userEmail }, CancellationToken.None);
+        var response = await _usersClient.DeleteUserByEmailAsync(userEmail);
         if (!response.Succeeded)
         {
             // TODO: handle failure
