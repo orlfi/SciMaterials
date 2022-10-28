@@ -19,4 +19,6 @@ public static class WebApiRoute
 
     /// <summary> Сервис управления ключевыми словами </summary>
     public const string Tags = "api/tags";
+
+    public const string Links = "api/links";
 }
