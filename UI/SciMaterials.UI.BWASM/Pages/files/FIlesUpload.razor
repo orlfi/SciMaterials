@@ -10,6 +10,7 @@
 
 @inject IDispatcher Dispatcher
 @inject IState<FilesUploadState> State
+@inject IState<FilesContentTypesFilterState> ContentTypesState
 @inject IDialogService DialogService
 
 <MudDrawerContainer>
@@ -45,7 +46,7 @@
 
 	<div>
 		<div>
-			<InputFile id="fileInput" hidden OnChange="OnFilesListChange" multiple/>
+			<InputFile id="fileInput" hidden OnChange="OnFilesListChange" accept="@ContentTypesState.Value.Filter" multiple />
 			<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled" Size="Size.Small">Add more</MudButton>
 		</div>
 
