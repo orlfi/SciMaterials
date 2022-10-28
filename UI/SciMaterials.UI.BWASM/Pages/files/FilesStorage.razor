@@ -3,6 +3,7 @@
 @using SciMaterials.UI.BWASM.States.FilesStorage
 @using SciMaterials.UI.BWASM.Dialogs
 @using SciMaterials.UI.BWASM.States.Categories
+@using Microsoft.JSInterop.Implementation
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
@@ -11,6 +12,8 @@
 @inject NavigationManager NavigationManager
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject IJSRuntime JsRuntime
+
 
 <MudText Class="mb-5" Typo="Typo.h3" Align="Align.Start">Files</MudText>
 
@@ -53,6 +56,7 @@
 				</MudTd>
 				<MudTd DataLabel="Size">@context.Size</MudTd>
 				<MudTh>
+					<MudIconButton Icon="@Icons.Filled.Download" OnClick="()=>DownloadFileFromUrl(context)"></MudIconButton>
 					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => NavigateToFileDetailsUrl(context)">Edit</MudButton>
 					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
 				</MudTh>
@@ -69,10 +73,19 @@
 	private string filterValue { get; set; }
 	private string sortValue { get; set; }
 	private ItemsPresentationMode _itemsPresentationMode;
+	private IJSObjectReference downloadFilesModule;
 
 	protected override async Task OnInitializedAsync()
 	{
 		Refresh();
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			downloadFilesModule = await JsRuntime.InvokeAsync<IJSObjectReference>("import", "./js/files-download.js");
+		}
 	}
 
 	private void NavigateToFileDetailsUrl(FileStorageState context)
@@ -103,4 +116,20 @@
 		Snackbar.Add($"Category {category}");
 	}
 
+	private async Task DownloadFileFromStream()
+	{
+		//var fileStream = GetFileStream();
+		//var fileName = "log.bin";
+
+		//using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+		//await JsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+	}
+
+	private async Task DownloadFileFromUrl(FileStorageState context)
+	{
+		var fileName = context.FileName;
+		var fileUrl = context.Url;
+		await downloadFilesModule.InvokeVoidAsync("triggerFileDownload", fileName, fileUrl);
+	}
 }

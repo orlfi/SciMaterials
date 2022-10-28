@@ -2,8 +2,6 @@
 
 using Fluxor;
 
-using SciMaterials.Contracts.API.DTO.Files;
-using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.WebApi.Clients.Files;
 
 namespace SciMaterials.UI.BWASM.States.FilesStorage;
@@ -14,7 +12,7 @@ public record FilesStorageState(ImmutableArray<FileStorageState> Files)
     public FilesStorageState() : this(ImmutableArray<FileStorageState>.Empty) { }
 }
 
-public record FileStorageState(Guid Id, string FileName, string Category, long Size);
+public record FileStorageState(Guid Id, string FileName, string Category, long Size, string Url);
 
 public record struct LoadFiles();
 public record struct LoadFilesResult(ImmutableArray<FileStorageState> Files);
@@ -40,7 +38,7 @@ public class FilesStorageEffects
             return;
         }
 
-        var files = result.Data!.Select(x => new FileStorageState(x.Id, x.Name, x.Categories, x.Size)).ToImmutableArray();
+        var files = result.Data!.Select(x => new FileStorageState(x.Id, x.Name, x.Categories, x.Size, x.Url)).ToImmutableArray();
         dispatcher.Dispatch(new LoadFilesResult(files));
     }
 
@@ -52,14 +50,6 @@ public class FilesStorageEffects
 
         dispatcher.Dispatch(new DeleteFileResult(action.Id));
     }
-
-    private IEnumerable<FileStorageState> Files = new []
-    {
-        new FileStorageState(Guid.NewGuid(), "Outuf.css", "Style", 52),
-        new FileStorageState(Guid.NewGuid(), "Go.go", "Script", 12432),
-        new FileStorageState(Guid.NewGuid(), "Site.html", "Markup", 1252),
-        new FileStorageState(Guid.NewGuid(), "Site.css", "Style", 252),
-    };
 }
 
 public static class FilesStorageReducers
