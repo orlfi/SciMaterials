@@ -22,7 +22,8 @@ public class FileUploadScheduleService : IDisposable
         _scopeFactory = scopeFactory;
         _logger = logger;
         _sender = new(TimeSpan.FromSeconds(30));
-        Upload();
+        // not awaitable background task for uploading files in queue
+        _ = Upload();
     }
 
     public void ScheduleUpload(FileUploadData data)
