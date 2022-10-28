@@ -129,7 +129,7 @@
 	private async Task DownloadFileFromUrl(FileStorageState context)
 	{
 		var fileName = context.FileName;
-		var fileUrl = context.Url;
+		var fileUrl = BaseRoutes.FilesApi + $"api/files/DownloadById/{context.Id}";
 		await downloadFilesModule.InvokeVoidAsync("triggerFileDownload", fileName, fileUrl);
 	}
 }
