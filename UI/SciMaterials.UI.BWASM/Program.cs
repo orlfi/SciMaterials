@@ -11,12 +11,14 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
 
 using SciMaterials.Contracts.Identity.Clients.Clients;
+using SciMaterials.Contracts.WebApi.Clients.Authors;
 using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Extensions;
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
 using SciMaterials.UI.BWASM.Services.Identity;
+using SciMaterials.WebApi.Clients.Authors;
 using SciMaterials.WebApi.Clients.Extensions;
 using SciMaterials.WebApi.Clients.Identity;
 
@@ -35,6 +37,7 @@ string apiRoot = builder.HostEnvironment.BaseAddress;
 builder.Services
     .AddScoped<JwtAuthenticationHandler>()
     .AddApiClients(new Uri(apiRoot))
+    .AddApiClient<IAuthorsClient, AuthorsClient>(apiRoot)
     .AddApiClient<IIdentityClient, IdentityClient>(apiRoot, ClientConfiguration)
     .AddApiClient<IUserClient, IdentityClient>(apiRoot, ClientConfiguration)
     .AddApiClient<IRolesClient, IdentityClient>(apiRoot, ClientConfiguration);
