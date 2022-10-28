@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 
 using SciMaterials.Contracts.Result;
 
-namespace SciMaterials.Contracts.Identity.Clients.Clients.Responses
+namespace SciMaterials.Contracts.Identity.Clients.Clients.Responses.User
 {
     public class ClientGetAllUsersResponse : IResult
     {

@@ -6,9 +6,5 @@
         <Nullable>enable</Nullable>
         <RootNamespace>SciMaterials.Contracts.Identity.API</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="DTO" />
-    </ItemGroup>
-
+    
 </Project>

@@ -8,7 +8,7 @@ public static class AuthApiRoute
     /// <summary>
     /// Uri адрес сервиса
     /// </summary>
-    public const string AuthApiUri = "http://localhost:5185/";
+    public const string AuthApiUri = "http://localhost:5000/";
     
     /// <summary>
     /// Контроллер аутентификации
