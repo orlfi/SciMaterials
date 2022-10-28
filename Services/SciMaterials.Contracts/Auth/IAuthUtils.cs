@@ -2,5 +2,6 @@ namespace SciMaterials.Contracts.Auth;
 
 public interface IAuthUtils<TUser>
 {
-    string CreateSessionToken(TUser user, IList<string> role);
+    string CreateSessionToken(TUser User, IList<string> Roles);
+    bool CheckTokenIsEmptyOrInvalid(string token);
 }

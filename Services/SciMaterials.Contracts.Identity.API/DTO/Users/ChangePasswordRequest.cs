@@ -1,4 +1,4 @@
-namespace SciMaterials.Contracts.API.DTO.Passwords;
+namespace SciMaterials.Contracts.API.DTO.AuthUsers;
 
 public class ChangePasswordRequest
 {
