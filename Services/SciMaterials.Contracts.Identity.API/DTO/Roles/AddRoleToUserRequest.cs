@@ -1,8 +1,7 @@
-namespace SciMaterials.Contracts.Identity.API.DTO.Roles
+namespace SciMaterials.Contracts.Identity.API.DTO.Roles;
+
+public class AddRoleToUserRequest
 {
-    public class AddRoleToUserRequest
-    {
-        public string? Email { get; set; }
-        public string? RoleName { get; set; }
-    }
+    public string? Email { get; set; }
+    public string? RoleName { get; set; }
 }
