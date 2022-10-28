@@ -27,6 +27,8 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 // Api
 //builder.Services.AddApiClients(new Uri(builder.HostEnvironment.BaseAddress));
+BaseRoutes.MvcRoute = builder.HostEnvironment.BaseAddress;
+
 builder.Services
     .AddApiClient<IFilesClient, FilesClient>(BaseRoutes.FilesApi)
     .AddApiClient<ITagsClient, TagsClient>(BaseRoutes.TagsApi)
@@ -57,11 +59,11 @@ await builder.Build().RunAsync();
 
 static class BaseRoutes
 {
-    private const string MvcRoute = "http://localhost:5185";
+    public static string MvcRoute { get; set; } = "http://localhost:5185";
 
-    public const string FilesApi = MvcRoute;
-    public const string TagsApi = MvcRoute;
-    public const string CategoriesApi = MvcRoute;
-    public const string ContentTypesApi = MvcRoute;
-    public const string AuthorsApi = MvcRoute;
+    public static string FilesApi => MvcRoute;
+    public static string TagsApi => MvcRoute;
+    public static string CategoriesApi => MvcRoute;
+    public static string ContentTypesApi => MvcRoute;
+    public static string AuthorsApi => MvcRoute;
 }
