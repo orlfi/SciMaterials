@@ -17,9 +17,9 @@ public interface IUserClient
     
     Task<ClientGetUserByEmailResponse> GetUserByEmailAsync(string Email, CancellationToken CancellationToken = default);
     
-    Task<ClientChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest ChangePasswordRequest, CancellationToken cancellationToken = default);
+    Task<ClientChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest ChangePasswordRequest, CancellationToken Cancel = default);
     
-    Task<ClientEditUserNameByEmailResponse> EditUserNameByEmailAsync(EditUserNameByEmailRequest editUserRequest, CancellationToken cancellationToken = default);
+    Task<ClientEditUserNameByEmailResponse> EditUserNameByEmailAsync(EditUserNameByEmailRequest editUserRequest, CancellationToken Cancel = default);
     
     Task<ClientGetAllUsersResponse> GetAllUsersAsync(CancellationToken CancellationToken = default);
 
@@ -27,5 +27,5 @@ public interface IUserClient
     
     Task<ClientDeleteUsersWithOutConfirmResponse> DeleteUsersWithOutConfirmAsync(CancellationToken CancellationToken = default);
 
-    Task<ClientRefreshTokenResponse> GetRefreshTokenAsync(CancellationToken cancellationToken = default);
+    Task<ClientRefreshTokenResponse> GetRefreshTokenAsync(CancellationToken Cancel = default);
 }
