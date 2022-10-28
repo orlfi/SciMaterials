@@ -15,10 +15,12 @@ namespace SciMaterials.UI.MVC.API.Controllers
     public class LinkSearchController : ApiBaseController<LinkSearchController>
     {
         private readonly ILinkShortCut<Link> _link;
+        private readonly ILogger<LinkSearchController> _logger;
 
-        public LinkSearchController(ILinkShortCut<Link> link)
+        public LinkSearchController(ILinkShortCut<Link> link, ILogger<LinkSearchController> logger)
         {
             _link = link;
+            _logger = logger;
         }
 
         [HttpGet("get")]
@@ -28,7 +30,7 @@ namespace SciMaterials.UI.MVC.API.Controllers
             return Ok(link);
         }
 
-        [HttpPost]
+        [HttpPost("link/{link}")]
         public async Task<IActionResult> Add([FromBody] Link link)
         {
             var result = await _link.AddAsync(link.SourceAddress);
