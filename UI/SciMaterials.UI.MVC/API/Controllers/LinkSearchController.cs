@@ -10,7 +10,7 @@ using SciMaterials.DAL.Models;
 
 namespace SciMaterials.UI.MVC.API.Controllers
 {
-    [Route("api/Link")]
+    [Route("api/")]
     [ApiController]
     public class LinkSearchController : ApiBaseController<LinkSearchController>
     {

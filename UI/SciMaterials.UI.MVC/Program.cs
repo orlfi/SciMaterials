@@ -6,6 +6,7 @@ using SciMaterials.Services.Database.Extensions;
 using SciMaterials.AUTH.Extensions;
 using SciMaterials.Contracts.API.Services.Identity;
 using SciMaterials.WebApi.Clients.Identity;
+using SciMaterials.WebAPI.LinkSearch.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.ConfigureKestrel(opt =>
@@ -23,6 +24,7 @@ services.AddSwagger(builder.Configuration);
 services.ConfigureApplication(builder.Configuration);
 services.AddApiServices(builder.Configuration);
 services.AddAuthApiServices(builder.Configuration);
+services.AddApiLinkSearch(builder.Configuration);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
 services.AddHttpClient();
