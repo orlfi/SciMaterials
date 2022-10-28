@@ -10,6 +10,6 @@ public class LinkSearch : ILinkSearch
     {
         return Regex.Replace(text,
             @"((http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)",
-            "\"$1\"");
+            "<a href=\"$1\"</a>");
     }
 }
