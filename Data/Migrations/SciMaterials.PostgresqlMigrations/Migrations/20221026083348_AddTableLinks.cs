@@ -15,7 +15,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     SourceAddress = table.Column<string>(type: "text", nullable: false),
-                    Hash = table.Column<string>(type: "text", nullable: true),
+                    Hash = table.Column<string>(type: "text", nullable: false),
                     AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)

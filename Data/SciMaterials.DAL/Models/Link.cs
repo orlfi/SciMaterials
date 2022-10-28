@@ -7,7 +7,7 @@ namespace SciMaterials.DAL.Models
     public class Link : BaseModel
     {
         public string SourceAddress { get; set; } = string.Empty;
-        public string? Hash { get; set; }
+        public string Hash { get; set; }
         public Guid AuthorId { get; set; }
         public string? Description { get; set; }
 

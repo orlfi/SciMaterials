@@ -357,6 +357,3 @@ MigrationBackup/
 *.db
 *.db-shm
 *.db-wal
-/.idea/.idea.SciMaterials/.idea/indexLayout.xml
-/.idea/.idea.SciMaterials/.idea/vcs.xml
-/.idea/.idea.SciMaterials/.idea/workspace.xml
