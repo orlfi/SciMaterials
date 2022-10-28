@@ -7,9 +7,9 @@
 <MudDialog>
 	<DialogContent>
 		<div class="d-flex flex-column py-1">
-			@foreach (var auhtor in State.Value.Authors)
+			@foreach (var author in State.Value.Authors)
 			{
-				<MudButton OnClick="() => SelectOption(auhtor)">@auhtor.Name</MudButton>
+				<MudButton OnClick="() => SelectOption(author)">@author.Name</MudButton>
 			}
 		</div>
 	</DialogContent>
