@@ -1,9 +1,8 @@
 ﻿@page "/files_storage"
 
 @using SciMaterials.UI.BWASM.States.FilesStorage
-@using SciMaterials.UI.BWASM.Dialogs
 @using SciMaterials.UI.BWASM.States.Categories
-@using Microsoft.JSInterop.Implementation
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
@@ -13,6 +12,7 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 @inject IJSRuntime JsRuntime
+@inject IWebAssemblyHostEnvironment HostEnvironment
 
 
 <MudText Class="mb-5" Typo="Typo.h3" Align="Align.Start">Files</MudText>
@@ -129,7 +129,7 @@
 	private async Task DownloadFileFromUrl(FileStorageState context)
 	{
 		var fileName = context.FileName;
-		var fileUrl = BaseRoutes.FilesApi + $"api/files/DownloadById/{context.Id}";
+		var fileUrl = HostEnvironment.BaseAddress + $"api/files/DownloadById/{context.Id}";
 		await downloadFilesModule.InvokeVoidAsync("triggerFileDownload", fileName, fileUrl);
 	}
 }
