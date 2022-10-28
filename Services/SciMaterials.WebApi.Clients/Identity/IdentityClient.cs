@@ -4,11 +4,13 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.AuthRoles;
 using SciMaterials.Contracts.API.DTO.AuthUsers;
-using SciMaterials.Contracts.API.DTO.Clients;
-using SciMaterials.Contracts.API.DTO.Passwords;
-using SciMaterials.Contracts.API.Services.Identity;
+using SciMaterials.Contracts.AuthApi.DTO.Roles;
+using SciMaterials.Contracts.Identity.API.DTO.Roles;
+using SciMaterials.Contracts.Identity.Clients.Clients;
+using SciMaterials.Contracts.Identity.Clients.Clients.Responses;
+using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
+using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
 
 namespace SciMaterials.WebApi.Clients.Identity;
 
@@ -28,52 +30,53 @@ public class IdentityClient : IIdentityClient
     /// <summary>
     /// Метод клиента для регистрации пользователя в Identity
     /// </summary>
-    /// <param name="registerUser">Запрос на регистрацию</param>
-    /// <param name="cancellationToken">Токен отмены</param>
+    /// <param name="RegisterRequest">Запрос на регистрацию</param>
+    /// <param name="CancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> RegisterUserAsync(AuthUserRequest registerUser, CancellationToken cancellationToken = default)
+    public async Task<ClientCreateUserResponse> RegisterUserAsync(RegisterRequest RegisterRequest, CancellationToken CancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "RegisterUser {Email}", registerUser.Email);
-        var content = JsonSerializer.Serialize(registerUser, _options);
-        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        _logger.Log(LogLevel.Information, "RegisterUser {Email}", RegisterRequest.Email);
+        var content = JsonSerializer.Serialize(RegisterRequest, _options);
+        var body_content = new StringContent(content, Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.Register}"),
-            Content = bodyContent,
+            Content = body_content,
         };
         
-        var registrationResult = await _client.SendAsync(request, cancellationToken);
-        var result = await registrationResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var registration_result = await _client.SendAsync(request, CancellationToken);
+        var result = await registration_result.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientCreateUserResponse>(cancellationToken: CancellationToken);
         return result;
     }
 
     /// <summary>
     /// Метод клиента для авторизации пользователя в Identity
     /// </summary>
-    /// <param name="loginUser">Запрос на авторизацию</param>
+    /// <param name="loginRegister">Запрос на авторизацию</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> LoginUserAsync(AuthUserRequest loginUser, CancellationToken cancellationToken = default)
+    public async Task<ClientLoginResponse> LoginUserAsync(LoginRequest loginRegister, CancellationToken CancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "LoginUser {Email}", loginUser.Email);
-        var content = JsonSerializer.Serialize(loginUser, _options);
-        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        _logger.Log(LogLevel.Information, "LoginUser {Email}", loginRegister.Email);
+        var content = JsonSerializer.Serialize(loginRegister, _options);
+        var body_content = new StringContent(content, Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.Login}"),
-            Content = bodyContent
+            Content = body_content
         };
         
-        var loginResult = await _client.SendAsync(request, cancellationToken);
-        var result = await loginResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var login_result = await _client.SendAsync(request, CancellationToken);
+        var result = await login_result.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientLoginResponse>(cancellationToken: CancellationToken);
+        
         //Прописываем токен для будущих запросов к api, пока реализовано так.
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",result.Content);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",result.SessionToken);
         return result;
     }
 
@@ -82,7 +85,7 @@ public class IdentityClient : IIdentityClient
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> LogoutUserAsync(CancellationToken cancellationToken = default)
+    public async Task<ClientLogoutResponse> LogoutUserAsync(CancellationToken CancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "LogoutUser");
         var request = new HttpRequestMessage()
@@ -93,8 +96,8 @@ public class IdentityClient : IIdentityClient
                                  $"{AuthApiRoute.Logout}"),
         };
         
-        var logoutResult = await _client.SendAsync(request, cancellationToken);
-        var result = await logoutResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var logout_result = await _client.SendAsync(request, CancellationToken);
+        var result = await logout_result.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientLogoutResponse>(cancellationToken: CancellationToken);
         _client.DefaultRequestHeaders.Authorization = null;
         return result;
     }
@@ -102,59 +105,59 @@ public class IdentityClient : IIdentityClient
     /// <summary>
     /// Метод клиента для смены пароля в Identity
     /// </summary>
-    /// <param name="passwordRequest">Запрос на смену пароля</param>
+    /// <param name="ChangePasswordRequest">Запрос на смену пароля</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> ChangePasswordAsync(ChangePasswordRequest passwordRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientChangePasswordResponse> ChangePasswordAsync(ChangePasswordRequest ChangePasswordRequest, CancellationToken CancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "ChangePassword");
-        var content = JsonSerializer.Serialize(passwordRequest, _options);
-        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        var content = JsonSerializer.Serialize(ChangePasswordRequest, _options);
+        var body_content = new StringContent(content, Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.ChangePassword}"),
-            Content = bodyContent
+            Content = body_content
         };
         
-        var changePasswordResult = await _client.SendAsync(request, cancellationToken);
-        var result = await changePasswordResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var change_password_result = await _client.SendAsync(request, CancellationToken);
+        var result = await change_password_result.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientChangePasswordResponse>(cancellationToken: CancellationToken);
         return result;
     }
 
     /// <summary>
     /// Метод клиента для создания роли пользователя в Identity
     /// </summary>
-    /// <param name="roleRequest">Запрос на создание роли</param>
+    /// <param name="CreateRoleRequest">Запрос на создание роли</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> CreateRoleAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientCreateRoleResponse> CreateRoleAsync(CreateRoleRequest CreateRoleRequest, CancellationToken CancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "CreateRole {RoleName}", roleRequest.RoleName);
-        var content = JsonSerializer.Serialize(roleRequest, _options);
-        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        _logger.Log(LogLevel.Information, "CreateRole {RoleName}", CreateRoleRequest.RoleName);
+        var content = JsonSerializer.Serialize(CreateRoleRequest, _options);
+        var body_content = new StringContent(content, Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Post,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.CreateRole}"),
-            Content = bodyContent
+            Content = body_content
         };
         
-        var createRoleResult = await _client.SendAsync(request, cancellationToken);
-        var result = await createRoleResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var create_role_result = await _client.SendAsync(request, CancellationToken);
+        var result = await create_role_result.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientCreateRoleResponse>(cancellationToken: CancellationToken);
         return result;
     }
-
+    
     /// <summary>
     /// Метод клиента для получения инф. о всех ролях в Identity
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> GetAllRolesAsync(CancellationToken cancellationToken = default)
+    public async Task<ClientGetAllRolesResponse> GetAllRolesAsync(CancellationToken CancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "GetAllRoles");
         var request = new HttpRequestMessage()
@@ -165,8 +168,8 @@ public class IdentityClient : IIdentityClient
                                  $"{AuthApiRoute.GetAllRoles}"),
         };
         
-        var getAllRolesResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getAllRolesResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var get_all_roles_result = await _client.SendAsync(request, CancellationToken);
+        var result = await get_all_roles_result.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientGetAllRolesResponse>(cancellationToken: CancellationToken);
         return result;
     }
 
@@ -176,20 +179,20 @@ public class IdentityClient : IIdentityClient
     /// <param name="roleRequest">Запрос на получение инф. о роли по идентификатору</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> GetRoleByIdAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientGetRoleByIdResponse> GetRoleByIdAsync(string RoleId, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "GetRoleById {RoleId}", roleRequest.RoleId);
+        _logger.Log(LogLevel.Information, "GetRoleById {RoleId}", RoleId);
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.GetRoleById}"+ 
-                                 $"{roleRequest.RoleId}"),
+                                 $"{RoleId}"),
         };
 
         var getRolesByIdResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getRolesByIdResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await getRolesByIdResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientGetRoleByIdResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
@@ -199,7 +202,7 @@ public class IdentityClient : IIdentityClient
     /// <param name="roleRequest">Запрос на редактирование роли по идентификатору</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> EditRoleByIdAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientEditRoleNameByIdResponse> EditRoleNameByIdAsync(EditRoleNameByIdRequest roleRequest, CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "EditRoleById {RoleId}", roleRequest.RoleId);
         var content = JsonSerializer.Serialize(roleRequest, _options);
@@ -209,12 +212,12 @@ public class IdentityClient : IIdentityClient
             Method = HttpMethod.Put,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
-                                 $"{AuthApiRoute.EditRoleById}"),
+                                 $"{AuthApiRoute.EditRoleNameById}"),
             Content = bodyContent
         };
         
         var getRoleByIdResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getRoleByIdResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await getRoleByIdResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientEditRoleNameByIdResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
@@ -224,20 +227,20 @@ public class IdentityClient : IIdentityClient
     /// <param name="roleRequest">Запрос на удаление роли по идентификатору</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> DeleteRoleByIdAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientDeleteRoleByIdResponse> DeleteRoleByIdAsync(string RoleId, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "DeleteRoleById {RoleId}", roleRequest.RoleId);
+        _logger.Log(LogLevel.Information, "DeleteRoleById {RoleId}", RoleId);
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.DeleteRoleById}" + 
-                                 $"{roleRequest.RoleId}"),
+                                 $"{RoleId}"),
         };
         
         var deleteRoleResult = await _client.SendAsync(request, cancellationToken);
-        var result = await deleteRoleResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await deleteRoleResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientDeleteRoleByIdResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
@@ -247,7 +250,7 @@ public class IdentityClient : IIdentityClient
     /// <param name="roleRequest">Запрос на добавление роли</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> AddRoleToUserAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientAddRoleToUserResponse> AddRoleToUserAsync(AddRoleToUserRequest roleRequest, CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "AddRole {Role} ToUser {Email}", roleRequest.RoleName, roleRequest.Email);
         var content = JsonSerializer.Serialize(roleRequest, _options);
@@ -262,31 +265,31 @@ public class IdentityClient : IIdentityClient
         };
         
         var addRoleToUserResult = await _client.SendAsync(request, cancellationToken);
-        var result = await addRoleToUserResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await addRoleToUserResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientAddRoleToUserResponse>(cancellationToken: cancellationToken);
         return result;
     }
-
+    
     /// <summary>
     /// Метод клиента для удаления роли пользователя по email в Identity
     /// </summary>
     /// <param name="roleRequest">Запрос на удаление роли по email</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> DeleteUserRoleByEmailAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientDeleteUserRoleByEmailResponse> DeleteUserRoleByEmailAsync(string Email, string RoleName, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "DeleteUserRoleByEmail {Email}", roleRequest.Email);
+        _logger.Log(LogLevel.Information, "DeleteUserRoleByEmail {Email}", Email);
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.DeleteUserRoleByEmail}" + 
-                                 $"{roleRequest.Email}/" + 
-                                 $"{roleRequest.RoleName}"),
+                                 $"{Email}/" + 
+                                 $"{RoleName}"),
         };
         
         var deleteUserRoleResult = await _client.SendAsync(request, cancellationToken);
-        var result = await deleteUserRoleResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await deleteUserRoleResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientDeleteUserRoleByEmailResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
@@ -296,33 +299,33 @@ public class IdentityClient : IIdentityClient
     /// <param name="roleRequest">Запрос на получение информации о всех пользователях</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> ListOfUserRolesAsync(AuthRoleRequest roleRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientGetAllUserRolesByEmailResponse> GetAllUserRolesByEmailAsync(string Email, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "ListOfUser {Email} Roles", roleRequest.Email);
+        _logger.Log(LogLevel.Information, "ListOfUser {Email} Roles", Email);
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
-                                 $"{AuthApiRoute.ListOfUserRolesByEmail}" + 
-                                 $"{roleRequest.Email}"),
+                                 $"{AuthApiRoute.GetAllUserRolesByEmail}" + 
+                                 $"{Email}"),
         };
         
         var listOfUserRolesResult = await _client.SendAsync(request, cancellationToken);
-        var result = await listOfUserRolesResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await listOfUserRolesResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientGetAllUserRolesByEmailResponse>(cancellationToken: cancellationToken);
         return result;
     }
     
     /// <summary>
     /// Метод клиента для создания нового пользователя (админом) в Identity
     /// </summary>
-    /// <param name="userRequest">Запрос на создание пользователя</param>
+    /// <param name="registerRequest">Запрос на создание пользователя</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> CreateUserAsync(AuthUserRequest userRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientCreateUserResponse> CreateUserAsync(RegisterRequest registerRequest, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "CreateUser {Email} {Name}", userRequest.Email, userRequest.Name);
-        var content = JsonSerializer.Serialize(userRequest, _options);
+        _logger.Log(LogLevel.Information, "CreateUser {Email} {NickName}", registerRequest.Email, registerRequest.NickName);
+        var content = JsonSerializer.Serialize(registerRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage()
         {
@@ -334,30 +337,30 @@ public class IdentityClient : IIdentityClient
         };
         
         var createUserResult = await _client.SendAsync(request, cancellationToken);
-        var result = await createUserResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await createUserResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientCreateUserResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
     /// <summary>
     /// Метод клиента для получения информации о пользователе по email в Identity
     /// </summary>
-    /// <param name="userRequest">Запрос на получение информации о пользователе</param>
+    /// <param name="registerRequest">Запрос на получение информации о пользователе</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> GetUserByEmailAsync(AuthUserRequest userRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientGetUserByEmailResponse> GetUserByEmailAsync(string Email, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "GetUserByEmail {Email}", userRequest.Email);
+        _logger.Log(LogLevel.Information, "GetUserByEmail {Email}", Email);
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Get,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.GetUserByEmail}" + 
-                                 $"{userRequest.Email}"),
+                                 $"{Email}"),
         };
         
         var getUserByEmailResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientGetUserByEmailResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
@@ -366,7 +369,7 @@ public class IdentityClient : IIdentityClient
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> GetAllUsersAsync(CancellationToken cancellationToken = default)
+    public async Task<ClientGetAllUsersResponse> GetAllUsersAsync(CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "GetAllUsers");
         var request = new HttpRequestMessage()
@@ -378,21 +381,21 @@ public class IdentityClient : IIdentityClient
         };
         
         var getAllUsersResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getAllUsersResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await getAllUsersResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientGetAllUsersResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
     /// <summary>
     /// Метод клиента для изменения имени (ник нейма) пользователя в Identity
     /// </summary>
-    /// <param name="editUserRequest">Запрос на изменение имени</param>
+    /// <param name="editUserNameByEmailRequest">Запрос на изменение имени</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> EditUserNameByEmailAsync(EditUserRequest editUserRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientEditUserNameByEmailResponse> EditUserNameByEmailAsync(EditUserNameByEmailRequest editUserNameByEmailRequest, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "EditUserName {Name} ByEmail {Email}", 
-            editUserRequest.EditUserInfo?.Name, editUserRequest.Email);
-        var content = JsonSerializer.Serialize(editUserRequest, _options);
+        _logger.Log(LogLevel.Information, "EditUserName {NickName} ByEmail {UserEmail}", 
+            editUserNameByEmailRequest.EditUserNickName, editUserNameByEmailRequest.UserEmail);
+        var content = JsonSerializer.Serialize(editUserNameByEmailRequest, _options);
         var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
         var request = new HttpRequestMessage()
         {
@@ -404,33 +407,30 @@ public class IdentityClient : IIdentityClient
         };
         
         var getUserByEmailResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientEditUserNameByEmailResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
     /// <summary>
     /// Метод клиента для удаления пользователя по email в Identity
     /// </summary>
-    /// <param name="userRequest">Запрос на удаление</param>
+    /// <param name="registerRequest">Запрос на удаление</param>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> DeleteUserByEmail(AuthUserRequest userRequest, CancellationToken cancellationToken = default)
+    public async Task<ClientDeleteUserByEmailResponse> DeleteUserByEmailAsync(string Email, CancellationToken cancellationToken = default)
     {
-        _logger.Log(LogLevel.Information, "DeleteUserByEmail {Email}", userRequest.Email);
-        var content = JsonSerializer.Serialize(userRequest, _options);
-        var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
+        _logger.Log(LogLevel.Information, "DeleteUserByEmail {Email}", Email);
         var request = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
             RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
                                  $"{AuthApiRoute.AuthControllerName}" + 
                                  $"{AuthApiRoute.DeleteUserByEmail}" + 
-                                 $"{userRequest.Email}"),
-            Content = bodyContent
+                                 $"{Email}"),
         };
         
         var getUserByEmailResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientDeleteUserByEmailResponse>(cancellationToken: cancellationToken);
         return result;
     }
 
@@ -439,7 +439,7 @@ public class IdentityClient : IIdentityClient
     /// </summary>
     /// <param name="cancellationToken">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
-    public async Task<IdentityClientResponse> DeleteUsersWithOutConfirm(CancellationToken cancellationToken = default)
+    public async Task<ClientDeleteUsersWithOutConfirmResponse> DeleteUsersWithOutConfirmAsync(CancellationToken cancellationToken = default)
     {
         _logger.Log(LogLevel.Information, "DeleteUsersWithOutConfirm");
         var request = new HttpRequestMessage()
@@ -451,7 +451,23 @@ public class IdentityClient : IIdentityClient
         };
         
         var getUserByEmailResult = await _client.SendAsync(request, cancellationToken);
-        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<IdentityClientResponse>(cancellationToken: cancellationToken);
+        var result = await getUserByEmailResult.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientDeleteUsersWithOutConfirmResponse>(cancellationToken: cancellationToken);
+        return result;
+    }
+
+    public async Task<ClientRefreshTokenResponse> GetRefreshTokenAsync(CancellationToken cancellationToken = default)
+    {
+        _logger.Log(LogLevel.Information, "RefreshTokenAsync");
+        var request = new HttpRequestMessage()
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri($"{AuthApiRoute.AuthApiUri}" + 
+                                 $"{AuthApiRoute.AuthControllerName}" + 
+                                 $"{AuthApiRoute.RefreshToken}"),
+        };
+        
+        var refresh_token_result = await _client.SendAsync(request, cancellationToken);
+        var result = await refresh_token_result.EnsureSuccessStatusCode().Content.ReadFromJsonAsync<ClientRefreshTokenResponse>(cancellationToken: cancellationToken);
         return result;
     }
 }
