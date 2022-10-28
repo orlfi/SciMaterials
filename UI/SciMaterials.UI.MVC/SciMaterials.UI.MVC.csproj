@@ -30,27 +30,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.MySql.Auth.Migrations\SciMaterials.MySql.Auth.Migrations.csproj" />
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.SqlLite.Auth.Migrations\SciMaterials.SqlLite.Auth.Migrations.csproj" />
+    <ProjectReference Include="..\..\Services\SciMaterials.Contracts.Identity.Clients\SciMaterials.Contracts.Identity.Clients.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj" />
     <ProjectReference Include="..\SciMaterials.UI.BWASM\SciMaterials.UI.BWASM.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Data Source=\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Remove="Data Source=\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Data Source=\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Data Source=\**" />
   </ItemGroup>
 
 </Project>

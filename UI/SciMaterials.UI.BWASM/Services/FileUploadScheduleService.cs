@@ -24,7 +24,7 @@ public class FileUploadScheduleService : IDisposable
         _logger = logger;
 
         _sender = new(TimeSpan.FromSeconds(30));
-
+        // not awaitable background task for uploading files in queue
         _ = Upload();
     }
 
