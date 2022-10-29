@@ -55,7 +55,7 @@ public record struct FileUploadFailed(Guid Id, int ErrorCode);
 public record struct FileUploadCanceled(Guid Id);
 public record struct DeleteFileUpload(Guid Id);
 public record struct ChangeCategoryOfFileUpload(Guid Id, string CategoryName, Guid CategoryId);
-public record struct UpdateFileStateFromEditForm(Guid Id, UploadFileDetailsForm Form);
+public record struct UpdateFileStateFromEditForm(Guid Id, UploadFilesMetadataForm Form);
 
 public class FileUploadEffects
 {
@@ -194,12 +194,12 @@ public static class FileUploadReducers
                 selector: x => x.Id == action.Id,
                 replacement: x => x with
                 {
-                    FileName = action.Form.FileName,
-                    Title = action.Form.Title,
-                    CategoryName = action.Form.CategoryName,
-                    CategoryId = action.Form.CategoryId,
-                    AuthorName = action.Form.AuthorName,
-                    AuthorId = action.Form.AuthorId
+                    //FileName = action.Form.FileName,
+                    //Title = action.Form.ShortInfo,
+                    //CategoryName = action.Form.CategoryName,
+                    //CategoryId = action.Form.CategoryId,
+                    //AuthorName = action.Form.AuthorName,
+                    //AuthorId = action.Form.AuthorId
                 },
                 result: out ImmutableArray<FileUploadState> files)
             ? state 
