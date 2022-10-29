@@ -1,0 +1,75 @@
+﻿@page "/upload_files"
+@using SciMaterials.UI.BWASM.States.FileUpload
+@using SciMaterials.UI.BWASM.States.Categories
+@using SciMaterials.UI.BWASM.States.Authors
+@using System.Text.Json
+@inherits FluxorComponent
+
+@inject IDispatcher Dispatcher
+@inject IState<FilesContentTypesFilterState> ContentTypesState
+@inject IDialogService DialogService
+@inject NavigationManager NavigationManager
+
+<h3>FilesUploadForm</h3>
+
+<MudIconButton Variant="Variant.Filled" Href="files_storage" Size="Size.Medium" Icon="@Icons.Material.Filled.Close"/>
+		
+<MudForm Model="@_formModel" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
+	<MudTextField T="string" Label="FileName"
+	              @bind-Value="@_formModel.FileName"
+	              Required="true" RequiredError="File cannot live without it's name!'"/>
+	<MudTextField T="string" Label="Short info"
+	              @bind-Value="@_formModel.Title"
+	              Required="true" RequiredError="You must provide some information to identify file!'"/>
+
+	<MudStack Row="true">
+		<MudText>Category:</MudText>
+		<MudText>@_formModel.CategoryName</MudText>
+		<MudButton OnClick="ChangeFormFileCategory">Change</MudButton>
+	</MudStack>
+			
+	<MudStack Row="true">
+		<MudText>Author:</MudText>
+		<MudText>@_formModel.AuthorName</MudText>
+		<MudButton OnClick="ChangeFormFileAuthor">Change</MudButton>
+	</MudStack>
+			
+	<MudText>ContentType: @_formModel.ContentType</MudText>
+	<MudText>Size: @_formModel.Size</MudText>
+			
+	<MudButton OnClick="SaveFormData">Save</MudButton>
+</MudForm>
+
+
+@code {
+
+	private UploadFileDetailsForm _formModel = UploadFileDetailsForm.Empty;
+
+	private string[] _fileDetailsFormError = { };
+
+	private bool _fileDetailsFormFilledCorrectly;
+
+	private async Task ChangeFormFileCategory()
+	{
+		var reference = DialogService.Show<FilesCategoriesSelector>();
+		var result = await reference.Result;
+		if (result.Cancelled || result.Data is not TreeFileCategory category) return;
+		_formModel.CategoryName = category.Name;
+		_formModel.CategoryId = category.Id;
+	}
+
+	private void SaveFormData()
+	{
+		var formCopy = JsonSerializer.Deserialize<UploadFileDetailsForm>(JsonSerializer.Serialize(_formModel));
+		Dispatcher.Dispatch(new UpdateFileStateFromEditForm(formCopy.Id, formCopy));
+	}
+
+	private async Task ChangeFormFileAuthor()
+	{
+		var reference = DialogService.Show<AuthorSelector>();
+		var result = await reference.Result;
+		if (result.Cancelled || result.Data is not AuthorState author) return;
+		_formModel.AuthorName = author.Name;
+		_formModel.AuthorId = author.Id;
+	}
+}
