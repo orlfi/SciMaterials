@@ -6,67 +6,82 @@
 
 @inject IDispatcher Dispatcher
 @inject IState<FilesContentTypesFilterState> ContentTypesState
+@inject IState<UploadFilesFormState> FormState
 @inject IDialogService DialogService
 
-<h3>FilesUploadForm</h3>
+<MudForm Model="@FormState.Value" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
+	<MudStack Spacing="4">
+		<MudGrid>
+			<MudItem>
+				<MudText Align="Align.End" Typo="Typo.h4">Upload Files</MudText>
+			</MudItem>
+			<MudSpacer />
+			<MudItem>
+				<MudStack Row="true">
+					<InputFile id="fileInput" hidden OnChange="OnFilesListChange" accept="@ContentTypesState.Value.Filter" multiple />
+					<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled">Add Files</MudButton>
+					<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ScheduleUpload">Upload</MudButton>
+					<IconButton Href="files_storage" Icon="@Icons.Material.Filled.Close" />
+				</MudStack>
+			</MudItem>
+		</MudGrid>
 
-<MudIconButton Variant="Variant.Filled" Href="files_storage" Size="Size.Medium" Icon="@Icons.Material.Filled.Close"/>
-		
-<MudForm Model="@_formModel" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
-	<MudTextField T="string" Label="Short info"
-	              @bind-Value="@_formModel.ShortInfo"
-	              Required="true" RequiredError="You must provide some information to identify file!'"/>
+		<MudGrid>
+			<MudItem xs="12" sm="7"><MudText Typo="Typo.h6">Category</MudText></MudItem>
+			<MudItem xs="12" sm="6"><MudText>Name: @FormState.Value.Category.Name</MudText></MudItem>
+			<MudItem xs="12" Class="mb-3">
+				<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="ChangeFormFileCategory">Change</MudButton>
+			</MudItem>
 
-	<MudStack Row="true">
-		<MudText>Category:</MudText>
-		<MudText>@_formModel.Category.Name</MudText>
-		<MudButton OnClick="ChangeFormFileCategory">Change</MudButton>
+			<MudItem xs="12" sm="7"><MudText Typo="Typo.h6">Author</MudText></MudItem>
+			<MudItem xs="12" sm="7"><MudText>FirstName: @FormState.Value.Author.FirstName</MudText></MudItem>
+			<MudItem xs="12" sm="7"><MudText>Surname: @FormState.Value.Author.Surname</MudText></MudItem>
+			<MudItem xs="12">
+				<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="ChangeFormFileAuthor">Change</MudButton>
+			</MudItem>
+		</MudGrid>
+
+		<MudTextField T="string" Label="Short info" 
+					  Value="FormState.Value.ShortInfo"
+					  Lines="6"
+					  DebounceInterval="400" OnDebounceIntervalElapsed="UpdateFormShortInfo"
+					  Required="true" RequiredError="You must provide some information to identify file!'" />
+
+		<MudTextField T="string" Label="Description"
+		              @bind-Value="@FormState.Value.Description"
+					  DebounceInterval="400" OnDebounceIntervalElapsed="UpdateFormDescription"
+		              Lines="10" />
+
+		<MudText Typo="Typo.h6">Files</MudText>
+
+		<TableView TItem="FileData" Data="FormState.Value.Files">
+			<TableHeader>
+				<MudTh>Name</MudTh>
+				<MudTh>Size</MudTh>
+				<MudTh></MudTh>
+			</TableHeader>
+
+			<RowTemplate>
+				<MudTd DataLabel="Name">@context.FileName</MudTd>
+				<MudTd DataLabel="Size">@context.Size</MudTd>
+
+				<MudTh>
+					<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
+				</MudTh>
+			</RowTemplate>
+		</TableView>
 	</MudStack>
-			
-	<MudStack Row="true">
-		<MudText>Author:</MudText>
-		<MudText>@_formModel.Author.FirstName</MudText>
-		<MudButton OnClick="ChangeFormFileAuthor">Change</MudButton>
-	</MudStack>
-
-	<div>
-		<InputFile id="fileInput" hidden OnChange="OnFilesListChange" accept="@ContentTypesState.Value.Filter" multiple />
-		<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled" Size="Size.Small">Add more</MudButton>
-	</div>
-
-	<TableView TItem="FileData" Data="_files">
-		<TableHeader>
-			<MudTh>Name</MudTh>
-			<MudTh>Size</MudTh>
-			<MudTh></MudTh>
-		</TableHeader>
-
-		<RowTemplate>
-			<MudTd DataLabel="Name">@context.FileName</MudTd>
-			<MudTd DataLabel="Size">@context.Size</MudTd>
-
-			<MudTh>
-				<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
-			</MudTh>
-		</RowTemplate>
-	</TableView>
-			
-	<MudButton OnClick="ScheduleUpload">Upload</MudButton>
 </MudForm>
 
 
 @code {
-	private UploadFilesMetadataForm _formModel = UploadFilesMetadataForm.Empty;
-
-	private List<FileData> _files = new();
-
 	private string[] _fileDetailsFormError = { };
 
 	private bool _fileDetailsFormFilledCorrectly;
 
 	private void ScheduleUpload()
 	{
-		var toUpload = _files.ToList();
+		//var toUpload = _files.ToList();
 		//Dispatcher.Dispatch(new ScheduleFilesUpload(toUpload));
 	}
 
@@ -74,26 +89,26 @@
 	{
 		if (e.FileCount <= 0) return;
 
-		Dispatcher.Dispatch(new RegisterMultipleFilesUpload(e.GetMultipleFiles()));
+		Dispatcher.Dispatch(new AddFiles(e.GetMultipleFiles()));
 	}
 
 	private async Task ChangeFormFileCategory()
 	{
-		if (await Select<FilesCategoriesSelector, TreeFileCategory>() is not {} selected) return;
+		if (await Select<FilesCategoriesSelector, TreeFileCategory>() is not { } selected) return;
 
-		_formModel.Category = new(selected.Id, selected.Name);
+		Dispatcher.Dispatch(new ChangeCategory(new(selected.Id, selected.Name)));
 	}
 
 	private async Task ChangeFormFileAuthor()
 	{
 		if (await Select<AuthorSelector, AuthorState>() is not { } selected) return;
 
-		_formModel.Author = new(selected.Id, selected.Name, string.Empty);
+		Dispatcher.Dispatch(new ChangeAuthor(new(selected.Id, selected.Name, string.Empty)));
 	}
 
 	private void Delete(FileData context)
 	{
-		_files.Remove(context);
+		Dispatcher.Dispatch(new RemoveFile(context.Id));
 	}
 
 	private async Task<TItem?> Select<TSelectDialog, TItem>() where TSelectDialog : ComponentBase
@@ -103,10 +118,13 @@
 		return result.Cancelled || result.Data is not TItem data ? default : data;
 	}
 
-	record FileData(IBrowserFile BrowserFile)
+	private void UpdateFormShortInfo(string shortInfo)
 	{
-		public string FileName { get; set; } = BrowserFile.Name;
-		public string ContentType { get; init; } = BrowserFile.ContentType;
-		public long Size { get; init; } = BrowserFile.Size;
+		Dispatcher.Dispatch(new UpdateShortInfo(shortInfo));
+	}
+
+	private void UpdateFormDescription(string description)
+	{
+		Dispatcher.Dispatch(new UpdateDescription(description));
 	}
 }

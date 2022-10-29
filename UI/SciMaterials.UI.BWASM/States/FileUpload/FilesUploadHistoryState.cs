@@ -55,7 +55,7 @@ public record struct FileUploadFailed(Guid Id, int ErrorCode);
 public record struct FileUploadCanceled(Guid Id);
 public record struct DeleteFileUpload(Guid Id);
 public record struct ChangeCategoryOfFileUpload(Guid Id, string CategoryName, Guid CategoryId);
-public record struct UpdateFileStateFromEditForm(Guid Id, UploadFilesMetadataFormState Form);
+public record struct UpdateFileStateFromEditForm(Guid Id, UploadFilesFormState Form);
 
 public class FileUploadEffects
 {
