@@ -6,16 +6,9 @@
 
 @inject IDispatcher Dispatcher
 @inject IState<FilesUploadState> State
-@inject IState<FilesContentTypesFilterState> ContentTypesState
-@inject IDialogService DialogService
 
 <MudDrawerContainer>
 	<div>
-		<div>
-			<InputFile id="fileInput" hidden OnChange="OnFilesListChange" accept="@ContentTypesState.Value.Filter" multiple />
-			<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled" Size="Size.Small">Add more</MudButton>
-		</div>
-
 		<TableView Data="State.Value.Files">
 			<TableHeader>
 				<MudTh>Name</MudTh>
@@ -36,35 +29,11 @@
 				</MudTd>
 			</RowTemplate>
 		</TableView>
-
-		<div>
-			<MudButton Variant="Variant.Filled" Size="Size.Small" Disabled="@_cantUploadFiles" OnClick="Upload">Upload</MudButton>
-		</div>
 	</div>
 </MudDrawerContainer>
 
 @code {
-	private bool _cantUploadFiles = true;
-
 	private bool _openFileDetails;
-
-	protected override void OnAfterRender(bool firstRender)
-	{
-		_cantUploadFiles = State.Value.Files.Length <= 0;
-	}
-
-	private void OnFilesListChange(InputFileChangeEventArgs e)
-	{
-		if (e.FileCount <= 0) return;
-
-		Dispatcher.Dispatch(new RegisterMultipleFilesUpload(e.GetMultipleFiles()));
-	}
-
-	private void Upload()
-	{
-		var toUpload = State.Value.Files.Where(x => x.State == UploadState.NotScheduled).ToList();
-		Dispatcher.Dispatch(new ScheduleFilesUpload(toUpload));
-	}
 
 	private void Delete(FileUploadState context)
 	{

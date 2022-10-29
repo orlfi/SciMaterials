@@ -2,74 +2,111 @@
 @using SciMaterials.UI.BWASM.States.FileUpload
 @using SciMaterials.UI.BWASM.States.Categories
 @using SciMaterials.UI.BWASM.States.Authors
-@using System.Text.Json
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
 @inject IState<FilesContentTypesFilterState> ContentTypesState
 @inject IDialogService DialogService
-@inject NavigationManager NavigationManager
 
 <h3>FilesUploadForm</h3>
 
 <MudIconButton Variant="Variant.Filled" Href="files_storage" Size="Size.Medium" Icon="@Icons.Material.Filled.Close"/>
 		
 <MudForm Model="@_formModel" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
-	<MudTextField T="string" Label="FileName"
-	              @bind-Value="@_formModel.FileName"
-	              Required="true" RequiredError="File cannot live without it's name!'"/>
 	<MudTextField T="string" Label="Short info"
-	              @bind-Value="@_formModel.Title"
+	              @bind-Value="@_formModel.ShortInfo"
 	              Required="true" RequiredError="You must provide some information to identify file!'"/>
 
 	<MudStack Row="true">
 		<MudText>Category:</MudText>
-		<MudText>@_formModel.CategoryName</MudText>
+		<MudText>@_formModel.Category.Name</MudText>
 		<MudButton OnClick="ChangeFormFileCategory">Change</MudButton>
 	</MudStack>
 			
 	<MudStack Row="true">
 		<MudText>Author:</MudText>
-		<MudText>@_formModel.AuthorName</MudText>
+		<MudText>@_formModel.Author.FirstName</MudText>
 		<MudButton OnClick="ChangeFormFileAuthor">Change</MudButton>
 	</MudStack>
+
+	<div>
+		<InputFile id="fileInput" hidden OnChange="OnFilesListChange" accept="@ContentTypesState.Value.Filter" multiple />
+		<MudButton HtmlTag="label" for="fileInput" Variant="Variant.Filled" Size="Size.Small">Add more</MudButton>
+	</div>
+
+	<TableView TItem="FileData" Data="_files">
+		<TableHeader>
+			<MudTh>Name</MudTh>
+			<MudTh>Size</MudTh>
+			<MudTh></MudTh>
+		</TableHeader>
+
+		<RowTemplate>
+			<MudTd DataLabel="Name">@context.FileName</MudTd>
+			<MudTd DataLabel="Size">@context.Size</MudTd>
+
+			<MudTh>
+				<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="() => Delete(context)">Delete</MudButton>
+			</MudTh>
+		</RowTemplate>
+	</TableView>
 			
-	<MudText>ContentType: @_formModel.ContentType</MudText>
-	<MudText>Size: @_formModel.Size</MudText>
-			
-	<MudButton OnClick="SaveFormData">Save</MudButton>
+	<MudButton OnClick="ScheduleUpload">Upload</MudButton>
 </MudForm>
 
 
 @code {
+	private UploadFilesMetadataForm _formModel = UploadFilesMetadataForm.Empty;
 
-	private UploadFileDetailsForm _formModel = UploadFileDetailsForm.Empty;
+	private List<FileData> _files = new();
 
 	private string[] _fileDetailsFormError = { };
 
 	private bool _fileDetailsFormFilledCorrectly;
 
-	private async Task ChangeFormFileCategory()
+	private void ScheduleUpload()
 	{
-		var reference = DialogService.Show<FilesCategoriesSelector>();
-		var result = await reference.Result;
-		if (result.Cancelled || result.Data is not TreeFileCategory category) return;
-		_formModel.CategoryName = category.Name;
-		_formModel.CategoryId = category.Id;
+		var toUpload = _files.ToList();
+		//Dispatcher.Dispatch(new ScheduleFilesUpload(toUpload));
 	}
 
-	private void SaveFormData()
+	private void OnFilesListChange(InputFileChangeEventArgs e)
 	{
-		var formCopy = JsonSerializer.Deserialize<UploadFileDetailsForm>(JsonSerializer.Serialize(_formModel));
-		Dispatcher.Dispatch(new UpdateFileStateFromEditForm(formCopy.Id, formCopy));
+		if (e.FileCount <= 0) return;
+
+		Dispatcher.Dispatch(new RegisterMultipleFilesUpload(e.GetMultipleFiles()));
+	}
+
+	private async Task ChangeFormFileCategory()
+	{
+		if (await Select<FilesCategoriesSelector, TreeFileCategory>() is not {} selected) return;
+
+		_formModel.Category = new(selected.Id, selected.Name);
 	}
 
 	private async Task ChangeFormFileAuthor()
 	{
-		var reference = DialogService.Show<AuthorSelector>();
+		if (await Select<AuthorSelector, AuthorState>() is not { } selected) return;
+
+		_formModel.Author = new(selected.Id, selected.Name, string.Empty);
+	}
+
+	private void Delete(FileData context)
+	{
+		_files.Remove(context);
+	}
+
+	private async Task<TItem?> Select<TSelectDialog, TItem>() where TSelectDialog : ComponentBase
+	{
+		var reference = DialogService.Show<TSelectDialog>();
 		var result = await reference.Result;
-		if (result.Cancelled || result.Data is not AuthorState author) return;
-		_formModel.AuthorName = author.Name;
-		_formModel.AuthorId = author.Id;
+		return result.Cancelled || result.Data is not TItem data ? default : data;
+	}
+
+	record FileData(IBrowserFile BrowserFile)
+	{
+		public string FileName { get; set; } = BrowserFile.Name;
+		public string ContentType { get; init; } = BrowserFile.ContentType;
+		public long Size { get; init; } = BrowserFile.Size;
 	}
 }
