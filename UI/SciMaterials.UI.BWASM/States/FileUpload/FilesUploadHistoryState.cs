@@ -11,11 +11,11 @@ using SciMaterials.UI.BWASM.Services;
 namespace SciMaterials.UI.BWASM.States.FileUpload;
 
 [FeatureState]
-public record FilesUploadState(ImmutableArray<FileUploadState> Files)
+public record FilesUploadHistoryState(ImmutableArray<FileUploadState> Files)
 {
-    public static readonly FilesUploadState Empty = new();
+    public static readonly FilesUploadHistoryState Empty = new();
 
-    private FilesUploadState() : this(ImmutableArray<FileUploadState>.Empty) { }
+    private FilesUploadHistoryState() : this(ImmutableArray<FileUploadState>.Empty) { }
 }
 
 public record FileUploadState(IBrowserFile BrowserFile, string CategoryName = "", Guid CategoryId = default)
@@ -55,7 +55,7 @@ public record struct FileUploadFailed(Guid Id, int ErrorCode);
 public record struct FileUploadCanceled(Guid Id);
 public record struct DeleteFileUpload(Guid Id);
 public record struct ChangeCategoryOfFileUpload(Guid Id, string CategoryName, Guid CategoryId);
-public record struct UpdateFileStateFromEditForm(Guid Id, UploadFilesMetadataForm Form);
+public record struct UpdateFileStateFromEditForm(Guid Id, UploadFilesMetadataFormState Form);
 
 public class FileUploadEffects
 {
@@ -100,7 +100,7 @@ public class FileUploadEffects
 public static class FileUploadReducers
 {
     [ReducerMethod]
-    public static FilesUploadState RegisterFilesUpload(FilesUploadState state, RegisterMultipleFilesUploadResult action)
+    public static FilesUploadHistoryState RegisterFilesUpload(FilesUploadHistoryState state, RegisterMultipleFilesUploadResult action)
     {
         return state with
         {
@@ -109,7 +109,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState FileUploadScheduled(FilesUploadState state, FileUploadScheduled action)
+    public static FilesUploadHistoryState FileUploadScheduled(FilesUploadHistoryState state, FileUploadScheduled action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
@@ -120,7 +120,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState FileUploading(FilesUploadState state, FileUploading action)
+    public static FilesUploadHistoryState FileUploading(FilesUploadHistoryState state, FileUploading action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
@@ -131,7 +131,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState FileUploaded(FilesUploadState state, FileUploaded action)
+    public static FilesUploadHistoryState FileUploaded(FilesUploadHistoryState state, FileUploaded action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
@@ -142,7 +142,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState FileUploadFailed(FilesUploadState state, FileUploadFailed action)
+    public static FilesUploadHistoryState FileUploadFailed(FilesUploadHistoryState state, FileUploadFailed action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
@@ -153,7 +153,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState FileUploadCanceled(FilesUploadState state, FileUploadCanceled action)
+    public static FilesUploadHistoryState FileUploadCanceled(FilesUploadHistoryState state, FileUploadCanceled action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
@@ -164,7 +164,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState DeleteFileUpload(FilesUploadState state, DeleteFileUpload action)
+    public static FilesUploadHistoryState DeleteFileUpload(FilesUploadHistoryState state, DeleteFileUpload action)
     {
         if (state.Files.FirstOrDefault(x => x.Id == action.Id) is not {} toDelete) return state;
 
@@ -173,7 +173,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState ChangeCategoryOfFileUpload(FilesUploadState state, ChangeCategoryOfFileUpload action)
+    public static FilesUploadHistoryState ChangeCategoryOfFileUpload(FilesUploadHistoryState state, ChangeCategoryOfFileUpload action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
@@ -188,7 +188,7 @@ public static class FileUploadReducers
     }
 
     [ReducerMethod]
-    public static FilesUploadState UpdateFileStateFromEditForm(FilesUploadState state, UpdateFileStateFromEditForm action)
+    public static FilesUploadHistoryState UpdateFileStateFromEditForm(FilesUploadHistoryState state, UpdateFileStateFromEditForm action)
     {
         return !state.Files.ReplaceOne(
                 selector: x => x.Id == action.Id,
