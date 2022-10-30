@@ -2,6 +2,7 @@
 
 namespace SciMaterials.Domain.Models;
 
-public class User : BaseModel
+public class Url : Resource
 {
+    public string? Link { get; set; }
 }

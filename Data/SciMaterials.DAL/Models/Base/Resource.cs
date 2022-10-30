@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace SciMaterials.DAL.Models.Base;
 
+[Table("Resources")]
 public class Resource : NamedModel
 {
     public string? ShortInfo { get; set; }

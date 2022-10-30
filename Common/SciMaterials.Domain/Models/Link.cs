@@ -1,6 +1,6 @@
-﻿using SciMaterials.DAL.Models.Base;
+﻿using SciMaterials.Domain.Models.Base;
 
-namespace SciMaterials.DAL.Models;
+namespace SciMaterials.Domain.Models;
 
 public class Link : BaseModel
 {
@@ -11,3 +11,4 @@ public class Link : BaseModel
 
     public Author Author { get; set; } = null!;
 }
+

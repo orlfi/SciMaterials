@@ -6,7 +6,6 @@ public class GetFileResponse
     public string Name { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public string? Url { get; set; }
     public long Size { get; set; }
     public string Hash { get; set; }
     public Guid? ContentTypeId { get; set; }
