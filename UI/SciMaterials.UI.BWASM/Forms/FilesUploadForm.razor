@@ -2,14 +2,17 @@
 @using SciMaterials.UI.BWASM.States.FileUpload
 @using SciMaterials.UI.BWASM.States.Categories
 @using SciMaterials.UI.BWASM.States.Authors
+@using Severity = MudBlazor.Severity
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
 @inject IState<FilesContentTypesFilterState> ContentTypesState
 @inject IState<UploadFilesFormState> FormState
 @inject IDialogService DialogService
+@inject IValidator<UploadFilesFormState> Validator
+@inject ISnackbar Snackbar
 
-<MudForm Model="@FormState.Value" @bind-IsValid="@_fileDetailsFormFilledCorrectly" @bind-Errors="@_fileDetailsFormError">
+<MudForm Model="@FormState.Value" @ref="@_form" Validation="@(Validator.ValidateValue())" ValidationDelay="5">
 	<MudStack Spacing="4">
 		<MudGrid>
 			<MudItem>
@@ -27,13 +30,13 @@
 		</MudGrid>
 
 		<MudGrid>
-			<MudItem xs="12" sm="7"><MudText Typo="Typo.h6">Category</MudText></MudItem>
+			<MudItem xs="12" sm="7"><MudText Typo="Typo.h6">Category*</MudText></MudItem>
 			<MudItem xs="12" sm="6"><MudText>Name: @FormState.Value.Category.Name</MudText></MudItem>
 			<MudItem xs="12" Class="mb-3">
 				<MudButton Variant="Variant.Filled" Size="Size.Small" OnClick="ChangeFormFileCategory">Change</MudButton>
 			</MudItem>
 
-			<MudItem xs="12" sm="7"><MudText Typo="Typo.h6">Author</MudText></MudItem>
+			<MudItem xs="12" sm="7"><MudText Typo="Typo.h6">Author*</MudText></MudItem>
 			<MudItem xs="12" sm="7"><MudText>FirstName: @FormState.Value.Author.FirstName</MudText></MudItem>
 			<MudItem xs="12" sm="7"><MudText>Surname: @FormState.Value.Author.Surname</MudText></MudItem>
 			<MudItem xs="12">
@@ -41,18 +44,17 @@
 			</MudItem>
 		</MudGrid>
 
-		<MudTextField T="string" Label="Short info" 
+		<MudTextField T="string" Label="Short info*" 
 					  Value="FormState.Value.ShortInfo"
 					  Lines="6"
-					  DebounceInterval="400" OnDebounceIntervalElapsed="UpdateFormShortInfo"
-					  Required="true" RequiredError="You must provide some information to identify file!'" />
+					  DebounceInterval="400" OnDebounceIntervalElapsed="UpdateFormShortInfo" />
 
 		<MudTextField T="string" Label="Description"
-		              @bind-Value="@FormState.Value.Description"
+		              Value="FormState.Value.Description"
 					  DebounceInterval="400" OnDebounceIntervalElapsed="UpdateFormDescription"
 		              Lines="10" />
 
-		<MudText Typo="Typo.h6">Files</MudText>
+		<MudText Typo="Typo.h6">Files*</MudText>
 
 		<TableView TItem="FileData" Data="FormState.Value.Files">
 			<TableHeader>
@@ -75,14 +77,19 @@
 
 
 @code {
-	private string[] _fileDetailsFormError = { };
+	private MudForm? _form;
 
-	private bool _fileDetailsFormFilledCorrectly;
-
-	private void ScheduleUpload()
+	private async Task ScheduleUpload()
 	{
-		//var toUpload = _files.ToList();
-		//Dispatcher.Dispatch(new ScheduleFilesUpload(toUpload));
+		await _form!.Validate();
+
+		if (!_form.IsValid)
+		{
+			Snackbar.Add("Not all values in form is valid!", Severity.Warning);
+			return;
+		}
+		RegisterUploadData action = FormState.Value;
+		Dispatcher.Dispatch(action);
 	}
 
 	private void OnFilesListChange(InputFileChangeEventArgs e)

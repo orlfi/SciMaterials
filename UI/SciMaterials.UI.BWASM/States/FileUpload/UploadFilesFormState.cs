@@ -15,11 +15,11 @@ public record UploadFilesFormState
     public static readonly UploadFilesFormState Empty = new();
 
     public Guid Id { get; init; } = Guid.NewGuid();
-    public string ShortInfo { get; set; } = string.Empty;
-    public string? Description { get; set; } = string.Empty;
+    public string ShortInfo { get; init; } = string.Empty;
+    public string? Description { get; init; } = string.Empty;
 
-    public CategoryInfo Category { get; set; }
-    public AuthorInfo Author { get; set; }
+    public CategoryInfo Category { get; init; }
+    public AuthorInfo Author { get; init; }
 
     public ImmutableArray<FileData> Files { get; init; } = ImmutableArray<FileData>.Empty;
 }
@@ -48,7 +48,15 @@ public record struct RegisterUploadData(
     string? Description,
     CategoryInfo Category,
     AuthorInfo Author,
-    ImmutableArray<FileData> Files);
+    ImmutableArray<FileData> Files)
+{
+    public static implicit operator RegisterUploadData(UploadFilesFormState from) => new(
+        ShortInfo: from.ShortInfo,
+        Description: from.Description,
+        Category: from.Category,
+        Author: from.Author,
+        Files: from.Files);
+}
 
 public class UploadFilesFormStateEffects
 {
