@@ -111,7 +111,7 @@ public static class FileUploadReducers
     public static FilesUploadHistoryState DeleteFileUpload(FilesUploadHistoryState state, DeleteFileUpload action)
     {
         if (state.Files.FirstOrDefault(x => x.Id == action.Id) is not {} toDelete) return state;
-
+        toDelete.CancellationSource.Cancel();
         var afterDelete = state.Files.Remove(toDelete);
         return state with {Files = afterDelete };
     }
