@@ -4,6 +4,9 @@ using Fluxor;
 
 using Microsoft.AspNetCore.Components.Forms;
 
+using SciMaterials.UI.BWASM.Models;
+using SciMaterials.UI.BWASM.Services;
+
 namespace SciMaterials.UI.BWASM.States.FileUpload;
 
 [FeatureState]
@@ -40,7 +43,70 @@ public record struct ChangeAuthor(AuthorInfo Author);
 public record struct AddFiles(IEnumerable<IBrowserFile> Files);
 public record struct RemoveFile(Guid Id);
 
-public class UploadFilesMetadataFormStateReducers
+public record struct RegisterUploadData(
+    string ShortInfo,
+    string? Description,
+    CategoryInfo Category,
+    AuthorInfo Author,
+    ImmutableArray<FileData> Files);
+
+public class UploadFilesFormStateEffects
+{
+    private readonly FileUploadScheduleService _fileUploadScheduleService;
+
+    public UploadFilesFormStateEffects(FileUploadScheduleService fileUploadScheduleService)
+    {
+        _fileUploadScheduleService = fileUploadScheduleService;
+    }
+
+    [EffectMethod]
+    public async Task RegisterUploadData(RegisterUploadData action, IDispatcher dispatcher)
+    {
+        var uploadStates = Map(action).ToImmutableArray();
+        dispatcher.Dispatch(new RegisterMultipleFilesUpload(uploadStates));
+
+        foreach (var file in Map(uploadStates))
+        {
+            await Task.Delay(100);
+            _fileUploadScheduleService.ScheduleUpload(file);
+        }
+    }
+
+    private static IEnumerable<FileUploadState> Map(RegisterUploadData data)
+    {
+        foreach (var dataFile in data.Files)
+        {
+            yield return new(dataFile.BrowserFile, data.Category.Name, data.Category.Id)
+            {
+                AuthorId = data.Author.Id,
+                AuthorName = data.Author.FirstName,
+                Title = data.ShortInfo,
+                Description = data.Description,
+                CancellationSource = new()
+            };
+        }
+    }
+
+    private static IEnumerable<FileUploadData> Map(IEnumerable<FileUploadState> data)
+    {
+        foreach (var dataFile in data)
+        {
+            yield return new()
+            {
+                Id = dataFile.Id,
+                File = dataFile.BrowserFile,
+                FileName = dataFile.FileName,
+                Category = dataFile.CategoryId,
+                Title = dataFile.Title,
+                AuthorId = dataFile.AuthorId,
+                Description = dataFile.Description,
+                CancellationToken = dataFile.CancellationSource.Token
+            };
+        }
+    }
+}
+
+public static class UploadFilesFormStateReducers
 {
     [ReducerMethod]
     public static UploadFilesFormState UpdateShortInfo(UploadFilesFormState state, UpdateShortInfo action)
@@ -69,7 +135,7 @@ public class UploadFilesMetadataFormStateReducers
     [ReducerMethod]
     public static UploadFilesFormState AddFiles(UploadFilesFormState state, AddFiles action)
     {
-        return state with { Files = state.Files.AddRange(action.Files.Select(x=>new FileData(x))) };
+        return state with { Files = state.Files.AddRange(action.Files.Select(x => new FileData(x))) };
     }
 
     [ReducerMethod]
