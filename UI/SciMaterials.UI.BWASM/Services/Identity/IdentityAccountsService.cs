@@ -27,17 +27,13 @@ public class IdentityAccountsService : IAccountsService
             // TODO: handle failure
             return Array.Empty<UserInfo>();
         }
-
-        //var data = response.UserEmails;
-        //if (data is null) return Array.Empty<UserInfo>();
-        //TODO: Tarxos, пришлось сделать вот так, чтобы запустить проект. Исправь сам как тебе надо будет.
-        // return data.Select(x=>new UserInfo()
-        // {
-        //     Id = Guid.Parse(x.Id),
-        //     UserName = x.UserName,
-        //     Email = x.Email
-        // }).ToList();
-        return new UserInfo[0];
+        
+        return response.Users.Select(x => new UserInfo()
+        {
+            Id = Guid.Parse(x.Id),
+            UserName = x.UserName,
+            Email = x.Email
+        }).ToList();
     }
 
     public async Task ChangeAuthority(string userEmail, string authorityName)
@@ -60,8 +56,5 @@ public class IdentityAccountsService : IAccountsService
 
         if (await _authenticationService.IsCurrentUser(userEmail))
             await _authenticationService.RefreshCurrentUser();
-        
     }
-
-    private record User(string Id, string Email, string UserName);
 }
