@@ -4,8 +4,8 @@ using SciMaterials.DAL.Models.Base;
 
 namespace SciMaterials.DAL.Models;
 
-[Table("FileGroups")]
-public class FileGroup : Resource
+[Table("Urls")]
+public class Url : Resource
 {
-    public ICollection<File> Files { get; set; } = new HashSet<File>();
+    public string? Link { get; set; }
 }

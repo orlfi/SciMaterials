@@ -438,7 +438,6 @@ public class FileRepository : IFileRepository
         recipient.Categories = sourse.Categories;
         recipient.Ratings = sourse.Ratings;
 
-        recipient.Url = sourse.Url;
         recipient.Size = sourse.Size;
         recipient.Hash = sourse.Hash;
         recipient.ContentTypeId = sourse.ContentTypeId;
