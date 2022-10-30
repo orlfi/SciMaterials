@@ -1,4 +1,3 @@
-
 namespace SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
 
 public class ClientConfirmEmailResponse : Result.Result

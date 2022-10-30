@@ -28,8 +28,8 @@ public class IdentityAccountsService : IAccountsService
             return Array.Empty<UserInfo>();
         }
 
-        var data = response.UserEmails;
-        if (data is null) return Array.Empty<UserInfo>();
+        //var data = response.UserEmails;
+        //if (data is null) return Array.Empty<UserInfo>();
         //TODO: Tarxos, пришлось сделать вот так, чтобы запустить проект. Исправь сам как тебе надо будет.
         // return data.Select(x=>new UserInfo()
         // {

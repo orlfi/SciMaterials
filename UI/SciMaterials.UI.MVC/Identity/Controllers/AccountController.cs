@@ -8,6 +8,7 @@ using SciMaterials.Contracts.Auth;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Identity.API.DTO.Roles;
 using SciMaterials.Contracts.Identity.API.DTO.Users;
+using SciMaterials.Contracts.Identity.Clients.Clients.Responses.DTO;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
 
@@ -374,12 +375,15 @@ public class AccountController : Controller
             var identity_roles_list = await _RoleManager.Roles.ToListAsync();
             if (identity_roles_list.Count != 0)
             {
+                var roles = new List<AuthRoles>();
+                foreach (var role in identity_roles_list)
+                    roles.Add(new AuthRoles() { RoleName = role.Name, Id = role.Id });
+                
                 return Ok(new ClientGetAllRolesResponse()
                 {
                     Succeeded = true, 
-                    Code = (int)ResultCodes.Ok, 
-                    RoleNames = identity_roles_list.Select(x => x.Name).ToList(),
-                    RoleIds = identity_roles_list.Select(x => x.Id).ToList()
+                    Code = (int)ResultCodes.Ok,
+                    Roles = roles
                 });
             }
 
@@ -412,12 +416,14 @@ public class AccountController : Controller
             var identity_role = await _RoleManager.FindByIdAsync(RoleId);
             if (identity_role is not null)
             {
+                var role = new List<AuthRoles>();
+                role.Add(new AuthRoles { Id = identity_role.Id, RoleName = identity_role.Name });
+                
                 return Ok(new ClientGetRoleByIdResponse()
                 {
                     Succeeded = true,
                     Code = (int)ResultCodes.Ok,
-                    RoleId = identity_role.Id,
-                    RoleName = identity_role.Name
+                    Roles = role
                 });
             }
 
@@ -654,16 +660,22 @@ public class AccountController : Controller
                 var user_roles_name = await _UserManager.GetRolesAsync(identity_user);
                 if (user_roles_name.Count != 0)
                 {
-                    var user_role_id = new List<IdentityRole>();
+                    var roles = new List<AuthRoles>();
                     foreach (var roleName in user_roles_name)
-                        user_role_id.AddRange(_RoleManager.Roles.Where(x => x.Name.Equals(roleName)));
+                    {
+                        var rolesArr = _RoleManager.Roles.Where(x => x.Name.Equals(roleName)).Select(x => x.Id).ToArray();
+                        roles.Add(new AuthRoles()
+                        {
+                            Id = rolesArr[0],
+                            RoleName = roleName,
+                        });
+                    }
                     
                     return Ok(new ClientGetAllUserRolesByEmailResponse()
                     {
                         Succeeded = true, 
                         Code = (int)ResultCodes.Ok, 
-                        RoleIds = user_role_id.Select(x => x.Id).ToList(),
-                        RoleNames = user_roles_name.ToList()
+                        Roles = roles
                     });
                 }
 
@@ -739,13 +751,14 @@ public class AccountController : Controller
             var identity_user = await _UserManager.FindByEmailAsync(Email);
             if (identity_user is not null)
             {
+                var users = new List<AuthUsers>();
+                users.Add(new AuthUsers { Id = identity_user.Id, Email = identity_user.Email, UserName = identity_user.UserName });
+                
                 return Ok(new ClientGetUserByEmailResponse()
                 {
                     Succeeded = true, 
-                    Code = (int)ResultCodes.Ok, 
-                    UserId = new List<string>(){identity_user.Id},
-                    UserEmail = new List<string>(){identity_user.Email},
-                    UserNickName = new List<string>(){identity_user.UserName},
+                    Code = (int)ResultCodes.Ok,
+                    Users = users
                 });
             }
 
@@ -775,14 +788,22 @@ public class AccountController : Controller
         try
         {
             var list_of_all_users = await _UserManager.Users.ToListAsync();
-            return Ok(new ClientGetAllUsersResponse()
+            if (list_of_all_users.Count != 0)
             {
-                Succeeded = true, 
-                Code = (int)ResultCodes.Ok, 
-                UserId = list_of_all_users.Select(x => x.Id).ToList(),
-                UserEmails = list_of_all_users.Select(x => x.Email).ToList(),
-                UserNickNames = list_of_all_users.Select(x => x.UserName).ToList()
-            });
+                var users = new List<AuthUsers>();
+                foreach (var user in list_of_all_users)
+                    users.Add(new AuthUsers {Id = user.Id, Email = user.Email, UserName = user.UserName });
+                
+                return Ok(new ClientGetAllUsersResponse()
+                {
+                    Succeeded = true, 
+                    Code = (int)ResultCodes.Ok, 
+                    Users = users
+                });
+            }
+            
+            _Logger.Log(LogLevel.Information, "Пользователи не найдены");
+            return Ok(new ClientGetAllUsersResponse(){Succeeded = false, Code = (int)ResultCodes.NotFound});
         }
         catch (Exception ex)
         {
