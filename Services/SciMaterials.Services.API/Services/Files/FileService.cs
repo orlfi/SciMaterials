@@ -122,7 +122,6 @@ public class FileService : IFileService
         }
     }
 
-
     public async Task<Result<FileStreamInfo>> DownloadById(Guid id)
     {
         if (await GetByIdAsync(id) is not { } getFileResponse)

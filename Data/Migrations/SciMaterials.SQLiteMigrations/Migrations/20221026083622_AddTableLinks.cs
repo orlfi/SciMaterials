@@ -15,7 +15,7 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     SourceAddress = table.Column<string>(type: "TEXT", nullable: false),
-                    Hash = table.Column<string>(type: "TEXT", nullable: true),
+                    Hash = table.Column<string>(type: "TEXT", nullable: false),
                     AuthorId = table.Column<Guid>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     IsDeleted = table.Column<bool>(type: "INTEGER", nullable: false)
