@@ -4,11 +4,9 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.AuthUsers;
-using SciMaterials.Contracts.AuthApi.DTO.Roles;
 using SciMaterials.Contracts.Identity.API.DTO.Roles;
+using SciMaterials.Contracts.Identity.API.DTO.Users;
 using SciMaterials.Contracts.Identity.Clients.Clients;
-using SciMaterials.Contracts.Identity.Clients.Clients.Responses;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
 

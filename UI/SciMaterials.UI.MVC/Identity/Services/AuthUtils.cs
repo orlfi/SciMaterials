@@ -50,7 +50,7 @@ public class AuthUtils : IAuthUtilits
         {
             Subject = new ClaimsIdentity(claims.ToArray()),
                 
-            Expires = DateTime.Now.AddMinutes(1),
+            Expires = DateTime.Now.AddMinutes(15),
 
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
@@ -58,19 +58,5 @@ public class AuthUtils : IAuthUtilits
         var security_token = jwt_security_token_handler.CreateToken(security_token_descriptor);
 
         return jwt_security_token_handler.WriteToken(security_token);
-    }
-    
-    public bool CheckTokenIsEmptyOrInvalid(string token)
-    {
-        if (string.IsNullOrEmpty(token))
-        {
-            return true;
-        }
-
-        var jwtToken = new JwtSecurityToken(token);
-        var now = DateTime.UtcNow;
-        return jwtToken is null 
-            || jwtToken.ValidFrom >  now 
-            || jwtToken.ValidTo < now;
     }
 }

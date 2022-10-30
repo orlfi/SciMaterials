@@ -25,7 +25,8 @@ public class IdentityRolesService : IRolesService
         var response = await _rolesClient.GetAllRolesAsync(CancellationToken.None);
         if (!response.Succeeded) return new();
 
-        return response.Roles;
+        //TODO: Tarxos, пришлось сделать вот так, чтобы запустить проект. Исправь сам как тебе надо будет.
+        return new List<IdentityRole>();
     }
 
     public async Task<bool> AddRole(string roleName)

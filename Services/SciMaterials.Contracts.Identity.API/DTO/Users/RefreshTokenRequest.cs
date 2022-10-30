@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace SciMaterials.Contracts.AuthApi.DTO.Users;
+namespace SciMaterials.Contracts.Identity.API.DTO.Users;
 
 public class RefreshTokenRequest
 {

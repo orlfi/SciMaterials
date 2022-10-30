@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-using SciMaterials.Contracts.Identity.Clients.Clients;
+﻿using SciMaterials.Contracts.Identity.Clients.Clients;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;
@@ -30,14 +28,16 @@ public class IdentityAccountsService : IAccountsService
             return Array.Empty<UserInfo>();
         }
 
-        var data = response.Users;
+        var data = response.UserEmails;
         if (data is null) return Array.Empty<UserInfo>();
-        return data.Select(x=>new UserInfo()
-        {
-            Id = Guid.Parse(x.Id),
-            UserName = x.UserName,
-            Email = x.Email
-        }).ToList();
+        //TODO: Tarxos, пришлось сделать вот так, чтобы запустить проект. Исправь сам как тебе надо будет.
+        // return data.Select(x=>new UserInfo()
+        // {
+        //     Id = Guid.Parse(x.Id),
+        //     UserName = x.UserName,
+        //     Email = x.Email
+        // }).ToList();
+        return new UserInfo[0];
     }
 
     public async Task ChangeAuthority(string userEmail, string authorityName)

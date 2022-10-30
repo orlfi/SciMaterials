@@ -1,4 +1,3 @@
-using SciMaterials.Contracts.AuthApi.DTO.Roles;
 using SciMaterials.Contracts.Identity.API.DTO.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 

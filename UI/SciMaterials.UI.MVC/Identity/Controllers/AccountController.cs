@@ -1,19 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.JsonWebTokens;
-
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.AuthUsers;
 using SciMaterials.Contracts.Auth;
-using SciMaterials.Contracts.AuthApi.DTO.Roles;
-using SciMaterials.Contracts.AuthApi.DTO.Users;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Identity.API.DTO.Roles;
-using SciMaterials.Contracts.Identity.Clients.Clients.Responses;
+using SciMaterials.Contracts.Identity.API.DTO.Users;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
 
@@ -41,12 +35,12 @@ public class AccountController : Controller
         IAuthUtilits authUtilits,
         ILogger<AccountController> Logger)
     {
-        _UserManager     = UserManager;
-        _SignInManager   = SignInManager;
-        _RoleManager     = RoleManager;
-        _Logger          = Logger;
+        _UserManager = UserManager;
+        _SignInManager = SignInManager;
+        _RoleManager = RoleManager;
+        _Logger = Logger;
         _ContextAccessor = ContextAccessor;
-        _authUtilits     = authUtilits;
+        _authUtilits = authUtilits;
     }
 
     /// <summary>
@@ -78,9 +72,9 @@ public class AccountController : Controller
 
                 return Ok(new ClientCreateUserResponse()
                 {
-                    Succeeded    = true,
-                    Code         = (int)ResultCodes.Ok,
-                    Message      = "Пройдите по ссылке, чтобы подтвердить ваш email",
+                    Succeeded = true,
+                    Code = (int)ResultCodes.Ok,
+                    Message = "Пройдите по ссылке, чтобы подтвердить ваш email",
                     ConfirmEmail = callback_url,
                 });
             }
@@ -90,8 +84,8 @@ public class AccountController : Controller
             return Ok(new ClientCreateUserResponse
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound, 
-                Message   = $"Не удалось зарегистрировать пользователя {RegisterRequest.Email}"
+                Code = (int)ResultCodes.NotFound, 
+                Message = $"Не удалось зарегистрировать пользователя {RegisterRequest.Email}"
             });
         }
         catch (Exception ex)
@@ -128,8 +122,8 @@ public class AccountController : Controller
                     var session_token = _authUtilits.CreateSessionToken(identity_user, identity_roles);
                     return Ok(new ClientLoginResponse
                     {
-                        Succeeded    = true,
-                        Code         = (int) ResultCodes.Ok,
+                        Succeeded = true,
+                        Code = (int) ResultCodes.Ok,
                         SessionToken = session_token
                     });
                 }
@@ -138,8 +132,8 @@ public class AccountController : Controller
                 return Ok(new ClientLoginResponse
                 {
                     Succeeded = false, 
-                    Code      = (int)ResultCodes.NotFound,
-                    Message   = $"Не удалось авторизовать пользователя {LoginRequest.Email}"
+                    Code = (int)ResultCodes.NotFound,
+                    Message = $"Не удалось авторизовать пользователя {LoginRequest.Email}"
                 });
             }
         }
@@ -154,8 +148,8 @@ public class AccountController : Controller
         return Ok(new ClientLoginResponse
         {
             Succeeded = false,
-            Code      = (int)ResultCodes.NotFound,
-            Message   = $"Некорректно введены данные"
+            Code = (int)ResultCodes.NotFound,
+            Message = $"Некорректно введены данные"
         });
     }
 
@@ -194,7 +188,7 @@ public class AccountController : Controller
         {
             var current_user_name = _ContextAccessor.HttpContext?.User.Identity?.Name;
 
-            var identity_user      = await _UserManager.FindByNameAsync(current_user_name);
+            var identity_user = await _UserManager.FindByNameAsync(current_user_name);
             var is_email_confirmed = await _UserManager.IsEmailConfirmedAsync(identity_user);
             if (current_user_name is not { Length: > 0 } || identity_user is not null || is_email_confirmed)
             {
@@ -207,8 +201,8 @@ public class AccountController : Controller
                     return Ok(new ClientChangePasswordResponse()
                     {
                         Succeeded = true,
-                        Code      = (int)ResultCodes.Ok,
-                        Message   = "Пароль успешно изменен",
+                        Code = (int)ResultCodes.Ok,
+                        Message = "Пароль успешно изменен",
                     });
                 }
 
@@ -223,8 +217,8 @@ public class AccountController : Controller
             return Ok(new ClientChangePasswordResponse()
             {
                 Succeeded = false, 
-                Code      = (int) ResultCodes.NotFound,
-                Message   = $"Не удалось получить информацию о пользователе {identity_user} или ваша почта не подтверждена {is_email_confirmed}"
+                Code = (int) ResultCodes.NotFound,
+                Message = $"Не удалось получить информацию о пользователе {identity_user} или ваша почта не подтверждена {is_email_confirmed}"
             });
         }
         catch (Exception ex)
@@ -245,26 +239,23 @@ public class AccountController : Controller
         {
             //Не обращай внимание, я тут буду править.
             var headersAuthorization = (string)_ContextAccessor.HttpContext.Request.Headers.Authorization;
-            var jwtToken             = headersAuthorization.Remove(0, 7);
+            var jwtToken = headersAuthorization.Remove(0, 7);
             
             var handler = new JwtSecurityTokenHandler();
-            var token   = handler.ReadJwtToken(jwtToken);
+            var token = handler.ReadJwtToken(jwtToken);
             
             var userEmail = (string)token.Payload.First(x => x.Key.Equals("email")).Value;
 
-            var identity_user     = await _UserManager.FindByEmailAsync(userEmail);
-            var identity_roles    = await _UserManager.GetRolesAsync(identity_user);
+            var identity_user = await _UserManager.FindByEmailAsync(userEmail);
+            var identity_roles = await _UserManager.GetRolesAsync(identity_user);
             var new_session_token = _authUtilits.CreateSessionToken(identity_user, identity_roles);
             
             if (!string.IsNullOrEmpty(new_session_token))
             {
                 return Ok(new ClientRefreshTokenResponse
                 {
-                    Succeeded    = true,
-                    Code         = (int) ResultCodes.Ok,
-                    NickName     = identity_user.UserName,
-                    Email        = identity_user.Email,
-                    Roles        = identity_roles,
+                    Succeeded = true,
+                    Code = (int) ResultCodes.Ok,
                     RefreshToken = new_session_token
                 });
             }
@@ -273,8 +264,8 @@ public class AccountController : Controller
             return Ok(new ClientRefreshTokenResponse
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = "Не удалось обновить токен пользователя"
+                Code = (int)ResultCodes.NotFound,
+                Message = "Не удалось обновить токен пользователя"
             });
         }
         catch (Exception ex)
@@ -304,8 +295,8 @@ public class AccountController : Controller
                     return Ok(new ClientConfirmEmailResponse()
                     {
                         Succeeded = true, 
-                        Code      = (int) ResultCodes.Ok, 
-                        Message   = $"Учетная запись {identity_user.Email} успешно подтверждена"
+                        Code = (int) ResultCodes.Ok, 
+                        Message = $"Учетная запись {identity_user.Email} успешно подтверждена"
                     });
                 }
 
@@ -313,8 +304,8 @@ public class AccountController : Controller
                 return Ok(new ClientConfirmEmailResponse()
                 {
                     Succeeded = false, 
-                    Code      = (int) ResultCodes.NotFound,
-                    Message   = "Не удалось подтвердить email пользователя"
+                    Code = (int) ResultCodes.NotFound,
+                    Message = "Не удалось подтвердить email пользователя"
                 });
             }
 
@@ -322,8 +313,8 @@ public class AccountController : Controller
             return Ok(new ClientConfirmEmailResponse()
             {
                 Succeeded = false, 
-                Code      = (int) ResultCodes.NotFound,
-                Message   = "Не удалось найти пользователя в системе"
+                Code = (int) ResultCodes.NotFound,
+                Message = "Не удалось найти пользователя в системе"
             });
         }
         catch (Exception ex)
@@ -350,8 +341,8 @@ public class AccountController : Controller
                 return Ok(new ClientCreateRoleResponse()
                 {
                     Succeeded = true, 
-                    Code      = (int)ResultCodes.Ok, 
-                    Message   = $"Роль {CreateRoleRequest.RoleName} успешно добавлена в систему"
+                    Code = (int)ResultCodes.Ok, 
+                    Message = $"Роль {CreateRoleRequest.RoleName} успешно добавлена в систему"
                 });
             }
 
@@ -359,8 +350,8 @@ public class AccountController : Controller
             return Ok(new ClientCreateRoleResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.ApiError,
-                Message   = $"Не удалось создать роль {CreateRoleRequest.RoleName}"
+                Code = (int)ResultCodes.ApiError,
+                Message = $"Не удалось создать роль {CreateRoleRequest.RoleName}"
             });
         }
         catch (Exception ex)
@@ -386,8 +377,9 @@ public class AccountController : Controller
                 return Ok(new ClientGetAllRolesResponse()
                 {
                     Succeeded = true, 
-                    Code      = (int)ResultCodes.Ok, 
-                    Roles     = identity_roles_list
+                    Code = (int)ResultCodes.Ok, 
+                    RoleNames = identity_roles_list.Select(x => x.Name).ToList(),
+                    RoleIds = identity_roles_list.Select(x => x.Id).ToList()
                 });
             }
 
@@ -395,8 +387,8 @@ public class AccountController : Controller
             return Ok(new ClientGetAllRolesResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = "Не удалось получить список ролей"
+                Code = (int)ResultCodes.NotFound,
+                Message = "Не удалось получить список ролей"
             });
         }
         catch (Exception ex)
@@ -423,8 +415,9 @@ public class AccountController : Controller
                 return Ok(new ClientGetRoleByIdResponse()
                 {
                     Succeeded = true,
-                    Code      = (int)ResultCodes.Ok,
-                    Role      = identity_role
+                    Code = (int)ResultCodes.Ok,
+                    RoleId = identity_role.Id,
+                    RoleName = identity_role.Name
                 });
             }
 
@@ -432,8 +425,8 @@ public class AccountController : Controller
             return Ok(new ClientGetRoleByIdResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = "Не удалось получить роль"
+                Code = (int)ResultCodes.NotFound,
+                Message = "Не удалось получить роль"
             });
         }
         catch (Exception ex)
@@ -455,7 +448,7 @@ public class AccountController : Controller
         try
         {
             var identity_role = await _RoleManager.FindByIdAsync(EditRoleRequest.RoleId);
-            identity_role.Name           = EditRoleRequest.RoleName.ToLower();
+            identity_role.Name = EditRoleRequest.RoleName.ToLower();
             identity_role.NormalizedName = EditRoleRequest.RoleName.ToUpper();
             
             var identity_result = await _RoleManager.UpdateAsync(identity_role);
@@ -463,9 +456,9 @@ public class AccountController : Controller
             {
                 return Ok(new ClientEditRoleNameByIdResponse()
                 {
-                    Succeeded = true, 
-                    Code      = (int)ResultCodes.Ok, 
-                    Message   = $"Роль успешно изменена на {EditRoleRequest.RoleName}"
+                    Succeeded = true,
+                    Code = (int)ResultCodes.Ok,
+                    Message = $"Роль успешно изменена на {EditRoleRequest.RoleName}",
                 });
             }
 
@@ -501,7 +494,9 @@ public class AccountController : Controller
                 {
                     return Ok(new ClientDeleteRoleByIdResponse()
                     {
-                        Succeeded = true, Code = (int)ResultCodes.Ok, Message = $"Роль {identity_role.Name} успешно удалена"
+                        Succeeded = true, 
+                        Code = (int)ResultCodes.Ok, 
+                        Message = $"Роль {identity_role.Name} успешно удалена",
                     });
                 }
 
@@ -509,8 +504,8 @@ public class AccountController : Controller
                 return Ok(new ClientDeleteRoleByIdResponse()
                 {
                     Succeeded = false, 
-                    Code      = (int)ResultCodes.ApiError,
-                    Message   = "Не удалось удалить роль"
+                    Code = (int)ResultCodes.ApiError,
+                    Message = "Не удалось удалить роль"
                 });
             }
 
@@ -518,8 +513,8 @@ public class AccountController : Controller
             return Ok(new ClientDeleteRoleByIdResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = "Не удалось найти роль"
+                Code = (int)ResultCodes.NotFound,
+                Message = "Не удалось найти роль"
             });
         }
         catch (Exception ex)
@@ -540,14 +535,14 @@ public class AccountController : Controller
     {
         try
         {
-            var identity_user   = await _UserManager.FindByEmailAsync(AddRoleToUserRequest.Email);
+            var identity_user = await _UserManager.FindByEmailAsync(AddRoleToUserRequest.Email);
             var user_roles_list = await _UserManager.GetRolesAsync(identity_user);
             
             if (!user_roles_list.Contains(AddRoleToUserRequest.RoleName.ToLower()))
             {
                 var system_roles_list = await _RoleManager.Roles.ToListAsync();
                 var is_role_contains_in_system = system_roles_list
-                   .Select(x => x.Name.Contains(AddRoleToUserRequest.RoleName!.ToLower()));
+                    .Select(x => x.Name.Contains(AddRoleToUserRequest.RoleName!.ToLower()));
                 foreach (var is_role in is_role_contains_in_system)
                 {
                     if (is_role)
@@ -560,10 +555,10 @@ public class AccountController : Controller
                             
                             return Ok(new ClientAddRoleToUserResponse()
                             {
-                                Succeeded = true, 
-                                Code      = (int)ResultCodes.Ok,
-                                NewToken  = new_token,
-                                Message   = $"Роль {AddRoleToUserRequest.RoleName} успешно добавлена пользователю {identity_user.Email}"
+                                Succeeded = true,
+                                Code = (int)ResultCodes.Ok,
+                                Message = $"Роль {AddRoleToUserRequest.RoleName} успешно добавлена пользователю {identity_user.Email}",
+                                NewToken = new_token
                             });
                         }
                     }
@@ -574,8 +569,8 @@ public class AccountController : Controller
             return Ok(new ClientAddRoleToUserResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = "Некорректно введены данные или данная роль уже есть у пользователя"
+                Code = (int)ResultCodes.NotFound,
+                Message = "Некорректно введены данные или данная роль уже есть у пользователя"
             });
         }
         catch (Exception ex)
@@ -597,13 +592,13 @@ public class AccountController : Controller
     {
         try
         {
-            var identity_user     = await _UserManager.FindByEmailAsync(Email);
-            var user_roles_list   = await _UserManager.GetRolesAsync(identity_user);
+            var identity_user = await _UserManager.FindByEmailAsync(Email);
+            var user_roles_list = await _UserManager.GetRolesAsync(identity_user);
             var system_roles_list = await _RoleManager.Roles.ToListAsync();
             if (user_roles_list.Contains(RoleName.ToLower()))
             {
                 var is_role_contains_in_system = system_roles_list
-                   .Select(x => x.Name.Contains(RoleName.ToLower()));
+                    .Select(x => x.Name.Contains(RoleName.ToLower()));
                 foreach (var is_role in is_role_contains_in_system)
                 {
                     if (is_role)
@@ -617,9 +612,9 @@ public class AccountController : Controller
                             return Ok(new ClientDeleteUserRoleByEmailResponse()
                             {
                                 Succeeded = true,
-                                Code      = (int)ResultCodes.Ok,
-                                NewToken  = new_token,
-                                Message   = $"Роль {RoleName} успешно удалена у пользователя {identity_user.Email}"
+                                Code = (int)ResultCodes.Ok,
+                                Message = $"Роль {RoleName} успешно удалена у пользователя {identity_user.Email}",
+                                NewToken = new_token,
                             });
                         }
                     }
@@ -631,8 +626,8 @@ public class AccountController : Controller
             return Ok(new ClientDeleteUserRoleByEmailResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = $"Некорректно введены данные {Email} или {RoleName}"
+                Code = (int)ResultCodes.NotFound,
+                Message = $"Некорректно введены данные {Email} или {RoleName}"
             });
         }
         catch (Exception ex)
@@ -656,14 +651,19 @@ public class AccountController : Controller
             var identity_user = await _UserManager.FindByEmailAsync(Email);
             if (identity_user is not null)
             {
-                var user_roles_list = await _UserManager.GetRolesAsync(identity_user);
-                if (user_roles_list.Count != 0)
+                var user_roles_name = await _UserManager.GetRolesAsync(identity_user);
+                if (user_roles_name.Count != 0)
                 {
+                    var user_role_id = new List<IdentityRole>();
+                    foreach (var roleName in user_roles_name)
+                        user_role_id.AddRange(_RoleManager.Roles.Where(x => x.Name.Equals(roleName)));
+                    
                     return Ok(new ClientGetAllUserRolesByEmailResponse()
                     {
                         Succeeded = true, 
-                        Code      = (int)ResultCodes.Ok, 
-                        Roles     = user_roles_list
+                        Code = (int)ResultCodes.Ok, 
+                        RoleIds = user_role_id.Select(x => x.Id).ToList(),
+                        RoleNames = user_roles_name.ToList()
                     });
                 }
 
@@ -671,8 +671,8 @@ public class AccountController : Controller
                 return Ok(new ClientGetAllUserRolesByEmailResponse()
                 {
                     Succeeded = false, 
-                    Code      = (int)ResultCodes.NotFound,
-                    Message   = $"Не удалось получить список ролей пользователя {identity_user.Email}"
+                    Code = (int)ResultCodes.NotFound,
+                    Message = $"Не удалось получить список ролей пользователя {identity_user.Email}"
                 });
             }
 
@@ -682,8 +682,8 @@ public class AccountController : Controller
             return Ok(new ClientGetAllUserRolesByEmailResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = $"Пользователя нет в системе, либо некорректно введены данные {Email}"
+                Code = (int)ResultCodes.NotFound,
+                Message = $"Пользователя нет в системе, либо некорректно введены данные {Email}"
             });
         }
         catch (Exception ex)
@@ -705,13 +705,13 @@ public class AccountController : Controller
         var action_result = await RegisterAsync(CreateUserRequest);
         if (action_result is not null)
         {
-            var result   = action_result as OkObjectResult;
+            var result = action_result as OkObjectResult;
             var response = result?.Value as ClientCreateUserResponse;
             return Ok(new ClientCreateUserResponse()
             {
-                Succeeded    = response.Succeeded, 
-                Code         = response.Code,
-                Message      = response.Message,
+                Succeeded = response.Succeeded, 
+                Code = response.Code,
+                Message = response.Message,
                 ConfirmEmail = response.ConfirmEmail
             });
         }
@@ -720,8 +720,8 @@ public class AccountController : Controller
         return Ok(new ClientCreateUserResponse()
         {
             Succeeded = false, 
-            Code      = (int)ResultCodes.NotFound,
-            Message   = $"Не удалось создать пользователя {CreateUserRequest.Email}"
+            Code = (int)ResultCodes.NotFound,
+            Message = $"Не удалось создать пользователя {CreateUserRequest.Email}"
         });
     }
 
@@ -742,8 +742,10 @@ public class AccountController : Controller
                 return Ok(new ClientGetUserByEmailResponse()
                 {
                     Succeeded = true, 
-                    Code      = (int)ResultCodes.Ok, 
-                    User      = identity_user
+                    Code = (int)ResultCodes.Ok, 
+                    UserId = new List<string>(){identity_user.Id},
+                    UserEmail = new List<string>(){identity_user.Email},
+                    UserNickName = new List<string>(){identity_user.UserName},
                 });
             }
 
@@ -751,8 +753,8 @@ public class AccountController : Controller
             return Ok(new ClientGetUserByEmailResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = $"Не удалось получить информации о пользователе {Email}"
+                Code = (int)ResultCodes.NotFound,
+                Message = $"Не удалось получить информации о пользователе {Email}"
             });
         }
         catch (Exception ex)
@@ -776,8 +778,10 @@ public class AccountController : Controller
             return Ok(new ClientGetAllUsersResponse()
             {
                 Succeeded = true, 
-                Code      = (int)ResultCodes.Ok, 
-                Users     = list_of_all_users
+                Code = (int)ResultCodes.Ok, 
+                UserId = list_of_all_users.Select(x => x.Id).ToList(),
+                UserEmails = list_of_all_users.Select(x => x.Email).ToList(),
+                UserNickNames = list_of_all_users.Select(x => x.UserName).ToList()
             });
         }
         catch (Exception ex)
@@ -812,9 +816,9 @@ public class AccountController : Controller
                     return Ok(new ClientEditUserNameByEmailResponse()
                     {
                         Succeeded = true, 
-                        Code      = (int) ResultCodes.Ok,
-                        NewToken  = new_token,
-                        Message   = $"Имя пользователя {identity_user.UserName} успешно изменена на {EditUserRequest.EditUserNickName}"
+                        Code = (int) ResultCodes.Ok,
+                        NewToken = new_token,
+                        Message = $"Имя пользователя {identity_user.UserName} успешно изменена на {EditUserRequest.EditUserNickName}"
                     });
                 }
 
@@ -822,8 +826,8 @@ public class AccountController : Controller
                 return Ok(new ClientEditUserNameByEmailResponse()
                 {
                     Succeeded = false, 
-                    Code      = (int)ResultCodes.NotFound,
-                    Message   = "Не удалось изменить имя пользователя"
+                    Code = (int)ResultCodes.NotFound,
+                    Message = "Не удалось изменить имя пользователя"
                 });
             }
 
@@ -832,8 +836,8 @@ public class AccountController : Controller
             return Ok(new ClientEditUserNameByEmailResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = $"Не удалось найти пользователя {EditUserRequest.UserEmail}"
+                Code = (int)ResultCodes.NotFound,
+                Message = $"Не удалось найти пользователя {EditUserRequest.UserEmail}"
             });
         }
         catch (Exception ex)
@@ -863,8 +867,8 @@ public class AccountController : Controller
                     return Ok(new ClientDeleteUserByEmailResponse()
                     {
                         Succeeded = true, 
-                        Code      = (int)ResultCodes.Ok, 
-                        Message   = $"Пользователь {identity_user.Email} успешно удален"
+                        Code = (int)ResultCodes.Ok, 
+                        Message = $"Пользователь {identity_user.Email} успешно удален"
                     });
                 }
 
@@ -872,8 +876,8 @@ public class AccountController : Controller
                 return Ok(new ClientDeleteUserByEmailResponse()
                 {
                     Succeeded = false, 
-                    Code      = (int)ResultCodes.ApiError,
-                    Message   = $"Не удалось удалить пользователя {Email}"
+                    Code = (int)ResultCodes.ApiError,
+                    Message = $"Не удалось удалить пользователя {Email}"
                 });
             }
 
@@ -881,8 +885,8 @@ public class AccountController : Controller
             return Ok(new ClientDeleteUserByEmailResponse()
             {
                 Succeeded = false, 
-                Code      = (int)ResultCodes.NotFound,
-                Message   = $"Не удалось получить информацию о пользователе {Email}"
+                Code = (int)ResultCodes.NotFound,
+                Message = $"Не удалось получить информацию о пользователе {Email}"
             });
         }
         catch (Exception ex)
@@ -903,8 +907,8 @@ public class AccountController : Controller
         try
         {
             var users_to_delete_list = await _UserManager
-               .Users.Where(x => x.EmailConfirmed.Equals(false))
-               .ToListAsync();
+                .Users.Where(x => x.EmailConfirmed.Equals(false))
+                .ToListAsync();
             foreach (var user in users_to_delete_list)
             {
                 if (user.EmailConfirmed is false)
@@ -916,8 +920,8 @@ public class AccountController : Controller
             return Ok(new ClientDeleteUsersWithOutConfirmResponse()
             {
                 Succeeded = true, 
-                Code      = (int)ResultCodes.Ok, 
-                Message   = "Пользователи без регистрации успешно удалены"
+                Code = (int)ResultCodes.Ok, 
+                Message = "Пользователи без регистрации успешно удалены"
             });
         }
         catch (Exception ex)

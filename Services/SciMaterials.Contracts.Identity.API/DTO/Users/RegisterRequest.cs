@@ -1,4 +1,4 @@
-namespace SciMaterials.Contracts.API.DTO.AuthUsers;
+namespace SciMaterials.Contracts.Identity.API.DTO.Users;
 
 public class RegisterRequest
 {
