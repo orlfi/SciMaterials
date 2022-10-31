@@ -5,5 +5,6 @@ namespace SciMaterials.Contracts.Identity.Clients.Clients.Responses.DTO
         public string? Id { get; set; }
         public string? UserName { get; set; }
         public string? Email { get; set; }
+        public List<AuthRoles>? UserRoles { get; set; }
     }
 }

@@ -650,7 +650,7 @@ public class AccountController : Controller
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet($"{AuthApiRoute.GetAllUserRolesByEmail}"+"{Email}")]
-    public async Task<IActionResult> GetAllUserRolesByEmailAsync(string Email)
+    public async Task<IActionResult?> GetAllUserRolesByEmailAsync(string Email)
     {
         try
         {
@@ -792,13 +792,21 @@ public class AccountController : Controller
             {
                 var users = new List<AuthUsers>();
                 foreach (var user in list_of_all_users)
-                    users.Add(new AuthUsers {Id = user.Id, Email = user.Email, UserName = user.UserName });
+                {
+                    users.Add(new AuthUsers
+                    {
+                        Id = user.Id, 
+                        Email = user.Email, 
+                        UserName = user.UserName, 
+                        UserRoles = await GetAllUserRolesAsync(user.Email)
+                    });
+                }
                 
                 return Ok(new ClientGetAllUsersResponse()
                 {
                     Succeeded = true, 
                     Code = (int)ResultCodes.Ok, 
-                    Users = users
+                    Users = users,
                 });
             }
             
@@ -949,6 +957,46 @@ public class AccountController : Controller
         {
             _Logger.Log(LogLevel.Information, "Произошла ошибка при удалении пользователей {Ex}", ex);
             return Ok(new ClientDeleteUsersWithOutConfirmResponse(){Succeeded = false, Code = (int)ResultCodes.ServerError});
+        }
+    }
+    
+    private async Task<List<AuthRoles>?> GetAllUserRolesAsync(string Email)
+    {
+        try
+        {
+            var identity_user = await _UserManager.FindByEmailAsync(Email);
+            if (identity_user is not null)
+            {
+                var user_roles_name = await _UserManager.GetRolesAsync(identity_user);
+                if (user_roles_name.Count != 0)
+                {
+                    var roles = new List<AuthRoles>();
+                    foreach (var roleName in user_roles_name)
+                    {
+                        var rolesArr = _RoleManager.Roles.Where(x => x.Name.Equals(roleName)).Select(x => x.Id).ToArray();
+                        roles.Add(new AuthRoles()
+                        {
+                            Id = rolesArr[0],
+                            RoleName = roleName,
+                        });
+                    }
+
+                    return roles;
+                }
+
+                _Logger.Log(LogLevel.Information, "Не удалось получить список ролей");
+                return null;
+            }
+
+            _Logger.Log(LogLevel.Information,
+                "Данного пользователя {IdentityUser} нет в системе, либо некорректно введены данные пользователя " +
+                "{Email}", identity_user, Email);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _Logger.Log(LogLevel.Information, "Произошла ошибка при получении списка ролей пользователей {Ex}", ex);
+            return null;
         }
     }
 }
