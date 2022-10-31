@@ -7,6 +7,6 @@ public class EditUrlRequest
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Url { get; set; }
-    public string Tags { get; set; }
-    public string Categories { get; set; }
+    public string Tags { get; set; } = null!;
+    public string Categories { get; set; } = null!;
 }
