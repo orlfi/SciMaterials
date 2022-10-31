@@ -50,20 +50,6 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Links.AnyAsync(cancel))
-        {
-            try
-            {
-                await db.Links.AddRangeAsync(JsonConvert.DeserializeObject<List<Link>>(Encoding.UTF8.GetString(Resources.Links))!, cancel);
-                await db.SaveChangesAsync(cancel);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Error loading data Links", e.Message);
-                throw;
-            }
-        }
-
         if (!await db.ContentTypes.AnyAsync(cancel))
         {
             try
@@ -74,34 +60,6 @@ public static class DataSeeder
             catch (Exception e)
             {
                 Debug.WriteLine("Error loading data ContentTypes", e.Message);
-                throw;
-            }
-        }
-
-        if (!await db.Tags.AnyAsync(cancel))
-        {
-            try
-            {
-                await db.Tags.AddRangeAsync(JsonConvert.DeserializeObject<List<Tag>>(Encoding.UTF8.GetString(Resources.Tags))!, cancel);
-                await db.SaveChangesAsync(cancel);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Error loading data Tags", e.Message);
-                throw;
-            }
-        }
-
-        if (!await db.Categories.AnyAsync(cancel))
-        {
-            try
-            {
-                await db.Categories.AddRangeAsync(JsonConvert.DeserializeObject<List<Category>>(Encoding.UTF8.GetString(Resources.Categories))!, cancel);
-                await db.SaveChangesAsync(cancel);
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("Error loading data Categories", e.Message);
                 throw;
             }
         }
@@ -134,6 +92,48 @@ public static class DataSeeder
             }
         }
 
+        if (!await db.Links.AnyAsync(cancel))
+        {
+            try
+            {
+                await db.Links.AddRangeAsync(JsonConvert.DeserializeObject<List<Link>>(Encoding.UTF8.GetString(Resources.Links))!, cancel);
+                await db.SaveChangesAsync(cancel);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error loading data Links", e.Message);
+                throw;
+            }
+        }
+
+        if (!await db.Tags.AnyAsync(cancel))
+        {
+            try
+            {
+                await db.Tags.AddRangeAsync(JsonConvert.DeserializeObject<List<Tag>>(Encoding.UTF8.GetString(Resources.Tags))!, cancel);
+                await db.SaveChangesAsync(cancel);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error loading data Tags", e.Message);
+                throw;
+            }
+        }
+
+        if (!await db.Categories.AnyAsync(cancel))
+        {
+            try
+            {
+                await db.Categories.AddRangeAsync(JsonConvert.DeserializeObject<List<Category>>(Encoding.UTF8.GetString(Resources.Categories))!, cancel);
+                await db.SaveChangesAsync(cancel);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error loading data Categories", e.Message);
+                throw;
+            }
+        }
+
         if (!await db.Comments.AnyAsync(cancel))
         {
             try
@@ -158,6 +158,20 @@ public static class DataSeeder
             catch (Exception e)
             {
                 Debug.WriteLine("Error loading data Ratings", e.Message);
+                throw;
+            }
+        }
+
+        if (!await db.Urls.AnyAsync(cancel))
+        {
+            try
+            {
+                await db.Urls.AddRangeAsync(JsonConvert.DeserializeObject<List<Url>>(Encoding.UTF8.GetString(Resources.Urls))!, cancel);
+                await db.SaveChangesAsync(cancel);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error loading data Urls", e.Message);
                 throw;
             }
         }
