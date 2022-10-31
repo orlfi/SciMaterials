@@ -61,7 +61,6 @@ public class AccountController : Controller
             if (identity_result.Succeeded)
             {
                 await _UserManager.AddToRoleAsync(identity_user, AuthApiRoles.User);
-                //await _SignInManager.SignInAsync(identity_user, false);
 
                 var email_confirm_token = await _UserManager.GenerateEmailConfirmationTokenAsync(identity_user);
 
@@ -495,17 +494,20 @@ public class AccountController : Controller
             var identity_role = await _RoleManager.FindByIdAsync(RoleId);
             if (identity_role is not null)
             {
-                var identity_result = await _RoleManager.DeleteAsync(identity_role);
-                if (identity_result.Succeeded)
+                if (_authUtilits.CheckToDeleteAdminOrUserRoles(identity_role))
                 {
-                    return Ok(new ClientDeleteRoleByIdResponse()
+                    var identity_result = await _RoleManager.DeleteAsync(identity_role);
+                    if (identity_result.Succeeded)
                     {
-                        Succeeded = true, 
-                        Code = (int)ResultCodes.Ok, 
-                        Message = $"Роль {identity_role.Name} успешно удалена",
-                    });
+                        return Ok(new ClientDeleteRoleByIdResponse()
+                        {
+                            Succeeded = true,
+                            Code = (int)ResultCodes.Ok,
+                            Message = $"Роль {identity_role.Name} успешно удалена",
+                        });
+                    }
                 }
-
+                
                 _Logger.Log(LogLevel.Information, "Не удалось удалить роль");
                 return Ok(new ClientDeleteRoleByIdResponse()
                 {
@@ -609,19 +611,22 @@ public class AccountController : Controller
                 {
                     if (is_role)
                     {
-                        var role_removed_result = await _UserManager.RemoveFromRoleAsync(identity_user, RoleName.ToLower());
-                        if (role_removed_result.Succeeded)
+                        if (_authUtilits.CheckToDeleteSAInRoleAdmin(identity_user, RoleName.ToLower()))
                         {
-                            var new_token = _authUtilits.CreateSessionToken(identity_user,
-                                await _UserManager.GetRolesAsync(identity_user));
-                            
-                            return Ok(new ClientDeleteUserRoleByEmailResponse()
+                            var role_removed_result = await _UserManager.RemoveFromRoleAsync(identity_user, RoleName.ToLower());
+                            if (role_removed_result.Succeeded)
                             {
-                                Succeeded = true,
-                                Code = (int)ResultCodes.Ok,
-                                Message = $"Роль {RoleName} успешно удалена у пользователя {identity_user.Email}",
-                                NewToken = new_token,
-                            });
+                                var new_token = _authUtilits.CreateSessionToken(identity_user,
+                                    await _UserManager.GetRolesAsync(identity_user));
+                            
+                                return Ok(new ClientDeleteUserRoleByEmailResponse()
+                                {
+                                    Succeeded = true,
+                                    Code = (int)ResultCodes.Ok,
+                                    Message = $"Роль {RoleName} успешно удалена у пользователя {identity_user.Email}",
+                                    NewToken = new_token,
+                                });
+                            }
                         }
                     }
                 }
@@ -887,20 +892,23 @@ public class AccountController : Controller
     {
         try
         {
-            var identity_user = await _UserManager.FindByEmailAsync(Email);
+            var identity_user = await _UserManager.FindByEmailAsync(Email.ToLower());
             if (identity_user is not null)
             {
-                var identity_result = await _UserManager.DeleteAsync(identity_user);
-                if (identity_result.Succeeded)
+                if (_authUtilits.CheckToDeleteSA(identity_user))
                 {
-                    return Ok(new ClientDeleteUserByEmailResponse()
+                    var identity_result = await _UserManager.DeleteAsync(identity_user);
+                    if (identity_result.Succeeded)
                     {
-                        Succeeded = true, 
-                        Code = (int)ResultCodes.Ok, 
-                        Message = $"Пользователь {identity_user.Email} успешно удален"
-                    });
+                        return Ok(new ClientDeleteUserByEmailResponse()
+                        {
+                            Succeeded = true, 
+                            Code = (int)ResultCodes.Ok, 
+                            Message = $"Пользователь {identity_user.Email} успешно удален"
+                        });
+                    }
                 }
-
+                
                 _Logger.Log(LogLevel.Information, "Не удалось удалить пользователя {Email}", Email);
                 return Ok(new ClientDeleteUserByEmailResponse()
                 {
