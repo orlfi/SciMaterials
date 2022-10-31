@@ -1,9 +1,6 @@
 namespace SciMaterials.Contracts.Auth;
 
-public interface IAuthUtils<in TUser, TRole>
+public interface IAuthUtils<in TUser>
 {
     string CreateSessionToken(TUser User, IList<string> Roles);
-    bool CheckToDeleteAdminOrUserRoles(TRole Role);
-    bool CheckToDeleteSAInRoleAdmin(TUser User, string Role);
-    bool CheckToDeleteSA(TUser User);
 }
