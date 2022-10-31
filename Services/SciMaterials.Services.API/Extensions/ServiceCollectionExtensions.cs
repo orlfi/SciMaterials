@@ -34,8 +34,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<IUrlService, UrlService>();
         services.AddRepositoryServices();
-        services.AddContextMultipleProviders(configuration);
-        services.AddDatabaseServices();
+
+        services
+           .AddContextMultipleProviders(configuration)
+           .AddDatabaseServices();
+
         services.AddMappings();
         return services;
     }

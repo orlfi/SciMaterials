@@ -1,6 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
@@ -15,14 +19,18 @@ public static class DataSeeder
 
     /// <summary> Асинхронно выполняет транзакцию заполнения таблиц базы данных тестовыми данными. В случае ошибки транзакция не выполняется.</summary>
     /// <param name="db">Контекст базы данных.</param>
-    /// <param name="cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/> Значение по умолчанию: <value>default</value></param>
+    /// <param name="Cancel">Распространяет уведомление о том, что операции следует отменить. <see cref="CancellationToken"/> Значение по умолчанию: <value>default</value></param>
     /// <returns>Задача, которая представляет работу в очереди на выполнение в ThreadPool. См. <see cref="Task"/></returns>
     /// <exception cref="OperationCanceledException"></exception>
-    public static async Task SeedAsync(SciMaterialsContext db, CancellationToken cancel = default)
+    public static async Task SeedAsync(SciMaterialsContext db, CancellationToken Cancel = default)
     {
-        await using var transaction = await db.Database.BeginTransactionAsync(cancel).ConfigureAwait(false);
+        var loggger = db.GetService<ILogger<IDbSetInitializer>>();
 
-        if (!await db.Users.AnyAsync(cancel))
+        loggger.LogInformation("Инициализация БД тестовыми данными");
+
+        await using var transaction = await db.Database.BeginTransactionAsync(Cancel).ConfigureAwait(false);
+
+        if (!await db.Users.AnyAsync(Cancel))
         {
             try
             {
@@ -36,7 +44,7 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Authors.AnyAsync(cancel))
+        if (!await db.Authors.AnyAsync(Cancel))
         {
             try
             {
@@ -50,7 +58,7 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.ContentTypes.AnyAsync(cancel))
+        if (!await db.ContentTypes.AnyAsync(Cancel))
         {
             try
             {
@@ -134,7 +142,7 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Comments.AnyAsync(cancel))
+        if (!await db.Comments.AnyAsync(Cancel))
         {
             try
             {
@@ -148,7 +156,7 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Ratings.AnyAsync(cancel))
+        if (!await db.Ratings.AnyAsync(Cancel))
         {
             try
             {
