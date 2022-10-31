@@ -130,9 +130,6 @@
   <data name="ContentTypes" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ContentTypes.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DataResources" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Resources.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="FileGroups" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FileGroups.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
