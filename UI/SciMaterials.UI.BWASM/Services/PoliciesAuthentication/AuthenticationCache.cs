@@ -10,7 +10,7 @@ public class AuthenticationCache
 {
     private Dictionary<Guid, Authority> Authorities { get; }
     private Dictionary<string, AuthorityGroup> AuthorityGroups { get; } = new();
-    private Dictionary<Guid, UserInfo> Users { get; } = new();
+    private Dictionary<Guid, AuthorityUserInfo> Users { get; } = new();
 
     private HashSet<string> AuthoritiesNames { get; }
     private HashSet<string> AuthorityGroupsNames { get; }
@@ -35,7 +35,7 @@ public class AuthenticationCache
         AuthoritiesNames = Authorities.Values.Select(x => x.Name).ToHashSet();
         AuthorityGroupsNames = AuthorityGroups.Values.Select(x => x.Name).ToHashSet();
 
-        UserInfo admin = UserInfo.Create("Admin", "sa@mail.ru", "test12345", adminAuthorityGroup);
+        AuthorityUserInfo admin = AuthorityUserInfo.Create("Admin", "sa@mail.ru", "test12345", adminAuthorityGroup);
         Users.TryAdd(admin.Id, admin);
     }
 
@@ -43,7 +43,7 @@ public class AuthenticationCache
     {
         if (Users.Values.FirstOrDefault(x => x.Email == email) is not null) return false;
 
-        UserInfo user = UserInfo.Create(userName, email, password, AuthorityGroups["User"]);
+        AuthorityUserInfo user = AuthorityUserInfo.Create(userName, email, password, AuthorityGroups["User"]);
 
         // no check on idempotency
         Users.TryAdd(user.Id, user);
@@ -75,9 +75,9 @@ public class AuthenticationCache
         return AuthorityGroups.Values.Select(x => AuthorityGroup.Create(x)).ToList();
     }
 
-    public List<UserInfo> UsersList()
+    public List<AuthorityUserInfo> UsersList()
     {
-        return Users.Values.Select(x => UserInfo.Create(x)).ToList();
+        return Users.Values.Select(x => AuthorityUserInfo.Create(x)).ToList();
     }
 
     public Result ChangeAuthorityGroup(string userEmail, string authorityGroupName)
@@ -153,7 +153,7 @@ public class AuthenticationCache
         group.Authorities.Remove(authority);
     }
 
-    private ClaimsIdentity GenerateIdentity(UserInfo user)
+    private ClaimsIdentity GenerateIdentity(AuthorityUserInfo user)
     {
         List<Claim> claims = new()
         {
