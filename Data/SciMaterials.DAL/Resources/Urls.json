@@ -1,0 +1,77 @@
+[
+	{
+		"Id": "524E925F-1904-0975-CD14-977BD7BB459B",
+		"Link": "https://facebook.com",
+		"AuthorId": "F33627A7-2FEB-992B-D602-DE33A250A689"
+	},
+	{
+		"Id": "A478D974-C2D2-E797-58CE-B42E9893663A",
+		"Link": "https://naver.com",
+		"AuthorId": "D3390381-BBC2-3C6C-2961-83A57ED7AB1A"
+	},
+	{
+		"Id": "91C61BE4-CB15-BA4C-5B66-5C599C7791E4",
+		"Link": "https://bbc.co.uk",
+		"AuthorId": "3C27CA28-30DA-348C-F711-E55A3DDDDF41"
+	},
+	{
+		"Id": "ADB80CDD-A877-E7A2-E82E-73ECD8F2554E",
+		"Link": "http://netflix.com",
+		"AuthorId": "709ABBA0-4D17-C421-F3E7-590A41670EB4"
+	},
+	{
+		"Id": "698279B5-D64B-A872-364A-6EA5CFB644E9",
+		"Link": "https://ebay.com",
+		"AuthorId": "ABED24B1-A8A2-CDED-3EB9-33C2866DE489"
+	},
+	{
+		"Id": "209D858A-5CBE-6B86-4953-23E8885BFEB3",
+		"Link": "https://cnn.com",
+		"AuthorId": "9413A1DD-F16F-8C66-D2AB-87082BFB24D9"
+	},
+	{
+		"Id": "23D96E4B-56AC-8387-7119-7C76B5154CC2",
+		"Link": "http://yahoo.com",
+		"AuthorId": "D813D32D-E152-DBCE-9D24-5065D45E8042"
+	},
+	{
+		"Id": "29801439-51ED-5C89-9565-8D2F6CC61F56",
+		"Link": "http://cnn.com",
+		"AuthorId": "7A1546E2-EA12-E6EA-9529-69BF98C8D386"
+	},
+	{
+		"Id": "8ABE38D3-9A8A-32E4-A1C5-8A58885A7DF0",
+		"Link": "http://zoom.us",
+		"AuthorId": "359DDC8D-CDDD-5C83-907F-36DAC6305894"
+	},
+	{
+		"Id": "29DA2ADC-021A-6403-EC4C-2C03376DCAC9",
+		"Link": "http://netflix.com",
+		"AuthorId": "F35B9FA9-14F4-510E-3024-A02BC41A6284"
+	},
+	{
+		"Id": "A57D09B7-6BBB-08D8-BCB5-93AA1793AD2C",
+		"Link": "https://facebook.com",
+		"AuthorId": "5D6B6834-3635-98E8-CBAE-F0E33FDD6E7B"
+	},
+	{
+		"Id": "7187E234-C1F2-8B17-E5A9-34DFEBCCAD77",
+		"Link": "http://facebook.com",
+		"AuthorId": "3DB7D261-7357-E088-ECCB-B7E706A37D0C"
+	},
+	{
+		"Id": "35C78968-6BE2-B214-91B1-199108EEA86E",
+		"Link": "http://instagram.com",
+		"AuthorId": "8D1ABDD8-89E5-EA2C-464B-1A6EE8671274"
+	},
+	{
+		"Id": "17136E84-B259-7113-2FB3-7EAE84B69F65",
+		"Link": "http://cnn.com",
+		"AuthorId": "04CBD97B-AF02-1244-B891-E311D5D88F06"
+	},
+	{
+		"Id": "F9CEC5AA-509D-AC7C-65BD-77D3D88DE2AF",
+		"Link": "https://cnn.com",
+		"AuthorId": "C7C92D14-6111-F19B-B9BD-8042FDB7B55A"
+	}
+]
