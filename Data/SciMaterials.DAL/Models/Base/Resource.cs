@@ -15,5 +15,4 @@ public class Resource : NamedModel
     public ICollection<Tag>? Tags { get; set; } = new HashSet<Tag>();
     public ICollection<Category> Categories { get; set; } = new HashSet<Category>();
     public ICollection<Rating> Ratings { get; set; } = new HashSet<Rating>();
-
 }
