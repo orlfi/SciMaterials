@@ -25,14 +25,16 @@ public class IdentityAccountsService : IAccountsService
         if (!response.Succeeded)
         {
             // TODO: handle failure
-            return Array.Empty<UserInfo>();
+            return Array.Empty<RolesUserInfo>();
         }
         
-        return response.Users.Select(x => new UserInfo()
+        return response.Users.Select(x => new RolesUserInfo()
         {
             Id = Guid.Parse(x.Id),
             UserName = x.UserName,
-            Email = x.Email
+            Email = x.Email,
+            Authority = string.Join(", ", x.UserRoles.Select(c=>c.RoleName)),
+            UserRoles = x.UserRoles.Select(c=>new UserRole(){Id = c.Id, Name = c.RoleName}).ToArray()
         }).ToList();
     }
 
