@@ -9,6 +9,6 @@ public class GetUrlResponse
     public Guid? ParentId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
-    public string Url { get; set; } = null!;
+    public string Link { get; set; } = null!;
     public Guid? ContentTypeId { get; set; }
 }

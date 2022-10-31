@@ -34,8 +34,8 @@ public static class DataSeeder
         {
             try
             {
-                await db.Users.AddRangeAsync(JsonConvert.DeserializeObject<List<User>>(Encoding.UTF8.GetString(Resources.Users))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Users.AddRangeAsync(JsonConvert.DeserializeObject<List<User>>(Encoding.UTF8.GetString(Resources.Users))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -48,8 +48,8 @@ public static class DataSeeder
         {
             try
             {
-                await db.Authors.AddRangeAsync(JsonConvert.DeserializeObject<List<Author>>(Encoding.UTF8.GetString(Resources.Authors))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Authors.AddRangeAsync(JsonConvert.DeserializeObject<List<Author>>(Encoding.UTF8.GetString(Resources.Authors))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -62,8 +62,8 @@ public static class DataSeeder
         {
             try
             {
-                await db.ContentTypes.AddRangeAsync(JsonConvert.DeserializeObject<List<ContentType>>(Encoding.UTF8.GetString(Resources.ContentTypes))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.ContentTypes.AddRangeAsync(JsonConvert.DeserializeObject<List<ContentType>>(Encoding.UTF8.GetString(Resources.ContentTypes))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -72,12 +72,12 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.FileGroups.AnyAsync(cancel))
+        if (!await db.FileGroups.AnyAsync(Cancel))
         {
             try
             {
-                await db.FileGroups.AddRangeAsync(JsonConvert.DeserializeObject<List<FileGroup>>(Encoding.UTF8.GetString(Resources.FileGroups))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.FileGroups.AddRangeAsync(JsonConvert.DeserializeObject<List<FileGroup>>(Encoding.UTF8.GetString(Resources.FileGroups))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -86,12 +86,12 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Files.AnyAsync(cancel))
+        if (!await db.Files.AnyAsync(Cancel))
         {
             try
             {
-                await db.Files.AddRangeAsync(JsonConvert.DeserializeObject<List<File>>(Encoding.UTF8.GetString(Resources.Files))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Files.AddRangeAsync(JsonConvert.DeserializeObject<List<File>>(Encoding.UTF8.GetString(Resources.Files))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -100,12 +100,12 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Links.AnyAsync(cancel))
+        if (!await db.Links.AnyAsync(Cancel))
         {
             try
             {
-                await db.Links.AddRangeAsync(JsonConvert.DeserializeObject<List<Link>>(Encoding.UTF8.GetString(Resources.Links))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Links.AddRangeAsync(JsonConvert.DeserializeObject<List<Link>>(Encoding.UTF8.GetString(Resources.Links))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -114,12 +114,12 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Tags.AnyAsync(cancel))
+        if (!await db.Tags.AnyAsync(Cancel))
         {
             try
             {
-                await db.Tags.AddRangeAsync(JsonConvert.DeserializeObject<List<Tag>>(Encoding.UTF8.GetString(Resources.Tags))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Tags.AddRangeAsync(JsonConvert.DeserializeObject<List<Tag>>(Encoding.UTF8.GetString(Resources.Tags))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -128,12 +128,12 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Categories.AnyAsync(cancel))
+        if (!await db.Categories.AnyAsync(Cancel))
         {
             try
             {
-                await db.Categories.AddRangeAsync(JsonConvert.DeserializeObject<List<Category>>(Encoding.UTF8.GetString(Resources.Categories))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Categories.AddRangeAsync(JsonConvert.DeserializeObject<List<Category>>(Encoding.UTF8.GetString(Resources.Categories))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -146,8 +146,8 @@ public static class DataSeeder
         {
             try
             {
-                await db.Comments.AddRangeAsync(JsonConvert.DeserializeObject<List<Comment>>(Encoding.UTF8.GetString(Resources.Comments))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Comments.AddRangeAsync(JsonConvert.DeserializeObject<List<Comment>>(Encoding.UTF8.GetString(Resources.Comments))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -160,8 +160,8 @@ public static class DataSeeder
         {
             try
             {
-                await db.Ratings.AddRangeAsync(JsonConvert.DeserializeObject<List<Rating>>(Encoding.UTF8.GetString(Resources.Ratings))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Ratings.AddRangeAsync(JsonConvert.DeserializeObject<List<Rating>>(Encoding.UTF8.GetString(Resources.Ratings))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -170,12 +170,12 @@ public static class DataSeeder
             }
         }
 
-        if (!await db.Urls.AnyAsync(cancel))
+        if (!await db.Urls.AnyAsync(Cancel))
         {
             try
             {
-                await db.Urls.AddRangeAsync(JsonConvert.DeserializeObject<List<Url>>(Encoding.UTF8.GetString(Resources.Urls))!, cancel);
-                await db.SaveChangesAsync(cancel);
+                await db.Urls.AddRangeAsync(JsonConvert.DeserializeObject<List<Url>>(Encoding.UTF8.GetString(Resources.Urls))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
             }
             catch (Exception e)
             {
@@ -184,6 +184,6 @@ public static class DataSeeder
             }
         }
 
-        await transaction.CommitAsync(cancel);
+        await transaction.CommitAsync(Cancel);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SciMaterials.Contracts.Auth;
 using SciMaterials.Contracts.Database.Configuration;
 using SciMaterials.Contracts.Database.Initialization;
+using SciMaterials.DAL.Contexts;
 
 namespace SciMaterials.Services.Database.Extensions;
 
@@ -13,7 +15,7 @@ public static class ApplicationExtension
     {
         await using var scope = app.ApplicationServices.CreateAsyncScope();
 
-        var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
+        var dbSetting = configuration.GetSection("DbSettings").Get<DbSettings>();
         
         if (dbSetting.DbProvider.Equals("SQLite"))
         {
