@@ -19,7 +19,7 @@ services:
       - mvc:/var/lib/mvc/data/
     networks:
       - scimaterials_network
-  
+
   postgres_db:
     container_name: postgres_db
     image: postgres:latest
@@ -37,6 +37,7 @@ services:
 volumes:
     db:
     mvc:
+
 networks:
   scimaterials_network:
     driver: bridge
