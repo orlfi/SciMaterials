@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-
+using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.Auth;
 
 namespace SciMaterials.UI.MVC.Identity.Services;
@@ -58,5 +58,27 @@ public class AuthUtils : IAuthUtilits
         var security_token = jwt_security_token_handler.CreateToken(security_token_descriptor);
 
         return jwt_security_token_handler.WriteToken(security_token);
+    }
+
+    public bool CheckToDeleteAdminOrUserRoles(IdentityRole Role)
+    {
+        if (Role.Name.Equals(AuthApiRoles.Admin) || Role.Name.Equals(AuthApiRoles.User)) return false;
+
+        return true;
+    }
+
+    public bool CheckToDeleteSAInRoleAdmin(IdentityUser User, string RoleName)
+    {
+        if (User.Email.Equals(_Configuration.GetSection("AuthApiSettings:AdminSettings:login").Value) &&
+            RoleName.Equals(AuthApiRoles.Admin)) return false;
+
+        return true;
+    }
+
+    public bool CheckToDeleteSA(IdentityUser User)
+    {
+        if (User.Email.Equals(_Configuration.GetSection("AuthApiSettings:AdminSettings:login").Value)) return false;
+
+        return true;
     }
 }
