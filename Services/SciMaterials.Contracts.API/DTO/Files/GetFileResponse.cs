@@ -13,6 +13,7 @@ public class GetFileResponse
     public string Tags { get; set; }
     public string Categories { get; set; }
 
+    public string Url { get; set; } // TODO: удалить свойство в клиенте
     // [JsonIgnore]
     public string ContentTypeName { get; set; }
 }

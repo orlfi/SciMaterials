@@ -8,7 +8,7 @@ namespace SciMaterials.UI.MVC.API.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSwagger(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {
@@ -20,13 +20,15 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection ConfigureApplication(this IServiceCollection services, IConfiguration config)
     {
-        var apiSettings = config.GetSection(ApiSettings.SectionName);
-        services.Configure<ApiSettings>(apiSettings);
-        services.AddSingleton<IApiSettings, ApiSettings>(s => s.GetRequiredService<IOptions<ApiSettings>>().Value);
+        var api_settings = config.GetSection(ApiSettings.SectionName);
+
+        services
+           .Configure<ApiSettings>(api_settings)
+           .AddSingleton<IApiSettings, ApiSettings>(s => s.GetRequiredService<IOptions<ApiSettings>>().Value);
 
         services.Configure<FormOptions>(options =>
         {
-            options.MultipartBodyLengthLimit = apiSettings.GetValue<long>("MaxFileSize"); ;
+            options.MultipartBodyLengthLimit = api_settings.GetValue<long>("MaxFileSize");
         });
 
         return services;
