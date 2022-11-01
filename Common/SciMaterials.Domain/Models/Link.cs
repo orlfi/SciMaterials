@@ -4,7 +4,7 @@ namespace SciMaterials.Domain.Models;
 
 public class Link : BaseModel
 {
-    public string SourceAddress { get; set; } = string.Empty;
+    public string SourceAddress { get; set; } = null!;
     public string? Hash { get; set; }
     public Guid AuthorId { get; set; }
     public string? Description { get; set; }

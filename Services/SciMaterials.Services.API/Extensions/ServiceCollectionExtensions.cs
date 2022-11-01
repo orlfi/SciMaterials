@@ -16,6 +16,8 @@ using SciMaterials.Contracts.API.Services.Tags;
 using SciMaterials.RepositoryLib.Extensions;
 using SciMaterials.Services.API.Services.Tags;
 using SciMaterials.Services.Database.Extensions;
+using SciMaterials.Contracts.API.Services.Urls;
+using SciMaterials.Services.API.Services.Urls;
 
 namespace SciMaterials.Services.API.Extensions;
 
@@ -30,9 +32,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IContentTypeService, ContentTypeService>();
         services.AddScoped<ITagService, TagService>();
+        services.AddScoped<IUrlService, UrlService>();
         services.AddRepositoryServices();
-        services.AddContextMultipleProviders(configuration);
-        services.AddDatabaseServices();
+
+        services
+           .AddContextMultipleProviders(configuration)
+           .AddDatabaseServices();
+
         services.AddMappings();
         return services;
     }
