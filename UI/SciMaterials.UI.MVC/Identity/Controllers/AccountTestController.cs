@@ -9,9 +9,9 @@ namespace SciMaterials.UI.MVC.Identity.Controllers;
 /// <summary>
 /// Тестовый контроллер с IdentityClient
 /// </summary>
-[Route("account_test/")]
 [ApiController]
-public class AccountTestController : ControllerBase
+[Route("account_test/")]
+public class AccountTestController : Controller
 {
     private readonly IIdentityClient _identityClient;
     public AccountTestController(IIdentityClient identityClient)
