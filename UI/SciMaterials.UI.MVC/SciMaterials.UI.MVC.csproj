@@ -37,6 +37,7 @@
     <ProjectReference Include="..\..\Services\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.WebAPI.LinkSearch\SciMaterials.WebAPI.LinkSearch.csproj" />
     <ProjectReference Include="..\SciMaterials.UI.BWASM\SciMaterials.UI.BWASM.csproj" />
+    <ProjectReference Include="..\..\Services\SciMaterials.Contracts.ShortLinks\SciMaterials.Contracts.ShortLinks.csproj" />
   </ItemGroup>
 
 </Project>

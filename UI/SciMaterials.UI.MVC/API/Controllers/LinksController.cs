@@ -1,29 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.Tags;
-using SciMaterials.Contracts.API.Services.Tags;
+using SciMaterials.Contracts.ShortenLinks;
+using SciMaterials.DAL.Models;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
-/// <summary> Service for working with authors. </summary>
+/// <summary> Service for working with short links. </summary>
 [ApiController]
-[Route(WebApiRoute.Links)]
+[Route(WebApiRoute.ShortLinks)]
 public class LinksController : ApiBaseController<LinksController>
 {
-    private readonly ILinkShortCut _linkShortCut;
+    private readonly ILinkShortCut<Link> _linkShortCut;
 
-    public LinksController(ILinkShortCut linkShortCut)
+    public LinksController(ILinkShortCut<Link> linkShortCut)
+        => _linkShortCut = linkShortCut;
+
+    [HttpGet("{shortLink}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] string shortLink)
     {
-        _linkShortCut = linkShortCut;
+        var targetLink = await _linkShortCut.FindByUrlAsync(shortLink);
+
+        return Redirect(targetLink.SourceAddress);
     }
-
-    [HttpGet("{link}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] string link)
-    {
-        var targetLink = await _linkShortCut.FindByUrlAsync(link);
-
-        return Redirect(targetLink);
-    }
-
 }
