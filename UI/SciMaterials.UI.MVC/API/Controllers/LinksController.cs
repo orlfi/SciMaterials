@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.ShortenLinks;
+using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.DAL.Models;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
@@ -11,16 +11,19 @@ namespace SciMaterials.UI.MVC.API.Controllers;
 [Route(WebApiRoute.ShortLinks)]
 public class LinksController : ApiBaseController<LinksController>
 {
-    private readonly ILinkShortCut<Link> _linkShortCut;
+    private readonly ILinkShortCutService _linkShortCut;
 
-    public LinksController(ILinkShortCut<Link> linkShortCut)
+    public LinksController(ILinkShortCutService linkShortCut)
         => _linkShortCut = linkShortCut;
 
-    [HttpGet("{shortLink}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] string shortLink)
+    [HttpGet("{hash}")]
+    public async Task<IActionResult> GetByIdAsync([FromRoute] string hash)
     {
-        var targetLink = await _linkShortCut.FindByUrlAsync(shortLink);
+        var linkResult = await _linkShortCut.GetAsync(hash);
+        
+        if (linkResult.Succeeded)
+            return Redirect(linkResult.Data);
 
-        return Redirect(targetLink.SourceAddress);
+        return NotFound();
     }
 }

@@ -5,5 +5,6 @@ namespace SciMaterials.Contracts.ShortLinks;
 
 public interface ILinkShortCutService
 {
-    Task<Result<string>> GetOrAddAsync(string sourceAddress, CancellationToken Cancel = default);
+    Task<Result<string>> AddAsync(string sourceAddress, CancellationToken Cancel = default);
+    Task<Result<string>> GetAsync(string sourceAddress, CancellationToken Cancel = default);
 }

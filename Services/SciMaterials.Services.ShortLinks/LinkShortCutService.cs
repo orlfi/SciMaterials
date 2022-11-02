@@ -18,7 +18,6 @@ namespace SciMaterials.Services.ShortLinks;
 
 public class LinkShortCutService : ILinkShortCutService
 {
-    private static readonly Regex __Regex = new(@"^(?<scheme>[A-z]+)://", RegexOptions.Compiled);
     private readonly SciMaterialsContext _db;
     private readonly ILogger<LinkShortCutService> _logger;
 
@@ -64,6 +63,9 @@ public class LinkShortCutService : ILinkShortCutService
     /// <param name="Cancel"> Токен отмены. </param>
     /// <returns> Адрес исходной ссылки. </returns>
     public async Task<Result<string>> GetAsync(string hash, CancellationToken Cancel = default)
+    {
+        return null;
+    }
 
     private async Task<Result<string>> GetMinShortLinkAsync(string hash, int linkLength, CancellationToken Cancel = default)
     {
@@ -73,6 +75,7 @@ public class LinkShortCutService : ILinkShortCutService
             case 0:
                 _logger.LogError("Link with hash {hash} not found", hash);
                 return await Result<string>.ErrorAsync((int)ResultCodes.NotFound, $"Link with hash {hash} not found");
+
             case 1: return $"/{WebApiRoute.ShortLinks}/{shortLink}";
         }
 
