@@ -8,6 +8,15 @@
     <UserSecretsId>8c151f61-9d1e-473c-ad00-b507c442b7d0</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>
+      1701;1702;
+      0414;0649;0162;0219;
+      1998;4014;
+      0169;8602;8604;8618
+    </NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="appsettings.Development.json" />
     <None Remove="appsettings.json" />

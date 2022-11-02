@@ -6,6 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <NoWarn>
+      1701;1702;
+      0414;0649;0162;
+      1998;4014;
+      8603;8604;8602
+    </NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
@@ -14,8 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<ProjectReference Include="..\SciMaterials.AUTH\SciMaterials.AUTH.csproj" />-->
     <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
+    <ProjectReference Include="..\SciMaterials.Contracts.Identity.API\SciMaterials.Contracts.Identity.API.csproj" />
+    <ProjectReference Include="..\SciMaterials.Contracts.Identity.Clients\SciMaterials.Contracts.Identity.Clients.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts.WebApi.Clients\SciMaterials.Contracts.WebApi.Clients.csproj" />
   </ItemGroup>
 

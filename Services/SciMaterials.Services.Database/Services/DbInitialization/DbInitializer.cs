@@ -52,10 +52,8 @@ public class DbInitializer : IDbInitializer
 
             var pending_migrations = await _db.Database.GetPendingMigrationsAsync(Cancel).ConfigureAwait(false);
 
-            if (pending_migrations.Any())
-            {
+            if (pending_migrations.Any()) 
                 await _db.Database.MigrateAsync(Cancel).ConfigureAwait(false);
-            }
 
             if (UseDataSeeder)
                 await InitializeDbAsync(Cancel).ConfigureAwait(false);
@@ -72,10 +70,8 @@ public class DbInitializer : IDbInitializer
         }
     }
 
-    private async Task InitializeDbAsync(CancellationToken cancel = default)
+    private async Task InitializeDbAsync(CancellationToken Cancel = default)
     {
-        cancel.ThrowIfCancellationRequested();
-
-        await DataSeeder.SeedAsync(_db, cancel).ConfigureAwait(false);
+        await DataSeeder.SeedAsync(_db, Cancel).ConfigureAwait(false);
     }
 }

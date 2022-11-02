@@ -21,4 +21,7 @@ public static class WebApiRoute
     public const string Tags = "api/tags";
 
     public const string Links = "api/links";
+
+    /// <summary> Сервис управления интернет ссылками </summary>
+    public const string Urls = "api/urls";
 }

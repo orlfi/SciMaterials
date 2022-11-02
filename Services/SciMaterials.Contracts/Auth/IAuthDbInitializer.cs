@@ -2,5 +2,5 @@ namespace SciMaterials.Contracts.Auth;
 
 public interface IAuthDbInitializer
 {
-    Task InitializeAsync(CancellationToken cancellationToken = default);
+    Task InitializeAsync(bool RemoveAtStart = false, CancellationToken Cancel = default);
 }
