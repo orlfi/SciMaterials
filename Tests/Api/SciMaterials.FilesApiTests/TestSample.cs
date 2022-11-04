@@ -8,6 +8,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
+using SciMaterials.DAL.AUTH.Context;
 
 namespace SciMaterials.FilesApiTests;
 
@@ -23,7 +26,16 @@ public class TestSample : IAsyncLifetime
                .ConfigureServices(services => services
                        .RemoveAll<SciMaterialsContext>()
                        .RemoveAll<DbContextOptions<SciMaterialsContext>>()
-                       .AddDbContext<SciMaterialsContext>(opt => opt.UseSqlite("Filename=:memory:"))
+                       .AddDbContext<SciMaterialsContext>(opt => opt
+                           .UseInMemoryDatabase("SciMaterialDB")
+                           .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+                        )
+                       .RemoveAll<AuthDbContext>()
+                       .RemoveAll<DbContextOptions<AuthDbContext>>()
+                       .AddDbContext<AuthDbContext>(opt => opt
+                           .UseInMemoryDatabase("SciMaterials.AuthDB")
+                           .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning)))
+                //.AddDbContext<SciMaterialsContext>(opt => opt.UseSqlite("Filename=:memory:"))
                 ));
 
         return Task.CompletedTask;

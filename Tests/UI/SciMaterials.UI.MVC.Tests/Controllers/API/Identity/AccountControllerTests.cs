@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,7 @@ using SciMaterials.Contracts.API.DTO.AuthUsers;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses;
+using SciMaterials.DAL.AUTH.Context;
 using SciMaterials.DAL.Contexts;
 
 namespace SciMaterials.UI.MVC.Tests.Controllers.API.Identity;
@@ -42,9 +44,18 @@ public class AccountControllerTests : IAsyncLifetime
                .ConfigureServices(services => services
                    .RemoveAll<SciMaterialsContext>()
                    .RemoveAll<DbContextOptions<SciMaterialsContext>>()
-                   .AddDbContext<SciMaterialsContext>(opt => opt.UseSqlite("Filename=:memory:"))
-                   //.RemoveAll<IFileService>()
-                   //.AddScoped(_ => file_store_mock.Object)
+                   .AddDbContext<SciMaterialsContext>(opt => opt
+                       .UseInMemoryDatabase("SciMaterialDB")
+                       .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+                    )
+                   .RemoveAll<AuthDbContext>()
+                   .RemoveAll<DbContextOptions<AuthDbContext>>()
+                   .AddDbContext<AuthDbContext>(opt => opt
+                       .UseInMemoryDatabase("SciMaterials.AuthDB")
+                       .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning)))
+                //.AddDbContext<SciMaterialsContext>(opt => opt.UseSqlite("Filename=:memory:"))
+                //.RemoveAll<IFileService>()
+                //.AddScoped(_ => file_store_mock.Object)
                 ));
 
         //WebApplicationFactory<Startup> webHost = new WebApplicationFactory<Startup>().WithWebHostBuilder(builder =>

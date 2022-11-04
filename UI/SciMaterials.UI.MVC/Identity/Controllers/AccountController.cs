@@ -40,12 +40,8 @@ public class AccountController : Controller
         RoleManager<IdentityRole> RoleManager,
         IHttpContextAccessor ContextAccessor,
         IAuthUtilits authUtilits,
-        SciMaterialsContext db,
         ILogger<AccountController> Logger)
     {
-        var str = db.Database.GetConnectionString();
-
-
         _UserManager     = UserManager;
         _SignInManager   = SignInManager;
         _RoleManager     = RoleManager;
@@ -90,13 +86,17 @@ public class AccountController : Controller
                 });
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}",
-                RegisterRequest.Email);
+            var errors = identity_result.Errors.Select(e => e.Description).ToArray();
+            _Logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}: {errors}",
+                RegisterRequest.Email,
+                string.Join(",", errors));
+
             return Ok(new ClientCreateUserResponse
             {
                 Succeeded = false, 
                 Code      = (int)ResultCodes.NotFound, 
-                Message   = $"Не удалось зарегистрировать пользователя {RegisterRequest.Email}"
+                Message   = $"Не удалось зарегистрировать пользователя {RegisterRequest.Email}",
+                Messages = errors
             });
         }
         catch (Exception ex)
