@@ -7,5 +7,6 @@ public record LinkShortCutOptions
     string Encoding = "UTF-32"
 )
 {
+    public const string SectionName = "LinkShortCutOptions";
     public LinkShortCutOptions() : this(5, "SHA512", "UTF-32") { }
 }

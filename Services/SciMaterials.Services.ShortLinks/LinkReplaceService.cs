@@ -24,7 +24,7 @@ public class LinkReplaceService : ILinkReplaceService
         _logger = logger;
     }
 
-    public async Task<string> ShortenLinks(string text, CancellationToken Cancel)
+    public async Task<string> ShortenLinks(string text, CancellationToken Cancel = default)
     {
         var result = await ReplaceLinks(
             text,
@@ -33,7 +33,7 @@ public class LinkReplaceService : ILinkReplaceService
             Cancel);
         return result;
     }
-    public async Task<string> RestoreLinks(string text, CancellationToken Cancel)
+    public async Task<string> RestoreLinks(string text, CancellationToken Cancel = default)
     {
         var result = await ReplaceLinks(
             text,
