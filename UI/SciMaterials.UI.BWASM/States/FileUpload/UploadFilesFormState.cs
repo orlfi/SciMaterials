@@ -40,6 +40,8 @@ public record struct UpdateDescription(string Description);
 public record struct ChangeCategory(CategoryInfo Category);
 public record struct ChangeAuthor(AuthorInfo Author);
 
+public record struct ClearForm;
+
 public record struct AddFiles(IEnumerable<IBrowserFile> Files);
 public record struct RemoveFile(Guid Id);
 
@@ -71,6 +73,7 @@ public class UploadFilesFormStateEffects
     public async Task RegisterUploadData(RegisterUploadData action, IDispatcher dispatcher)
     {
         var uploadStates = Map(action).ToImmutableArray();
+        dispatcher.Dispatch(new ClearForm());
         dispatcher.Dispatch(new RegisterMultipleFilesUpload(uploadStates));
 
         foreach (var file in Map(uploadStates))
@@ -144,6 +147,12 @@ public static class UploadFilesFormStateReducers
     public static UploadFilesFormState AddFiles(UploadFilesFormState state, AddFiles action)
     {
         return state with { Files = state.Files.AddRange(action.Files.Select(x => new FileData(x))) };
+    }
+
+    [ReducerMethod(typeof(ClearForm))]
+    public static UploadFilesFormState ClearForm(UploadFilesFormState state)
+    {
+        return UploadFilesFormState.Empty;
     }
 
     [ReducerMethod]
