@@ -158,6 +158,6 @@ public class AccountTestController : Controller
     public async Task<IActionResult> GetRefreshTokenAsync(CancellationToken Cancel)
     {
         var response = await _identityClient.GetRefreshTokenAsync(Cancel);
-        return Ok(response);
+        return Ok(response.RefreshToken);
     }
 }
