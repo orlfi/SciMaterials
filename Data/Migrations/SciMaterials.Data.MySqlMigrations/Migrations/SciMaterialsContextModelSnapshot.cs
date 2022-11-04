@@ -192,12 +192,6 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -210,8 +204,6 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.ToTable("Links");
                 });
@@ -408,17 +400,6 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                     b.Navigation("File");
 
                     b.Navigation("FileGroup");
-                });
-
-            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
-                {
-                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>

@@ -195,13 +195,8 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Hash")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -212,8 +207,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.ToTable("Links");
                 });
@@ -410,17 +403,6 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Navigation("File");
 
                     b.Navigation("FileGroup");
-                });
-
-            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
-                {
-                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>

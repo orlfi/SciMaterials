@@ -195,12 +195,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasColumnType("text");
@@ -213,8 +207,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.ToTable("Links");
                 });
@@ -411,17 +403,6 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                     b.Navigation("File");
 
                     b.Navigation("FileGroup");
-                });
-
-            modelBuilder.Entity("SciMaterials.DAL.Models.Link", b =>
-                {
-                    b.HasOne("SciMaterials.DAL.Models.Author", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
