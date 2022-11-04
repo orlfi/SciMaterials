@@ -16,6 +16,7 @@ using SciMaterials.Contracts.Identity.API.DTO.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
+using SciMaterials.DAL.Contexts;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 
@@ -39,8 +40,12 @@ public class AccountController : Controller
         RoleManager<IdentityRole> RoleManager,
         IHttpContextAccessor ContextAccessor,
         IAuthUtilits authUtilits,
+        SciMaterialsContext db,
         ILogger<AccountController> Logger)
     {
+        var str = db.Database.GetConnectionString();
+
+
         _UserManager     = UserManager;
         _SignInManager   = SignInManager;
         _RoleManager     = RoleManager;
