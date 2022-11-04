@@ -66,7 +66,7 @@ public class AccountControllerTests : IAsyncLifetime
         return Task.CompletedTask;
     }
 
-    public Task DisposeAsync() => Task.CompletedTask;
+    public async Task DisposeAsync() => await _Host.DisposeAsync();
 
     [Fact]
     public async Task RegisterAsync_RegisterNewUser_Success()
