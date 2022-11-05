@@ -1,6 +1,6 @@
 ﻿namespace SciMaterials.Contracts.Database.Enums;
 
-public enum DbProviders
+public enum DbProviderNames
 {
     SqlServer,
     PostgreSQL,
