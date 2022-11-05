@@ -24,26 +24,27 @@ public class LinkReplaceService : ILinkReplaceService
         _logger = logger;
     }
 
-    public async Task<string> ShortenLinks(string text, CancellationToken Cancel = default)
+    public async Task<string> ShortenLinksAsync(string text, CancellationToken Cancel = default)
     {
-        var result = await ReplaceLinks(
+        var result = await ReplaceLinksAsync(
             text,
             sourceLinkPattern,
             async (matchText, Cancel) => await _linkShortCut.AddAsync(matchText, Cancel),
             Cancel);
         return result;
     }
-    public async Task<string> RestoreLinks(string text, CancellationToken Cancel = default)
+    public async Task<string> RestoreLinksAsync(string text, CancellationToken Cancel = default)
     {
-        var result = await ReplaceLinks(
+        var result = await ReplaceLinksAsync(
             text,
             shortLinkPattern,
-            async (matchText, Cancel) => await _linkShortCut.GetAsync(matchText, Cancel),
+            async (matchText, Cancel) => 
+                await _linkShortCut.GetAsync(matchText, Cancel),
             Cancel);
         return result;
     }
 
-    private async Task<string> ReplaceLinks(
+    private async Task<string> ReplaceLinksAsync(
         string text,
         string pattern,
         Func<string, CancellationToken, Task<Result<string>>> linkResolver,

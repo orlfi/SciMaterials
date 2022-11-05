@@ -1,7 +1,7 @@
 namespace SciMaterials.Contracts.ShortLinks;
 public interface ILinkReplaceService
 {
-    Task<string> RestoreLinks(string text, CancellationToken Cancel = default);
-    Task<string> ShortenLinks(string text, CancellationToken Cancel = default);
+    Task<string> RestoreLinksAsync(string text, CancellationToken Cancel = default);
+    Task<string> ShortenLinksAsync(string text, CancellationToken Cancel = default);
 }
 

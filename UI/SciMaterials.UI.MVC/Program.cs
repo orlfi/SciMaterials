@@ -4,6 +4,14 @@ using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Database.Extensions;
 using SciMaterials.UI.MVC.Identity.Extensions;
+using SciMaterials.Contracts.ShortLinks;
+using SciMaterials.Services.ShortLinks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Routing;
+using System.Linq.Expressions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +35,12 @@ services.AddAuthApiServices(config);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
 services.AddAuthHttpClient();
+
+services.AddScoped<ILinkReplaceService, LinkReplaceService>();
+services.AddScoped<ILinkShortCutService, LinkShortCutService>();
+
+services.AddHttpContextAccessor();
+
 services.AddAuthJwtAndSwaggerApiServices(builder.Configuration);
 
 builder.Services.AddCors(o => o.AddPolicy("test", p => p.WithOrigins("http://localhost:5159").AllowAnyMethod().AllowAnyHeader()));
@@ -67,6 +81,17 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
+
+app.MapPut("replace-link",
+    async (string text, ILinkReplaceService linkReplaceService, LinkGenerator linkGenerator, IHttpContextAccessor context) =>
+    {
+        var httpContext = context.HttpContext;
+        //var address = linkGenerator.GetUriByAction(httpContext, "GetById", "Links", new { hash = "fwef" }, "http");
+
+        var result = await linkReplaceService.ShortenLinksAsync(text);
+
+        return result;
+    });
 
 app.Run();
 

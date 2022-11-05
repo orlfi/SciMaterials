@@ -1,33 +1,40 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
-using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
 
 namespace SciMaterials.Services.ShortLinks;
 
 public class LinkShortCutService : ILinkShortCutService
 {
     private readonly SciMaterialsContext _db;
+    private readonly LinkGenerator _linkGenerator;
+    private readonly HttpContext _httpContext;
     private readonly ILogger<LinkShortCutService> _logger;
 
     private readonly string _encodingName;
     private readonly int _hashLength;
     private readonly string _hashAlgorithmName;
 
-    public LinkShortCutService(SciMaterialsContext db, IOptions<LinkShortCutOptions> options, ILogger<LinkShortCutService> logger)
+    public LinkShortCutService(
+        SciMaterialsContext db,
+        IOptions<LinkShortCutOptions> options,
+        LinkGenerator linkGenerator,
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<LinkShortCutService> logger)
     {
         _db = db;
+        _linkGenerator = linkGenerator;
+        _httpContext = httpContextAccessor.HttpContext;
         _logger = logger;
 
         (
@@ -62,9 +69,9 @@ public class LinkShortCutService : ILinkShortCutService
     /// <param name="hash"> Сокращенный хеш. </param>
     /// <param name="Cancel"> Токен отмены. </param>
     /// <returns> Адрес исходной ссылки. </returns>
-    public async Task<Result<string>> GetAsync(string hash, CancellationToken Cancel = default)
+    public Task<Result<string>> GetAsync(string hash, CancellationToken Cancel = default)
     {
-        return null;
+        return Task.FromResult(Result<string>.Success("testlink"));
     }
 
     private async Task<Result<string>> GetMinShortLinkAsync(string hash, int linkLength, CancellationToken Cancel = default)
@@ -76,7 +83,10 @@ public class LinkShortCutService : ILinkShortCutService
                 _logger.LogError("Link with hash {hash} not found", hash);
                 return await Result<string>.ErrorAsync((int)ResultCodes.NotFound, $"Link with hash {hash} not found");
 
-            case 1: return $"/{WebApiRoute.ShortLinks}/{shortLink}";
+            case 1:
+                var address = _linkGenerator.GetUriByAction(_httpContext, "GetById", "Links", new { hash = shortLink }, _httpContext.Request.Scheme);
+                _logger.LogDebug("Found short link with minimal length: {address}", address);
+                return address;
         }
 
         return await GetMinShortLinkAsync(hash, linkLength++, Cancel);

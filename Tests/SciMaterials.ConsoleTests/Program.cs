@@ -54,7 +54,7 @@ await using (var scope = host.Services.CreateAsyncScope())
     var text = "The target endpoint might be prepared to accept the <code>application/json</code> content type for additional data. It needs <a href=\"https://docs.microsoft.com/en-us/aspnet/core/mvc/advanced/custom-model-binding\" target=\"_blank\" rel=\"noreferrer\">custom model binders</a> that deserializes the JSON content to the target type. In this case, the <code>Data</code> property is decorated with the <code>ModelBinder</code> attribute that takes the type of a custom binder.";
     Console.WriteLine(text);
 
-    var updatedText = await linkReplaceService.ShortenLinks(text);
+    var updatedText = await linkReplaceService.ShortenLinksAsync(text);
 
     var db = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
     var links = await db.Links.ToListAsync();
