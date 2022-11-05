@@ -192,12 +192,25 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("AccessCount")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("LastAccess")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.Property<string>("SourceAddress")
                         .IsRequired()
