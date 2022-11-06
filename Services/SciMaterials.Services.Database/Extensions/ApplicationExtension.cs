@@ -17,11 +17,11 @@ public static class ApplicationExtension
 
         var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
         
-        if (dbSetting.DbProvider.Equals("PostgreSQL")) // TODO:???!!!???
-        {
-            var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
-            await context.Database.MigrateAsync().ConfigureAwait(false);
-        }
+        //if (dbSetting.DbProvider.Equals("PostgreSQL")) // TODO:???!!!???
+        //{
+        //    var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
+        //    await context.Database.MigrateAsync().ConfigureAwait(false);
+        //}
 
         var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
         await authDb.InitializeAsync();
