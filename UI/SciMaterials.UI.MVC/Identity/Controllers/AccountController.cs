@@ -88,7 +88,6 @@ public class AccountController : Controller
                 Succeeded = false, 
                 Code      = (int)ResultCodes.NotFound, 
                 Message   = $"Не удалось зарегистрировать пользователя {RegisterRequest.Email}",
-                Messages = errors
             });
         }
         catch (Exception ex)
