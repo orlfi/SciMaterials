@@ -108,7 +108,7 @@ public class UploadFilesFormStateEffects
                 File = dataFile.BrowserFile,
                 FileName = dataFile.FileName,
                 Category = dataFile.CategoryId,
-                Title = dataFile.Title,
+                ShortInfo = dataFile.Title,
                 AuthorId = dataFile.AuthorId,
                 Description = dataFile.Description,
                 CancellationToken = dataFile.CancellationSource.Token
