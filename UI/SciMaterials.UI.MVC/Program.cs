@@ -5,6 +5,7 @@ using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Database.Extensions;
 using SciMaterials.UI.MVC.Identity.Extensions;
 using SciMaterials.WebApi.Clients.Identity.Extensions;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ services.AddControllersWithViews();
 services.AddRazorPages();
 
 services.ConfigureApplication(config);
+services.AddDatabaseProviders(config);
 services.AddApiServices(config);
 
 services.AddAuthApiServices(config);
