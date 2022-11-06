@@ -11,6 +11,7 @@ using SciMaterials.Contracts.Identity.API.DTO.Users;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.DTO;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
+using SciMaterials.DAL.Contexts;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 
@@ -77,13 +78,17 @@ public class AccountController : Controller
                 });
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}",
-                RegisterRequest.Email);
+            var errors = identity_result.Errors.Select(e => e.Description).ToArray();
+            _Logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}: {errors}",
+                RegisterRequest.Email,
+                string.Join(",", errors));
+
             return Ok(new ClientCreateUserResponse
             {
                 Succeeded = false, 
-                Code = (int)ResultCodes.NotFound, 
-                Message = $"Не удалось зарегистрировать пользователя {RegisterRequest.Email}"
+                Code      = (int)ResultCodes.NotFound, 
+                Message   = $"Не удалось зарегистрировать пользователя {RegisterRequest.Email}",
+                Messages = errors
             });
         }
         catch (Exception ex)
