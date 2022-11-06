@@ -3,6 +3,7 @@
 @using SciMaterials.UI.BWASM.States.Categories
 @using SciMaterials.UI.BWASM.States.Authors
 @using Severity = MudBlazor.Severity
+@using System.Text
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
@@ -96,7 +97,25 @@
 	{
 		if (e.FileCount <= 0) return;
 
-		Dispatcher.Dispatch(new AddFiles(e.GetMultipleFiles()));
+		var toUpload = e.GetMultipleFiles(e.FileCount);
+		var validContentTypes = ContentTypesState.Value.Selected.Select(x => x.Name).ToArray();
+		HashSet<string> notSupported = new();
+
+		foreach (var browserFile in toUpload)
+		{
+			if (validContentTypes.Contains(browserFile.ContentType)) continue;
+			notSupported.Add(browserFile.Name);
+		}
+
+		if (notSupported.Count > 0)
+		{
+			StringBuilder sb = new("You cannot upload this files:<br>");
+			sb.AppendJoin("<br>", notSupported);
+			Snackbar.Add(sb.ToString(), Severity.Warning);
+			toUpload = toUpload.Where(x => !notSupported.Contains(x.Name)).ToList();
+		}
+
+		Dispatcher.Dispatch(new AddFiles(toUpload));
 	}
 
 	private async Task ChangeFormFileCategory()
