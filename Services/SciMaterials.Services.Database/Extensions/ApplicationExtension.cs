@@ -11,7 +11,7 @@ namespace SciMaterials.Services.Database.Extensions;
 
 public static class ApplicationExtension
 {
-    public static async Task InitializeDbAsync(this IApplicationBuilder app, IConfiguration configuration)
+    public static async Task<IApplicationBuilder> InitializeDbAsync(this IApplicationBuilder app, IConfiguration configuration)
     {
         await using var scope = app.ApplicationServices.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
