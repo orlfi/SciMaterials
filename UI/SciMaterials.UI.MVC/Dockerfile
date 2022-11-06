@@ -7,7 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["UI/SciMaterials.UI.MVC/SciMaterials.UI.MVC.csproj", "UI/SciMaterials.UI.MVC/"]
-COPY ["Data/Migrations/SciMaterials.MySql.Auth.Migrations/SciMaterials.MySql.Auth.Migrations.csproj", "Data/Migrations/SciMaterials.MySql.Auth.Migrations/"]
+COPY ["Data/Migrations/SciMaterials.Postgres.Auth.Migrations/SciMaterials.Postgres.Auth.Migrations.csproj", "Data/Migrations/SciMaterials.Postgres.Auth.Migrations/"]
 COPY ["Data/SciMaterials.DAL.AUTH/SciMaterials.DAL.AUTH.csproj", "Data/SciMaterials.DAL.AUTH/"]
 COPY ["Services/SciMaterials.Contracts/SciMaterials.Contracts.csproj", "Services/SciMaterials.Contracts/"]
 COPY ["Data/Migrations/SciMaterials.SqlLite.Auth.Migrations/SciMaterials.SqlLite.Auth.Migrations.csproj", "Data/Migrations/SciMaterials.SqlLite.Auth.Migrations/"]

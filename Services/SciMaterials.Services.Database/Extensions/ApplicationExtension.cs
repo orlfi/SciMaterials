@@ -17,7 +17,7 @@ public static class ApplicationExtension
 
         var dbSetting = configuration.GetSection("DbSettings").Get<DbSettings>();
         
-        if (dbSetting.DbProvider.Equals("SQLite"))
+        if (dbSetting.DbProvider.Equals("PostgreSQL"))
         {
             var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
             await context.Database.MigrateAsync().ConfigureAwait(false);
