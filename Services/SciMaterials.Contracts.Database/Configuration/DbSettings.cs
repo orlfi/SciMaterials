@@ -9,7 +9,4 @@ public sealed class DbSettings
 
     public string GetProviderName()
         => DbProvider.Split(".", 2, StringSplitOptions.RemoveEmptyEntries)[0];
-
-    public string GetConnectionString()
-        => DbProvider.Split(".", 2, StringSplitOptions.RemoveEmptyEntries)[1];
 }
