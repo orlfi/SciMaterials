@@ -6,12 +6,20 @@ public class UserInfo
 
     public string UserName { get; set; } = null!;
     public string Email { get; set; } = null!;
-    public string Password { get; set; } = null!;
-
     public string Authority { get; set; } = null!;
+}
+
+public class RolesUserInfo : UserInfo
+{
+    public UserRole[] UserRoles { get; set; }
+}
+
+public class AuthorityUserInfo : UserInfo
+{
+    public string Password { get; set; } = null!;
     public Guid AuthorityGroupId { get; set; }
 
-    public static UserInfo Create(string userName, string email, string password, AuthorityGroup authority) =>
+    public static AuthorityUserInfo Create(string userName, string email, string password, AuthorityGroup authority) =>
         new()
         {
             UserName = userName,
@@ -21,7 +29,7 @@ public class UserInfo
             AuthorityGroupId = authority.Id
         };
 
-    public static UserInfo Create(UserInfo origin) =>
+    public static AuthorityUserInfo Create(AuthorityUserInfo origin) =>
         new()
         {
             Id = origin.Id,

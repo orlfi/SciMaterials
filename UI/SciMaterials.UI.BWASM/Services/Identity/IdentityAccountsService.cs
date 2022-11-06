@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-using SciMaterials.Contracts.Identity.Clients.Clients;
+﻿using SciMaterials.Contracts.Identity.Clients.Clients;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;
@@ -27,16 +25,16 @@ public class IdentityAccountsService : IAccountsService
         if (!response.Succeeded)
         {
             // TODO: handle failure
-            return Array.Empty<UserInfo>();
+            return Array.Empty<RolesUserInfo>();
         }
-
-        var data = response.Users;
-        if (data is null) return Array.Empty<UserInfo>();
-        return data.Select(x=>new UserInfo()
+        
+        return response.Users.Select(x => new RolesUserInfo()
         {
             Id = Guid.Parse(x.Id),
             UserName = x.UserName,
-            Email = x.Email
+            Email = x.Email,
+            Authority = string.Join(", ", x.UserRoles.Select(c=>c.RoleName)),
+            UserRoles = x.UserRoles.Select(c=>new UserRole(){Id = c.Id, Name = c.RoleName}).ToArray()
         }).ToList();
     }
 
@@ -60,8 +58,5 @@ public class IdentityAccountsService : IAccountsService
 
         if (await _authenticationService.IsCurrentUser(userEmail))
             await _authenticationService.RefreshCurrentUser();
-        
     }
-
-    private record User(string Id, string Email, string UserName);
 }

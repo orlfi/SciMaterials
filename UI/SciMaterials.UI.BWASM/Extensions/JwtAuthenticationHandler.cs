@@ -25,12 +25,7 @@ public class JwtAuthenticationHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var response = await base.SendAsync(request, cancellationToken);
-        if (response.StatusCode != HttpStatusCode.Unauthorized)
-        {
-            return response;
-        }
-
+        HttpResponseMessage response;
         var currentState = await _stateProvider.GetAuthenticationStateAsync();
         if (currentState.User.Identity?.IsAuthenticated is not true)
         {

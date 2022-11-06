@@ -18,8 +18,14 @@ public static class ApplicationExtension
 
         var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
         
-        var auth_db_initializer = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
-        await auth_db_initializer.InitializeAsync().ConfigureAwait(false);
+        //if (dbSetting.DbProvider.Equals("PostgreSQL")) // TODO:???!!!???
+        //{
+        //    var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
+        //    await context.Database.MigrateAsync().ConfigureAwait(false);
+        //}
+
+        var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
+        await authDb.InitializeAsync();
 
         var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         await initializer.InitializeDbAsync(

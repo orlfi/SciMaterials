@@ -5,5 +5,5 @@ public enum DbProviderNames
     SqlServer,
     PostgreSQL,
     MySQL,
-    SQLite
+    SQLite,
 }
