@@ -52,7 +52,7 @@
 
 		var parameters = new DialogParameters
 		{
-			["Items"] = RolesService.RolesList(),
+			["Items"] = await RolesService.RolesList(),
 			["OptionLabel"] = (Func<UserRole, string>)LabelSelection
 		};
 

@@ -38,12 +38,4 @@ public class IdentityAuthenticationStateProvider : AuthenticationStateProvider
     {
         NotifyAuthenticationStateChanged(Task.FromResult(Anonymous));
     }
-
-    public async Task<Guid> TakeCurrentUserId()
-    {
-        var currentAuthenticationState = await GetAuthenticationStateAsync();
-        var identifier = currentAuthenticationState.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        return Guid.TryParse(identifier, out var userId) ? userId : Guid.Empty;
-    }
 }

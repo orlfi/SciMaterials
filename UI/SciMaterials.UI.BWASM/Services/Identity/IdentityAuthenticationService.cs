@@ -4,7 +4,7 @@ using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
-using SciMaterials.Contracts.API.DTO.AuthUsers;
+using SciMaterials.Contracts.Identity.API.DTO.Users;
 using SciMaterials.Contracts.Identity.Clients.Clients;
 using SciMaterials.UI.BWASM.Models;
 
@@ -64,7 +64,7 @@ public class IdentityAuthenticationService : IAuthenticationService
 
         // set user signed with token claims
         await _localStorageService.SetItemAsStringAsync("authToken", token);
-        ClaimsIdentity identity = new(claims, "Some Auth Policy Type");
+        ClaimsIdentity identity = new(claims, "Jwt");
         _authenticationStateProvider.NotifyUserSignIn(identity);
 
         return true;
@@ -100,10 +100,15 @@ public class IdentityAuthenticationService : IAuthenticationService
     {
         var currentAuthenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         if(!currentAuthenticationState.User.Identity.IsAuthenticated) return;
+        
+        var response = await _client.GetRefreshTokenAsync();
+        if (!response.Succeeded || response.RefreshToken.ParseJwt() is not {Count:>0} claims)
+        {
+            _authenticationStateProvider.NotifyUserLogout();
+            return;
+        }
 
-        var currentToken = await _localStorageService.GetItemAsStringAsync("authToken");
-        // TODO: Refresh Token
-
-        // TODO: Update user claims
+        await _localStorageService.SetItemAsStringAsync("authToken", response.RefreshToken);
+        _authenticationStateProvider.NotifyUserSignIn(new ClaimsIdentity(claims, "Jwt"));
     }
 }
