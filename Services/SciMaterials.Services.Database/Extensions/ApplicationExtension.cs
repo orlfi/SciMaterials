@@ -16,18 +16,16 @@ public static class ApplicationExtension
         await using var scope = app.ApplicationServices.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
 
-        if (context.Database.IsSqlite())
-            await context.Database.MigrateAsync().ConfigureAwait(false);
-
-        var dbSetting = configuration.GetSection("DbSettings").Get<DbSettings>();
-
-        var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
-        await authDb.InitializeAsync();
+        var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
+        
+        var auth_db_initializer = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
+        await auth_db_initializer.InitializeAsync().ConfigureAwait(false);
 
         var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         await initializer.InitializeDbAsync(
-                RemoveAtStart: dbSetting.RemoveAtStart,
-                UseDataSeeder: dbSetting.UseDataSeeder)
-           .ConfigureAwait(false);
+                RemoveAtStart: db_setting.RemoveAtStart,
+                UseDataSeeder: db_setting.UseDataSeeder);
+
+        return app;
     }
 }
