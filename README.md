@@ -7,9 +7,3 @@
 ## Статус сборки
 
 - dev [![dev testing](https://github.com/OpenGeekBrains/SciMaterials/actions/workflows/test.yml/badge.svg?branch=dev)](https://github.com/OpenGeekBrains/SciMaterials/actions/workflows/test.yml)
-
-Провайдеры подключения к основной базе данных:
-- "SqlServer.Server=.\\SQLEXPRESS;Database=SciMaterials.db;Integrated Security=True;User Id=user;Password=password;"
-- "PostgreSQL.Server=localhost;Port=5433;Database=SciMaterials.db;User Id=postgres;Password=password;"
-- "MySQL.server=localhost;database=scimaterials.db;user=root;password=password;"
-- "SQLite.Data Source=SciMaterials.db"
