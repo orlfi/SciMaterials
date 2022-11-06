@@ -8,18 +8,17 @@ using SciMaterials.Contracts.Auth;
 using SciMaterials.DAL.AUTH.Context;
 using SciMaterials.DAL.AUTH.InitializationDb;
 using SciMaterials.UI.MVC.Identity.Services;
-using SciMaterials.WebApi.Clients.Identity;
 
 namespace SciMaterials.UI.MVC.Identity.Extensions;
 
 public static class AuthServiceCollectionExtensions
 {
     /// <summary>
-    /// Метод расширения по установке необходимых сервисов баз данных для системы Identity
+    /// РњРµС‚РѕРґ СЂР°СЃС€РёСЂРµРЅРёСЏ РїРѕ СѓСЃС‚Р°РЅРѕРІРєРµ СЃРµСЂРІРёСЃРѕРІ Р‘Р” Identity
     /// </summary>
-    /// <param name="Services">Сервисы</param>
-    /// <param name="Configuration">Конфигурация</param>
-    /// <returns>Коллекция сервисов</returns>
+    /// <param name="Services">РЎРµСЂРІРёСЃС‹</param>
+    /// <param name="Configuration">РљРѕРЅС„РёРіСѓСЂР°С†РёРё</param>
+    /// <returns>РљРѕР»Р»РµРєС†РёСЏ СЃРµСЂРІРёСЃРѕРІ</returns>
     /// <exception cref="Exception"></exception>
     public static IServiceCollection AddAuthApiServices(this IServiceCollection Services, IConfiguration Configuration)
     {
@@ -60,11 +59,11 @@ public static class AuthServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Метод расширения по установке необходимых сервисов Jwt в сваггере для системы Identity
+    /// РњРµС‚РѕРґ СЂР°СЃС€РёСЂРµРЅРёСЏ РїРѕ СѓСЃС‚Р°РЅРѕРІРєРµ СЃРµСЂРІРёСЃРѕРІ РґР»СЏ JWT Рё Swagger
     /// </summary>
-    /// <param name="Services">Сервисы</param>
-    /// <param name="Configuration">Конфигурация</param>
-    /// <returns>Коллекция сервисов</returns>
+    /// <param name="Services">РЎРµСЂРІРёСЃС‹</param>
+    /// <param name="Configuration">РљРѕРЅС„РёРіСѓСЂР°С†РёРё</param>
+    /// <returns>РљРѕР»Р»РµРєС†РёСЏ СЃРµСЂРІРёСЃРѕРІ</returns>
     public static IServiceCollection AddAuthJwtAndSwaggerApiServices(this IServiceCollection Services, IConfiguration Configuration)
     {
         Services.AddSwaggerGen(opt =>
@@ -125,20 +124,20 @@ public static class AuthServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Метод расширения по установке инициализатора БД Identity
+    /// РњРµС‚РѕРґ СЂР°СЃС€РёСЂРµРЅРёСЏ РїРѕ СѓСЃС‚Р°РЅРѕРІРєРµ РёРЅРёС†РёР°Р»РёР·Р°С‚РѕСЂР° Р‘Р” Identity
     /// </summary>
-    /// <param name="Services"></param>
-    /// <returns></returns>
+    /// <param name="Services">РЎРµСЂРІРёСЃС‹</param>
+    /// <returns>РљРѕР»Р»РµРєС†РёСЏ СЃРµСЂРІРёСЃРѕРІ</returns>
     public static IServiceCollection AddAuthDbInitializer(this IServiceCollection Services)
     {
         return Services.AddScoped<IAuthDbInitializer, AuthDbInitializer>();
     }
 
     /// <summary>
-    /// Метод расширения по установке утилит для работы с Identity
+    /// РњРµС‚РѕРґ СЂР°СЃС€РёСЂРµРЅРёСЏ РїРѕ СѓСЃС‚Р°РЅРѕРІРєРµ СѓС‚РёР»РёС‚ РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ Identity
     /// </summary>
-    /// <param name="Services"></param>
-    /// <returns></returns>
+    /// <param name="Services">РЎРµСЂРІРёСЃС‹</param>
+    /// <returns>РљРѕР»Р»РµРєС†РёСЏ СЃРµСЂРІРёСЃРѕРІ</returns>
     public static IServiceCollection AddAuthUtils(this IServiceCollection Services)
     {
         return Services.AddSingleton<IAuthUtilits, AuthUtils>();
