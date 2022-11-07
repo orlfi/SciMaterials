@@ -1,5 +1,4 @@
-using SciMaterials.Contracts.API.DTO.AuthUsers;
-using SciMaterials.Contracts.AuthApi.DTO.Users;
+using SciMaterials.Contracts.Identity.API.DTO.Users;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
 
@@ -7,11 +6,11 @@ namespace SciMaterials.Contracts.Identity.Clients.Clients;
 
 public interface IUserClient
 {
-    Task<ClientCreateUserResponse> RegisterUserAsync(RegisterRequest RegisterRequest, CancellationToken CancellationToken = default);
+    Task<ClientCreateUserResponse> RegisterUserAsync(RegisterRequest RegisterRequest, CancellationToken cancel = default);
     
-    Task<ClientLoginResponse> LoginUserAsync(LoginRequest LoginRequest, CancellationToken CancellationToken = default);
+    Task<ClientLoginResponse> LoginUserAsync(LoginRequest LoginRequest, CancellationToken Cancel = default);
     
-    Task<ClientLogoutResponse> LogoutUserAsync(CancellationToken CancellationToken = default);
+    Task<ClientLogoutResponse> LogoutUserAsync(CancellationToken Cancel = default);
     
     Task<ClientCreateUserResponse> CreateUserAsync(RegisterRequest CreateRequest, CancellationToken CancellationToken = default);
     

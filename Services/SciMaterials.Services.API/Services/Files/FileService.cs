@@ -12,6 +12,8 @@ using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
 
+using SciMaterials.RepositoryLib.Repositories;
+
 namespace SciMaterials.Services.API.Services.Files;
 
 public class FileService : IFileService
@@ -57,7 +59,8 @@ public class FileService : IFileService
 
     public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, CancellationToken Cancel = default)
     {
-        if (await _unitOfWork.GetRepository<File>().GetByIdAsync(id, include: true) is File file)
+        var repository = _unitOfWork.GetRepository<File>();
+        if (await repository.GetByIdAsync(id, include: true) is File file)
         {
             return _mapper.Map<GetFileResponse>(file);
         }
@@ -83,7 +86,7 @@ public class FileService : IFileService
 
         var verifyCategoriesResult = await VerifyCategories(editFileRequest.Categories);
         if (!verifyCategoriesResult.Succeeded)
-            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
+            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Message);
 
         var file = _mapper.Map(editFileRequest, existingFile);
 
@@ -153,13 +156,13 @@ public class FileService : IFileService
     {
         if (await VerifyFileUploadRequest(uploadFileRequest) is { Succeeded: false } verifyFileUploadRequestResult)
         {
-            _logger.LogError(verifyFileUploadRequestResult.Messages.First());
+            _logger.LogError(verifyFileUploadRequestResult.Message);
             return verifyFileUploadRequestResult;
         }
 
         var writeToStoreResult = await WriteToStore(uploadFileRequest, fileStream, Cancel);
         if (!writeToStoreResult.Succeeded)
-            return await Result<Guid>.ErrorAsync(writeToStoreResult.Code, writeToStoreResult.Messages);
+            return await Result<Guid>.ErrorAsync(writeToStoreResult.Code, writeToStoreResult.Message);
 
         var writeToDatabaseResult = await WriteToDatabase(writeToStoreResult.Data, Cancel);
         if (!writeToDatabaseResult.Succeeded)
@@ -173,13 +176,13 @@ public class FileService : IFileService
     private async Task<Result<Guid>> VerifyFileUploadRequest(UploadFileRequest uploadFileRequest)
     {
         if (await VerifyContentType(uploadFileRequest.ContentTypeName) is { Succeeded: false } verifyContentTypeResult)
-            return await Result<Guid>.ErrorAsync(verifyContentTypeResult.Code, verifyContentTypeResult.Messages);
+            return await Result<Guid>.ErrorAsync(verifyContentTypeResult.Code, verifyContentTypeResult.Message);
 
         if (await VerifyCategories(uploadFileRequest.Categories) is { Succeeded: false } verifyCategoriesResult)
-            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
+            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Message);
 
         if (await VerifyAuthor(uploadFileRequest.AuthorId) is { Succeeded: false } verifyAuthorResult)
-            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Messages);
+            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Message);
 
         if (await _unitOfWork.GetRepository<File>().GetByNameAsync(uploadFileRequest.Name) is { })
             return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, $"File with name {uploadFileRequest.Name} alredy exist");
@@ -238,15 +241,15 @@ public class FileService : IFileService
     private async Task<Result<Guid>> WriteToDatabase(FileMetadata metadata, CancellationToken Cancel = default)
     {
         if (await VerifyAuthor(metadata.AuthorId) is { Succeeded: false } verifyAuthorResult)
-            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Messages);
+            return await Result<Guid>.ErrorAsync(verifyAuthorResult.Code, verifyAuthorResult.Message);
 
         var verifyContentTypeResult = await VerifyContentType(metadata.ContentTypeName);
         if (!verifyContentTypeResult.Succeeded)
-            return await Result<Guid>.ErrorAsync(verifyContentTypeResult.Code, verifyContentTypeResult.Messages);
+            return await Result<Guid>.ErrorAsync(verifyContentTypeResult.Code, verifyContentTypeResult.Message);
 
         var verifyCategoriesResult = await VerifyCategories(metadata.Categories);
         if (!verifyCategoriesResult.Succeeded)
-            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Messages);
+            return await Result<Guid>.ErrorAsync(verifyCategoriesResult.Code, verifyCategoriesResult.Message);
 
         var file = _mapper.Map<File>(metadata);
 

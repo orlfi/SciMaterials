@@ -1,8 +1,4 @@
-﻿using System.Text.Json;
-
-using Microsoft.AspNetCore.Identity;
-
-using SciMaterials.Contracts.Identity.Clients.Clients;
+﻿using SciMaterials.Contracts.Identity.Clients.Clients;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;
@@ -20,12 +16,12 @@ public class IdentityRolesService : IRolesService
         _authenticationService = authenticationService;
     }
 
-    public async Task<List<IdentityRole>> RolesList()
+    public async Task<IReadOnlyList<UserRole>> RolesList()
     {
         var response = await _rolesClient.GetAllRolesAsync(CancellationToken.None);
-        if (!response.Succeeded) return new();
-
-        return response.Roles;
+        if (!response.Succeeded) return new List<UserRole>();
+        
+        return response.Roles.Select(x=>new UserRole{Id = x.Id, Name = x.RoleName}).ToList();
     }
 
     public async Task<bool> AddRole(string roleName)
@@ -49,6 +45,7 @@ public class IdentityRolesService : IRolesService
 
         // Validate that current user in role
         // Refresh if it is
+        await _authenticationService.RefreshCurrentUser();
 
         return true;
     }

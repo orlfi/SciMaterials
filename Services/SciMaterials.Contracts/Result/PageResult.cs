@@ -12,7 +12,7 @@ public class PageResult<TData> : Result
 
     public static new PageResult<TData> Success(List<TData> data, int pageNumber, int pageSize, int totalCount) => new()
     {
-        Succeeded = true,
+        //Succeeded = true,
         Data = data,
         PageNumber = pageNumber,
         PageSize = pageSize,
@@ -21,15 +21,15 @@ public class PageResult<TData> : Result
 
     public static Task<PageResult<TData>> SuccessAsync(List<TData> data, int pageNumber = 1, int pageSize = PageSizeDefault, int totalCount = 0) => Task.FromResult(Success(data, pageNumber, pageSize, totalCount));
 
-    public static new Result<TData> Error(int code) => new() { Succeeded = false, Code = code };
+    public static new Result<TData> Error(int code) => new() { Code = code };
 
-    public static new Result<TData> Error(int code, string message) => new() { Succeeded = false, Code = code, Messages = new List<string> { message } };
+    public static new Result<TData> Error(int code, string message) => new() { Code = code, Message = message };
 
-    public static new Result<TData> Error(int code, ICollection<string> messages) => new Result<TData>() { Succeeded = false, Code = code, Messages = messages };
+    //public static new Result<TData> Error(int code, ICollection<string> messages) => new Result<TData>() { Succeeded = false, Code = code, Messages = messages };
 
     public static new Task<Result<TData>> ErrorAsync(int code) => Task.FromResult(Error(code));
 
     public static new Task<Result<TData>> ErrorAsync(int code, string message) => Task.FromResult(Error(code, message));
 
-    public static new Task<Result<TData>> ErrorAsync(int code, ICollection<string> messages) => Task.FromResult(Error(code, messages));
+    //public static new Task<Result<TData>> ErrorAsync(int code, ICollection<string> messages) => Task.FromResult(Error(code, messages));
 }

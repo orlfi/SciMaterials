@@ -1,4 +1,4 @@
-namespace SciMaterials.Contracts.AuthApi.DTO.Roles;
+namespace SciMaterials.Contracts.Identity.API.DTO.Roles;
 
 public class EditRoleNameByIdRequest
 {

@@ -3,14 +3,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SciMaterials.DAL.Contexts;
 
-namespace SciMaterials.SQLiteMigrations
+namespace SciMaterials.Data.MySqlMigrations;
+
+public static class Registrator
 {
-    public static class Registrator
-    {
-        public static IServiceCollection AddSciMaterialsContextSQLite(this IServiceCollection services, string connectionString)
-            => services.AddDbContext<SciMaterialsContext>(
-                opt => opt.UseSqlite(
-                    connectionString,
-                    o => o.MigrationsAssembly(typeof(Registrator).Assembly.FullName)));
-    }
+    public static IServiceCollection AddSciMaterialsContextSqlite(this IServiceCollection services, string connectionString) =>
+        services.AddDbContext<SciMaterialsContext>(
+            opt => opt.UseSqlite(connectionString,
+                o => o.MigrationsAssembly(typeof(Registrator).Assembly.FullName)));
 }

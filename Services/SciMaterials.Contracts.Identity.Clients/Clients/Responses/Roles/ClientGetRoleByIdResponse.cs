@@ -1,13 +1,12 @@
-using Microsoft.AspNetCore.Identity;
-using SciMaterials.Contracts.Result;
+
+using SciMaterials.Contracts.Identity.Clients.Clients.Responses.DTO;
 
 namespace SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 
-public class ClientGetRoleByIdResponse : IResult
+public class ClientGetRoleByIdResponse : Result.Result
 {
     public string? Message { get; set; }
-    public IdentityRole Role { get; set; }
+    public List<AuthRoles> Roles { get; set; }
     public int Code { get; set; }
     public bool Succeeded { get; set; }
-    public ICollection<string> Messages { get; set; }
 }
