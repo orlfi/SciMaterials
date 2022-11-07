@@ -299,6 +299,12 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                 {
                     b.HasBaseType("SciMaterials.DAL.Models.Base.Resource");
 
+                    b.Property<DateTime?>("AntivirusScanDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("AntivirusScanStatus")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("char(36)");
 

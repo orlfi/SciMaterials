@@ -298,6 +298,12 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                 {
                     b.HasBaseType("SciMaterials.DAL.Models.Base.Resource");
 
+                    b.Property<DateTime?>("AntivirusScanDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AntivirusScanStatus")
+                        .HasColumnType("INTEGER");
+
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("TEXT");
 

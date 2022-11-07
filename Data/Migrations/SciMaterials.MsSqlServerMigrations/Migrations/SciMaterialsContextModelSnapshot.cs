@@ -303,6 +303,12 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                 {
                     b.HasBaseType("SciMaterials.DAL.Models.Base.Resource");
 
+                    b.Property<DateTime?>("AntivirusScanDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("AntivirusScanStatus")
+                        .HasColumnType("int");
+
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
