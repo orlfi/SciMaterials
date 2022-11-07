@@ -79,7 +79,7 @@ public class AccountControllerTests : IAsyncLifetime
 
         var http = _Host.CreateClient();
 
-        var auth_address = AuthApiRoute.AuthControllerName + AuthApiRoute.Register;
+        var auth_address = $"{AuthApiRoute.AuthControllerName}/{AuthApiRoute.Register}";
 
         var response = await http.PostAsJsonAsync(auth_address, new RegisterRequest
         {
