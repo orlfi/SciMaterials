@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SciMaterials.Contracts.Database.Configuration;
 using SciMaterials.Contracts.Database.Initialization;
 using SciMaterials.Data.MySqlMigrations;
 using SciMaterials.Services.Database.Services.DbInitialization;
+using SciMaterials.SQLiteMigrations;
 
 namespace SciMaterials.Services.Database.Extensions;
 
@@ -35,9 +35,6 @@ public static class ServiceCollectionExtensions
             default:
                 throw new Exception($"Unsupported provider: {providerName}");
         }
-
-        return services;
-    }
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services) =>
        services.AddTransient<IDbInitializer, DbInitializer>();

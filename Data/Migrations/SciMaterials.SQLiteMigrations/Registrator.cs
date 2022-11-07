@@ -11,5 +11,4 @@ public static class Registrator
         services.AddDbContext<SciMaterialsContext>(
             opt => opt.UseSqlite(connectionString,
                 o => o.MigrationsAssembly(typeof(Registrator).Assembly.FullName)));
-
 }
