@@ -85,11 +85,11 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Postgres.Auth.Migrations", "Data\Migrations\SciMaterials.Postgres.Auth.Migrations\SciMaterials.Postgres.Auth.Migrations.csproj", "{FDA51B12-FFCA-4F6F-9748-FD6A26EE8306}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.UI.MVC.Tests", "..\tmp\SciMaterials\Tests\UI\SciMaterials.UI.MVC.Tests\SciMaterials.UI.MVC.Tests.csproj", "{DAA67074-4815-45DB-8154-D1B57F3B6E10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.UI.MVC.Tests", "Tests\UI\SciMaterials.UI.MVC.Tests\SciMaterials.UI.MVC.Tests.csproj", "{DAA67074-4815-45DB-8154-D1B57F3B6E10}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{5C574E55-8850-444A-B8FF-49CDE2A80251}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.API.Tests", "..\tmp\SciMaterials\Tests\Services\SciMaterials.Services.API.Tests\SciMaterials.Services.API.Tests.csproj", "{E3B90405-7A51-46B5-B9A9-59A3F0965BC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.API.Tests", "Tests\Services\SciMaterials.Services.API.Tests\SciMaterials.Services.API.Tests.csproj", "{E3B90405-7A51-46B5-B9A9-59A3F0965BC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
