@@ -44,6 +44,7 @@ static void ConfigureServices(HostBuilderContext context, IServiceCollection ser
     services.AddScoped<ILinkReplaceService, LinkReplaceService>();
     services.AddScoped<ILinkShortCutService, LinkShortCutService>();
     services.AddApiClients(new Uri(baseAddress));
+    services.AddHttpContextAccessor();
 
 }
 using IHost host = CreateHostBuilder(args).Build();
@@ -56,8 +57,8 @@ await using (var scope = host.Services.CreateAsyncScope())
 
     var updatedText = await linkReplaceService.ShortenLinksAsync(text);
 
-    var db = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
-    var links = await db.Links.ToListAsync();
+    //var db = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
+    //var links = await db.Links.ToListAsync();
     //var authors = await db.Authors.ToListAsync();
 
     // await dbInitializer.InitializeDbAsync(removeAtStart: false, useDataSeeder: false);

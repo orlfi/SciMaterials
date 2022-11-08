@@ -11,8 +11,7 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
-
-using SciMaterials.RepositoryLib.Repositories;
+using SciMaterials.Contracts.Result.Codes;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -113,15 +112,14 @@ public class FileService : IFileService
             return Result<FileStreamInfo>.Error((int)ResultCodes.NotFound, $"File with hash {hash} not found");
 
         var readFromPath = Path.Combine(_path, getFileResponse.Data.Id.ToString());
-
         try
         {
             var fileStream = _fileStore.OpenRead(readFromPath);
             return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, fileStream);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return await Result<FileStreamInfo>.ErrorAsync((int)ResultCodes.ServerError, "Download error");
+            return (ErrorCodes.File.Service.FileDownloadError, $"Download by hash {hash} error");
         }
     }
 
@@ -136,9 +134,10 @@ public class FileService : IFileService
             var fileStream = _fileStore.OpenRead(readFromPath);
             return new FileStreamInfo(getFileResponse.Data.Name, getFileResponse.Data.ContentTypeName, fileStream);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return await Result<FileStreamInfo>.ErrorAsync((int)ResultCodes.ServerError, "Download error");
+            //return await Result<FileStreamInfo>.ErrorAsync((int)ResultCodes.ServerError, "Download error");
+            return Result<FileStreamInfo>.Error((int)ResultCodes.ServerError, "Download error");
         }
     }
 
@@ -187,7 +186,7 @@ public class FileService : IFileService
         if (await _unitOfWork.GetRepository<File>().GetByNameAsync(uploadFileRequest.Name) is { })
             return await Result<Guid>.ErrorAsync((int)ResultCodes.FileAlreadyExist, $"File with name {uploadFileRequest.Name} alredy exist");
 
-        return await Result<Guid>.SuccessAsync();
+        return Result<Guid>.Success();
     }
 
     private async Task<Result<ContentType>> VerifyContentType(string ContentTypeName)
@@ -211,7 +210,7 @@ public class FileService : IFileService
                 return await Result<ICollection<Category>>.ErrorAsync((int)ResultCodes.NotFound, $"Category with ID {categoryId} not found");
             result.Add(category);
         }
-        return await Result<ICollection<Category>>.SuccessAsync(result);
+        return result;
     }
 
     private async Task<Result<Author>> VerifyAuthor(Guid authorId)
@@ -289,7 +288,7 @@ public class FileService : IFileService
                 string message = $"File with the same hash {existingFile.Hash} already exists with id: {existingFile.Id}";
                 _fileStore.Delete(path);
                 _logger.LogError(message);
-                return await Result<FileMetadata>.ErrorAsync((int)ResultCodes.FileAlreadyExist, message);
+                return (ErrorCodes.File.Service.FileAlreadyExist, message);
             }
 
             var metadataJsonString = JsonSerializer.Serialize(metadata);
@@ -299,12 +298,12 @@ public class FileService : IFileService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error when saving a file to storage");
+            _logger.LogError(ex, $"Error when saving a file {uploadFileRequest.Name} to storage");
+            return (ErrorCodes.File.Store.FileSavingFailure, "Error when saving a file to storage");
         }
-        return await Result<FileMetadata>.ErrorAsync((int)ResultCodes.ApiError, "Error when saving a file to storage");
     }
 
-    private async Task<Result<Guid>> DeleteFileFromFileSystem(Guid id, CancellationToken Cancel = default)
+    private Task<Result<Guid>> DeleteFileFromFileSystem(Guid id, CancellationToken Cancel = default)
     {
         try
         {
@@ -314,27 +313,31 @@ public class FileService : IFileService
             var metadataPath = GetMetadataPath(filePath);
             _fileStore.Delete(metadataPath);
 
-            return await Result<Guid>.SuccessAsync(id, $"File with ID {id} deleted");
+            _logger.LogInformation($"File with ID {id} deleted from file system", id);
+            return Result<Guid>.Success(id).ToTask();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error when deleting a file  with ID {id} from storage", id);
+            return Result<Guid>.Error(ErrorCodes.File.Store.FileDeletionFailure, $"Error when deleting a file with ID {id} from storage.")
+                .ToTask();
         }
-
-        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, $"Error when deleting a file with ID {id} from storage.");
     }
 
     private async Task<Result<Guid>> DeleteFileFromDatabase(Guid id, CancellationToken Cancel = default)
     {
         var fileRepository = _unitOfWork.GetRepository<File>();
 
-        if (await fileRepository.GetByIdAsync(id) is File file)
+        if (await fileRepository.GetByIdAsync(id) is { } file)
         {
             await fileRepository.DeleteAsync(file);
             await _unitOfWork.SaveContextAsync();
+            _logger.LogInformation($"File with ID {id} deleted from database", id);
         }
+        else
+            _logger.LogInformation($"File with ID {id} is already deleted from database", id);
 
-        return await Result<Guid>.SuccessAsync($"File with ID {id} deleted");
+        return Result<Guid>.Success();
     }
 
     private static string GetMetadataPath(string filePath)

@@ -80,7 +80,7 @@ public class CategoryService : ICategoryService
         await _unitOfWork.GetRepository<Category>().DeleteAsync(category);
 
         if (await _unitOfWork.SaveContextAsync() > 0)
-            return await Result<Guid>.SuccessAsync($"Category with ID {category.Id} deleted");
+            return Result<Guid>.Success($"Category with ID {category.Id} deleted");
 
         return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }

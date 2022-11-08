@@ -5,15 +5,8 @@ using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Database.Extensions;
 using SciMaterials.UI.MVC.Identity.Extensions;
 using SciMaterials.WebApi.Clients.Identity.Extensions;
-using System.Configuration;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Services.ShortLinks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.AspNetCore.Routing;
-using System.Linq.Expressions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,10 +32,6 @@ services.AddAuthApiServices(config);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
 services.AddIdentityClients(new Uri(config["WebAPI"]));
-services.AddAuthHttpClient();
-
-services.AddScoped<ILinkReplaceService, LinkReplaceService>();
-services.AddScoped<ILinkShortCutService, LinkShortCutService>();
 
 services.AddHttpContextAccessor();
 
@@ -90,11 +79,7 @@ app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
 app.MapPut("replace-link",
     async (string text, ILinkReplaceService linkReplaceService, LinkGenerator linkGenerator, IHttpContextAccessor context) =>
     {
-        var httpContext = context.HttpContext;
-        //var address = linkGenerator.GetUriByAction(httpContext, "GetById", "Links", new { hash = "fwef" }, "http");
-
         var result = await linkReplaceService.ShortenLinksAsync(text);
-
         return result;
     });
 

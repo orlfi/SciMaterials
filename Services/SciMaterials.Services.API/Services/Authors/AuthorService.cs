@@ -52,7 +52,7 @@ public class AuthorService : IAuthorService
         await _unitOfWork.GetRepository<Author>().AddAsync(author);
 
         if (await _unitOfWork.SaveContextAsync() > 0)
-            return await Result<Guid>.SuccessAsync(author.Id, "Author created");
+            return Result<Guid>.Success(author.Id, "Author created");
 
         return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }
@@ -79,7 +79,7 @@ public class AuthorService : IAuthorService
         await _unitOfWork.GetRepository<Author>().DeleteAsync(author);
 
         if (await _unitOfWork.SaveContextAsync() > 0)
-            return await Result<Guid>.SuccessAsync($"Author with ID {author.Id} deleted");
+            return Result<Guid>.Success($"Author with ID {author.Id} deleted");
 
         return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
     }

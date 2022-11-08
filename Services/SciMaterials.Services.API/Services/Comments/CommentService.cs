@@ -91,7 +91,7 @@ public class CommentService : ICommentService
         if (comment.FileGroupId.HasValue && await _unitOfWork.GetRepository<FileGroup>().GetByIdAsync(comment.FileGroupId.Value) is not { })
             return await Result<Guid>.ErrorAsync((int)ResultCodes.NotFound, $"Comment file group with ID {comment.FileGroupId} not found");
 
-        return await Result<Guid>.SuccessAsync();
+        return Result<Guid>.Success();
     }
 
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken Cancel = default)
@@ -101,9 +101,10 @@ public class CommentService : ICommentService
 
         await _unitOfWork.GetRepository<Comment>().DeleteAsync(comment);
 
-        if (await _unitOfWork.SaveContextAsync() > 0)
-            return await Result<Guid>.SuccessAsync($"Comment with ID {comment.Id} deleted");
+        if (await _unitOfWork.SaveContextAsync() ==0 )
+            return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
 
-        return await Result<Guid>.ErrorAsync((int)ResultCodes.ServerError, "Save context error");
+        _logger.LogInformation($"Comment with ID {comment.Id} deleted");
+        return Result<Guid>.Success();
     }
 }

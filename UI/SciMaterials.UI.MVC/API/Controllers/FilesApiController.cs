@@ -125,7 +125,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
                 if (section.Headers is null
                     || !section.Headers.ContainsKey("Metadata")
                     || System.Text.Json.JsonSerializer.Deserialize<UploadFileRequest>(section.Headers["Metadata"]) is not { } uploadFileRequest)
-                    return Ok(await Result.ErrorAsync((int)ResultCodes.NotFound, "Metadata not found"));
+                    return Ok(Result.Error((int)ResultCodes.NotFound, "Metadata not found"));
 
                 var result = await _fileService.UploadAsync(section.Body, uploadFileRequest).ConfigureAwait(false);
                 return Ok(result);

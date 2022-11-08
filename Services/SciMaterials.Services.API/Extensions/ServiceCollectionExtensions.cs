@@ -18,6 +18,8 @@ using SciMaterials.Services.API.Services.Tags;
 using SciMaterials.Services.Database.Extensions;
 using SciMaterials.Contracts.API.Services.Urls;
 using SciMaterials.Services.API.Services.Urls;
+using SciMaterials.Contracts.ShortLinks;
+using SciMaterials.Services.ShortLinks;
 
 namespace SciMaterials.Services.API.Extensions;
 
@@ -33,6 +35,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IContentTypeService, ContentTypeService>();
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<IUrlService, UrlService>();
+        services.AddScoped<IUrlService, UrlService>();
+        services.AddScoped<ILinkReplaceService, LinkReplaceService>();
+        services.AddScoped<ILinkShortCutService, LinkShortCutService>();
         services.AddRepositoryServices();
         services.AddDatabaseServices();
         services.AddMappings();

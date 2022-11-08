@@ -77,7 +77,9 @@ public class LinkShortCutService : ILinkShortCutService
     private async Task<Result<string>> GetMinShortLinkAsync(string hash, int linkLength, CancellationToken Cancel = default)
     {
         var shortLink = hash[..linkLength];
-        switch (await _db.Links.CountAsync(item => item.Hash.StartsWith(shortLink), Cancel))
+      
+        var linksCount = await _db.Links.CountAsync(item => item.Hash.StartsWith(shortLink), Cancel);
+        switch (linksCount)
         {
             case 0:
                 _logger.LogError("Link with hash {hash} not found", hash);
