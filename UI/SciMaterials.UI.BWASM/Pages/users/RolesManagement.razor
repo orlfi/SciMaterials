@@ -1,5 +1,4 @@
 ﻿@page "/roles"
-@using Microsoft.AspNetCore.Identity
 
 @attribute [Authorize(Roles = "admin")]
 
@@ -20,11 +19,11 @@
 </MudPaper>
 
 @code {
-    private List<IdentityRole> _roles = new();
+    private IReadOnlyList<UserRole> _roles = new List<UserRole>();
 
     protected override async Task OnInitializedAsync() => await RefreshData();
 
-    private async Task Delete(IdentityRole role)
+    private async Task Delete(UserRole role)
     {
         if (!await RolesService.DeleteRole(role.Id)) return;
         await RefreshData();

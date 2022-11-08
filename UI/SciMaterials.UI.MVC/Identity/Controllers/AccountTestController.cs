@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.AuthUsers;
-using SciMaterials.Contracts.AuthApi.DTO.Roles;
-using SciMaterials.Contracts.AuthApi.DTO.Users;
 using SciMaterials.Contracts.Identity.API.DTO.Roles;
+using SciMaterials.Contracts.Identity.API.DTO.Users;
 using SciMaterials.Contracts.Identity.Clients.Clients;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
@@ -11,9 +9,9 @@ namespace SciMaterials.UI.MVC.Identity.Controllers;
 /// <summary>
 /// Тестовый контроллер с IdentityClient
 /// </summary>
-[Route("account_test/")]
 [ApiController]
-public class AccountTestController : ControllerBase
+[Route("account_test/")]
+public class AccountTestController : Controller
 {
     private readonly IIdentityClient _identityClient;
     public AccountTestController(IIdentityClient identityClient)
@@ -64,14 +62,14 @@ public class AccountTestController : ControllerBase
     public async Task<IActionResult> GetAllRolesAsync(CancellationToken Cancel = default)
     {
         var response = await _identityClient.GetAllRolesAsync(Cancel);
-        return Ok(response.Roles);
+        return Ok(response);
     }
     
     [HttpGet($"{AuthApiRoute.GetRoleById}"+"{RoleId}")]
     public async Task<IActionResult> GetRoleByIdAsync(string RoleId, CancellationToken Cancel = default)
     {
         var response = await _identityClient.GetRoleByIdAsync(RoleId, Cancel);
-        return Ok(response.Role);
+        return Ok(response);
     }
     
     [HttpPut(AuthApiRoute.EditRoleNameById)]
@@ -109,7 +107,7 @@ public class AccountTestController : ControllerBase
     public async Task<IActionResult> GetAllUserRolesByEmailAsync(string Email, CancellationToken Cancel = default)
     {
         var response = await _identityClient.GetAllUserRolesByEmailAsync(Email, Cancel);
-        return Ok(response.Roles);
+        return Ok(response);
     }
     
     [HttpPost(AuthApiRoute.CreateUser)]
@@ -124,14 +122,14 @@ public class AccountTestController : ControllerBase
     public async Task<IActionResult> GetUserByEmailAsync(string Email, CancellationToken Cancel = default)
     {
         var response = await _identityClient.GetUserByEmailAsync(Email, Cancel);
-        return Ok(response.User);
+        return Ok(response);
     }
     
     [HttpGet(AuthApiRoute.GetAllUsers)]
     public async Task<IActionResult> GetAllUsersAsync(CancellationToken Cancel = default)
     {
         var response = await _identityClient.GetAllUsersAsync(Cancel);
-        return Ok(response.Users);
+        return Ok(response);
     }
     
     [HttpPut(AuthApiRoute.EditUserByEmail)]
@@ -160,6 +158,6 @@ public class AccountTestController : ControllerBase
     public async Task<IActionResult> GetRefreshTokenAsync(CancellationToken Cancel)
     {
         var response = await _identityClient.GetRefreshTokenAsync(Cancel);
-        return Ok(response);
+        return Ok(response.RefreshToken);
     }
 }

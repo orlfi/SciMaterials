@@ -190,12 +190,26 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("AccessCount")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("INTEGER");
+
+                    b.Property<int>("LastAccess")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
 
                     b.Property<string>("SourceAddress")
                         .IsRequired()
@@ -283,6 +297,12 @@ namespace SciMaterials.SQLiteMigrations.Migrations
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
                     b.HasBaseType("SciMaterials.DAL.Models.Base.Resource");
+
+                    b.Property<DateTime?>("AntivirusScanDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("AntivirusScanStatus")
+                        .HasColumnType("INTEGER");
 
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("TEXT");

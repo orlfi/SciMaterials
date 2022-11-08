@@ -4,6 +4,8 @@ using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Database.Extensions;
 using SciMaterials.UI.MVC.Identity.Extensions;
+using SciMaterials.WebApi.Clients.Identity.Extensions;
+using System.Configuration;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Services.ShortLinks;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +18,7 @@ using System.Linq.Expressions;
 var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
+
 builder.WebHost.ConfigureKestrel(opt =>
 {
     var api_settings = config.GetSection(ApiSettings.SectionName);
@@ -29,11 +32,13 @@ services.AddControllersWithViews();
 services.AddRazorPages();
 
 services.ConfigureApplication(config);
+services.AddDatabaseProviders(config);
 services.AddApiServices(config);
 
 services.AddAuthApiServices(config);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
+services.AddIdentityClients(new Uri(config["WebAPI"]));
 services.AddAuthHttpClient();
 
 services.AddScoped<ILinkReplaceService, LinkReplaceService>();
@@ -95,4 +100,4 @@ app.MapPut("replace-link",
 
 app.Run();
 
-public partial class Program{}
+public partial class Program { }

@@ -195,12 +195,26 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("AccessCount")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<int>("LastAccess")
+                        .IsConcurrencyToken()
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.Property<string>("SourceAddress")
                         .IsRequired()
@@ -288,6 +302,12 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
                     b.HasBaseType("SciMaterials.DAL.Models.Base.Resource");
+
+                    b.Property<DateTime?>("AntivirusScanDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("AntivirusScanStatus")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("CategoryId")
                         .HasColumnType("uniqueidentifier");
