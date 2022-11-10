@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
+
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.DTO.ContentTypes;
 using SciMaterials.Contracts.API.DTO.Files;
@@ -125,7 +126,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
                 if (section.Headers is null
                     || !section.Headers.ContainsKey("Metadata")
                     || System.Text.Json.JsonSerializer.Deserialize<UploadFileRequest>(section.Headers["Metadata"]) is not { } uploadFileRequest)
-                    return Ok(await Result.ErrorAsync((int)ResultCodes.NotFound, "Metadata not found"));
+                    return Ok(Result.Failure((int)ResultCodes.NotFound, "Metadata not found"));
 
                 var result = await _fileService.UploadAsync(section.Body, uploadFileRequest).ConfigureAwait(false);
                 return Ok(result);
@@ -134,7 +135,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
             section = await reader.ReadNextSectionAsync();
         }
 
-        return Ok(Result.Error((int)ResultCodes.FormDataFileMissing, "Form-data sections does not contains files"));
+        return Ok(Result.Failure((int)ResultCodes.FormDataFileMissing, "Form-data sections does not contains files"));
     }
 
     /// <summary> Delete a file. </summary>

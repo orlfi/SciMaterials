@@ -5,7 +5,8 @@ using SciMaterials.UI.MVC.API.Extensions;
 using SciMaterials.Services.Database.Extensions;
 using SciMaterials.UI.MVC.Identity.Extensions;
 using SciMaterials.WebApi.Clients.Identity.Extensions;
-using System.Configuration;
+using SciMaterials.Contracts.ShortLinks;
+using SciMaterials.Services.ShortLinks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,9 @@ services.AddAuthApiServices(config);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
 services.AddIdentityClients(new Uri(config["WebAPI"]));
+
+services.AddHttpContextAccessor();
+
 services.AddAuthJwtAndSwaggerApiServices(builder.Configuration);
 
 builder.Services.AddCors(o => o.AddPolicy("test", p => p.WithOrigins("http://localhost:5159").AllowAnyMethod().AllowAnyHeader()));
@@ -71,6 +75,13 @@ app.MapControllers();
 app.MapFallbackToFile("index.html");
 
 app.MapControllerRoute("default", "{controller}/{action=index}/{id?}");
+
+app.MapPut("replace-link",
+    async (string text, ILinkReplaceService linkReplaceService, LinkGenerator linkGenerator, IHttpContextAccessor context) =>
+    {
+        var result = await linkReplaceService.ShortenLinksAsync(text);
+        return result;
+    });
 
 app.Run();
 
