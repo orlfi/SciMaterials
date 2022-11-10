@@ -130,34 +130,24 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("FileGroupId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("FileId")
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("INTEGER");
 
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
+                    b.Property<Guid>("ResourceId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("UrlId")
+                    b.Property<string>("Text")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("FileGroupId");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("UrlId");
+                    b.HasIndex("ResourceId");
 
                     b.ToTable("Comments");
                 });
@@ -241,7 +231,7 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                     b.Property<int>("RatingValue")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid?>("ResourceId")
+                    b.Property<Guid?>("UrlId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -252,7 +242,7 @@ namespace SciMaterials.SQLiteMigrations.Migrations
 
                     b.HasIndex("FileId");
 
-                    b.HasIndex("ResourceId");
+                    b.HasIndex("UrlId");
 
                     b.ToTable("Ratings");
                 });
@@ -401,23 +391,15 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
+                    b.HasOne("SciMaterials.DAL.Models.Base.Resource", "Resource")
                         .WithMany("Comments")
-                        .HasForeignKey("FileGroupId");
-
-                    b.HasOne("SciMaterials.DAL.Models.File", "File")
-                        .WithMany("Comments")
-                        .HasForeignKey("FileId");
-
-                    b.HasOne("SciMaterials.DAL.Models.Url", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("UrlId");
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
 
-                    b.Navigation("File");
-
-                    b.Navigation("FileGroup");
+                    b.Navigation("Resource");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
@@ -429,16 +411,16 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                         .IsRequired();
 
                     b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
-                        .WithMany()
+                        .WithMany("Ratings")
                         .HasForeignKey("FileGroupId");
 
                     b.HasOne("SciMaterials.DAL.Models.File", "File")
-                        .WithMany()
+                        .WithMany("Ratings")
                         .HasForeignKey("FileId");
 
-                    b.HasOne("SciMaterials.DAL.Models.Base.Resource", null)
+                    b.HasOne("SciMaterials.DAL.Models.Url", null)
                         .WithMany("Ratings")
-                        .HasForeignKey("ResourceId");
+                        .HasForeignKey("UrlId");
 
                     b.Navigation("File");
 
@@ -522,7 +504,7 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                 {
                     b.Navigation("Categories");
 
-                    b.Navigation("Ratings");
+                    b.Navigation("Comments");
 
                     b.Navigation("Tags");
                 });
@@ -550,19 +532,19 @@ namespace SciMaterials.SQLiteMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Files");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Url", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }
