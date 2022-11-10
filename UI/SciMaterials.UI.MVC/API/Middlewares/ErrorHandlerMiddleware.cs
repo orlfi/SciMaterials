@@ -30,7 +30,7 @@ public class ErrorHandlerMiddleware
     private async Task HandleErrorAsync(HttpContext Context, Exception exception)
     {
         Context.Response.Clear();
-        _logger.LogError(exception);
+        _logger.LogError(exception, exception.Message);
         var result = Result.Failure(MiddlewareErrors.Exception.Unhandled);
         await Context.Response.WriteAsJsonAsync(result);
     }
