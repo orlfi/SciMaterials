@@ -1,12 +1,14 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using SciMaterials.Contracts.Errors;
 using SciMaterials.Contracts.Result;
-using SciMaterials.Contracts.Result.Codes;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;
 using SciMaterials.DAL.Contexts;
@@ -59,6 +61,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         }
 
         var shortLink = await GetMinShortLinkAsync(link.Hash, _hashLength, Cancel);
+        _logger.LogInformation("ShortLink {shortLink} for adress {sourceAddress} added", shortLink, sourceAddress);
         return shortLink;
     }
 
@@ -80,7 +83,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         {
             case 0:
                 return LoggedError<string>(
-                    ApiErrors.Link.NotFound,
+                    ShortLinkErrors.ShortCut.HashNotFound,
                     "Link with hash {hash} not found",
                     hash);
             case 1:

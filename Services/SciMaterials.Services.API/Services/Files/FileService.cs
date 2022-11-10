@@ -10,7 +10,7 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
-using SciMaterials.Contracts.Result.Codes;
+using SciMaterials.Contracts.Errors.Api;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -19,8 +19,6 @@ public class FileService : ApiServiceBase, IFileService
     private readonly IFileStore _fileStore;
     private readonly string _path;
     private readonly string _separator;
-
-
 
     public FileService(
         IApiSettings apiSettings,
@@ -49,7 +47,7 @@ public class FileService : ApiServiceBase, IFileService
         var files = await _unitOfWork.GetRepository<File>().GetPageAsync(pageNumber, pageSize, include: true);
         var totalCount = await _unitOfWork.GetRepository<File>().GetCountAsync();
         var result = _mapper.Map<List<GetFileResponse>>(files);
-        return PageResult<GetFileResponse>.Success(result, pageNumber, pageSize, totalCount);
+        return (result, totalCount);
     }
 
     public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, CancellationToken Cancel = default)
@@ -226,7 +224,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await _unitOfWork.GetRepository<File>().GetByNameAsync(uploadFileRequest.Name) is { })
         {
             return LoggedError<Guid>(
-                ApiErrors.File.AlreadyExist,
+                ApiErrors.File.Exist,
                 "File with name {fileName} alredy exist",
                 uploadFileRequest.Name);
         }
@@ -369,7 +367,7 @@ public class FileService : ApiServiceBase, IFileService
                 _fileStore.Delete(path);
 
                 LoggedError<FileMetadata>(
-                    ApiErrors.File.AlreadyExist,
+                    ApiErrors.File.Exist,
                     "File with the same hash {fileHash} already exists with id: {fileId}",
                     existingFile.Hash,
                     existingFile.Id);
