@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.Identity.API.DTO.Users;
