@@ -135,34 +135,24 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("FileGroupId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("FileId")
-                        .HasColumnType("uuid");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ResourceId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<Guid?>("UrlId")
-                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("FileGroupId");
-
-                    b.HasIndex("FileId");
-
-                    b.HasIndex("UrlId");
+                    b.HasIndex("ResourceId");
 
                     b.ToTable("Comments");
                 });
@@ -246,7 +236,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                     b.Property<int>("RatingValue")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("ResourceId")
+                    b.Property<Guid?>("UrlId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -257,7 +247,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
 
                     b.HasIndex("FileId");
 
-                    b.HasIndex("ResourceId");
+                    b.HasIndex("UrlId");
 
                     b.ToTable("Ratings");
                 });
@@ -406,23 +396,15 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
+                    b.HasOne("SciMaterials.DAL.Models.Base.Resource", "Resource")
                         .WithMany("Comments")
-                        .HasForeignKey("FileGroupId");
-
-                    b.HasOne("SciMaterials.DAL.Models.File", "File")
-                        .WithMany("Comments")
-                        .HasForeignKey("FileId");
-
-                    b.HasOne("SciMaterials.DAL.Models.Url", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("UrlId");
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Author");
 
-                    b.Navigation("File");
-
-                    b.Navigation("FileGroup");
+                    b.Navigation("Resource");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Rating", b =>
@@ -434,16 +416,16 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                         .IsRequired();
 
                     b.HasOne("SciMaterials.DAL.Models.FileGroup", "FileGroup")
-                        .WithMany()
+                        .WithMany("Ratings")
                         .HasForeignKey("FileGroupId");
 
                     b.HasOne("SciMaterials.DAL.Models.File", "File")
-                        .WithMany()
+                        .WithMany("Ratings")
                         .HasForeignKey("FileId");
 
-                    b.HasOne("SciMaterials.DAL.Models.Base.Resource", null)
+                    b.HasOne("SciMaterials.DAL.Models.Url", null)
                         .WithMany("Ratings")
-                        .HasForeignKey("ResourceId");
+                        .HasForeignKey("UrlId");
 
                     b.Navigation("File");
 
@@ -527,7 +509,7 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
                 {
                     b.Navigation("Categories");
 
-                    b.Navigation("Ratings");
+                    b.Navigation("Comments");
 
                     b.Navigation("Tags");
                 });
@@ -555,19 +537,19 @@ namespace SciMaterials.PostgresqlMigrations.Migrations
 
             modelBuilder.Entity("SciMaterials.DAL.Models.File", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.FileGroup", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Files");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("SciMaterials.DAL.Models.Url", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }
