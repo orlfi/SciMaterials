@@ -7,22 +7,13 @@ using SciMaterials.Contracts.API.Services.ContentTypes;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.ContentTypes;
-using SciMaterials.Contracts.API.DTO.Comments;
 
 namespace SciMaterials.Services.API.Services.ContentTypes;
 
-public class ContentTypeService : IContentTypeService
+public class ContentTypeService : ApiServiceBase, IContentTypeService
 {
-    private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
-    private readonly IMapper _mapper;
-    private readonly ILogger<ContentTypeService> _logger;
-
     public ContentTypeService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<ContentTypeService> logger)
-    {
-        _logger = logger;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
+        : base(unitOfWork, mapper, logger) { }
 
     public async Task<Result<IEnumerable<GetContentTypeResponse>>> GetAllAsync(CancellationToken Cancel = default)
     {

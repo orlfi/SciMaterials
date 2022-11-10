@@ -45,29 +45,29 @@ public class Result
 
 public class Result<TData> : Result
 {
-    public TData Data { get; init; } = default!;
+    public TData? Data { get; init; } = default!;
 
     public static new Result<TData> Success() => new();
 
-    public static new Result<TData> Success(string message) => new() { Message = message };
+    //public static new Result<TData> Success(string message) => new() { Message = message };
 
     public static Result<TData> Success(TData data) => new() { Data = data };
 
     public static Result<TData> Success(TData data, string message) => new() { Data = data, Message = message };
 
-    public static new Task<Result<TData>> SuccessAsync(string message) => Task.FromResult(Success(message));
+    //public static new Task<Result<TData>> SuccessAsync(string message) => Task.FromResult(Success(message));
 
-    public static Task<Result<TData>> SuccessAsync(TData data, string message) => Task.FromResult(Success(data, message));
+    //public static Task<Result<TData>> SuccessAsync(TData data, string message) => Task.FromResult(Success(data, message));
 
     public static new Result<TData> Failure(Error error) => new() { Code = error.Code, Message = error.Message };
 
-    public static new Result<TData> Failure(int code) => new() { Code = code };
+    //public static new Result<TData> Failure(int code) => new() { Code = code };
 
     public static new Result<TData> Failure<TError>(Result<TError> result) => new() { Code = result.Code, Message = result.Message };
 
-    public static new Result<TData> Failure(int code, string message) => new() { Code = code, Message = message };
+    //public static new Result<TData> Failure(int code, string message) => new() { Code = code, Message = message };
 
-    public static new Task<Result<TData>> ErrorAsync(int code, string message) => Task.FromResult(Failure(code, message));
+    //public static new Task<Result<TData>> ErrorAsync(int code, string message) => Task.FromResult(Failure(code, message));
 
     public new Task<Result<TData>> ToTask() => Task.FromResult(this);
 

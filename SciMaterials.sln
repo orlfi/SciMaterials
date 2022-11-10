@@ -95,6 +95,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.Short
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.ShortLinks", "Services\SciMaterials.Contracts.ShortLinks\SciMaterials.Contracts.ShortLinks.csproj", "{9D1A70CC-FBCE-41BF-BC31-DAC268B3D817}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services", "Services\SciMaterials.Services\SciMaterials.Services.csproj", "{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,10 @@ Global
 		{9D1A70CC-FBCE-41BF-BC31-DAC268B3D817}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D1A70CC-FBCE-41BF-BC31-DAC268B3D817}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D1A70CC-FBCE-41BF-BC31-DAC268B3D817}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -265,6 +271,7 @@ Global
 		{1DF88343-93DA-4642-8C31-FDB33A5A9F86} = {4EE84F04-0C3D-40E8-9B2A-B67180258A68}
 		{CD33DE9D-FE97-4D74-9ED3-3A09303C9359} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 		{9D1A70CC-FBCE-41BF-BC31-DAC268B3D817} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
+		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}

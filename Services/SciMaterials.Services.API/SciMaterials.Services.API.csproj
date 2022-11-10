@@ -18,7 +18,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.2" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
   </ItemGroup>
 
@@ -29,6 +28,7 @@
     <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts.ShortLinks\SciMaterials.Contracts.ShortLinks.csproj" />
     <ProjectReference Include="..\SciMaterials.Services.ShortLinks\SciMaterials.Services.ShortLinks.csproj" />
+    <ProjectReference Include="..\SciMaterials.Services\SciMaterials.Services.csproj" />
     <ProjectReference Include="..\SciMaterials.WebApi.Clients\SciMaterials.WebApi.Clients.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     <ProjectReference Include="..\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj" />

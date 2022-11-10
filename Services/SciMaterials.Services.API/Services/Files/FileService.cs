@@ -14,38 +14,22 @@ using SciMaterials.Contracts.Result.Codes;
 
 namespace SciMaterials.Services.API.Services.Files;
 
-public class FileService : IFileService
+public class FileService : ApiServiceBase, IFileService
 {
     private readonly IFileStore _fileStore;
-    private readonly IUnitOfWork<SciMaterialsContext> _unitOfWork;
-    private readonly IMapper _mapper;
     private readonly string _path;
     private readonly string _separator;
-    private readonly ILogger<FileService> _logger;
 
-    private Result<TData> LoggedError<TData>(Error error, Exception ex, string messagePattern, params object?[] args)
-    {
-        _logger.LogError(ex, messagePattern, args);
-        return Result<TData>.Failure(error);
-    }
 
-    private Result<TData> LoggedError<TData>(Error error, string messagePattern, params object?[] args)
-    {
-        _logger.LogError(messagePattern, args);
-        return Result<TData>.Failure(error);
-    }
 
     public FileService(
         IApiSettings apiSettings,
         IFileStore fileStore,
         IUnitOfWork<SciMaterialsContext> unitOfWork,
         IMapper mapper,
-        ILogger<FileService> logger)
+        ILogger<FileService> logger) : base(unitOfWork, mapper, logger)
     {
-        _logger = logger;
         _fileStore = fileStore;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
         _path = apiSettings.BasePath;
         _separator = apiSettings.Separator;
 

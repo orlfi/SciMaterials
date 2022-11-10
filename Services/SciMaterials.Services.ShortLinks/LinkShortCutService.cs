@@ -1,25 +1,23 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Result;
+using SciMaterials.Contracts.Result.Codes;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;
 using SciMaterials.DAL.Contexts;
 
 namespace SciMaterials.Services.ShortLinks;
 
-public class LinkShortCutService : ILinkShortCutService
+public class LinkShortCutService : ServiceBase, ILinkShortCutService
 {
     private readonly SciMaterialsContext _db;
     private readonly LinkGenerator _linkGenerator;
     private readonly HttpContext _httpContext;
-    private readonly ILogger<LinkShortCutService> _logger;
 
     private readonly string _encodingName;
     private readonly int _hashLength;
@@ -30,12 +28,11 @@ public class LinkShortCutService : ILinkShortCutService
         IOptions<LinkShortCutOptions> options,
         LinkGenerator linkGenerator,
         IHttpContextAccessor httpContextAccessor,
-        ILogger<LinkShortCutService> logger)
+        ILogger<LinkShortCutService> logger) : base(logger)
     {
         _db = db;
         _linkGenerator = linkGenerator;
         _httpContext = httpContextAccessor.HttpContext;
-        _logger = logger;
 
         (
             _hashLength,
@@ -77,14 +74,15 @@ public class LinkShortCutService : ILinkShortCutService
     private async Task<Result<string>> GetMinShortLinkAsync(string hash, int linkLength, CancellationToken Cancel = default)
     {
         var shortLink = hash[..linkLength];
-      
+
         var linksCount = await _db.Links.CountAsync(item => item.Hash.StartsWith(shortLink), Cancel);
         switch (linksCount)
         {
             case 0:
-                _logger.LogError("Link with hash {hash} not found", hash);
-                return await Result<string>.ErrorAsync((int)ResultCodes.NotFound, $"Link with hash {hash} not found");
-
+                return LoggedError<string>(
+                    ApiErrors.Link.NotFound,
+                    "Link with hash {hash} not found",
+                    hash);
             case 1:
                 var address = _linkGenerator.GetUriByAction(_httpContext, "GetById", "Links", new { hash = shortLink }, _httpContext.Request.Scheme);
                 _logger.LogDebug("Found short link with minimal length: {address}", address);
@@ -106,80 +104,4 @@ public class LinkShortCutService : ILinkShortCutService
         var hash = Convert.ToBase64String(hashBytes);
         return hash;
     }
-
-    // public async Task<string> AddAsync(string sourceAddress, CancellationToken cancel = default)
-    // {
-    //     if (!__Regex.IsMatch(sourceAddress))
-    //         sourceAddress = "http://" + sourceAddress;
-
-    //     var encoding = Encoding.GetEncoding(_encodingName);
-    //     var bytes = new MemoryStream(encoding.GetBytes(sourceAddress));
-
-    //     var hasher = HashAlgorithm.Create(_hashAlgorithmName)
-    //                  ?? throw new InvalidOperationException(
-    //                      $"Failed to retrieve hashing algorithm {_hashAlgorithmName}");
-    //     var hashBytes = await hasher.ComputeHashAsync(bytes, cancel).ConfigureAwait(false);
-    //     var hash = Convert.ToBase64String(hashBytes);
-
-    //     if (await _db.Links.FirstOrDefaultAsync(l => l.Hash == hash, cancel) is { } link)
-    //         _logger.LogInformation("A record of the {0} exists in the database with the hash {1}.", sourceAddress, link.Hash);
-    //     else
-    //     {
-    //         link = new() { SourceAddress = sourceAddress, Hash = hash };
-
-    //         _db.Add(link);
-    //         await _db.SaveChangesAsync(cancel);
-
-    //         _logger.LogInformation("Record {0} added to database with hash {1}", sourceAddress, hash);
-    //     }
-
-    //     return hash[..Math.Min(hash.Length, _hashLength)];
-    // }
-
-    // public async Task<Link> FindByHashAsync(string hash, CancellationToken cancel = default)
-    // {
-    //     var link = await _db.Links.FirstOrDefaultAsync(l => l.Hash == hash, cancel);
-    //     if (link == null)
-    //         _logger.LogInformation("Hash not found.");
-
-    //     return link;
-    // }
-
-    // public async Task<Link> FindByUrlAsync(string sourceAddress, CancellationToken cancel = default)
-    // {
-    //     if (!__Regex.IsMatch(sourceAddress))
-    //         sourceAddress = "http://" + sourceAddress;
-    //     var link = await _db.Links.FirstOrDefaultAsync(l => l.SourceAddress == sourceAddress, cancel);
-    //     if (link == null)
-    //         _logger.LogInformation("Url not found.");
-
-    //     return link;
-    // }
-
-    // public async Task<IEnumerable<Link>> GetAllAsync(CancellationToken cancel = default)
-    // {
-    //     return await _db.Links.ToListAsync(cancel);
-    // }
-
-    // public async Task DeleteByHashAsync(string hash, CancellationToken cancel = default)
-    // {
-    //     var link = await _db.Links.FirstOrDefaultAsync(l => l.Hash == hash, cancel);
-    //     if (link == null)
-    //         _logger.LogInformation("Hash not found.");
-
-    //     _db.Remove(link);
-    //     await _db.SaveChangesAsync(cancel);
-    //     _logger.LogInformation("Record deleted");
-    // }
-
-    // public async Task DeleteByUrlAsync(string sourceAddress, CancellationToken cancel = default)
-    // {
-    //     var link = await _db.Links.FirstOrDefaultAsync(l => l.SourceAddress == sourceAddress, cancel);
-    //     if (link == null)
-    //         _logger.LogInformation("Url not found.");
-
-    //     _db.Remove(link);
-    //     await _db.SaveChangesAsync(cancel);
-    //     _logger.LogInformation("Record deleted");
-    // }
 }
