@@ -320,6 +320,11 @@ public class FileService : IFileService
 
     private async Task<Result<Guid>> WriteToDatabase(FileMetadata metadata, CancellationToken Cancel = default)
     {
+        if (metadata is null)
+        {
+            throw new NullReferenceException(nameof(metadata));
+        }
+
         if (await VerifyAuthor(metadata.AuthorId) is { Succeeded: false } verifyAuthorResult)
         {
             return Result<Guid>.Failure(verifyAuthorResult);

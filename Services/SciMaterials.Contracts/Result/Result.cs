@@ -45,7 +45,7 @@ public class Result
 
 public class Result<TData> : Result
 {
-    public TData? Data { get; init; }
+    public TData Data { get; init; } = default!;
 
     public static new Result<TData> Success() => new();
 
