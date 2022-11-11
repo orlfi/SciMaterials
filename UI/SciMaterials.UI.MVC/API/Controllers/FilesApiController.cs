@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
-
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.ContentTypes;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Services.Files;
-using SciMaterials.Contracts.Enums;
-using SciMaterials.Contracts.Errors.Api;
+using SciMaterials.Contracts;
 using SciMaterials.Contracts.Result;
 using SciMaterials.UI.MVC.API.Filters;
 

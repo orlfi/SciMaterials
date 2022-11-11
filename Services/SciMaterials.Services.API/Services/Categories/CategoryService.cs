@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Result;
-using SciMaterials.Contracts.Errors.Api;
+using SciMaterials.Contracts;
 using SciMaterials.DAL.Models;
 
 namespace SciMaterials.Services.API.Services.Categories;

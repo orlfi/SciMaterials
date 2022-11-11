@@ -1,6 +1,6 @@
 ﻿using SciMaterials.Contracts.Result;
 
-namespace SciMaterials.Contracts.Errors.Api;
+namespace SciMaterials.Contracts;
 
 public static partial class Errors
 {

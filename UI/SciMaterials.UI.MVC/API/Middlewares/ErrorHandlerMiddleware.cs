@@ -1,5 +1,5 @@
 ﻿using SciMaterials.Contracts.Result;
-using SciMaterials.Contracts.Errors;
+using SciMaterials.Contracts;
 using Microsoft.Extensions.Logging;
 
 namespace SciMaterials.UI.MVC.API.Middlewares;

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Services.Authors;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.Authors;
-using SciMaterials.Contracts.Errors.Api;
+using SciMaterials.Contracts;
 
 namespace SciMaterials.Services.API.Services.Authors;
 

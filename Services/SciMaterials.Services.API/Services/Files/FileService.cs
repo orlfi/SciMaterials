@@ -10,7 +10,7 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
-using SciMaterials.Contracts.Errors.Api;
+using SciMaterials.Contracts;
 using SciMaterials.Contracts.ShortLinks;
 
 namespace SciMaterials.Services.API.Services.Files;

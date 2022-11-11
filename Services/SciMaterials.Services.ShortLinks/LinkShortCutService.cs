@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using SciMaterials.Contracts.Errors;
+using SciMaterials.Contracts;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;

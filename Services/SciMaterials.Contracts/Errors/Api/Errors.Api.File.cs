@@ -1,6 +1,6 @@
 ﻿using SciMaterials.Contracts.Result;
 
-namespace SciMaterials.Contracts.Errors.Api;
+namespace SciMaterials.Contracts;
 
 public static partial class Errors
 {
@@ -22,7 +22,7 @@ public static partial class Errors
             public static readonly Error AuthorNotFound = new("API009", "File author not found");
             public static readonly Error StoreWrite = new("API010", "File write to store error");
             public static readonly Error MissingMetadata = new("API011", "Missing is missing");
-            public static readonly Error MissingSection = new("API011", "Form-data sections does not contains files");
+            public static readonly Error MissingSection = new("API012", "Form-data sections does not contains files");
         }
     }
 }
