@@ -11,23 +11,30 @@ using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
 using SciMaterials.Contracts.Errors.Api;
+using SciMaterials.Contracts.ShortLinks;
 
 namespace SciMaterials.Services.API.Services.Files;
 
 public class FileService : ApiServiceBase, IFileService
 {
     private readonly IFileStore _fileStore;
+    private readonly ILinkReplaceService _linkReplaceService;
+    private readonly ILinkShortCutService _linkShortCutService;
     private readonly string _path;
     private readonly string _separator;
 
     public FileService(
         IApiSettings apiSettings,
         IFileStore fileStore,
+        ILinkReplaceService linkReplaceService,
+        ILinkShortCutService linkShortCutService,
         IUnitOfWork<SciMaterialsContext> unitOfWork,
         IMapper mapper,
         ILogger<FileService> logger) : base(unitOfWork, mapper, logger)
     {
         _fileStore = fileStore;
+        _linkReplaceService = linkReplaceService;
+        _linkShortCutService = linkShortCutService;
         _path = apiSettings.BasePath;
         _separator = apiSettings.Separator;
 
@@ -189,6 +196,8 @@ public class FileService : ApiServiceBase, IFileService
             return Result<Guid>.Failure(verifyFileUploadRequestResult);
         }
 
+        var descriptionWithShortLinks = await _linkReplaceService.ShortenLinksAsync(uploadFileRequest.Description, Cancel);
+        uploadFileRequest.Description = descriptionWithShortLinks;
         var writeToStoreResult = await WriteToStore(uploadFileRequest, fileStream, Cancel);
         if (!writeToStoreResult.Succeeded)
         {
