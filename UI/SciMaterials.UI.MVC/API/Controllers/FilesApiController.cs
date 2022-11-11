@@ -7,6 +7,7 @@ using SciMaterials.Contracts.API.DTO.ContentTypes;
 using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.Enums;
+using SciMaterials.Contracts.Errors.Api;
 using SciMaterials.Contracts.Result;
 using SciMaterials.UI.MVC.API.Filters;
 
@@ -126,7 +127,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
                 if (section.Headers is null
                     || !section.Headers.ContainsKey("Metadata")
                     || System.Text.Json.JsonSerializer.Deserialize<UploadFileRequest>(section.Headers["Metadata"]) is not { } uploadFileRequest)
-                    return Ok(Result.Failure((int)ResultCodes.NotFound, "Metadata not found"));
+                    return Ok(Result.Failure(Errors.Api.File.MissingMetadata));
 
                 var result = await _fileService.UploadAsync(section.Body, uploadFileRequest).ConfigureAwait(false);
                 return Ok(result);
@@ -135,7 +136,7 @@ public class FilesApiController : ApiBaseController<FilesApiController>
             section = await reader.ReadNextSectionAsync();
         }
 
-        return Ok(Result.Failure((int)ResultCodes.FormDataFileMissing, "Form-data sections does not contains files"));
+        return Ok(Result.Failure(Errors.Api.File.MissingSection));
     }
 
     /// <summary> Delete a file. </summary>

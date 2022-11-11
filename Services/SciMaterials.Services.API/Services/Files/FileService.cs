@@ -64,7 +64,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await repository.GetByIdAsync(id, include: true) is not { } file)
         {
             return LoggedError<GetFileResponse>(
-                ApiErrors.File.NotFound,
+                Errors.Api.File.NotFound,
                 "File with ID {id} not found",
                 id);
         }
@@ -78,7 +78,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await _unitOfWork.GetRepository<File>().GetByHashAsync(hash, include: true) is not { } file)
         {
             return LoggedError<GetFileResponse>(
-                ApiErrors.File.NotFound,
+                Errors.Api.File.NotFound,
                 "File with hash {hash} not found",
                 hash);
         }
@@ -93,7 +93,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await _unitOfWork.GetRepository<File>().GetByIdAsync(editFileRequest.Id) is not { } existingFile)
         {
             return LoggedError<Guid>(
-                ApiErrors.File.NotFound,
+                Errors.Api.File.NotFound,
                 "File with ID {fileId} not found",
                 editFileRequest.Id);
         }
@@ -121,7 +121,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.File.Update,
+                Errors.Api.File.Update,
                 "File {fileName} update error",
                 editFileRequest.Name);
         }
@@ -136,7 +136,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await GetByHashAsync(hash) is not { } getFileResponse)
         {
             return LoggedError<FileStreamInfo>(
-                ApiErrors.File.NotFound,
+                Errors.Api.File.NotFound,
                 "File with hash {fileHash} not found",
                 hash);
         }
@@ -149,7 +149,7 @@ public class FileService : ApiServiceBase, IFileService
         }
         catch (Exception ex)
         {
-            return LoggedError<FileStreamInfo>(ApiErrors.File.Download, ex, "Download by hash {fileHash} error", hash);
+            return LoggedError<FileStreamInfo>(Errors.Api.File.Download, ex, "Download by hash {fileHash} error", hash);
         }
     }
 
@@ -158,7 +158,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await GetByIdAsync(id) is not { } getFileResponse)
         {
             return LoggedError<FileStreamInfo>(
-                ApiErrors.File.NotFound,
+                Errors.Api.File.NotFound,
                 "File with ID {fileId} not found",
                 id);
         }
@@ -172,7 +172,7 @@ public class FileService : ApiServiceBase, IFileService
         catch (Exception ex)
         {
             return LoggedError<FileStreamInfo>(
-                ApiErrors.File.Download,
+                Errors.Api.File.Download,
                 ex,
                 "Download by ID {fileId} error",
                 id);
@@ -233,7 +233,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await _unitOfWork.GetRepository<File>().GetByNameAsync(uploadFileRequest.Name) is { })
         {
             return LoggedError<Guid>(
-                ApiErrors.File.Exist,
+                Errors.Api.File.Exist,
                 "File with name {fileName} alredy exist",
                 uploadFileRequest.Name);
         }
@@ -246,7 +246,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await _unitOfWork.GetRepository<ContentType>().GetByNameAsync(ContentTypeName) is not { } contentTypeModel)
         {
             return LoggedError<ContentType>(
-                ApiErrors.File.ContentTypeNotFound,
+                Errors.Api.File.ContentTypeNotFound,
                 "Content type {ContentTypeName} not found.",
                 ContentTypeName);
         }
@@ -259,7 +259,7 @@ public class FileService : ApiServiceBase, IFileService
         if (categoriesString is not { Length: > 0 })
         {
             return LoggedError<ICollection<Category>>(
-                ApiErrors.File.CategoriesAreNotSpecified,
+                Errors.Api.File.CategoriesAreNotSpecified,
                 "File categories are not specified");
         }
 
@@ -270,7 +270,7 @@ public class FileService : ApiServiceBase, IFileService
             if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, disableTracking: false) is not { } category)
             {
                 return LoggedError<ICollection<Category>>(
-                    ApiErrors.File.CategoriesNotFound,
+                    Errors.Api.File.CategoriesNotFound,
                     "File category with ID {categoryId} not found",
                     categoryId);
             }
@@ -288,7 +288,7 @@ public class FileService : ApiServiceBase, IFileService
         }
 
         return LoggedError<Author>(
-            ApiErrors.File.AuthorNotFound,
+            Errors.Api.File.AuthorNotFound,
             "Author with ID {authorId} not found",
             authorId);
     }
@@ -350,7 +350,7 @@ public class FileService : ApiServiceBase, IFileService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.File.Add,
+                Errors.Api.File.Add,
                 "File save to database  error");
         }
 
@@ -376,7 +376,7 @@ public class FileService : ApiServiceBase, IFileService
                 _fileStore.Delete(path);
 
                 LoggedError<FileMetadata>(
-                    ApiErrors.File.Exist,
+                    Errors.Api.File.Exist,
                     "File with the same hash {fileHash} already exists with id: {fileId}",
                     existingFile.Hash,
                     existingFile.Id);
@@ -390,7 +390,7 @@ public class FileService : ApiServiceBase, IFileService
         catch (Exception ex)
         {
             return LoggedError<FileMetadata>(
-                ApiErrors.File.StoreWrite,
+                Errors.Api.File.StoreWrite,
                 ex,
                 "Error when saving a file {fileName} to storage",
                 uploadFileRequest.Name);
@@ -413,7 +413,7 @@ public class FileService : ApiServiceBase, IFileService
         catch (Exception)
         {
             return LoggedError<Guid>(
-                ApiErrors.File.Delete,
+                Errors.Api.File.Delete,
                 "Error when deleting a file  with ID {id} from storage",
                 id)
                 .ToTask();

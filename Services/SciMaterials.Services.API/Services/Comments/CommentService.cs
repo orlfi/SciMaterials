@@ -35,7 +35,7 @@ public class CommentService : ApiServiceBase, ICommentService
         if (await _unitOfWork.GetRepository<Comment>().GetByIdAsync(id) is not { } Comment)
         {
             return LoggedError<GetCommentResponse>(
-                ApiErrors.Comment.NotFound,
+                Errors.Api.Comment.NotFound,
                 "Comment with ID {id} not found",
                 id);
         }
@@ -52,7 +52,7 @@ public class CommentService : ApiServiceBase, ICommentService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Comment.Add,
+                Errors.Api.Comment.Add,
                 "Comment of user{authorId} for resource {resourceId} add error",
                 request.AuthorId, request.ResourceId);
         }
@@ -65,7 +65,7 @@ public class CommentService : ApiServiceBase, ICommentService
         if (await _unitOfWork.GetRepository<Comment>().GetByIdAsync(request.Id) is not { } existedComment)
         {
             return LoggedError<Guid>(
-                ApiErrors.Comment.NotFound,
+                Errors.Api.Comment.NotFound,
                 "Comment with {id} not found",
                 request.Id);
         }
@@ -76,7 +76,7 @@ public class CommentService : ApiServiceBase, ICommentService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Comment.Update,
+                Errors.Api.Comment.Update,
                 "Comment with {id} update error",
                 request.Id);
         }
@@ -89,7 +89,7 @@ public class CommentService : ApiServiceBase, ICommentService
         if (await _unitOfWork.GetRepository<Comment>().GetByIdAsync(id) is not { } Comment)
         {
             return LoggedError<Guid>(
-                ApiErrors.Comment.NotFound,
+                Errors.Api.Comment.NotFound,
                 "Comment with {id} not found",
                 id);
         }
@@ -99,7 +99,7 @@ public class CommentService : ApiServiceBase, ICommentService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Comment.Delete,
+                Errors.Api.Comment.Delete,
                 "Comment with {id} update error",
                 id);
         }

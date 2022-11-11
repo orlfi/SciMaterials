@@ -4,12 +4,12 @@
 public class Result
 {
     /// <summary> Код результата. </summary>
-    public int Code { get; init; } = 0;
+    public string Code { get; init; } = string.Empty;
 
     public string Message { get; init; } = string.Empty;
 
     /// <summary> Успешность выполнения операции (true - успешно | false - ошибка) </summary>
-    public bool Succeeded => Code == 0;
+    public bool Succeeded => Code.Length == 0;
 
     /// <summary> Возращает успешный результат выполнения операции. </summary>
     /// <returns> Результат операции. </returns>
@@ -18,13 +18,13 @@ public class Result
     /// <summary> Возращает результат с ошибкой выполнения операции. </summary>
     /// <param name="code"> Код ошибки. </param>
     /// <returns> Результат с ошибкой операции. </returns>
-    public static Result Failure(int code) => new() { Code = code };
+    public static Result Failure(string code) => new() { Code = code };
 
     /// <summary> Возращает результат с ошибкой выполнения операции. </summary>
     /// <param name="code"> Код ошибки. </param>
     /// <param name="message"> Дополнительно сообщение об ошибке. </param>
     /// <returns> Результат с ошибкой операции. </returns>
-    public static Result Failure(int code, string message) => new() { Code = code, Message = message };
+    public static Result Failure(string code, string message) => new() { Code = code, Message = message };
 
     /// <summary> Возращает результат с ошибкой выполнения операции. </summary>
     /// <param name="error"> Объект ошибки. </param>

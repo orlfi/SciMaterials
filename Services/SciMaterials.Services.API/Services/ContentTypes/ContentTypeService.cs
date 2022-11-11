@@ -35,7 +35,7 @@ public class ContentTypeService : ApiServiceBase, IContentTypeService
         if (await _unitOfWork.GetRepository<ContentType>().GetByIdAsync(id) is not { } ContentType)
         {
             return LoggedError<GetContentTypeResponse>(
-                ApiErrors.ContentType.NotFound,
+                Errors.Api.ContentType.NotFound,
                 "ContentType with ID {id} not found",
                 id);
         }
@@ -52,7 +52,7 @@ public class ContentTypeService : ApiServiceBase, IContentTypeService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.ContentType.Add,
+                Errors.Api.ContentType.Add,
                 "ContentType {name} add error",
                 request.Name);
         }
@@ -65,7 +65,7 @@ public class ContentTypeService : ApiServiceBase, IContentTypeService
         if (await _unitOfWork.GetRepository<ContentType>().GetByIdAsync(request.Id) is not { } existedContentType)
         {
             return LoggedError<Guid>(
-                ApiErrors.ContentType.NotFound,
+                Errors.Api.ContentType.NotFound,
                 "ContentType {name} not found",
                 request.Name);
         }
@@ -76,7 +76,7 @@ public class ContentTypeService : ApiServiceBase, IContentTypeService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.ContentType.Update,
+                Errors.Api.ContentType.Update,
                 "ContentType {name} update error",
                 request.Name);
         }
@@ -89,7 +89,7 @@ public class ContentTypeService : ApiServiceBase, IContentTypeService
         if (await _unitOfWork.GetRepository<ContentType>().GetByIdAsync(id) is not { } ContentType)
         {
             return LoggedError<Guid>(
-                ApiErrors.ContentType.NotFound,
+                Errors.Api.ContentType.NotFound,
                 "ContentType with {id} not found",
                 id);
         }
@@ -99,7 +99,7 @@ public class ContentTypeService : ApiServiceBase, IContentTypeService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.ContentType.Delete,
+                Errors.Api.ContentType.Delete,
                 "ContentType with {id} update error",
                 id);
         }

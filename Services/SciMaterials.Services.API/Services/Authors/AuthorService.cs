@@ -35,7 +35,7 @@ public class AuthorService : ApiServiceBase, IAuthorService
         if (await _unitOfWork.GetRepository<Author>().GetByIdAsync(id) is not { } author)
         {
             return LoggedError<GetAuthorResponse>(
-                ApiErrors.Author.NotFound,
+                Errors.Api.Author.NotFound,
                 "Author with ID {id} not found",
                 id);
         }
@@ -52,7 +52,7 @@ public class AuthorService : ApiServiceBase, IAuthorService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Author.Add,
+                Errors.Api.Author.Add,
                 "Author {name} add error",
                 request.Name);
         }
@@ -65,7 +65,7 @@ public class AuthorService : ApiServiceBase, IAuthorService
         if (await _unitOfWork.GetRepository<Author>().GetByIdAsync(request.Id) is not { } existedAuthor)
         {
             return LoggedError<Guid>(
-                ApiErrors.Author.NotFound,
+                Errors.Api.Author.NotFound,
                 "Author {name} not found",
                 request.Name);
         }
@@ -76,7 +76,7 @@ public class AuthorService : ApiServiceBase, IAuthorService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Author.Update,
+                Errors.Api.Author.Update,
                 "Author {name} update error",
                 request.Name);
         }
@@ -89,7 +89,7 @@ public class AuthorService : ApiServiceBase, IAuthorService
         if (await _unitOfWork.GetRepository<Author>().GetByIdAsync(id) is not { } author)
         {
             return LoggedError<Guid>(
-                ApiErrors.Author.NotFound,
+                Errors.Api.Author.NotFound,
                 "Author with {id} not found",
                 id);
         }
@@ -99,7 +99,7 @@ public class AuthorService : ApiServiceBase, IAuthorService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Author.Delete,
+                Errors.Api.Author.Delete,
                 "Author with {id} update error",
                 id);
         }

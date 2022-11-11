@@ -83,7 +83,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         {
             case 0:
                 return LoggedError<string>(
-                    ShortLinkErrors.ShortCut.HashNotFound,
+                    Errors.ShortLink.HashNotFound,
                     "Link with hash {hash} not found",
                     hash);
             case 1:

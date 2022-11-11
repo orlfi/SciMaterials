@@ -35,7 +35,7 @@ public class UrlService : ApiServiceBase, IUrlService
         if (await _unitOfWork.GetRepository<Url>().GetByIdAsync(id) is not { } Url)
         {
             return LoggedError<GetUrlResponse>(
-                ApiErrors.Url.NotFound,
+                Errors.Api.Url.NotFound,
                 "Url with ID {id} not found",
                 id);
         }
@@ -52,7 +52,7 @@ public class UrlService : ApiServiceBase, IUrlService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Url.Add,
+                Errors.Api.Url.Add,
                 "Url {name} add error",
                 request.Name);
         }
@@ -65,7 +65,7 @@ public class UrlService : ApiServiceBase, IUrlService
         if (await _unitOfWork.GetRepository<Url>().GetByIdAsync(request.Id) is not { } existedUrl)
         {
             return LoggedError<Guid>(
-                ApiErrors.Url.NotFound,
+                Errors.Api.Url.NotFound,
                 "Url {name} not found",
                 request.Name);
         }
@@ -76,7 +76,7 @@ public class UrlService : ApiServiceBase, IUrlService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Url.Update,
+                Errors.Api.Url.Update,
                 "Url {name} update error",
                 request.Name);
         }
@@ -89,7 +89,7 @@ public class UrlService : ApiServiceBase, IUrlService
         if (await _unitOfWork.GetRepository<Url>().GetByIdAsync(id) is not { } Url)
         {
             return LoggedError<Guid>(
-                ApiErrors.Url.NotFound,
+                Errors.Api.Url.NotFound,
                 "Url with {id} not found",
                 id);
         }
@@ -99,7 +99,7 @@ public class UrlService : ApiServiceBase, IUrlService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Url.Delete,
+                Errors.Api.Url.Delete,
                 "Url with {id} update error",
                 id);
         }

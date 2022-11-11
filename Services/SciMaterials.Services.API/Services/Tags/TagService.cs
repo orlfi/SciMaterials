@@ -35,7 +35,7 @@ public class TagService : ApiServiceBase, ITagService
         if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(id) is not { } Tag)
         {
             return LoggedError<GetTagResponse>(
-                ApiErrors.Tag.NotFound,
+                Errors.Api.Tag.NotFound,
                 "Tag with ID {id} not found",
                 id);
         }
@@ -52,7 +52,7 @@ public class TagService : ApiServiceBase, ITagService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Tag.Add,
+                Errors.Api.Tag.Add,
                 "Tag {name} add error",
                 request.Name);
         }
@@ -65,7 +65,7 @@ public class TagService : ApiServiceBase, ITagService
         if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(request.Id) is not { } existedTag)
         {
             return LoggedError<Guid>(
-                ApiErrors.Tag.NotFound,
+                Errors.Api.Tag.NotFound,
                 "Tag {name} not found",
                 request.Name);
         }
@@ -76,7 +76,7 @@ public class TagService : ApiServiceBase, ITagService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Tag.Update,
+                Errors.Api.Tag.Update,
                 "Tag {name} update error",
                 request.Name);
         }
@@ -89,7 +89,7 @@ public class TagService : ApiServiceBase, ITagService
         if (await _unitOfWork.GetRepository<Tag>().GetByIdAsync(id) is not { } Tag)
         {
             return LoggedError<Guid>(
-                ApiErrors.Tag.NotFound,
+                Errors.Api.Tag.NotFound,
                 "Tag with {id} not found",
                 id);
         }
@@ -99,7 +99,7 @@ public class TagService : ApiServiceBase, ITagService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Tag.Delete,
+                Errors.Api.Tag.Delete,
                 "Tag with {id} update error",
                 id);
         }

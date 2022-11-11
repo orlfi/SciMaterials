@@ -31,7 +31,7 @@ public class ErrorHandlerMiddleware
     {
         Context.Response.Clear();
         _logger.LogError(exception, exception.Message);
-        var result = Result.Failure(MiddlewareErrors.Exception.Unhandled);
+        var result = Result.Failure(Errors.App.Unhandled);
         await Context.Response.WriteAsJsonAsync(result);
     }
 }
