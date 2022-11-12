@@ -13,6 +13,7 @@ public class File : Resource
     public Guid? FileGroupId { get; set; }
     public int AntivirusScanStatus { get; set; }
     public DateTime? AntivirusScanDate { get; set; }
+    string ShortLink { get; set; }
 
     public ContentType? ContentType { get; set; }
     public FileGroup? FileGroup { get; set; }
