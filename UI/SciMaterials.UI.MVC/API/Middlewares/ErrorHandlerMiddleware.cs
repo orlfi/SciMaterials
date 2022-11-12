@@ -1,5 +1,5 @@
 ﻿using SciMaterials.Contracts.Result;
-using SciMaterials.Contracts.Errors;
+using SciMaterials.Contracts;
 using Microsoft.Extensions.Logging;
 
 namespace SciMaterials.UI.MVC.API.Middlewares;
@@ -31,7 +31,7 @@ public class ErrorHandlerMiddleware
     {
         Context.Response.Clear();
         _logger.LogError(exception, exception.Message);
-        var result = Result.Failure(MiddlewareErrors.Exception.Unhandled);
+        var result = Result.Failure(Errors.App.Unhandled);
         await Context.Response.WriteAsJsonAsync(result);
     }
 }

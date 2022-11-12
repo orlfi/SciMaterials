@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using SciMaterials.Contracts.Errors;
+using SciMaterials.Contracts;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;
@@ -83,7 +83,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         {
             case 0:
                 return LoggedError<string>(
-                    ShortLinkErrors.ShortCut.HashNotFound,
+                    Errors.ShortLink.HashNotFound,
                     "Link with hash {hash} not found",
                     hash);
             case 1:

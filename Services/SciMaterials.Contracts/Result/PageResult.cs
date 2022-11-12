@@ -18,7 +18,7 @@ public class PageResult<TData> : Result
         PageSize = pageSize,
     };
 
-    public static new PageResult<TData> Error(int code, string message = "") => new() { Code = code, Message = message };
+    public static new PageResult<TData> Error(string code, string message = "") => new() { Code = code, Message = message };
 
     public static new PageResult<TData> Error(Error error) => Error(error.Code, error.Message);
 

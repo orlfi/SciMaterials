@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Result;
-using SciMaterials.Contracts.Errors.Api;
+using SciMaterials.Contracts;
 using SciMaterials.DAL.Models;
 
 namespace SciMaterials.Services.API.Services.Categories;
@@ -35,7 +35,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is not { } Category)
         {
             return LoggedError<GetCategoryResponse>(
-                ApiErrors.Category.NotFound,
+                Errors.Api.Category.NotFound,
                 "Category with ID {id} not found",
                 id);
         }
@@ -52,7 +52,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Category.Add,
+                Errors.Api.Category.Add,
                 "Category {name} add error",
                 request.Name);
         }
@@ -65,7 +65,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(request.Id) is not { } existedCategory)
         {
             return LoggedError<Guid>(
-                ApiErrors.Category.NotFound,
+                Errors.Api.Category.NotFound,
                 "Category {name} not found",
                 request.Name);
         }
@@ -76,7 +76,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Category.Update,
+                Errors.Api.Category.Update,
                 "Category {name} update error",
                 request.Name);
         }
@@ -89,7 +89,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
         if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is not { } Category)
         {
             return LoggedError<Guid>(
-                ApiErrors.Category.NotFound,
+                Errors.Api.Category.NotFound,
             "Category with {id} not found",
                 id);
         }
@@ -99,7 +99,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
         if (await _unitOfWork.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
-                ApiErrors.Category.Delete,
+                Errors.Api.Category.Delete,
                 "Category with {id} update error",
                 id);
         }

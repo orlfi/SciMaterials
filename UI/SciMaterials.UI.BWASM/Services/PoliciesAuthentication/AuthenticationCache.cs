@@ -84,10 +84,10 @@ public class AuthenticationCache
     {
         if (AuthorityGroups.Values.FirstOrDefault(x => x.Name == authorityGroupName) is not { } authorityGroup)
             // just random
-            return Result.Failure(242);
+            return Result.Failure("242");
 
         if (Users.Values.FirstOrDefault(x => x.Email == userEmail) is not { } user)
-            return Result.Failure(243);
+            return Result.Failure("243");
 
         user.Authority = authorityGroup.Name;
         user.AuthorityGroupId = authorityGroup.Id;
@@ -98,7 +98,7 @@ public class AuthenticationCache
     {
         if (Users.Values.FirstOrDefault(x => x.Email == userEmail) is not { Id: var userId }) return Result.Success();
         return !Users.Remove(userId, out _)
-            ? Result.Failure(243)
+            ? Result.Failure("243")
             : Result.Success();
     }
 
