@@ -27,7 +27,7 @@ services.AddRazorPages();
 services.ConfigureApplication(config);
 services.AddDatabaseProviders(config);
 services.AddApiServices(config);
-
+services.AddSwagger();
 services.AddAuthApiServices(config);
 services.AddAuthDbInitializer();
 services.AddAuthUtils();
