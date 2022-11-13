@@ -69,6 +69,12 @@ public class FileService : ApiServiceBase, IFileService
                 id);
         }
 
+        if (file.Description is { Length: > 0 })
+        {
+            var description = await _linkReplaceService.RestoreLinksAsync(file.Description, Cancel).ConfigureAwait(false);
+            file.Description = description;
+        }
+
         var result = _mapper.Map<GetFileResponse>(file);
         return result;
     }
@@ -115,6 +121,12 @@ public class FileService : ApiServiceBase, IFileService
         {
             var getTagsResult = await GetTagsFromSeparatedStringAsync(_separator, editFileRequest.Tags);
             file.Tags = getTagsResult.Data;
+        }
+
+        if (file.Description is { Length: > 0 })
+        {
+            var description = await _linkReplaceService.ShortenLinksAsync(file.Description, Cancel).ConfigureAwait(false);
+            file.Description = description;
         }
 
         await _unitOfWork.GetRepository<File>().UpdateAsync(file);
@@ -196,8 +208,12 @@ public class FileService : ApiServiceBase, IFileService
             return Result<Guid>.Failure(verifyFileUploadRequestResult);
         }
 
-        var descriptionWithShortLinks = await _linkReplaceService.ShortenLinksAsync(uploadFileRequest.Description, Cancel);
-        uploadFileRequest.Description = descriptionWithShortLinks;
+        if (uploadFileRequest.Description is { Length: > 0 })
+        {
+            var descriptionWithShortLinks = await _linkReplaceService.ShortenLinksAsync(uploadFileRequest.Description, Cancel);
+            uploadFileRequest.Description = descriptionWithShortLinks;
+        }
+
         var writeToStoreResult = await WriteToStore(uploadFileRequest, fileStream, Cancel);
         if (!writeToStoreResult.Succeeded)
         {
