@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
 using SciMaterials.DAL.Contexts;
 
-namespace SciMaterials.Data.MySqlMigrations;
+namespace SciMaterials.SQLiteMigrations;
 
 public static class Registrator
 {
