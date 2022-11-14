@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SciMaterials.DAL.Contexts;
 
-namespace SciMaterials.Data.MySqlMigrations;
+namespace SciMaterials.MsSqlServerMigrations;
 
 public static class Registrator
 {

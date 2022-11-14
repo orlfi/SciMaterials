@@ -95,6 +95,20 @@ public static class DataSeeder
             }
         }
 
+        if (!await db.Urls.AnyAsync(Cancel))
+        {
+            try
+            {
+                await db.Urls.AddRangeAsync(JsonConvert.DeserializeObject<List<Url>>(Encoding.UTF8.GetString(Resources.Urls))!, Cancel);
+                await db.SaveChangesAsync(Cancel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "Error loading data Urls");
+                throw;
+            }
+        }
+
         if (!await db.Links.AnyAsync(Cancel))
         {
             try
@@ -133,20 +147,6 @@ public static class DataSeeder
             catch (Exception e)
             {
                 Logger.LogError(e, "Error loading data Categories");
-                throw;
-            }
-        }
-
-        if (!await db.Urls.AnyAsync(Cancel))
-        {
-            try
-            {
-                await db.Urls.AddRangeAsync(JsonConvert.DeserializeObject<List<Url>>(Encoding.UTF8.GetString(Resources.Urls))!, Cancel);
-                await db.SaveChangesAsync(Cancel);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "Error loading data Urls");
                 throw;
             }
         }
