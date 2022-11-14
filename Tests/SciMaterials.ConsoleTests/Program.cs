@@ -67,7 +67,8 @@ await using (var scope = host.Services.CreateAsyncScope())
         Tags = "0853E794-8271-C3CA-5468-305D507E3D2A,7B46CD12-AC97-67F6-BC02-39F514C982C7,088E2112-1310-5662-B76C-5C912B98B047",
         Categories = "95B24213-7458-A856-12CC-523D2EB4C539,8556B663-3758-E42E-872A-2AA503745384",
     };
-    await updateFileTest.Update(editFileRequest);
+    //await updateFileTest.Update(editFileRequest);
+    await updateFileTest.UpdateByContext(editFileRequest);
 }
 
 await using (var scope = host.Services.CreateAsyncScope())
@@ -85,7 +86,9 @@ await using (var scope = host.Services.CreateAsyncScope())
         Tags = "0853E794-8271-C3CA-5468-305D507E3D2A,47FD91E3-A91C-6578-678B-7A4EEB9DF9C9",
         Categories = "95B24213-7458-A856-12CC-523D2EB4C539,8556B663-3758-E42E-872A-2AA503745384",
     };
-    await updateFileTest.Update(editFileRequest);
+    //await updateFileTest.Update(editFileRequest);
+    await updateFileTest.UpdateByContext(editFileRequest);
+
 }
 
 Console.WriteLine("Press any key to exit...");
