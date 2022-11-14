@@ -252,16 +252,16 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        var entityDb = await GetByIdAsync(entity.Id, false);
+        //var entityDb = await GetByIdAsync(entity.Id, false);
 
-        if (entityDb is null)
-        {
-            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
-            throw new ArgumentNullException(nameof(entityDb));
-        }
+        //if (entityDb is null)
+        //{
+        //    _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+        //    throw new ArgumentNullException(nameof(entityDb));
+        //}
 
-        entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Files.Update(entityDb);
+        //entityDb = UpdateCurrentEntity(entity, entityDb);
+        //_context.Files.Update(entity);
     }
 
     ///

@@ -111,16 +111,18 @@ public class UpdateFileTest
         var file = _mapper.Map(editFileRequest, existed);
 
         var tagIdStrings = editFileRequest.Tags.Split(',').Select(t => Guid.Parse(t));
+        file.Tags.Clear();
         foreach (var tagId in tagIdStrings)
         {
-            var tag = await _unitOfWork.GetRepository<Tag>().GetByIdAsync(tagId);
+            var tag = await _unitOfWork.GetRepository<Tag>().GetByIdAsync(tagId, false, true);
             file.Tags.Add(tag);
         }
 
         var categoryIdStrings = editFileRequest.Categories.Split(',').Select(t => Guid.Parse(t));
+        file.Categories.Clear();
         foreach (var categoryId in categoryIdStrings)
         {
-            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId);
+            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, false, true);
             file.Categories.Add(category);
         }
 
