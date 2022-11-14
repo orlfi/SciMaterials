@@ -31,6 +31,7 @@ public class UpdateFileTest
     {
         var existed = await _unitOfWork.GetRepository<File>().GetByIdAsync(editFileRequest.Id);
         var file = _mapper.Map(editFileRequest, existed);
+
         var tagIdStrings = editFileRequest.Tags.Split(',').Select(t => Guid.Parse(t));
         foreach (var tagId in tagIdStrings)
         {
@@ -46,13 +47,6 @@ public class UpdateFileTest
         }
 
         await _unitOfWork.GetRepository<File>().UpdateAsync(file);
-        try
-        {
-            await _unitOfWork.SaveContextAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка");
-        }
+        await _unitOfWork.SaveContextAsync();
     }
 }
