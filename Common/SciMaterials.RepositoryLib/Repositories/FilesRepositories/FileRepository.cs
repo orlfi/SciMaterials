@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
+
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
@@ -198,7 +200,7 @@ public class FileRepository : IFileRepository
         var query = _context.Files
             .Where(c => c.Id == id)
             .AsQueryable();
-        
+
         if (include)
             query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
@@ -226,7 +228,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        var entityDb = _context.Set<File>().Find(entity.Id);
+        var entityDb = GetById(entity.Id, false);
 
         if (entityDb is null)
         {
@@ -250,7 +252,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        var entityDb = await _context.Set<File>().FindAsync(entity.Id);
+        var entityDb = await GetByIdAsync(entity.Id, false);
 
         if (entityDb is null)
         {
@@ -315,7 +317,7 @@ public class FileRepository : IFileRepository
         var query = _context.Files
                 .Where(c => c.Hash == hash && !c.IsDeleted)
                 .AsQueryable();
-        
+
         if (include)
             query = query.Include(f => f.ContentType)
                 .Include(f => f.FileGroup)
