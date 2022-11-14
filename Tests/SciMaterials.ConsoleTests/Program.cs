@@ -68,7 +68,7 @@ await using (var scope = host.Services.CreateAsyncScope())
         Categories = "95B24213-7458-A856-12CC-523D2EB4C539,8556B663-3758-E42E-872A-2AA503745384",
     };
     //await updateFileTest.Update(editFileRequest);
-    await updateFileTest.UpdateByContext(editFileRequest);
+    await updateFileTest.UpdateByContext2(editFileRequest);
 }
 
 await using (var scope = host.Services.CreateAsyncScope())
@@ -87,7 +87,7 @@ await using (var scope = host.Services.CreateAsyncScope())
         Categories = "95B24213-7458-A856-12CC-523D2EB4C539,8556B663-3758-E42E-872A-2AA503745384",
     };
     //await updateFileTest.Update(editFileRequest);
-    await updateFileTest.UpdateByContext(editFileRequest);
+    await updateFileTest.UpdateByContext2(editFileRequest);
 
 }
 

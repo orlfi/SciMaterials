@@ -82,6 +82,29 @@ public class UpdateFileTest
         await _db.SaveChangesAsync();
     }
 
+    public async Task UpdateByContext2(EditFileRequest editFileRequest)
+    {
+        var existed = await _db.Files
+            .Include(f => f.ContentType)
+                .Include(f => f.FileGroup)
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings).SingleOrDefaultAsync(f => f.Id == editFileRequest.Id);
+        var file = _mapper.Map(editFileRequest, existed);
+
+        var tagIdStrings = editFileRequest.Tags.Split(',').Select(t => Guid.Parse(t)).ToList();
+        var tags = await _db.Tags.Where(t => tagIdStrings.Contains(t.Id)).ToListAsync();
+        file.Tags = tags;
+
+        var categoryIdStrings = editFileRequest.Categories.Split(',').Select(t => Guid.Parse(t)).ToList();
+        var categories = await _db.Categories.Where(c => categoryIdStrings.Contains(c.Id)).ToListAsync();
+        file.Categories = categories;
+
+        await _db.SaveChangesAsync();
+    }
+
     public async Task Update(EditFileRequest editFileRequest)
     {
         var existed = await _unitOfWork.GetRepository<File>().GetByIdAsync(editFileRequest.Id, false, true);
