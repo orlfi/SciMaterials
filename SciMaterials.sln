@@ -97,8 +97,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.Shor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services", "Services\SciMaterials.Services\SciMaterials.Services.csproj", "{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.Contracts.Tests", "..\SciMaterials.Contracts.Tests\SciMaterials.Contracts.Tests.csproj", "{3A99C044-39E6-42BD-8A41-B8C4745C345C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -233,10 +231,6 @@ Global
 		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3A99C044-39E6-42BD-8A41-B8C4745C345C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A99C044-39E6-42BD-8A41-B8C4745C345C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A99C044-39E6-42BD-8A41-B8C4745C345C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A99C044-39E6-42BD-8A41-B8C4745C345C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -278,7 +272,6 @@ Global
 		{CD33DE9D-FE97-4D74-9ED3-3A09303C9359} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 		{9D1A70CC-FBCE-41BF-BC31-DAC268B3D817} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 		{8DE467ED-6595-4575-9C85-C5D2B7FB58FA} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
-		{3A99C044-39E6-42BD-8A41-B8C4745C345C} = {5C574E55-8850-444A-B8FF-49CDE2A80251}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}
