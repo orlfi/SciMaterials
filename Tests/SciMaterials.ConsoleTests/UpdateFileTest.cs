@@ -114,7 +114,7 @@ public class UpdateFileTest
         file.Tags.Clear();
         foreach (var tagId in tagIdStrings)
         {
-            var tag = await _unitOfWork.GetRepository<Tag>().GetByIdAsync(tagId, false, true);
+            var tag = await _unitOfWork.GetRepository<Tag>().GetByIdAsync(tagId, false, false);
             file.Tags.Add(tag);
         }
 
@@ -122,7 +122,7 @@ public class UpdateFileTest
         file.Categories.Clear();
         foreach (var categoryId in categoryIdStrings)
         {
-            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, false, true);
+            var category = await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, false, false);
             file.Categories.Add(category);
         }
 
