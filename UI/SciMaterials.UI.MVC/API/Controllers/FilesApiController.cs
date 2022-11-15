@@ -44,14 +44,26 @@ public class FilesApiController : ApiBaseController<FilesApiController>
 
     /// <summary> Get file metadata by Id. </summary>
     /// <param name="id"> File Id. </param>
-    [HttpGet("{id}")]
+    [HttpGet("{id}/{restoreLinks?}")]
     [ProducesDefaultResponseType(typeof(Result<GetFileResponse>))]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid id, [FromRoute] bool restoreLinks = false)
     {
         _logger.LogDebug("Get by id {id}", id);
-        var result = await _fileService.GetByIdAsync(id);
+        var result = await _fileService.GetByIdAsync(id, restoreLinks);
         return Ok(result);
     }
+
+    /// <summary> Get file metadata by Hash. </summary>
+    /// <param name="id"> File hash. </param>
+    [HttpGet("GetByHash/{hash}/{restoreLinks?}")]
+    [ProducesDefaultResponseType(typeof(Result<GetFileResponse>))]
+    public async Task<IActionResult> GetByHash([FromRoute] string hash, [FromRoute] bool restoreLinks = false)
+    {
+        _logger.LogDebug("Get by hash {hash}", hash);
+        var result = await _fileService.GetByHashAsync(hash, restoreLinks);
+        return Ok(result);
+    }
+
 
     [HttpPut("Edit")]
     [ProducesDefaultResponseType(typeof(Guid))]

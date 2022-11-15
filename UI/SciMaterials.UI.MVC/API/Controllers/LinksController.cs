@@ -19,8 +19,8 @@ public class LinksController : ApiBaseController<LinksController>
     [HttpGet("{hash}")]
     public async Task<IActionResult> GetByIdAsync([FromRoute] string hash)
     {
-        var linkResult = await _linkShortCut.GetAsync(hash);
-        
+        var linkResult = await _linkShortCut.GetAsync(hash, true);
+
         if (linkResult.Succeeded)
             return Redirect(linkResult.Data);
 

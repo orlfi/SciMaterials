@@ -11,6 +11,9 @@ public class Result
     /// <summary> Успешность выполнения операции (true - успешно | false - ошибка) </summary>
     public bool Succeeded => Code.Length == 0;
 
+    /// <summary> Неуспешное выполнения операции (true - ошибка | false - успешно) </summary>
+    public bool IsFaulted => !Succeeded;
+
     /// <summary> Возращает успешный результат выполнения операции. </summary>
     /// <returns> Результат операции. </returns>
     public static Result Success() => new();
