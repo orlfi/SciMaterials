@@ -11,26 +11,22 @@ namespace SciMaterials.Services.Database.Extensions;
 
 public static class ApplicationExtension
 {
-    public static async Task<IApplicationBuilder> InitializeDbAsync(this IApplicationBuilder app, IConfiguration configuration)
+    public static async Task InitializeDbAsync(this IApplicationBuilder app, IConfiguration configuration)
     {
         await using var scope = app.ApplicationServices.CreateAsyncScope();
-
-        var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
+        var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
         
-        //if (dbSetting.DbProvider.Equals("PostgreSQL")) // TODO:???!!!???
-        //{
-        //    var context = scope.ServiceProvider.GetRequiredService<SciMaterialsContext>();
-        //    await context.Database.MigrateAsync().ConfigureAwait(false);
-        //}
+        if (context.Database.IsSqlite())
+            await context.Database.MigrateAsync().ConfigureAwait(false);
 
         var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
         await authDb.InitializeAsync();
+
+        var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
 
         var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
         await initializer.InitializeDbAsync(
                 RemoveAtStart: db_setting.RemoveAtStart,
                 UseDataSeeder: db_setting.UseDataSeeder);
-
-        return app;
     }
 }
