@@ -12,6 +12,7 @@ using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
 using SciMaterials.Contracts;
 using SciMaterials.Contracts.ShortLinks;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SciMaterials.Services.API.Services.Files;
 
@@ -90,7 +91,7 @@ public class FileService : ApiServiceBase, IFileService
 
     public async Task<Result<Guid>> EditAsync(EditFileRequest editFileRequest, CancellationToken Cancel = default)
     {
-        if (await _unitOfWork.GetRepository<File>().GetByIdAsync(editFileRequest.Id) is not { } existingFile)
+        if (await _unitOfWork.GetRepository<File>().GetByIdAsync(editFileRequest.Id, false, true) is not { } existingFile)
         {
             return LoggedError<Guid>(
                 Errors.Api.File.NotFound,
@@ -98,7 +99,7 @@ public class FileService : ApiServiceBase, IFileService
                 editFileRequest.Id);
         }
 
-        var verifyCategoriesResult = await VerifyCategories(editFileRequest.Categories);
+        var verifyCategoriesResult = await VerifyCategories(_separator, editFileRequest.Categories);
         if (!verifyCategoriesResult.Succeeded)
         {
             return Result<Guid>.Failure(verifyCategoriesResult);
@@ -108,12 +109,14 @@ public class FileService : ApiServiceBase, IFileService
 
         if (verifyCategoriesResult.Data is { })
         {
+            file.Categories.Clear();
             file.Categories = verifyCategoriesResult.Data;
         }
 
         if (editFileRequest.Tags is { Length: > 0 })
         {
             var getTagsResult = await GetTagsFromSeparatedStringAsync(_separator, editFileRequest.Tags);
+            file.Tags?.Clear();
             file.Tags = getTagsResult.Data;
         }
 
@@ -198,13 +201,19 @@ public class FileService : ApiServiceBase, IFileService
 
         var descriptionWithShortLinks = await _linkReplaceService.ShortenLinksAsync(uploadFileRequest.Description, Cancel);
         uploadFileRequest.Description = descriptionWithShortLinks;
-        var writeToStoreResult = await WriteToStore(uploadFileRequest, fileStream, Cancel);
+        var writeToStoreResult = await WriteFileToStoreAsync(uploadFileRequest, fileStream, Cancel);
         if (!writeToStoreResult.Succeeded)
         {
             return Result<Guid>.Failure(writeToStoreResult);
         }
 
-        var writeToDatabaseResult = await WriteToDatabase(writeToStoreResult.Data, Cancel);
+        var writeMetadataToStoreResult = await WriteMetadataToStoreAsync(writeToStoreResult.Data, Cancel);
+        if (!writeMetadataToStoreResult.Succeeded)
+        {
+            return Result<Guid>.Failure(writeMetadataToStoreResult);
+        }
+
+        var writeToDatabaseResult = await WriteToDatabaseAsync(writeToStoreResult.Data, Cancel);
         if (!writeToDatabaseResult.Succeeded)
         {
             _ = DeleteFileFromFileSystem(writeToStoreResult.Data.Id, Cancel);
@@ -220,7 +229,7 @@ public class FileService : ApiServiceBase, IFileService
             return Result<Guid>.Failure(verifyContentTypeResult);
         }
 
-        if (await VerifyCategories(uploadFileRequest.Categories) is { Succeeded: false } verifyCategoriesResult)
+        if (await VerifyCategories(_separator, uploadFileRequest.Categories) is { Succeeded: false } verifyCategoriesResult)
         {
             return Result<Guid>.Failure(verifyCategoriesResult);
         }
@@ -234,7 +243,7 @@ public class FileService : ApiServiceBase, IFileService
         {
             return LoggedError<Guid>(
                 Errors.Api.File.Exist,
-                "File with name {fileName} alredy exist",
+                "File with name {fileName} already exist",
                 uploadFileRequest.Name);
         }
 
@@ -254,7 +263,7 @@ public class FileService : ApiServiceBase, IFileService
         return contentTypeModel;
     }
 
-    private async Task<Result<ICollection<Category>>> VerifyCategories(string categoriesString)
+    private async Task<Result<ICollection<Category>>> VerifyCategories(string separator, string categoriesString)
     {
         if (categoriesString is not { Length: > 0 })
         {
@@ -263,14 +272,22 @@ public class FileService : ApiServiceBase, IFileService
                 "File categories are not specified");
         }
 
-        var categoryIdArray = categoriesString.Split(",").Select(c => Guid.Parse(c)).ToArray();
-        var result = new List<Category>(categoryIdArray.Length);
-        foreach (var categoryId in categoryIdArray)
+        var categoryStrings = categoriesString.Split(separator);
+        var result = new List<Category>(categoryStrings.Length);
+        foreach (var categoryStringId in categoryStrings)
         {
+            if (!Guid.TryParse(categoryStringId, out Guid categoryId))
+            {
+                return LoggedError<ICollection<Category>>(
+                    Errors.Api.File.CategoryNotFound,
+                    "Category string {categoryStringId} is not correct Guid",
+                    categoryStringId);
+            }
+
             if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(categoryId, disableTracking: false) is not { } category)
             {
                 return LoggedError<ICollection<Category>>(
-                    Errors.Api.File.CategoriesNotFound,
+                    Errors.Api.File.CategoryNotFound,
                     "File category with ID {categoryId} not found",
                     categoryId);
             }
@@ -309,7 +326,7 @@ public class FileService : ApiServiceBase, IFileService
         return result;
     }
 
-    private async Task<Result<Guid>> WriteToDatabase(FileMetadata metadata, CancellationToken Cancel = default)
+    private async Task<Result<Guid>> WriteToDatabaseAsync(FileMetadata metadata, CancellationToken Cancel = default)
     {
         if (metadata is null)
         {
@@ -327,7 +344,7 @@ public class FileService : ApiServiceBase, IFileService
             return Result<Guid>.Failure(verifyContentTypeResult);
         }
 
-        var verifyCategoriesResult = await VerifyCategories(metadata.Categories);
+        var verifyCategoriesResult = await VerifyCategories(_separator, metadata.Categories);
         if (!verifyCategoriesResult.Succeeded)
         {
             return Result<Guid>.Failure(verifyCategoriesResult);
@@ -358,13 +375,14 @@ public class FileService : ApiServiceBase, IFileService
         return file.Id;
     }
 
-    private async Task<Result<FileMetadata>> WriteToStore(UploadFileRequest uploadFileRequest, Stream fileStream, CancellationToken Cancel = default)
+    private async Task<Result<FileMetadata>> WriteFileToStoreAsync(UploadFileRequest uploadFileRequest, Stream fileStream, CancellationToken Cancel = default)
     {
         try
         {
-            var id = Guid.NewGuid();
-            var path = Path.Combine(_path, id.ToString());
-            var fileWriteResult = await _fileStore.WriteAsync(path, fileStream, Cancel).ConfigureAwait(false);
+
+            Guid id = Guid.NewGuid();
+            var filePath = GetFilePath(_path, id);
+            var fileWriteResult = await _fileStore.WriteAsync(filePath, fileStream, Cancel).ConfigureAwait(false);
 
             var metadata = _mapper.Map<FileMetadata>(uploadFileRequest);
             metadata.Id = id;
@@ -373,7 +391,7 @@ public class FileService : ApiServiceBase, IFileService
 
             if (await _unitOfWork.GetRepository<File>().GetByHashAsync(metadata.Hash) is { } existingFile)
             {
-                _fileStore.Delete(path);
+                _fileStore.Delete(filePath);
 
                 LoggedError<FileMetadata>(
                     Errors.Api.File.Exist,
@@ -381,10 +399,7 @@ public class FileService : ApiServiceBase, IFileService
                     existingFile.Hash,
                     existingFile.Id);
             }
-
-            var metadataJsonString = JsonSerializer.Serialize(metadata);
-            _ = await _fileStore.WriteAsync(GetMetadataPath(path), metadataJsonString, Cancel).ConfigureAwait(false);
-
+            _logger.LogInformation("File {fileName} saved to store", metadata.Name);
             return metadata;
         }
         catch (Exception ex)
@@ -397,14 +412,36 @@ public class FileService : ApiServiceBase, IFileService
         }
     }
 
+    private async Task<Result> WriteMetadataToStoreAsync(FileMetadata metadata, CancellationToken Cancel = default)
+    {
+        try
+        {
+            var metadataJsonString = JsonSerializer.Serialize(metadata);
+            var metadataFilePath = GetMetadataPath(_path, metadata.Id);
+            _ = await _fileStore.WriteAsync(metadataFilePath, metadataJsonString, Cancel).ConfigureAwait(false);
+            _logger.LogInformation("File {fileName} metadata saved to store", metadata.Name);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            _fileStore.Delete(GetFilePath(_path, metadata.Id));
+
+            return LoggedError<FileMetadata>(
+                Errors.Api.File.StoreWrite,
+                ex,
+                "Error when saving a metadata file {fileName} to storage",
+                metadata.Name);
+        }
+    }
+
     private Task<Result<Guid>> DeleteFileFromFileSystem(Guid id, CancellationToken Cancel = default)
     {
         try
         {
-            var filePath = Path.Combine(_path, id.ToString());
+            var filePath = GetFilePath(_path, id);
             _fileStore.Delete(filePath);
 
-            var metadataPath = GetMetadataPath(filePath);
+            var metadataPath = GetMetadataPath(_path, id);
             _fileStore.Delete(metadataPath);
 
             _logger.LogInformation("File with ID {id} deleted from file system", id);
@@ -436,6 +473,9 @@ public class FileService : ApiServiceBase, IFileService
         return Result<Guid>.Success();
     }
 
-    private static string GetMetadataPath(string filePath)
-        => Path.ChangeExtension(filePath, "json");
+    private static string GetFilePath(string path, Guid id)
+         => Path.Combine(path, id.ToString());
+
+    private static string GetMetadataPath(string path, Guid id)
+        => Path.Combine(path, id.ToString(), ".json");
 }
