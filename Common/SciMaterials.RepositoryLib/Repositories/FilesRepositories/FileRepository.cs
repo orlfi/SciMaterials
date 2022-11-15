@@ -228,16 +228,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        var entityDb = GetById(entity.Id, false);
-
-        if (entityDb is null)
-        {
-            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
-            throw new ArgumentNullException(nameof(entityDb));
-        }
-
-        entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Files.Update(entityDb);
+        _context.Files.Update(entity);
     }
 
     ///
@@ -252,16 +243,7 @@ public class FileRepository : IFileRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        var entityDb = await GetByIdAsync(entity.Id, false);
-
-        if (entityDb is null)
-        {
-            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
-            throw new ArgumentNullException(nameof(entityDb));
-        }
-
-        entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Files.Update(entityDb);
+        _context.Files.Update(entity);
     }
 
     ///
@@ -418,36 +400,5 @@ public class FileRepository : IFileRepository
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
-    }
-
-
-    /// <summary> Обновить данные экземпляра каегории. </summary>
-    /// <param name="sourse"> Источник. </param>
-    /// <param name="recipient"> Получатель. </param>
-    /// <returns> Обновленный экземпляр. </returns>
-    private File UpdateCurrentEntity(File sourse, File recipient)
-    {
-        recipient.Name = sourse.Name;
-        recipient.IsDeleted = sourse.IsDeleted;
-
-        recipient.ShortInfo = sourse.ShortInfo;
-        recipient.Description = sourse.Description;
-        recipient.AuthorId = sourse.AuthorId;
-        recipient.CreatedAt = sourse.CreatedAt;
-        recipient.Author = sourse.Author;
-        recipient.Comments = sourse.Comments;
-        recipient.Tags = sourse.Tags;
-        recipient.Categories = sourse.Categories;
-        recipient.Ratings = sourse.Ratings;
-
-        recipient.Size = sourse.Size;
-        recipient.Hash = sourse.Hash;
-        recipient.ContentTypeId = sourse.ContentTypeId;
-        recipient.FileGroupId = sourse.FileGroupId;
-        recipient.ContentType = sourse.ContentType;
-        recipient.FileGroup = sourse.FileGroup;
-
-
-        return recipient;
     }
 }

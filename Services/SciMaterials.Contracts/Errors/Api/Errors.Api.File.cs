@@ -18,10 +18,10 @@ public static partial class Errors
             public static readonly Error Exist = new("API005", "File already exist");
             public static readonly Error ContentTypeNotFound = new("API006", "File content type not found");
             public static readonly Error CategoriesAreNotSpecified = new("API007", "File categories are not specified");
-            public static readonly Error CategoriesNotFound = new("API008", "File category not found");
+            public static readonly Error CategoryNotFound = new("API008", "File category not found");
             public static readonly Error AuthorNotFound = new("API009", "File author not found");
             public static readonly Error StoreWrite = new("API010", "File write to store error");
-            public static readonly Error MissingMetadata = new("API011", "Missing is missing");
+            public static readonly Error MissingMetadata = new("API011", "Metadata is missing");
             public static readonly Error MissingSection = new("API012", "Form-data sections does not contains files");
         }
     }
