@@ -224,9 +224,9 @@ namespace SciMaterials.MsSqlServerMigrations.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LastAccess")
+                    b.Property<DateTime?>("LastAccess")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .HasColumnType("datetime");
 
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
