@@ -2,4 +2,25 @@
 
 <PageTitle>Index</PageTitle>
 
-<Dashboard />
+<Dashboard @ref="_dashboard" PageNumber="@PageNumber" PageCount="@PageCount" />
+
+<button class="btn btn-primary" @onclick="UpdateAsync">Обновить</button>
+<button class="btn btn-primary" @onclick="() => PageNumber--">Назад</button>
+<button class="btn btn-primary" @onclick="() => PageNumber++">Вперед</button>
+<input class="form-control" type="text" @bind="PageNumber">
+<input class="form-control" type="text" @bind="PageCount">
+
+@code{
+	[Parameter]
+	public int PageNumber { get; set; } = 1;
+
+	[Parameter]
+	public int PageCount { get; set; } = 5;
+
+	private Dashboard _dashboard;
+
+	private async Task UpdateAsync()
+	{
+		await _dashboard.UpdateAsync();
+	}
+}
