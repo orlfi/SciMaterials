@@ -117,18 +117,18 @@
 		"RowVersion": [ 13 ]
 	},
 	{
-		"Id": "B1AD87C7-C490-EED2-8671-B8D662862D51",
-		"SourceAddress": "http://cnn.com",
-		"Hash": "3557d4406a62557e1b3fd13cc61dff87b541322a332a9cae15a94d3336fafd8bac46eea473af8d32929e514cec76ef06824a9516b13e56591290dba53ac15b4e",
+		"Id": "71E6F23F-5DA3-40B0-D4AA-08DAC6FE297D",
+		"SourceAddress": "https://dotnet.microsoft.com/en-us/",
+		"Hash": "hj0BjGzO+MYXJaY+iutG3QwhQurSOY9R8KUdD2hmPUYRZEMM4iMxrE1pfakN0VMF3K9Nhbt3eIKgQMZ27LdRZw==",
 		"IsDeleted": false,
 		"AccessCount": 0,
 		"LastAccess": 0,
 		"RowVersion": [ 14 ]
 	},
 	{
-		"Id": "D366C6C5-5122-EDBB-816C-C7396342C527",
-		"SourceAddress": "https://cnn.com",
-		"Hash": "4092c8efcdf6cc1f354841de0a9ffa3eb25d97bbfc8471462a23181c6de2e387ba963f56d2bdc2ae3083c49e78d69bc565b874c470afb3ff624206114f8131e6",
+		"Id": "F9E53318-D5B9-4158-D4A9-08DAC6FE297D",
+		"SourceAddress": "https://learn.microsoft.com/ru-ru/dotnet/csharp/",
+		"Hash": "aGQBB8CsLiY4J/hYRRvj05hF6cBQ//upXPcntz5nIpew6IxdV6e4WoIULEEuJ/Fl5vXI9jsg6rt7aQBTG/wZQQ==",
 		"IsDeleted": false,
 		"AccessCount": 0,
 		"LastAccess": 0,

@@ -69,7 +69,7 @@ public class FileServiceTests
 
         #region Act
 
-        var result = await service.GetByIdAsync(expected_file_id);
+        var result = await service.GetByIdAsync(expected_file_id, false);
 
         #endregion
 

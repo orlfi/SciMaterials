@@ -1,9 +1,12 @@
-﻿using System.Security.Cryptography;
+﻿using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography;
 using System.Text;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -12,6 +15,7 @@ using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;
 using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Models;
 
 namespace SciMaterials.Services.ShortLinks;
 
@@ -24,6 +28,8 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
     private readonly string _encodingName;
     private readonly int _hashLength;
     private readonly string _hashAlgorithmName;
+    private readonly int _concurrentTimeout;
+    private readonly int _concurrentTryCount;
 
     public LinkShortCutService(
         SciMaterialsContext db,
@@ -39,7 +45,9 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         (
             _hashLength,
             _hashAlgorithmName,
-            _encodingName
+            _encodingName,
+            _concurrentTimeout,
+            _concurrentTryCount
         ) = options.Value;
     }
 
@@ -69,10 +77,75 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
     /// <param name="hash"> Сокращенный хеш. </param>
     /// <param name="Cancel"> Токен отмены. </param>
     /// <returns> Адрес исходной ссылки. </returns>
-    public Task<Result<string>> GetAsync(string hash, CancellationToken Cancel = default)
+    public async Task<Result<string>> GetAsync(string shortLink, bool isRedirect = false, CancellationToken Cancel = default)
     {
-        return Task.FromResult(Result<string>.Success("testlink"));
+        var hash = shortLink[(shortLink.LastIndexOf('/') + 1)..];
+        if (hash.Length < _hashLength)
+        {
+            _logger.LogError("Short link {shortLink} hash length must be greater than or equal to {hashLength}", shortLink, _hashLength);
+            return Result<String>.Failure(Errors.ShortLink.HashNotFound);
+
+        }
+
+        var link = await _db.Links.SingleOrDefaultAsync(l => l.Hash.StartsWith(hash));
+        if (link is not { })
+        {
+            _logger.LogError("Short link hash {hash} not found", hash);
+            return Result<String>.Failure(Errors.ShortLink.HashNotFound);
+        }
+
+        if (isRedirect)
+        {
+            var registerResult = await RegisterLinkAccess(link.Id, Cancel);
+            if (registerResult.IsFaulted)
+            {
+                return Result<string>.Failure(registerResult);
+            }
+        }
+
+        return link.SourceAddress;
     }
+
+    public string GetLinkBasePath() =>
+        _linkGenerator.GetUriByAction(_httpContext, "GetById", "Links", new { hash = "*" }, _httpContext.Request.Scheme)
+            .TrimEnd('*');
+
+
+    private async Task<Result> RegisterLinkAccess(Guid id, CancellationToken Cancel)
+    {
+        for (int i = 0; i <= _concurrentTryCount; i++)
+        {
+            try
+            {
+                var link = await _db.Links.SingleAsync(l => l.Id == id, Cancel);
+                // TODO: обновить свойство в модели на DateTime
+                // link.LastAccess = DateTime.Now; 
+                link.AccessCount++;
+                _db.Update(link);
+                await _db.SaveChangesAsync(Cancel);
+                return Result.Success();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                _logger.LogWarning(
+                    "Error {0} of concurrent write access to the database when updating the record with id: {linkId}",
+                    i + 1, id);
+
+                await Task.Delay(_concurrentTimeout, Cancel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Register link with id {id} error",
+                    id);
+                return Result.Failure(Errors.ShortLink.RegisterLinkAccess);
+            }
+        }
+        _logger.LogError("Link with id {linkId} concurrent update try count expired", id);
+        return Result.Failure(Errors.ShortLink.СoncurrentTryCountExpired);
+    }
+
 
     private async Task<Result<string>> GetMinShortLinkAsync(string hash, int linkLength, CancellationToken Cancel = default)
     {

@@ -14,7 +14,7 @@ namespace SciMaterials.Services.ShortLinks;
 public class LinkReplaceService : ILinkReplaceService
 {
     private const string sourceLinkPattern = @"((http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)";
-    private const string shortLinkPattern = @"((http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)";
+    private const string hashPattern = @"(\w{5,})";
     private readonly ILinkShortCutService _linkShortCut;
     private readonly ILogger<LinkReplaceService> _logger;
 
@@ -35,11 +35,12 @@ public class LinkReplaceService : ILinkReplaceService
     }
     public async Task<string> RestoreLinksAsync(string text, CancellationToken Cancel = default)
     {
+        var shortLinkPattern = _linkShortCut.GetLinkBasePath() + hashPattern;
         var result = await ReplaceLinksAsync(
             text,
             shortLinkPattern,
-            async (matchText, Cancel) => 
-                await _linkShortCut.GetAsync(matchText, Cancel),
+            async (matchText, Cancel) =>
+                await _linkShortCut.GetAsync(matchText, false, Cancel),
             Cancel);
         return result;
     }

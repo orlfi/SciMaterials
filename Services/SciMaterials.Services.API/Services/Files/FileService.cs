@@ -70,17 +70,24 @@ public class FileService : ApiServiceBase, IFileService
                 id);
         }
 
-        if (file.Description is { Length: > 0 })
-        {
-            var description = await _linkReplaceService.RestoreLinksAsync(file.Description, Cancel).ConfigureAwait(false);
-            file.Description = description;
-        }
-
         var result = _mapper.Map<GetFileResponse>(file);
         return result;
     }
 
-    public async Task<Result<GetFileResponse>> GetByHashAsync(string hash, CancellationToken Cancel = default)
+    public async Task<Result<GetFileResponse>> GetByIdAsync(Guid id, bool restoreLinks = false, CancellationToken Cancel = default)
+    {
+        var result = await GetByIdAsync(id, Cancel);
+
+        if (restoreLinks && result.Succeeded && result.Data?.Description is { Length: > 0 })
+        {
+            var description = await _linkReplaceService.RestoreLinksAsync(result.Data.Description, Cancel).ConfigureAwait(false);
+            result.Data.Description = description;
+        }
+
+        return result;
+    }
+
+    public async Task<Result<GetFileResponse>> GetByHashAsync(string hash, bool restoreLinks = false, CancellationToken Cancel = default)
     {
         if (await _unitOfWork.GetRepository<File>().GetByHashAsync(hash, include: true) is not { } file)
         {
@@ -91,9 +98,15 @@ public class FileService : ApiServiceBase, IFileService
         }
 
         var result = _mapper.Map<GetFileResponse>(file);
+
+        if (restoreLinks && result.Description is { Length: > 0 })
+        {
+            var description = await _linkReplaceService.RestoreLinksAsync(result.Description, Cancel).ConfigureAwait(false);
+            result.Description = description;
+        }
+
         return result;
     }
-
 
     public async Task<Result<Guid>> EditAsync(EditFileRequest editFileRequest, CancellationToken Cancel = default)
     {
@@ -145,10 +158,10 @@ public class FileService : ApiServiceBase, IFileService
         return file.Id;
     }
 
-    public async Task<Result<FileStreamInfo>> DownloadByHash(string hash)
+    public async Task<Result<FileStreamInfo>> DownloadByHash(string hash, CancellationToken Cancel = default)
     {
 
-        if (await GetByHashAsync(hash) is not { } getFileResponse)
+        if (await GetByHashAsync(hash, false, Cancel) is not { } getFileResponse)
         {
             return LoggedError<FileStreamInfo>(
                 Errors.Api.File.NotFound,
@@ -168,9 +181,9 @@ public class FileService : ApiServiceBase, IFileService
         }
     }
 
-    public async Task<Result<FileStreamInfo>> DownloadById(Guid id)
+    public async Task<Result<FileStreamInfo>> DownloadById(Guid id, CancellationToken Cancel = default)
     {
-        if (await GetByIdAsync(id) is not { } getFileResponse)
+        if (await GetByIdAsync(id, Cancel) is not { } getFileResponse)
         {
             return LoggedError<FileStreamInfo>(
                 Errors.Api.File.NotFound,
