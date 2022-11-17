@@ -29,7 +29,7 @@
 				FullWidth = true
 			});
 		base.OnInitialized();
-		Dispatcher.Dispatch(new LoadAuthors());
+		Dispatcher.Dispatch(AuthorsActions.LoadAuthors());
 	}
 
 	private void SelectOption(AuthorState author)
