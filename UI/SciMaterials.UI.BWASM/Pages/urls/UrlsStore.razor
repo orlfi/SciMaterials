@@ -1,0 +1,124 @@
+﻿@page "/urls"
+@using System.Net.Http.Json
+@using SciMaterials.Contracts.API.DTO.Urls;
+@using SciMaterials.Contracts.WebApi.Clients.Urls;
+@inject IUrlsClient _urlsClient;
+   @*<MudTable Elevation="25" ServerData="@(new Func<TableState, Task<TableData<GetAllPagedProductsResponse>>>(ServerReload))" Hover="true" Dense="@_dense" Bordered="@_bordered" Striped="@_striped" @ref="_table">*@
+
+<MudTable Elevation="25" ServerData="@(new Func<TableState, Task<TableData<GetUrlResponse>>>(ServerReload))"
+              Bordered="true" Striped="true" Dense="true" Hover="true" @ref="table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Urls</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="id_field" T="GetUrlResponse">ID</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="name_field" T="GetUrlResponse">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="title_field" T="GetUrlResponse">Title</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="description_field" T="GetUrlResponse">Description</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="link_field" T="GetUrlResponse">Link</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Sign">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.Title</MudTd>
+        <MudTd DataLabel="Position">@context.Description</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Link</MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private IEnumerable<GetUrlResponse> pagedData;
+    private MudTable<GetUrlResponse> table;
+
+    private int totalItems;
+    private string searchString = null;
+
+    /// <summary>
+    /// Here we simulate getting the paged, filtered and ordered data from the server
+    /// </summary>
+    private async Task<TableData<GetUrlResponse>> ServerReload(TableState state)
+    {
+        var result = await _urlsClient.GetAllAsync();
+        if (result.Succeeded)
+        {
+            var data = result.Data;
+            switch (state.SortLabel)
+            {
+                case "id_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Id);
+                    break;
+                case "name_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Name);
+                    break;
+                case "title_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Title);
+                    break;
+                case "description_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Description);
+                    break;
+                case "link_field":
+                    data = data.OrderByDirection(state.SortDirection, o => o.Link);
+                    break;
+            }
+
+            pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+            return new TableData<GetUrlResponse>() { TotalItems = result.Data.Count(), Items = pagedData };
+        }
+
+        return new TableData<GetUrlResponse>() { TotalItems = 0, Items = null };
+
+        //await Task.Delay(300);
+        //data = data.Where(element =>
+        //{
+        //    if (string.IsNullOrWhiteSpace(searchString))
+        //        return true;
+        //    if (element.Sign.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        //        return true;
+        //    if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        //        return true;
+        //    if ($"{element.Number} {element.Position} {element.Molar}".Contains(searchString))
+        //        return true;
+        //    return false;
+        //}).ToArray();
+        //totalItems = data.Count();
+        //switch (state.SortLabel)
+        //{
+        //    case "id_field":
+        //        data = data.OrderByDirection(state.SortDirection, o => o.Number);
+        //        break;
+        //    case "name_field":
+        //        data = data.OrderByDirection(state.SortDirection, o => o.Sign);
+        //        break;
+        //    case "title_field":
+        //        data = data.OrderByDirection(state.SortDirection, o => o.Name);
+        //        break;
+        //    case "description_field":
+        //        data = data.OrderByDirection(state.SortDirection, o => o.Position);
+        //        break;
+        //    case "link_field":
+        //        data = data.OrderByDirection(state.SortDirection, o => o.Molar);
+        //        break;
+        //}
+
+        //pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        //return new TableData<Element>() { TotalItems = totalItems, Items = pagedData };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table.ReloadServerData();
+    }
+}
