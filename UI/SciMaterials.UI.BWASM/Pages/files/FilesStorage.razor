@@ -101,12 +101,12 @@
 
 	private void Delete(FileStorageState context)
 	{
-		Dispatcher.Dispatch(new DeleteFile(context.Id));
+		Dispatcher.Dispatch(FilesStorageActions.DeleteFile(context.Id));
 	}
 
 	private void Refresh()
 	{
-		Dispatcher.Dispatch(new LoadFiles());
+		Dispatcher.Dispatch(FilesStorageActions.LoadFiles());
 	}
 
 	private async Task ChangeCategory(FileStorageState context)
