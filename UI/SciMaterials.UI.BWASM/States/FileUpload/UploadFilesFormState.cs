@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components.Forms;
 
 using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Services;
+using SciMaterials.UI.BWASM.States.FilesUploadHistory;
 
 namespace SciMaterials.UI.BWASM.States.FileUpload;
 
@@ -74,7 +75,7 @@ public class UploadFilesFormStateEffects
     {
         var uploadStates = Map(action).ToImmutableArray();
         dispatcher.Dispatch(new ClearForm());
-        dispatcher.Dispatch(new RegisterMultipleFilesUpload(uploadStates));
+        dispatcher.Dispatch(FilesUploadHistoryActions.RegisterFilesUpload(uploadStates));
 
         foreach (var file in Map(uploadStates))
         {
