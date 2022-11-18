@@ -1,0 +1,45 @@
+﻿@page "/urls"
+@using SciMaterials.Contracts.API.DTO.Urls;
+<MyTitle Title="Urls" Description="Manage Urls." />
+
+<MudTable Elevation="25" ServerData="@ServerReload" Bordered="true" Striped="true" Dense="false" Hover="true"
+    @ref="table">
+    <ToolBarContent>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@OnSearch" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="id_field" T="GetUrlResponse">ID</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name_field" T="GetUrlResponse">Name</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="title_field" T="GetUrlResponse">Title</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="description_field" T="GetUrlResponse">Description</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="link_field" T="GetUrlResponse">Link</MudTableSortLabel>
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Sign">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.Title</MudTd>
+        <MudTd DataLabel="Position">@context.Description</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Link</MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
