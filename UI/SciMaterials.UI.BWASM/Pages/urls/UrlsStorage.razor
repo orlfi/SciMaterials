@@ -2,11 +2,11 @@
 @using SciMaterials.Contracts.API.DTO.Urls;
 <MyTitle Title="Urls" Description="Manage Urls." />
 
-<MudTable Elevation="25" ServerData="@ServerReload" Bordered="true" Striped="true" Dense="false" Hover="true"
-    @ref="table">
+<MudTable Elevation="25" ServerData="@ServerReload" Bordered="true" Striped="true" Dense="false" Hover="true" @ref="_table">
     <ToolBarContent>
+        <MudButton DisableElevation Variant="Variant.Filled" Color="Color.Primary" @onclick="AddAsync" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Surface">Create</MudButton>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="@OnSearch" Placeholder="Search" Adornment="Adornment.Start"
+        <MudTextField T="string"  ValueChanged="@OnSearch" Placeholder="Search" Adornment="Adornment.Start"
             AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>

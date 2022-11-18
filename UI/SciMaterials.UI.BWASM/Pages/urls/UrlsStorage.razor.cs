@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System;
+
+using Microsoft.AspNetCore.Components;
 
 using MudBlazor;
 
@@ -10,10 +12,12 @@ namespace SciMaterials.UI.BWASM.Pages.urls;
 public partial class UrlsStorage
 {
     [Inject] private IUrlsClient UrlsClient { get; set; }
-    private IEnumerable<GetUrlResponse> pagedData;
-    private MudTable<GetUrlResponse> table;
+    [Inject] private IDialogService DialogService { get; set; }
 
-    private string? searchString = null;
+    private IEnumerable<GetUrlResponse> _data;
+    private MudTable<GetUrlResponse> _table;
+
+    private string? _searchString = null;
 
     private async Task<TableData<GetUrlResponse>> ServerReload(TableState state)
     {
@@ -23,13 +27,13 @@ public partial class UrlsStorage
             var data = result.Data;
             data = data.Where(element =>
             {
-                if (string.IsNullOrWhiteSpace(searchString))
+                if (string.IsNullOrWhiteSpace(_searchString))
                     return true;
-                if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                if (element.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                     return true;
-                if (element.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                if (element.Title.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                     return true;
-                if (element.Description.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                if (element.Description.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
                     return true;
 
                 return false;
@@ -54,16 +58,67 @@ public partial class UrlsStorage
                     break;
             }
 
-            pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
-            return new TableData<GetUrlResponse>() { TotalItems = result.Data.Count(), Items = pagedData };
+            _data = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+            return new TableData<GetUrlResponse>() { TotalItems = result.Data.Count(), Items = _data };
         }
 
         return new TableData<GetUrlResponse>() { TotalItems = 0, Items = null };
     }
 
+    private async Task AddAsync()
+    {
+        var parameters = new DialogParameters()
+        {
+            [nameof(AddEditUrlDialog.DialogType)] = DialogTypes.Add,
+            [nameof(AddEditUrlDialog.AddEditUrlModel)] = new AddUrlRequest()
+        };
+
+        await ShowDialogAsync(parameters, "Create");
+    }
+
+    private async Task EditAsync(Guid? id)
+    {
+        var parameters = new DialogParameters()
+        {
+            [nameof(AddEditUrlDialog.DialogType)] = DialogTypes.Add,
+        };
+        if (id.HasValue)
+        {
+            var url = _data.FirstOrDefault();
+            if (url is { })
+            {
+                parameters.Add(nameof(AddEditUrlDialog.EditEditUrlModel), new EditUrlRequest()
+                {
+                    Id = url.Id,
+                    Name = url.Name,
+                    Description = url.Description,
+                    Title = url.Title,
+                });
+            }
+
+        }
+        await ShowDialogAsync(parameters, "Edit");
+    }
+
+    private async Task ShowDialogAsync(DialogParameters parameters, string title)
+    {
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Medium, FullWidth = true, DisableBackdropClick = true };
+
+        var dialog = await DialogService.Show<AddEditUrlDialog>(
+            title,
+            parameters,
+            options)
+            .Result;
+
+        if (!dialog.Cancelled)
+        {
+            OnSearch("");
+        }
+    }
+
     private void OnSearch(string text)
     {
-        searchString = text;
-        table.ReloadServerData();
+        _searchString = text;
+        _table.ReloadServerData();
     }
 }
