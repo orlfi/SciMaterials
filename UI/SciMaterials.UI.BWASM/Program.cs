@@ -18,7 +18,7 @@ using SciMaterials.UI.BWASM.Models;
 using SciMaterials.UI.BWASM.Models.Validations;
 using SciMaterials.UI.BWASM.Services;
 using SciMaterials.UI.BWASM.Services.Identity;
-using SciMaterials.UI.BWASM.States.FileUpload;
+using SciMaterials.UI.BWASM.States.UploadFilesForm;
 using SciMaterials.WebApi.Clients.Authors;
 using SciMaterials.WebApi.Clients.Extensions;
 using SciMaterials.WebApi.Clients.Identity;

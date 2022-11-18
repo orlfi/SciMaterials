@@ -1,10 +1,10 @@
 ﻿@page "/upload_files"
-@using SciMaterials.UI.BWASM.States.FileUpload
 @using SciMaterials.UI.BWASM.States.Categories
 @using SciMaterials.UI.BWASM.States.Authors
 @using Severity = MudBlazor.Severity
 @using System.Text
 @using SciMaterials.UI.BWASM.States.ContentTypes
+@using SciMaterials.UI.BWASM.States.UploadFilesForm
 @inherits FluxorComponent
 
 @inject IDispatcher Dispatcher
@@ -90,8 +90,8 @@
 			Snackbar.Add("Not all values in form is valid!", Severity.Warning);
 			return;
 		}
-		RegisterUploadData action = FormState.Value;
-		Dispatcher.Dispatch(action);
+
+		Dispatcher.Dispatch(UploadFilesFormActions.RegisterUploadData(FormState.Value));
 	}
 
 	private void OnFilesListChange(InputFileChangeEventArgs e)
@@ -116,26 +116,26 @@
 			toUpload = toUpload.Where(x => !notSupported.Contains(x.Name)).ToList();
 		}
 
-		Dispatcher.Dispatch(new AddFiles(toUpload));
+		Dispatcher.Dispatch(UploadFilesFormActions.AddFiles(toUpload));
 	}
 
 	private async Task ChangeFormFileCategory()
 	{
 		if (await Select<FilesCategoriesSelector, TreeFileCategory>() is not { } selected) return;
 
-		Dispatcher.Dispatch(new ChangeCategory(new(selected.Id, selected.Name)));
+		Dispatcher.Dispatch(UploadFilesFormActions.ChangeCategory(selected));
 	}
 
 	private async Task ChangeFormFileAuthor()
 	{
 		if (await Select<AuthorSelector, AuthorState>() is not { } selected) return;
 
-		Dispatcher.Dispatch(new ChangeAuthor(new(selected.Id, selected.Name, string.Empty)));
+		Dispatcher.Dispatch(UploadFilesFormActions.ChangeAuthor(selected));
 	}
 
 	private void Delete(FileData context)
 	{
-		Dispatcher.Dispatch(new RemoveFile(context.Id));
+		Dispatcher.Dispatch(UploadFilesFormActions.RemoveFile(context.Id));
 	}
 
 	private async Task<TItem?> Select<TSelectDialog, TItem>() where TSelectDialog : ComponentBase
@@ -147,11 +147,11 @@
 
 	private void UpdateFormShortInfo(string shortInfo)
 	{
-		Dispatcher.Dispatch(new UpdateShortInfo(shortInfo));
+		Dispatcher.Dispatch(UploadFilesFormActions.UpdateShortInfo(shortInfo));
 	}
 
 	private void UpdateFormDescription(string description)
 	{
-		Dispatcher.Dispatch(new UpdateDescription(description));
+		Dispatcher.Dispatch(UploadFilesFormActions.UpdateDescription(description));
 	}
 }
