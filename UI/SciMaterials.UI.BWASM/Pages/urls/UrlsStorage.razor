@@ -22,16 +22,12 @@
         <MudTh>
             <MudTableSortLabel SortLabel="description_field" T="GetUrlResponse">Description</MudTableSortLabel>
         </MudTh>
-        <MudTh>
-            <MudTableSortLabel SortLabel="link_field" T="GetUrlResponse">Link</MudTableSortLabel>
-        </MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.Id</MudTd>
-        <MudTd DataLabel="Sign">@context.Name</MudTd>
+        <MudTd DataLabel="Sign"><MudLink Href="@context.Link" Underline="Underline.Always">@context.Name</MudLink></MudTd>
         <MudTd DataLabel="Name">@context.Title</MudTd>
         <MudTd DataLabel="Position">@context.Description</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Link</MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>
