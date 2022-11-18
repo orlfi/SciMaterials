@@ -10,6 +10,7 @@
 @inject IDispatcher Dispatcher
 @inject IState<FilesContentTypesFilterState> ContentTypesState
 @inject IState<UploadFilesFormState> FormState
+@inject IState<AuthorsState> AuthorsState
 @inject IDialogService DialogService
 @inject IValidator<UploadFilesFormState> Validator
 @inject ISnackbar Snackbar
@@ -81,6 +82,13 @@
 @code {
 	private MudForm? _form;
 
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+
+		Dispatcher.Dispatch(AuthorsActions.LoadAuthors());
+	}
+
 	private async Task ScheduleUpload()
 	{
 		await _form!.Validate();
@@ -121,14 +129,26 @@
 
 	private async Task ChangeFormFileCategory()
 	{
-		if (await Select<FilesCategoriesSelector, TreeFileCategory>() is not { } selected) return;
+		var reference = DialogService.Show<FilesCategoriesSelector>();
+		var result = await reference.Result;
+		if (result.Cancelled || result.Data is not TreeFileCategory selected) return;
 
 		Dispatcher.Dispatch(UploadFilesFormActions.ChangeCategory(selected));
 	}
 
 	private async Task ChangeFormFileAuthor()
 	{
-		if (await Select<AuthorSelector, AuthorState>() is not { } selected) return;
+		string LabelSelection(AuthorState author) => author.Name;
+
+		var parameters = new DialogParameters
+		{
+			["Items"] = AuthorsState.Value.Authors.ToList(),
+			["OptionLabel"] = (Func<AuthorState, string>)LabelSelection
+		};
+		var reference = DialogService.Show<ListSelectionDialog<AuthorState>>("Select author", parameters);
+		var result = await reference.Result;
+
+		if (result.Cancelled || result.Data is not AuthorState selected) return;
 
 		Dispatcher.Dispatch(UploadFilesFormActions.ChangeAuthor(selected));
 	}
@@ -136,13 +156,6 @@
 	private void Delete(FileData context)
 	{
 		Dispatcher.Dispatch(UploadFilesFormActions.RemoveFile(context.Id));
-	}
-
-	private async Task<TItem?> Select<TSelectDialog, TItem>() where TSelectDialog : ComponentBase
-	{
-		var reference = DialogService.Show<TSelectDialog>();
-		var result = await reference.Result;
-		return result.Cancelled || result.Data is not TItem data ? default : data;
 	}
 
 	private void UpdateFormShortInfo(string shortInfo)
