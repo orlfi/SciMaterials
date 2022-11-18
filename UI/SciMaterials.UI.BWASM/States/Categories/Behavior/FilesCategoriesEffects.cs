@@ -32,15 +32,13 @@ public class FilesCategoriesEffects
     {
         if (categories.IsEmpty) return Task.CompletedTask;
 
-        //var rootCategories = categories.Where(x => x.ParentId is null).ToList();
+        var rootCategories = categories.Where(x => x.ParentId is null).ToList();
 
-        //HashSet<TreeFileCategory> tree = new();
-        //foreach (FileCategory category in rootCategories)
-        //{
-        //    tree.Add(new(category, BuildBranch(categories, category.Id)));
-        //}
-
-        var tree = categories.Select(x => new TreeFileCategory(x, new())).ToHashSet();
+        HashSet<TreeFileCategory> tree = new();
+        foreach (FileCategory category in rootCategories)
+        {
+            tree.Add(new(category, BuildBranch(categories, category.Id)));
+        }
 
         dispatcher.Dispatch(FilesCategoriesActions.BuildTreeResult(tree));
         return Task.CompletedTask;
