@@ -10,6 +10,8 @@ using SciMaterials.Services.ShortLinks;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.Logging.json", true);
+
 var config = builder.Configuration;
 
 builder.WebHost.ConfigureKestrel(opt =>
