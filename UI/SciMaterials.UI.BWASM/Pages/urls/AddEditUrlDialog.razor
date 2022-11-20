@@ -1,55 +1,60 @@
 ﻿<EditForm Model="@AddEditUrlModel" OnValidSubmit="SaveAsync">
-    <MudDialog>
-        <TitleContent>
-            @{
-                if (DialogType == DialogTypes.Add)
-                {
-                    <MudText Typo="Typo.h6">
-                        <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
-                        Add Url
-                    </MudText>
-                }
-                else
-                {
-                    <MudText Typo="Typo.h6">
-                        <MudIcon Icon="@Icons.Material.Filled.Update" Class="mr-3 mb-n1" />
-                        Update Url
-                    </MudText>
-                }
-            }
-        </TitleContent>
-        <DialogContent>
-            <MudGrid>
-@*                @if (DialogType.Id == DialogTypes.Add)
-                {
-                    <MudItem xs="12" md="6">
-                        <MudTextField Disabled  @bind-Value="AddEditUrlModel.Id" Label="Id" />
-                    </MudItem>
-                }
-*@                <MudItem xs="12" md="6">
-                    <MudTextField  @bind-Value="AddEditUrlModel.Name" Label="Name" />
-                </MudItem>
-                <MudItem xs="12" md="6">
-                    <MudTextField @bind-Value="AddEditUrlModel.Title" Label="Title" />
-                </MudItem>
-@*                <MudItem xs="12" md="6">
-                    <MudAutocomplete T="Guid" Label="Category" @bind-Value="AddEditUrlModel.CaBrand" ResetValueOnEmptyText="true" SearchFunc="@SearchCategories" Variant="Variant.Filled" ToStringFunc="@(i => _categories.FirstOrDefault(c => c.Id == i)?.Name ?? string.Empty)" OffsetY="true" />
-                </MudItem>
-*@                <MudItem xs="12" md="12">
-                    <MudTextField  @bind-Value="AddEditUrlModel.Title" Label="Description" />
-                </MudItem>
-            </MudGrid>
-        </DialogContent>
-        <DialogActions>
-            <MudButton DisableElevation Variant="Variant.Filled" OnClick="Cancel">Cancel</MudButton>
-            @if (DialogType == DialogTypes.Add)
-            {
-                <MudButton DisableElevation Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Success">Save</MudButton>
-            }
-            else
-            {
-                <MudButton DisableElevation Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Secondary">Update</MudButton>
-            }
-        </DialogActions>
-    </MudDialog>
+	<MudDialog>
+		<TitleContent>
+			@{
+				if (DialogType == DialogTypes.Add)
+				{
+					<MudText Typo="Typo.h6">
+						<MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3 mb-n1" />
+						Add Url
+					</MudText>
+				}
+				else
+				{
+					<MudText Typo="Typo.h6">
+						<MudIcon Icon="@Icons.Material.Filled.Update" Class="mr-3 mb-n1" />
+						Update Url
+					</MudText>
+				}
+			}
+		</TitleContent>
+		<DialogContent>
+			<MudGrid>
+				@*                @if (DialogType.Id == DialogTypes.Add)
+				{
+				<MudItem xs="12" md="6">
+				<MudTextField Disabled  @bind-Value="AddEditUrlModel.Id" Label="Id" />
+				</MudItem>
+				}
+				*@                <MudItem xs="12" md="6">
+					<MudTextField @bind-Value="AddEditUrlModel.Name" Label="Name" />
+				</MudItem>
+				<MudItem xs="12" md="6">
+					<MudTextField @bind-Value="AddEditUrlModel.Title" Label="Title" />
+				</MudItem>
+				@*                <MudItem xs="12" md="6">
+				<MudAutocomplete T="Guid" Label="Category" @bind-Value="AddEditUrlModel.CaBrand" ResetValueOnEmptyText="true" SearchFunc="@SearchCategories" Variant="Variant.Filled" ToStringFunc="@(i => _categories.FirstOrDefault(c => c.Id == i)?.Name ?? string.Empty)" OffsetY="true" />
+				</MudItem>
+				*@                <MudItem xs="12" md="12">
+					<MudTextField @bind-Value="AddEditUrlModel.Title" Label="Description" />
+				</MudItem>
+			</MudGrid>
+			<MudChip Icon="@Icons.Material.Filled.Dangerous" IconColor="Color.Error">Extensions</MudChip>
+			<MudChip Icon="@Icons.Material.Filled.Extension" Color="Color.Dark">Extensions</MudChip>
+			<MudChip Icon="@Icons.Material.Filled.Person" Color="Color.Primary">Account</MudChip>
+			<MudChip Icon="@Icons.Material.Filled.FlightTakeoff" Color="Color.Secondary">Your flight times</MudChip>
+			<MudChip Icon="@Icons.Material.Filled.VerifiedUser" Color="Color.Info">Verified User</MudChip>
+		</DialogContent>
+		<DialogActions>
+			<MudButton DisableElevation OnClick="Cancel">Cancel</MudButton>
+			@if (DialogType == DialogTypes.Add)
+			{
+				<MudButton DisableElevation StartIcon="@Icons.Material.Filled.Save" ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
+			}
+			else
+			{
+				<MudButton DisableElevation StartIcon="@Icons.Material.Filled.Save" ButtonType="ButtonType.Submit" Color="Color.Primary">Update</MudButton>
+			}
+		</DialogActions>
+	</MudDialog>
 </EditForm>

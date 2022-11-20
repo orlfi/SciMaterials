@@ -25,8 +25,8 @@ public class ContentTypesController : ApiBaseController<ContentTypesController>
     [ProducesDefaultResponseType(typeof(Result<IEnumerable<GetContentTypeResponse>>))]
     public async Task<IActionResult> GetAllAsync()
     {
-        var сategories = await _authorService.GetAllAsync();
-        return Ok(сategories);
+        var result = await _authorService.GetAllAsync();
+        return Ok(result);
     }
 
     /// <summary> Get ContentType by Id. </summary>
@@ -35,8 +35,8 @@ public class ContentTypesController : ApiBaseController<ContentTypesController>
     [ProducesDefaultResponseType(typeof(Result<GetContentTypeResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var products = await _authorService.GetByIdAsync(id);
-        return Ok(products);
+        var result = await _authorService.GetByIdAsync(id);
+        return Ok(result);
     }
 
     /// <summary> Add a ContentType. </summary>

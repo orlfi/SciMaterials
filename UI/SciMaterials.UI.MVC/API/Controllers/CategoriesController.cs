@@ -24,8 +24,8 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     [ProducesDefaultResponseType(typeof(Result<IEnumerable<GetCategoryResponse>>))]
     public async Task<IActionResult> GetAllAsync()
     {
-        var сategories = await _сategoryService.GetAllAsync();
-        return Ok(сategories);
+        var result = await _сategoryService.GetAllAsync();
+        return Ok(result);
     }
 
     /// <summary> Get Category by Id. </summary>
@@ -34,8 +34,8 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     [ProducesDefaultResponseType(typeof(Result<GetCategoryResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var products = await _сategoryService.GetByIdAsync(id);
-        return Ok(products);
+        var result = await _сategoryService.GetByIdAsync(id);
+        return Ok(result);
     }
 
     /// <summary> Add a Category. </summary>

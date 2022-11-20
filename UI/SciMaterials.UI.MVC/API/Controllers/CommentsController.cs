@@ -25,8 +25,8 @@ public class CommentsController : ApiBaseController<CommentsController>
     [ProducesDefaultResponseType(typeof(Result<IEnumerable<GetCommentResponse>>))]
     public async Task<IActionResult> GetAllAsync()
     {
-        var сategories = await _commentService.GetAllAsync();
-        return Ok(сategories);
+        var result = await _commentService.GetAllAsync();
+        return Ok(result);
     }
 
     /// <summary> Get Comment by Id. </summary>
@@ -35,8 +35,8 @@ public class CommentsController : ApiBaseController<CommentsController>
     [ProducesDefaultResponseType(typeof(Result<GetCommentResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var products = await _commentService.GetByIdAsync(id);
-        return Ok(products);
+        var result = await _commentService.GetByIdAsync(id);
+        return Ok(result);
     }
 
     /// <summary> Add a Comment. </summary>

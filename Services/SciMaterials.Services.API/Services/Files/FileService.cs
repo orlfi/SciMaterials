@@ -118,13 +118,13 @@ public class FileService : ApiServiceBase, IFileService
                 editFileRequest.Id);
         }
 
+        var file = _mapper.Map(editFileRequest, existingFile);
+
         var verifyCategoriesResult = await VerifyCategories(_separator, editFileRequest.Categories);
         if (!verifyCategoriesResult.Succeeded)
         {
             return Result<Guid>.Failure(verifyCategoriesResult);
         }
-
-        var file = _mapper.Map(editFileRequest, existingFile);
 
         if (verifyCategoriesResult.Data is { })
         {

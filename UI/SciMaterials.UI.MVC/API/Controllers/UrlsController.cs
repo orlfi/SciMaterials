@@ -25,8 +25,8 @@ public class UrlsController : ApiBaseController<UrlsController>
     [ProducesDefaultResponseType(typeof(Result<IEnumerable<GetUrlResponse>>))]
     public async Task<IActionResult> GetAllAsync()
     {
-        var сategories = await _authorService.GetAllAsync();
-        return Ok(сategories);
+        var result = await _authorService.GetAllAsync();
+        return Ok(result);
     }
 
     /// <summary> Get Url by Id. </summary>
@@ -35,8 +35,8 @@ public class UrlsController : ApiBaseController<UrlsController>
     [ProducesDefaultResponseType(typeof(Result<GetUrlResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var products = await _authorService.GetByIdAsync(id);
-        return Ok(products);
+        var result = await _authorService.GetByIdAsync(id);
+        return Ok(result);
     }
 
     /// <summary> Add a Url. </summary>

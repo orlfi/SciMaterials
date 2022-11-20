@@ -28,8 +28,8 @@ public class AuthorsController : ApiBaseController<AuthorsController>
     public async Task<IActionResult> GetAllAsync()
     {
         _logger.LogInformation("Get all");
-        var сategories = await _authorService.GetAllAsync();
-        return Ok(сategories);
+        var result = await _authorService.GetAllAsync();
+        return Ok(result);
     }
 
     /// <summary> Get Author by Id. </summary>
@@ -38,8 +38,8 @@ public class AuthorsController : ApiBaseController<AuthorsController>
     [ProducesDefaultResponseType(typeof(Result<GetAuthorResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var products = await _authorService.GetByIdAsync(id);
-        return Ok(products);
+        var result = await _authorService.GetByIdAsync(id);
+        return Ok(result);
     }
 
     /// <summary> Add a Author. </summary>

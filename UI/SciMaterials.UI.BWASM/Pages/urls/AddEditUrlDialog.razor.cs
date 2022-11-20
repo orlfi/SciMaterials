@@ -74,4 +74,18 @@ public partial class AddEditUrlDialog
         return _categories.Where(x => x.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
             .Select(x => x.Id);
     }
+
+    //internal IEnumerable<MudTreeViewItem<T>> GetSelectedItems()
+    //{
+    //    if (_isChecked)
+    //        yield return this;
+
+    //    foreach (var treeItem in _childItems)
+    //    {
+    //        foreach (var selected in treeItem.GetSelectedItems())
+    //        {
+    //            yield return selected;
+    //        }
+    //    }
+    //}
 }
