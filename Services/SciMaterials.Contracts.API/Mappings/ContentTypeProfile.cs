@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using SciMaterials.Contracts.API.DTO.ContentTypes;
-using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Contracts.Entities;
 
 namespace SciMaterials.Contracts.API.Mappings;
 

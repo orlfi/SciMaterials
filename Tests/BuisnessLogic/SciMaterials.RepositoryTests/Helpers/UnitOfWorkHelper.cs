@@ -1,7 +1,7 @@
 ﻿using Moq;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Contracts.Entities;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Data.UnitOfWork;
 using SciMaterials.RepositoryLib.Repositories.FilesRepositories;

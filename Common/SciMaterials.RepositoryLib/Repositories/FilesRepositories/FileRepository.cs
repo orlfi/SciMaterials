@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
 
-using File = SciMaterials.DAL.Models.File;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 

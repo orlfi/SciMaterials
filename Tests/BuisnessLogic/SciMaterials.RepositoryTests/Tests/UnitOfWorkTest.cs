@@ -1,4 +1,4 @@
-﻿using SciMaterials.DAL.Models;
+﻿using SciMaterials.DAL.Contracts.Entities;
 using SciMaterials.RepositoryTests.Fixtures;
 
 namespace SciMaterials.RepositoryTests.Tests;

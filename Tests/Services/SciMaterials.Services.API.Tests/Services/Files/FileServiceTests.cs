@@ -13,7 +13,7 @@ using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.RepositoryLib.Repositories;
 using SciMaterials.Services.API.Services.Files;
 
-using File = SciMaterials.DAL.Models.File;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.Services.API.Tests.Services.Files;
 

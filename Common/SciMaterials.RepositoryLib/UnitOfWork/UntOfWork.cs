@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Contracts.Entities;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.RepositoryLib.Repositories;
 using SciMaterials.RepositoryLib.Repositories.FilesRepositories;
@@ -11,7 +11,7 @@ using SciMaterials.RepositoryLib.Repositories.RatingRepositories;
 using SciMaterials.RepositoryLib.Repositories.UrlsRepositories;
 using SciMaterials.RepositoryLib.Repositories.UsersRepositories;
 
-using File = SciMaterials.DAL.Models.File;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.Data.UnitOfWork;
 

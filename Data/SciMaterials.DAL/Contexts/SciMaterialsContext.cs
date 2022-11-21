@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Models.Base;
+
+using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Entities.Base;
+
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.Contexts;
 
@@ -16,7 +19,7 @@ public class SciMaterialsContext : DbContext, ISciMaterialsContext
     public virtual DbSet<ContentType> ContentTypes { get; set; } = null!;
     public virtual DbSet<Resource> Resources{ get; set; } = null!;
     public virtual DbSet<Url> Urls { get; set; } = null!;
-    public virtual DbSet<Models.File> Files { get; set; } = null!;
+    public virtual DbSet<File> Files { get; set; } = null!;
     public virtual DbSet<FileGroup> FileGroups { get; set; } = null!;
     public virtual DbSet<Tag> Tags { get; set; } = null!;
     public virtual DbSet<Author> Authors { get; set; } = null!;

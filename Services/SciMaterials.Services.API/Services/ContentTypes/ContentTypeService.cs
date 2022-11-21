@@ -1,12 +1,12 @@
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.DAL.Contexts;
 using AutoMapper;
-using SciMaterials.DAL.Models;
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Services.ContentTypes;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.API.DTO.ContentTypes;
 using SciMaterials.Contracts;
+using SciMaterials.DAL.Contracts.Entities;
 
 namespace SciMaterials.Services.API.Services.ContentTypes;
 

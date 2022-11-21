@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Contracts.Entities;
 using SciMaterials.DAL.Properties;
-using File = SciMaterials.DAL.Models.File;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.Services;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Contracts.Entities;
 
 namespace SciMaterials.RepositoryLib.Repositories.RatingRepositories;
 

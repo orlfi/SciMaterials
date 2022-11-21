@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using SciMaterials.DAL.Models.Base;
+using SciMaterials.DAL.Contracts.Entities.Base;
 
-namespace SciMaterials.DAL.Models;
+namespace SciMaterials.DAL.Contracts.Entities;
 
 [Table("Urls")]
 public class Url : Resource

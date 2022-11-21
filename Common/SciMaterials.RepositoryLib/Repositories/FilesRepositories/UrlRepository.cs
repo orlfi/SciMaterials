@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
 
-using Url = SciMaterials.DAL.Models.Url;
+using Url = SciMaterials.DAL.Contracts.Entities.Url;
 
 namespace SciMaterials.RepositoryLib.Repositories.UrlsRepositories;
 

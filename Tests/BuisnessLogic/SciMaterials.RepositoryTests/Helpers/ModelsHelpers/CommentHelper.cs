@@ -1,5 +1,5 @@
-﻿using SciMaterials.DAL.Models;
-using File = SciMaterials.DAL.Models.File;
+﻿using SciMaterials.DAL.Contracts.Entities;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.RepositoryTests.Helpers.ModelsHelpers;
 

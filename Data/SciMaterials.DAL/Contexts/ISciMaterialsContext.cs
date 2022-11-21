@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Contracts.Entities;
+
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.Contexts;
 
@@ -11,7 +13,7 @@ public interface ISciMaterialsContext
     DbSet<Comment> Comments { get; set; }
     DbSet<ContentType> ContentTypes { get; set; }
     DbSet<FileGroup> FileGroups { get; set; }
-    DbSet<Models.File> Files { get; set; }
+    DbSet<File> Files { get; set; }
     DbSet<Url> Urls { get; set; }
     DbSet<Rating> Ratings { get; set; }
     DbSet<Tag> Tags { get; set; }

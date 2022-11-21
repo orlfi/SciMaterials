@@ -1,7 +1,6 @@
 using AutoMapper;
 using SciMaterials.DAL.Contexts;
-using File = SciMaterials.DAL.Models.File;
-using SciMaterials.DAL.Models;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.API.DTO.Files;
@@ -12,7 +11,7 @@ using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
 using SciMaterials.Contracts;
 using SciMaterials.Contracts.ShortLinks;
-using System.Reflection.Metadata.Ecma335;
+using SciMaterials.DAL.Contracts.Entities;
 
 namespace SciMaterials.Services.API.Services.Files;
 

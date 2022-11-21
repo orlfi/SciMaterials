@@ -1,4 +1,4 @@
-namespace SciMaterials.DAL.Models.Base;
+namespace SciMaterials.DAL.Contracts.Entities.Base;
 
 public class BaseModel
 {

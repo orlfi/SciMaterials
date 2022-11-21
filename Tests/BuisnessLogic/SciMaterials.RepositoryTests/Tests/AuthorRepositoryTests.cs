@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
-using SciMaterials.DAL.Models.Base;
+using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Entities.Base;
 using SciMaterials.Data.UnitOfWork;
 using SciMaterials.RepositoryLib.Repositories.UsersRepositories;
 using SciMaterials.RepositoryTests.Helpers;
 using SciMaterials.RepositoryTests.Helpers.ModelsHelpers;
-using File = SciMaterials.DAL.Models.File;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.RepositoryTests.Tests;
 

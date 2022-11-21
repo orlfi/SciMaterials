@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Contracts.Entities;
+
+using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.ConsoleTests;
 
@@ -30,7 +32,7 @@ public class AddFileWithCategories
 
 
             var fileInfo = new FileInfo(path);
-            var file = new DAL.Models.File
+            var file = new File
             {
                 Id          = Guid.NewGuid(),
                 Name        = fileInfo.Name,
@@ -43,7 +45,7 @@ public class AddFileWithCategories
                 Author      = author
             };
 
-            await _context.Set<DAL.Models.File>().AddAsync(file);
+            await _context.Set<File>().AddAsync(file);
             await _context.SaveChangesAsync();
         }
         catch (Exception ex)

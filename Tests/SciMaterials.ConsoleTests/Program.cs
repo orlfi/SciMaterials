@@ -18,7 +18,7 @@ using SciMaterials.Services.Database.Services.DbInitialization;
 using SciMaterials.Services.ShortLinks;
 using SciMaterials.WebApi.Clients.Extensions;
 using SciMaterials.WebApi.Clients.Files;
-using File = SciMaterials.DAL.Models.File;
+using File = SciMaterials.DAL.Contracts.Entities.File;
 #endregion
 
 const string path = @"d:\tmp\test.txt";
