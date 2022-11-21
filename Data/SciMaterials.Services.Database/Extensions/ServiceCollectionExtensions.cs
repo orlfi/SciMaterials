@@ -3,10 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SciMaterials.DAL.Contracts.Configuration;
 using SciMaterials.DAL.Contracts.Initialization;
+using SciMaterials.DAL.Services;
 using SciMaterials.Data.MySqlMigrations;
 using SciMaterials.MsSqlServerMigrations;
 using SciMaterials.PostgresqlMigrations;
-using SciMaterials.Services.Database.Services.DbInitialization;
 using SciMaterials.SQLiteMigrations;
 
 namespace SciMaterials.Services.Database.Extensions;

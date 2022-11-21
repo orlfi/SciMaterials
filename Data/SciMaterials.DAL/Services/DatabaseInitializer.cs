@@ -3,9 +3,8 @@ using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Initialization;
-using SciMaterials.DAL.Services;
 
-namespace SciMaterials.Services.Database.Services.DbInitialization;
+namespace SciMaterials.DAL.Services;
 
 public class DatabaseInitializer : IDatabaseInitializer
 {
@@ -52,7 +51,7 @@ public class DatabaseInitializer : IDatabaseInitializer
             if (RemoveAtStart)
             {
                 _Logger.LogInformation("Need to remove database at begging of initialization process");
-                if(await DeleteDatabaseAsync(Cancel).ConfigureAwait(false))
+                if (await DeleteDatabaseAsync(Cancel).ConfigureAwait(false))
                     _Logger.LogInformation("Database was removed successfully");
                 else
                     _Logger.LogInformation("Database not removed because it not exists");
