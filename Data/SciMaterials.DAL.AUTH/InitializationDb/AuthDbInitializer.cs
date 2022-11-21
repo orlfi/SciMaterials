@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SciMaterials.Contracts.Auth;
 using SciMaterials.DAL.AUTH.Context;
+using SciMaterials.DAL.AUTH.Contracts;
 
 namespace SciMaterials.DAL.AUTH.InitializationDb;
 

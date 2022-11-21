@@ -4,14 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.Auth;
+using SciMaterials.DAL.AUTH.Contracts;
 using SciMaterials.Contracts.Enums;
 using SciMaterials.Contracts.Identity.API.DTO.Roles;
 using SciMaterials.Contracts.Identity.API.DTO.Users;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.DTO;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
 using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
-using SciMaterials.DAL.Contexts;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 
@@ -26,7 +25,7 @@ public class AccountController : Controller
     private readonly SignInManager<IdentityUser> _SignInManager;
     private readonly RoleManager<IdentityRole> _RoleManager;
     private readonly IHttpContextAccessor _ContextAccessor;
-    private readonly IAuthUtilits _authUtilits;
+    private readonly IAuthUtils _authUtilits;
     private readonly ILogger<AccountController> _Logger;
 
     public AccountController(
@@ -34,7 +33,7 @@ public class AccountController : Controller
         SignInManager<IdentityUser> SignInManager,
         RoleManager<IdentityRole> RoleManager,
         IHttpContextAccessor ContextAccessor,
-        IAuthUtilits authUtilits,
+        IAuthUtils authUtilits,
         ILogger<AccountController> Logger)
     {
         _UserManager = UserManager;

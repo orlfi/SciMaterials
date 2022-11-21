@@ -1,4 +1,4 @@
-namespace SciMaterials.Contracts.Auth;
+namespace SciMaterials.DAL.AUTH.Contracts;
 
 public interface IAuthDbInitializer
 {

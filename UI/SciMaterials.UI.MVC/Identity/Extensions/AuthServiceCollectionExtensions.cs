@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using SciMaterials.Contracts.Auth;
 using SciMaterials.DAL.AUTH.Context;
+using SciMaterials.DAL.AUTH.Contracts;
 using SciMaterials.DAL.AUTH.InitializationDb;
 using SciMaterials.UI.MVC.Identity.Services;
 
@@ -140,6 +140,6 @@ public static class AuthServiceCollectionExtensions
     /// <returns>Коллекция сервисов</returns>
     public static IServiceCollection AddAuthUtils(this IServiceCollection Services)
     {
-        return Services.AddSingleton<IAuthUtilits, AuthUtils>();
+        return Services.AddSingleton<IAuthUtils, AuthUtils>();
     }
 }

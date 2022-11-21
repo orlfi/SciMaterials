@@ -4,14 +4,14 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.Auth;
+using SciMaterials.DAL.AUTH.Contracts;
 
 namespace SciMaterials.UI.MVC.Identity.Services;
 
 /// <summary>
 /// Утилиты по работе с jwt токенами
 /// </summary>
-public class AuthUtils : IAuthUtilits
+public class AuthUtils : IAuthUtils
 {
     private readonly IConfiguration _Configuration;
     private string _SecretKey;
