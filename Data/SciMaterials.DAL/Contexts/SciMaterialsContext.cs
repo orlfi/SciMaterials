@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using SciMaterials.DAL.Contracts.Entities;
-using SciMaterials.DAL.Contracts.Entities.Base;
+using SciMaterials.DAL.Resources.Contracts.Entities;
 
-using File = SciMaterials.DAL.Contracts.Entities.File;
+using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.Contexts;
 

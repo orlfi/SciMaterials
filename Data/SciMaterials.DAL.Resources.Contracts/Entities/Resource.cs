@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SciMaterials.DAL.Contracts.Entities.Base;
+using SciMaterials.DAL.Contracts.Entities;
+
+namespace SciMaterials.DAL.Resources.Contracts.Entities;
 
 [Table("Resources")]
 public class Resource : NamedModel

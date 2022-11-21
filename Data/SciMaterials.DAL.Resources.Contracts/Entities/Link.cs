@@ -1,6 +1,6 @@
-﻿using SciMaterials.DAL.Contracts.Entities.Base;
+﻿using SciMaterials.DAL.Contracts.Entities;
 
-namespace SciMaterials.DAL.Contracts.Entities;
+namespace SciMaterials.DAL.Resources.Contracts.Entities;
 
 public class Link : BaseModel
 {

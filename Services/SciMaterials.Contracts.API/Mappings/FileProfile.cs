@@ -4,7 +4,7 @@ using SciMaterials.Contracts.API.DTO.Files;
 using SciMaterials.Contracts.API.Models;
 using SciMaterials.Contracts.API.Settings;
 
-using File = SciMaterials.DAL.Contracts.Entities.File;
+using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
 namespace SciMaterials.Contracts.API.Mappings;
 

@@ -1,4 +1,4 @@
-﻿namespace SciMaterials.DAL.Contracts.Repositories;
+﻿namespace SciMaterials.DAL.Resources.Contracts.Repositories;
 
 /// <summary> Интерфейс репозиториев. </summary>
 /// <typeparam name="T"></typeparam>

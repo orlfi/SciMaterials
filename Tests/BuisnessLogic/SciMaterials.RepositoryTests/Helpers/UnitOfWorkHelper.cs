@@ -1,9 +1,9 @@
 ﻿using Moq;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Contracts.Entities;
 using SciMaterials.DAL.Repositories.Files;
 using SciMaterials.DAL.Repositories.Users;
+using SciMaterials.DAL.Resources.Contracts.Entities;
 using SciMaterials.DAL.UnitOfWork;
 
 namespace SciMaterials.RepositoryTests.Helpers;

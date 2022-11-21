@@ -1,8 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using SciMaterials.DAL.Contracts.Entities.Base;
-
-namespace SciMaterials.DAL.Contracts.Entities;
+namespace SciMaterials.DAL.Resources.Contracts.Entities;
 
 [Table("Files")]
 public class File : Resource

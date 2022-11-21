@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Contracts.Entities;
-using SciMaterials.DAL.Contracts.Repositories;
 using SciMaterials.DAL.Repositories.Files;
 using SciMaterials.DAL.Repositories.Ratings;
 using SciMaterials.DAL.Repositories.Users;
+using SciMaterials.DAL.Resources.Contracts.Entities;
+using SciMaterials.DAL.Resources.Contracts.Repositories;
 
-using File = SciMaterials.DAL.Contracts.Entities.File;
+using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.UnitOfWork;
 

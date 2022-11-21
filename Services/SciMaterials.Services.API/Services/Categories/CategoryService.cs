@@ -5,7 +5,7 @@ using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts;
-using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Resources.Contracts.Entities;
 using SciMaterials.DAL.UnitOfWork;
 
 namespace SciMaterials.Services.API.Services.Categories;

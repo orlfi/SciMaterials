@@ -9,12 +9,11 @@ using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Contracts.Repositories;
 using SciMaterials.DAL.UnitOfWork;
-using SciMaterials.DAL.Repositories;
+using SciMaterials.DAL.Resources.Contracts.Repositories;
 using SciMaterials.Services.API.Services.Files;
 
-using File = SciMaterials.DAL.Contracts.Entities.File;
+using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
 namespace SciMaterials.Services.API.Tests.Services.Files;
 

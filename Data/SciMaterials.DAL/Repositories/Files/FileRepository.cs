@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Contracts.Repositories;
-using SciMaterials.DAL.Contracts.Repositories.Files;
+using SciMaterials.DAL.Resources.Contracts.Repositories;
+using SciMaterials.DAL.Resources.Contracts.Repositories.Files;
 
-using File = SciMaterials.DAL.Contracts.Entities.File;
+using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.Repositories.Files;
 

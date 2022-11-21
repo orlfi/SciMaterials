@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Contracts.Entities;
-using SciMaterials.DAL.Contracts.Repositories;
-using SciMaterials.DAL.Contracts.Repositories.Ratings;
+using SciMaterials.DAL.Resources.Contracts.Entities;
+using SciMaterials.DAL.Resources.Contracts.Repositories;
+using SciMaterials.DAL.Resources.Contracts.Repositories.Ratings;
 
 namespace SciMaterials.DAL.Repositories.Ratings;
 

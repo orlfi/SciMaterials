@@ -2,9 +2,9 @@
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Contracts.Entities;
-using SciMaterials.DAL.Contracts.Repositories;
-using SciMaterials.DAL.Contracts.Repositories.Users;
+using SciMaterials.DAL.Resources.Contracts.Entities;
+using SciMaterials.DAL.Resources.Contracts.Repositories;
+using SciMaterials.DAL.Resources.Contracts.Repositories.Users;
 
 namespace SciMaterials.DAL.Repositories.Users;
 
