@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.API.Services.Categories;
@@ -25,6 +26,14 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     public async Task<IActionResult> GetAllAsync()
     {
         var result = await _сategoryService.GetAllAsync();
+        return Ok(result);
+    }
+
+    [HttpGet("tree/{id?}")]
+    [ProducesDefaultResponseType(typeof(IEnumerable<CategoryTreeNode>))]
+    public async Task<IActionResult> GetCategoryTree(Guid? id = null)
+    {
+        var result = await _сategoryService.GetCategoryWithResourcesTreeAsync(id);
         return Ok(result);
     }
 
@@ -70,19 +79,4 @@ public class CategoriesController : ApiBaseController<CategoriesController>
         var result = await _сategoryService.DeleteAsync(id);
         return Ok(result);
     }
-
-    [HttpGet("tree/{Id}")]
-    //[ProducesResponseType(typeof(CategoryTree), StatusCodes.Status200OK)]
-    [ProducesDefaultResponseType(typeof(CategoryTree))]
-    public IActionResult GetCategoryTree(Guid Id)
-    {
-        var result = new CategoryTree(Guid.NewGuid(), "Test", Enumerable.Empty<CategotyTreeInfo>(), Enumerable.Empty<CategoryTreeFile>());
-        return Ok(result);
-    }
-
-    public record CategotyTreeInfo(Guid Id, string Name);
-
-    public record CategoryTree(Guid Id, string Name, IEnumerable<CategotyTreeInfo> SubCategories, IEnumerable<CategoryTreeFile> Files);
-
-    public record CategoryTreeFile(Guid Id, string Name);
 }

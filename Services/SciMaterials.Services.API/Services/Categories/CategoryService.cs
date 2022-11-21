@@ -8,6 +8,8 @@ using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts;
 using SciMaterials.DAL.Models;
 using Microsoft.AspNetCore.Mvc;
+using NLog.LayoutRenderers;
+using SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 namespace SciMaterials.Services.API.Services.Categories;
 
@@ -29,6 +31,25 @@ public class CategoryService : ApiServiceBase, ICategoryService
         var totalCount = await _unitOfWork.GetRepository<Category>().GetCountAsync();
         var result = _mapper.Map<List<GetCategoryResponse>>(categories);
         return (result, totalCount);
+    }
+
+    public async Task<Result<IEnumerable<CategoryWithResourcesTreeNode>>> GetCategoryWithResourcesTreeAsync(Guid? id, CancellationToken Cancel = default)
+    {
+        var repository = (ICategoryRepository)_unitOfWork.GetRepository<Category>();
+        var categories = await repository.GetByParentIdAsync(id, true, true);
+        var result = new List<CategoryWithResourcesTreeNode>();
+        foreach (var category in categories)
+        {
+            var children = category.Children?.Select(c => new CategoryTreeNode() { Id = c.Id, Name = c.Name });
+            result.Add(new CategoryWithResourcesTreeNode()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Children = children,
+                Resources = category.Resources.Select(r => new CategoryTreeResource(r.Id, r.Name))
+            });
+        }
+        return result;
     }
 
     public async Task<Result<GetCategoryResponse>> GetByIdAsync(Guid id, CancellationToken Cancel = default)

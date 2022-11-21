@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
 
@@ -7,7 +8,10 @@ namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
 
 
 /// <summary> Интерфейс репозитория для <see cref="Category"/>. </summary>
-public interface ICategoryRepository : IRepository<Category> { }
+public interface ICategoryRepository : IRepository<Category>
+{
+    public Task<IEnumerable<Category>> GetByParentIdAsync(Guid? parentId, bool disableTracking = true, bool include = false);
+}
 
 /// <summary> Репозиторий для <see cref="Category"/>. </summary>
 public class CategoryRepository : ICategoryRepository
@@ -159,6 +163,21 @@ public class CategoryRepository : ICategoryRepository
         return query.FirstOrDefault();
     }
 
+    public async Task<IEnumerable<Category>> GetByParentIdAsync(Guid? parentId, bool disableTracking = true, bool include = false)
+    {
+        var query = _context.Categories
+                .Where(c => c.ParentId == parentId && !c.IsDeleted);
+
+        if (include)
+            query = query
+                .Include(c => c.Resources).Include(c=>c.Children);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query.ToListAsync();
+    }
+
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
     public async Task<Category?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
@@ -266,7 +285,7 @@ public class CategoryRepository : ICategoryRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetCount()"/>
-    public int GetCount() 
+    public int GetCount()
         => _context.Categories.Count();
 
     ///
@@ -324,7 +343,7 @@ public class CategoryRepository : ICategoryRepository
     {
         recipient.Description = source.Description;
         recipient.CreatedAt = source.CreatedAt;
-        recipient.Resources = source.Resources;;
+        recipient.Resources = source.Resources; ;
         recipient.ParentId = source.ParentId;
         recipient.Name = source.Name;
         recipient.IsDeleted = source.IsDeleted;

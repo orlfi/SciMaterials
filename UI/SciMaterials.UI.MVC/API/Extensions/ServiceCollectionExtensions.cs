@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Options;
+
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Services.API.Configuration;
 using SciMaterials.UI.MVC.API.Filters;
@@ -13,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddSwaggerGen(options =>
         {
             options.OperationFilter<FileUploadFilter>();
+            options.OperationFilter<ReApplyOptionalRouteParameterOperationFilter>();
         });
 
         return services;
