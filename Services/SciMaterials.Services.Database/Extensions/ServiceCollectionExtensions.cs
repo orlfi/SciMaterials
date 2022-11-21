@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SciMaterials.Contracts.Database.Configuration;
-using SciMaterials.Contracts.Database.Initialization;
+
+using SciMaterials.DAL.Contracts.Configuration;
+using SciMaterials.DAL.Contracts.Initialization;
 using SciMaterials.Data.MySqlMigrations;
 using SciMaterials.MsSqlServerMigrations;
 using SciMaterials.PostgresqlMigrations;
@@ -16,10 +17,10 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration)
     {
         var dbSettings = configuration.GetSection("DbSettings")
-            .Get<DbSettings>();
+            .Get<DatabaseSettings>();
 
         var providerName = dbSettings.GetProviderName();
-        var connectionString = configuration.GetSection("DbSettings").GetConnectionString(dbSettings.DbProvider);
+        var connectionString = configuration.GetSection("DbSettings").GetConnectionString(dbSettings.Provider);
 
         switch (providerName.ToLower())
         {
@@ -43,5 +44,5 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services) =>
-       services.AddTransient<IDbInitializer, DbInitializer>();
+       services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
 }

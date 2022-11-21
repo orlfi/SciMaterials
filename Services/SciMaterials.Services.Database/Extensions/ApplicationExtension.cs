@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SciMaterials.Contracts.Database.Configuration;
-using SciMaterials.Contracts.Database.Initialization;
+
 using SciMaterials.DAL.AUTH.Contracts;
 using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Contracts.Configuration;
+using SciMaterials.DAL.Contracts.Initialization;
 
 namespace SciMaterials.Services.Database.Extensions;
 
@@ -22,10 +23,10 @@ public static class ApplicationExtension
         var authDb = scope.ServiceProvider.GetRequiredService<IAuthDbInitializer>();
         await authDb.InitializeAsync();
 
-        var db_setting = configuration.GetSection("DbSettings").Get<DbSettings>();
+        var db_setting = configuration.GetSection("DbSettings").Get<DatabaseSettings>();
 
-        var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        await initializer.InitializeDbAsync(
+        var initializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
+        await initializer.InitializeDatabaseAsync(
                 RemoveAtStart: db_setting.RemoveAtStart,
                 UseDataSeeder: db_setting.UseDataSeeder);
     }

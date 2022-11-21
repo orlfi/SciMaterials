@@ -1,23 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SciMaterials.Contracts.Database.Initialization;
+
 using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Contracts.Initialization;
 using SciMaterials.DAL.Services;
 
 namespace SciMaterials.Services.Database.Services.DbInitialization;
 
-public class DbInitializer : IDbInitializer
+public class DatabaseInitializer : IDatabaseInitializer
 {
     private readonly SciMaterialsContext _db;
     private readonly ILogger<SciMaterialsContext> _Logger;
 
-    public DbInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
+    public DatabaseInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
     {
         _db = db;
         _Logger = logger;
     }
 
-    public async Task<bool> DeleteDbAsync(CancellationToken Cancel = default)
+    public async Task<bool> DeleteDatabaseAsync(CancellationToken Cancel = default)
     {
         _Logger.LogInformation("Deleting a database...");
 
@@ -40,7 +41,7 @@ public class DbInitializer : IDbInitializer
         }
     }
 
-    public async Task InitializeDbAsync(bool RemoveAtStart = false, bool UseDataSeeder = false, CancellationToken Cancel = default)
+    public async Task InitializeDatabaseAsync(bool RemoveAtStart = false, bool UseDataSeeder = false, CancellationToken Cancel = default)
     {
         _Logger.LogInformation("Database initialization...");
 
@@ -51,7 +52,7 @@ public class DbInitializer : IDbInitializer
             if (RemoveAtStart)
             {
                 _Logger.LogInformation("Need to remove database at begging of initialization process");
-                if(await DeleteDbAsync(Cancel).ConfigureAwait(false))
+                if(await DeleteDatabaseAsync(Cancel).ConfigureAwait(false))
                     _Logger.LogInformation("Database was removed successfully");
                 else
                     _Logger.LogInformation("Database not removed because it not exists");
@@ -85,7 +86,7 @@ public class DbInitializer : IDbInitializer
 
 
             if (UseDataSeeder)
-                await InitializeDbAsync(Cancel).ConfigureAwait(false);
+                await InitializeDatabaseAsync(Cancel).ConfigureAwait(false);
         }
         catch (OperationCanceledException e)
         {
@@ -99,7 +100,7 @@ public class DbInitializer : IDbInitializer
         }
     }
 
-    private async Task InitializeDbAsync(CancellationToken Cancel = default)
+    private async Task InitializeDatabaseAsync(CancellationToken Cancel = default)
     {
         await DataSeeder.SeedAsync(_db, _Logger, Cancel).ConfigureAwait(false);
     }

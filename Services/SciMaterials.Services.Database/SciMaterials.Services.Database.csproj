@@ -11,8 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.Data.MySqlMigrations\SciMaterials.Data.MySqlMigrations.csproj" />
+    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj" />
+    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.PostgresqlMigrations\SciMaterials.PostgresqlMigrations.csproj" />
+    <ProjectReference Include="..\..\Data\Migrations\SciMaterials.SQLiteMigrations\SciMaterials.SQLiteMigrations.csproj" />
     <ProjectReference Include="..\..\Data\SciMaterials.DAL.AUTH.Contracts\SciMaterials.DAL.AUTH.Contracts.csproj" />
-    <ProjectReference Include="..\SciMaterials.Contracts.Database\SciMaterials.Contracts.Database.csproj" />
+    <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
   </ItemGroup>
 
