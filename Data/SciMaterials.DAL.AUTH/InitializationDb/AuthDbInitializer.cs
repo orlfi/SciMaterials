@@ -91,8 +91,49 @@ public class AuthDbInitializer : IAuthDbInitializer
             _Logger.LogInformation("Migrations not supported by provider. Database created.");
         }
 
-        await AuthRolesInitializer.InitializeAsync(_UserManager, _RoleManager, _Configuration);
+        await InitializeRolesAsync();
 
         _Logger.Log(LogLevel.Information,"Initialize auth database stop {Time}", DateTime.Now);
+    }
+
+    /// <summary>
+    /// Инициализация базы данных с созданием ролей "супер админ" и "пользователь"
+    /// Создание одной учетной записи "админа"
+    /// </summary>
+    /// <param name="UserManager"></param>
+    /// <param name="RoleManager"></param>
+    public async Task InitializeRolesAsync()
+    {
+        await CheckRoleAsync("admin").ConfigureAwait(false);
+        await CheckRoleAsync("user");
+
+        var admin_settings = _Configuration.GetSection("AuthApiSettings:AdminSettings");
+        var admin_email = admin_settings["login"];
+        var admin_password = admin_settings["password"];
+
+        //Супер админ
+        if (await _UserManager.FindByNameAsync(admin_email) is null)
+        {
+            var super_admin = new IdentityUser
+            {
+                Email = admin_email,
+                UserName = admin_email
+            };
+
+            if (await _UserManager.CreateAsync(super_admin, admin_password) is { Succeeded: false, Errors: var errors })
+                throw new InvalidOperationException($"Ошибка создания администратора {string.Join(",", errors.Select(e => e.Description))}");
+
+            await _UserManager.AddToRoleAsync(super_admin, "admin");
+            var token_for_admin = await _UserManager.GenerateEmailConfirmationTokenAsync(super_admin);
+            await _UserManager.ConfirmEmailAsync(super_admin, token_for_admin);
+        }
+    }
+
+    private async Task CheckRoleAsync(string RoleName)
+    {
+        if (await _RoleManager.FindByNameAsync(RoleName) is null &&
+            await _RoleManager.CreateAsync(new(RoleName)) is { Succeeded: false, Errors: var errors })
+            throw new InvalidOperationException(
+                $"Ошибка создания роли {RoleName}: {string.Join(",", errors.Select(e => e.Description))}");
     }
 }
