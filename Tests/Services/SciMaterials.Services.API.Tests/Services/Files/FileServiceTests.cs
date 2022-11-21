@@ -9,8 +9,9 @@ using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Contracts.Repositories;
 using SciMaterials.DAL.UnitOfWork;
-using SciMaterials.RepositoryLib.Repositories;
+using SciMaterials.DAL.Repositories;
 using SciMaterials.Services.API.Services.Files;
 
 using File = SciMaterials.DAL.Contracts.Entities.File;

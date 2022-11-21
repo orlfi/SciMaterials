@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Repositories;
+using SciMaterials.DAL.Contracts.Repositories.Files;
 
-namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
+namespace SciMaterials.DAL.Repositories.Files;
 
-/// <summary> Интерфейс репозитория для <see cref="Tag"/>. </summary>
-public interface ITagRepository : IRepository<Tag> { }
-
-/// <summary> Репозиторий для <see cref="Tag"/>. </summary>
-public class TagRepository : ITagRepository
+/// <summary> Репозиторий для <see cref="Comment"/>. </summary>
+public class CommentRepository : ICommentRepository
 {
     private readonly ISciMaterialsContext _context;
     private readonly ILogger _logger;
@@ -17,18 +17,18 @@ public class TagRepository : ITagRepository
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
-    public TagRepository(
+    public CommentRepository(
         ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogTrace($"Логгер встроен в {nameof(TagRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(CommentRepository)}");
         _context = context;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Add"/>
-    public void Add(Tag entity)
+    public void Add(Comment entity)
     {
         _logger.LogInformation($"{nameof(Add)}");
 
@@ -37,12 +37,13 @@ public class TagRepository : ITagRepository
             _logger.LogError($"{nameof(Add)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
-        _context.Tags.Add(entity);
+
+        _context.Comments.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public async Task AddAsync(Tag entity)
+    public async Task AddAsync(Comment entity)
     {
         _logger.LogInformation($"{nameof(AddAsync)}");
 
@@ -51,12 +52,13 @@ public class TagRepository : ITagRepository
             _logger.LogError($"{nameof(AddAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
-        await _context.Tags.AddAsync(entity);
+
+        await _context.Comments.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
-    public void Delete(Tag entity)
+    public void Delete(Comment entity)
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
@@ -72,7 +74,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
-    public async Task DeleteAsync(Tag entity)
+    public async Task DeleteAsync(Comment entity)
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
@@ -92,7 +94,7 @@ public class TagRepository : ITagRepository
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
-        var entityDb = _context.Tags.FirstOrDefault(c => c.Id == id);
+        var entityDb = _context.Comments.FirstOrDefault(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -100,7 +102,7 @@ public class TagRepository : ITagRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Tags.Remove(entityDb);
+        _context.Comments.Remove(entityDb);
     }
 
     ///
@@ -109,7 +111,7 @@ public class TagRepository : ITagRepository
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
-        var entityDb = await _context.Tags.FirstOrDefaultAsync(c => c.Id == id);
+        var entityDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -117,17 +119,18 @@ public class TagRepository : ITagRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Tags.Remove(entityDb);
+        _context.Comments.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
-    public List<Tag>? GetAll(bool disableTracking = true, bool include = false)
+    public List<Comment>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
-
+        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
+        
         if (include)
-            query = query.Include(t => t.Resources);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -137,12 +140,13 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
-    public async Task<List<Tag>?> GetAllAsync(bool disableTracking = true, bool include = false)
+    public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
+        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
 
         if (include)
-            query = query.Include(t => t.Resources);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -152,13 +156,14 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
-    public Tag? GetById(Guid id, bool disableTracking = true, bool include = false)
+    public Comment? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags
+        IQueryable<Comment> query = _context.Comments
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(t => t.Resources);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -168,13 +173,14 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
-    public async Task<Tag?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
+    public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags
+        IQueryable<Comment> query = _context.Comments
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(t => t.Resources);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -184,7 +190,7 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
-    public void Update(Tag entity)
+    public void Update(Comment entity)
     {
         _logger.LogInformation($"{nameof(Update)}");
 
@@ -203,12 +209,12 @@ public class TagRepository : ITagRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Tags.Update(entityDb);
+        _context.Comments.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public async Task UpdateAsync(Tag entity)
+    public async Task UpdateAsync(Comment entity)
     {
         _logger.LogInformation($"{nameof(UpdateAsync)}");
 
@@ -226,50 +232,25 @@ public class TagRepository : ITagRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Tags.Update(entityDb);
+        _context.Comments.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
-    public async Task<Tag?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
-    {
-        IQueryable<Tag> query = _context.Tags
-                .Where(c => c.Name == name && !c.IsDeleted);
-
-        if (include)
-            query = query.Include(t => t.Resources);
-
-        if (disableTracking)
-            query = query.AsNoTracking();
-
-        return await query.FirstOrDefaultAsync();
-    }
+    public Task<Comment?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
-    public Tag? GetByName(string name, bool disableTracking = true, bool include = false)
-    {
-        IQueryable<Tag> query = _context.Tags
-                .Where(c => c.Name == name && !c.IsDeleted);
-
-        if (include)
-            query = query.Include(t => t.Resources);
-
-        if (disableTracking)
-            query = query.AsNoTracking();
-
-        return query.FirstOrDefault();
-    }
+    public Comment? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
-    public Task<Tag?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
+    public Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
-    public Tag? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+    public Comment? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetCount()"/>
@@ -283,13 +264,14 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
-    public List<Tag>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public List<Comment>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags.AsQueryable();
+        IQueryable<Comment> query = _context.Comments.AsQueryable();
 
         if (include)
             query = query
-                .Include(t => t.Resources);
+                .Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -302,13 +284,14 @@ public class TagRepository : ITagRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
-    public async Task<List<Tag>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async Task<List<Comment>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Tag> query = _context.Tags.AsQueryable();
+        IQueryable<Comment> query = _context.Comments.AsQueryable();
 
         if (include)
             query = query
-                .Include(t => t.Resources);
+                .Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -318,16 +301,22 @@ public class TagRepository : ITagRepository
             .Take(pageSize)
             .ToListAsync();
     }
-    
+
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
-    /// <param name="source"> Источник. </param>
+    /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Tag UpdateCurrentEntity(Tag source, Tag recipient)
+    private Comment UpdateCurrentEntity(Comment sourse, Comment recipient)
     {
-        recipient.Resources = source.Resources;
-        recipient.Name = source.Name;
-        recipient.IsDeleted = source.IsDeleted;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.ResourceId = sourse.ResourceId;
+        recipient.Resource = sourse.Resource;
+        recipient.ParentId = sourse.ParentId;
+        recipient.Text = sourse.Text;
+        recipient.Author = sourse.Author;
+        recipient.AuthorId = sourse.AuthorId;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         return recipient;
     }

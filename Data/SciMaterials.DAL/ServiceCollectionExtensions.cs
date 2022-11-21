@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SciMaterials.DAL.UnitOfWork;
-using SciMaterials.Data.UnitOfWork;
 
-namespace SciMaterials.RepositoryLib.Extensions;
+using SciMaterials.DAL.UnitOfWork;
+
+namespace SciMaterials.DAL;
 
 public static class ServiceCollectionExtensions
 {

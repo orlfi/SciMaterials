@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Repositories;
+using SciMaterials.DAL.Contracts.Repositories.Files;
 
-namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
-
-/// <summary> Интерфейс репозитория для <see cref="ContentType"/>. </summary>
-public interface IContentTypeRepository : IRepository<ContentType> { }
+namespace SciMaterials.DAL.Repositories.Files;
 
 /// <summary> Репозиторий для <see cref="ContentType"/>. </summary>
 public class ContentTypeRepository : IContentTypeRepository

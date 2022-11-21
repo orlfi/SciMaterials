@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Repositories;
+using SciMaterials.DAL.Contracts.Repositories.Ratings;
 
-namespace SciMaterials.RepositoryLib.Repositories.UsersRepositories;
+namespace SciMaterials.DAL.Repositories.Ratings;
 
-/// <summary> Интерфейс репозитория для <see cref="Author"/>. </summary>
-public interface IAuthorRepository : IRepository<Author> { }
-
-/// <summary> Репозиторий для <see cref="Author"/>. </summary>
-public class AuthorRepository : IAuthorRepository
+/// <summary> Репозиторий для <see cref="Rating"/>. </summary>
+public class RatingRepository : IRatingRepository
 {
     private readonly ISciMaterialsContext _context;
     private readonly ILogger _logger;
@@ -17,18 +17,18 @@ public class AuthorRepository : IAuthorRepository
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
-    public AuthorRepository(
+    public RatingRepository(
         ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogTrace($"Логгер встроен в {nameof(AuthorRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(RatingRepository)}");
         _context = context;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Add"/>
-    public void Add(Author entity)
+    public void Add(Rating entity)
     {
         _logger.LogInformation($"{nameof(Add)}");
 
@@ -38,12 +38,12 @@ public class AuthorRepository : IAuthorRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        _context.Authors.Add(entity);
+        _context.Ratings.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public async Task AddAsync(Author entity)
+    public async Task AddAsync(Rating entity)
     {
         _logger.LogInformation($"{nameof(AddAsync)}");
 
@@ -53,12 +53,12 @@ public class AuthorRepository : IAuthorRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        await _context.Authors.AddAsync(entity);
+        await _context.Ratings.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
-    public void Delete(Author entity)
+    public void Delete(Rating entity)
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
@@ -74,7 +74,7 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
-    public async Task DeleteAsync(Author entity)
+    public async Task DeleteAsync(Rating entity)
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
@@ -94,7 +94,7 @@ public class AuthorRepository : IAuthorRepository
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
-        var entityDb = _context.Authors.FirstOrDefault(c => c.Id == id);
+        var entityDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -102,7 +102,7 @@ public class AuthorRepository : IAuthorRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Authors.Remove(entityDb);
+        _context.Ratings.Remove(entityDb);
     }
 
     ///
@@ -111,7 +111,7 @@ public class AuthorRepository : IAuthorRepository
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
-        var entityDb = await _context.Authors.FirstOrDefaultAsync(c => c.Id == id);
+        var entityDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -119,20 +119,18 @@ public class AuthorRepository : IAuthorRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Authors.Remove(entityDb);
+        _context.Ratings.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
-    public List<Author>? GetAll(bool disableTracking = true, bool include = false)
+    public List<Rating>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
+        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
 
         if (include)
-            query = query.Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
+            query = query.Include(r => r.Resource)
+                .Include(r => r.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -142,15 +140,13 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
-    public async Task<List<Author>?> GetAllAsync(bool disableTracking = true, bool include = false)
+    public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
+        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
 
         if (include)
-            query = query.Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
+            query = query.Include(r => r.Resource)
+                .Include(r => r.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -160,16 +156,14 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
-    public Author? GetById(Guid id, bool disableTracking = true, bool include = false)
+    public Rating? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors
+        IQueryable<Rating> query = _context.Ratings
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
+            query = query.Include(r => r.Resource)
+            .Include(r => r.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -179,16 +173,14 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
-    public async Task<Author?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
+    public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors
+        IQueryable<Rating> query = _context.Ratings
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
+            query = query.Include(r => r.Resource)
+            .Include(r => r.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -198,7 +190,7 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
-    public void Update(Author entity)
+    public void Update(Rating entity)
     {
         _logger.LogInformation($"{nameof(Update)}");
 
@@ -217,12 +209,12 @@ public class AuthorRepository : IAuthorRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Authors.Update(entityDb);
+        _context.Ratings.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public async Task UpdateAsync(Author entity)
+    public async Task UpdateAsync(Rating entity)
     {
         _logger.LogInformation($"{nameof(UpdateAsync)}");
 
@@ -241,54 +233,24 @@ public class AuthorRepository : IAuthorRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Authors.Update(entityDb);
+        _context.Ratings.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
-    public async Task<Author?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
-    {
-        IQueryable<Author> query = _context.Authors
-                .Where(c => c.Name == name && !c.IsDeleted);
-        
-        if (include)
-            query = query.Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
-
-        if (disableTracking)
-            query = query.AsNoTracking();
-
-        return await query.FirstOrDefaultAsync();
-    }
+    public Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
-    public Author? GetByName(string name, bool disableTracking = true, bool include = false)
-    {
-        IQueryable<Author> query = _context.Authors
-                .Where(c => c.Name == name && !c.IsDeleted);
-
-        if (include)
-            query = query.Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
-
-        if (disableTracking)
-            query = query.AsNoTracking();
-
-        return query.FirstOrDefault();
-    }
+    public Rating? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
-    public Task<Author?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
+    public Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
-    public Author? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+    public Rating? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetCount()"/>
@@ -302,16 +264,14 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
-    public List<Author>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public List<Rating>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors.AsQueryable();
+        IQueryable<Rating> query = _context.Ratings.AsQueryable();
 
         if (include)
             query = query
-                .Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
+                .Include(r => r.Resource)
+                .Include(r => r.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -324,16 +284,14 @@ public class AuthorRepository : IAuthorRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
-    public async Task<List<Author>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async Task<List<Rating>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Author> query = _context.Authors.AsQueryable();
+        IQueryable<Rating> query = _context.Ratings.AsQueryable();
 
         if (include)
             query = query
-                .Include(u => u.Comments)
-                .Include(u => u.Resources)
-                .Include(u => u.Ratings)
-                .Include(u => u.User);
+                .Include(r => r.Resource)
+                .Include(r => r.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -345,22 +303,17 @@ public class AuthorRepository : IAuthorRepository
     }
 
     /// <summary> Обновить данные экземпляра каегории. </summary>
-    /// <param name="sourse"> Источник. </param>
+    /// <param name="source"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Author UpdateCurrentEntity(Author sourse, Author recipient)
+    private Rating UpdateCurrentEntity(Rating source, Rating recipient)
     {
-        recipient.Name = sourse.Name;
-        recipient.IsDeleted = sourse.IsDeleted;
-
-        recipient.Email = sourse.Email;
-        recipient.UserId = sourse.UserId;
-        recipient.Phone = sourse.Phone;
-        recipient.Surname = sourse.Surname;
-        recipient.User = sourse.User;
-        recipient.Comments = sourse.Comments;
-        recipient.Resources = sourse.Resources;
-        recipient.Ratings = sourse.Ratings;
+        recipient.ResourceId = source.ResourceId;
+        recipient.AuthorId = source.AuthorId;
+        recipient.RatingValue = source.RatingValue;
+        recipient.Resource = source.Resource;
+        recipient.User = source.User;
+        recipient.IsDeleted = source.IsDeleted;
 
         return recipient;
     }

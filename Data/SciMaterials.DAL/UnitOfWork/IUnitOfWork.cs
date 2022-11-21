@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using SciMaterials.RepositoryLib.Repositories;
+
+using SciMaterials.DAL.Contracts.Repositories;
 
 namespace SciMaterials.DAL.UnitOfWork;
 

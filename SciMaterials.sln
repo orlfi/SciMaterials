@@ -35,8 +35,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.API"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.API", "Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj", "{791878C5-1827-4303-8D39-32F21A2BD878}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{3F608516-84D2-44AD-9DA4-866738934F00}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Data.MySqlMigrations", "Data\Migrations\SciMaterials.Data.MySqlMigrations\SciMaterials.Data.MySqlMigrations.csproj", "{2DB31AE1-8AA2-44F9-84F7-2E93374E1F59}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.MySql.Auth.Migrations", "Data\Migrations\SciMaterials.MySql.Auth.Migrations\SciMaterials.MySql.Auth.Migrations.csproj", "{5CE6CD0B-9211-48BE-9BFC-A9CD86698E14}"
@@ -46,8 +44,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.SqlLite.Auth.Migrations", "Data\Migrations\SciMaterials.SqlLite.Auth.Migrations\SciMaterials.SqlLite.Auth.Migrations.csproj", "{FD4868B5-9DE8-42B6-AC72-BCAFB8A127C4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.DAL.AUTH", "Data\SciMaterials.DAL.AUTH\SciMaterials.DAL.AUTH.csproj", "{F0C34115-ED61-4D2C-8ADD-EEC0533FD80E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.RepositoryLib", "Common\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj", "{7024B4E4-DAEE-471F-B0A2-32591F1B46C1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{FBA8E49C-BBBF-47BE-B1DF-33AD5A56C91D}"
 EndProject
@@ -95,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.Shor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services", "Services\SciMaterials.Services\SciMaterials.Services.csproj", "{8DE467ED-6595-4575-9C85-C5D2B7FB58FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.DAL.Contracts", "Data\SciMaterials.DAL.Contracts\SciMaterials.DAL.Contracts.csproj", "{17C33609-979D-4FF4-AA75-C2E3E96AC007}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.DAL.Contracts", "Data\SciMaterials.DAL.Contracts\SciMaterials.DAL.Contracts.csproj", "{17C33609-979D-4FF4-AA75-C2E3E96AC007}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,10 +159,6 @@ Global
 		{F0C34115-ED61-4D2C-8ADD-EEC0533FD80E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0C34115-ED61-4D2C-8ADD-EEC0533FD80E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0C34115-ED61-4D2C-8ADD-EEC0533FD80E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7024B4E4-DAEE-471F-B0A2-32591F1B46C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7024B4E4-DAEE-471F-B0A2-32591F1B46C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7024B4E4-DAEE-471F-B0A2-32591F1B46C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7024B4E4-DAEE-471F-B0A2-32591F1B46C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4279349C-2BA7-4E65-BB83-8B2FDE1C687D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4279349C-2BA7-4E65-BB83-8B2FDE1C687D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4279349C-2BA7-4E65-BB83-8B2FDE1C687D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -253,7 +245,6 @@ Global
 		{0BC604D9-DB68-401C-AFAD-99BED4E8D511} = {B4E3FF22-0421-42D5-9F32-86D6BE0867BF}
 		{FD4868B5-9DE8-42B6-AC72-BCAFB8A127C4} = {B4E3FF22-0421-42D5-9F32-86D6BE0867BF}
 		{F0C34115-ED61-4D2C-8ADD-EEC0533FD80E} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
-		{7024B4E4-DAEE-471F-B0A2-32591F1B46C1} = {3F608516-84D2-44AD-9DA4-866738934F00}
 		{FBA8E49C-BBBF-47BE-B1DF-33AD5A56C91D} = {2DCB8316-A1A3-4A2A-9C6E-4C834963DAD1}
 		{4EE84F04-0C3D-40E8-9B2A-B67180258A68} = {2DCB8316-A1A3-4A2A-9C6E-4C834963DAD1}
 		{4279349C-2BA7-4E65-BB83-8B2FDE1C687D} = {FBA8E49C-BBBF-47BE-B1DF-33AD5A56C91D}

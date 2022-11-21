@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Repositories;
+using SciMaterials.DAL.Contracts.Repositories.Files;
 
-namespace SciMaterials.RepositoryLib.Repositories.RatingRepositories;
+namespace SciMaterials.DAL.Repositories.Files;
 
-/// <summary> Интерфейс репозитория для <see cref="Rating"/>. </summary>
-public interface IRatingRepository : IRepository<Rating> { }
-
-/// <summary> Репозиторий для <see cref="Rating"/>. </summary>
-public class RatingRepository : IRatingRepository
+/// <summary> Репозиторий для <see cref="Category"/>. </summary>
+public class CategoryRepository : ICategoryRepository
 {
     private readonly ISciMaterialsContext _context;
     private readonly ILogger _logger;
@@ -17,18 +17,19 @@ public class RatingRepository : IRatingRepository
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
-    public RatingRepository(
+    public CategoryRepository(
         ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogTrace($"Логгер встроен в {nameof(RatingRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(CategoryRepository)}");
+
         _context = context;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Add"/>
-    public void Add(Rating entity)
+    public void Add(Category entity)
     {
         _logger.LogInformation($"{nameof(Add)}");
 
@@ -38,12 +39,12 @@ public class RatingRepository : IRatingRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        _context.Ratings.Add(entity);
+        _context.Categories.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public async Task AddAsync(Rating entity)
+    public async Task AddAsync(Category entity)
     {
         _logger.LogInformation($"{nameof(AddAsync)}");
 
@@ -53,12 +54,12 @@ public class RatingRepository : IRatingRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        await _context.Ratings.AddAsync(entity);
+        await _context.Categories.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
-    public void Delete(Rating entity)
+    public void Delete(Category entity)
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
@@ -74,7 +75,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
-    public async Task DeleteAsync(Rating entity)
+    public async Task DeleteAsync(Category entity)
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
@@ -94,15 +95,9 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
-        var entityDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
-
-        if (entityDb is null)
-        {
-            _logger.LogError($"{nameof(Delete)} >>> argumentNullException {nameof(entityDb)}");
-            throw new ArgumentNullException(nameof(entityDb));
-        }
-
-        _context.Ratings.Remove(entityDb);
+        var categoryDb = _context.Categories.FirstOrDefault(c => c.Id == id);
+        if (categoryDb is null) return;
+        _context.Categories.Remove(categoryDb);
     }
 
     ///
@@ -111,26 +106,19 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
-        var entityDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
-
-        if (entityDb is null)
-        {
-            _logger.LogError($"{nameof(DeleteAsync)} >>> argumentNullException {nameof(entityDb)}");
-            throw new ArgumentNullException(nameof(entityDb));
-        }
-
-        _context.Ratings.Remove(entityDb);
+        var categoryDb = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        if (categoryDb is null) return;
+        _context.Categories.Remove(categoryDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
-    public List<Rating>? GetAll(bool disableTracking = true, bool include = false)
+    public List<Category>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
+        var query = _context.Categories.Where(c => !c.IsDeleted);
 
         if (include)
-            query = query.Include(r => r.Resource)
-                .Include(r => r.User);
+            query = query.Include(c => c.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -140,13 +128,12 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
-    public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true, bool include = false)
+    public async Task<List<Category>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
+        var query = _context.Categories.Where(c => !c.IsDeleted);
 
         if (include)
-            query = query.Include(r => r.Resource)
-                .Include(r => r.User);
+            query = query.Include(c => c.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -156,14 +143,14 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
-    public Rating? GetById(Guid id, bool disableTracking = true, bool include = false)
+    public Category? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings
+        var query = _context.Categories
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(r => r.Resource)
-            .Include(r => r.User);
+            query = query
+                .Include(c => c.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -173,14 +160,13 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
-    public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
+    public async Task<Category?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings
-                .Where(c => c.Id == id && !c.IsDeleted);
+        var query = _context.Categories
+                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(r => r.Resource)
-            .Include(r => r.User);
+            query = query.Include(c => c.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -189,8 +175,41 @@ public class RatingRepository : IRatingRepository
     }
 
     ///
+    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
+    public async Task<Category?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
+    {
+        var query = _context.Categories
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(c => c.Resources);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync();
+    }
+
+    ///
+    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
+    public Category? GetByName(string name, bool disableTracking = true, bool include = false)
+    {
+        var query = _context.Categories
+                .Where(c => c.Name == name && !c.IsDeleted)
+                .AsQueryable();
+
+        if (include)
+            query = query.Include(c => c.Resources);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query.FirstOrDefault();
+    }
+
+    ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
-    public void Update(Rating entity)
+    public void Update(Category entity)
     {
         _logger.LogInformation($"{nameof(Update)}");
 
@@ -209,12 +228,12 @@ public class RatingRepository : IRatingRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Ratings.Update(entityDb);
+        _context.Categories.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public async Task UpdateAsync(Rating entity)
+    public async Task UpdateAsync(Category entity)
     {
         _logger.LogInformation($"{nameof(UpdateAsync)}");
 
@@ -228,33 +247,25 @@ public class RatingRepository : IRatingRepository
 
         if (entityDb is null)
         {
-            _logger.LogError($"{nameof(UpdateAsync)} >>> argumentNullException {nameof(entityDb)}");
+            _logger.LogError($"{nameof(Update)} >>> argumentNullException {nameof(entityDb)}");
             throw new ArgumentNullException(nameof(entityDb));
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Ratings.Update(entityDb);
+        _context.Categories.Update(entityDb);
     }
 
     ///
-    /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
-    public Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
-
-    ///
-    /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
-    public Rating? GetByName(string name, bool disableTracking = true, bool include = false) => null;
-
-    ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
-    public Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
+    public Task<Category?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
-    public Rating? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+    public Category? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetCount()"/>
-    public int GetCount()
+    public int GetCount() 
         => _context.Categories.Count();
 
     ///
@@ -264,14 +275,14 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
-    public List<Rating>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public List<Category>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings.AsQueryable();
+        var query = _context.Categories
+            .Where(c => !c.IsDeleted)
+            .AsQueryable();
 
         if (include)
-            query = query
-                .Include(r => r.Resource)
-                .Include(r => r.User);
+            query = query.Include(c => c.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -284,14 +295,15 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
-    public async Task<List<Rating>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async Task<List<Category>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query =_context.Ratings.AsQueryable();
+        var query = _context.Categories
+            .Where(c => !c.IsDeleted)
+            .AsQueryable();
 
         if (include)
             query = query
-                .Include(r => r.Resource)
-                .Include(r => r.User);
+                .Include(c => c.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -301,18 +313,19 @@ public class RatingRepository : IRatingRepository
             .Take(pageSize)
             .ToListAsync();
     }
-    
+
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="source"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Rating UpdateCurrentEntity(Rating source, Rating recipient)
+    private Category UpdateCurrentEntity(Category source, Category recipient)
     {
-        recipient.ResourceId = source.ResourceId;
-        recipient.AuthorId = source.AuthorId;
-        recipient.RatingValue = source.RatingValue;
-        recipient.Resource = source.Resource;
-        recipient.User = source.User;
+        recipient.Description = source.Description;
+        recipient.CreatedAt = source.CreatedAt;
+        recipient.Resources = source.Resources;;
+        recipient.ParentId = source.ParentId;
+        recipient.Name = source.Name;
         recipient.IsDeleted = source.IsDeleted;
 
         return recipient;

@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Repositories;
+using SciMaterials.DAL.Contracts.Repositories.Files;
 
-namespace SciMaterials.RepositoryLib.Repositories.UsersRepositories;
+namespace SciMaterials.DAL.Repositories.Files;
 
-/// <summary> Интерфейс репозитория для <see cref="User"/>. </summary>
-public interface IUserRepository : IRepository<User> { }
-
-/// <summary> Репозиторий для <see cref="User"/>. </summary>
-public class UserRepository : IUserRepository
+/// <summary> Репозиторий для <see cref="Tag"/>. </summary>
+public class TagRepository : ITagRepository
 {
     private readonly ISciMaterialsContext _context;
     private readonly ILogger _logger;
@@ -17,19 +17,18 @@ public class UserRepository : IUserRepository
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
-    public UserRepository(
+    public TagRepository(
         ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogTrace($"Логгер встроен в {nameof(UserRepository)}");
-
+        _logger.LogTrace($"Логгер встроен в {nameof(TagRepository)}");
         _context = context;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Add"/>
-    public void Add(User entity)
+    public void Add(Tag entity)
     {
         _logger.LogInformation($"{nameof(Add)}");
 
@@ -38,13 +37,12 @@ public class UserRepository : IUserRepository
             _logger.LogError($"{nameof(Add)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
-
-        _context.Users.Add(entity);
+        _context.Tags.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public async Task AddAsync(User entity)
+    public async Task AddAsync(Tag entity)
     {
         _logger.LogInformation($"{nameof(AddAsync)}");
 
@@ -53,13 +51,12 @@ public class UserRepository : IUserRepository
             _logger.LogError($"{nameof(AddAsync)} >>> argumentNullException {nameof(entity)}");
             throw new ArgumentNullException(nameof(entity));
         }
-
-        await _context.Users.AddAsync(entity);
+        await _context.Tags.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
-    public void Delete(User entity)
+    public void Delete(Tag entity)
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
@@ -75,7 +72,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
-    public async Task DeleteAsync(User entity)
+    public async Task DeleteAsync(Tag entity)
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
@@ -95,7 +92,7 @@ public class UserRepository : IUserRepository
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
-        var entityDb = _context.Users.FirstOrDefault(c => c.Id == id);
+        var entityDb = _context.Tags.FirstOrDefault(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -103,7 +100,7 @@ public class UserRepository : IUserRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Users.Remove(entityDb);
+        _context.Tags.Remove(entityDb);
     }
 
     ///
@@ -112,7 +109,7 @@ public class UserRepository : IUserRepository
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
-        var entityDb = await _context.Users.FirstOrDefaultAsync(c => c.Id == id);
+        var entityDb = await _context.Tags.FirstOrDefaultAsync(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -120,14 +117,17 @@ public class UserRepository : IUserRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Users.Remove(entityDb);
+        _context.Tags.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
-    public List<User>? GetAll(bool disableTracking = true, bool include = false)
+    public List<Tag>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
+        IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
+
+        if (include)
+            query = query.Include(t => t.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -137,9 +137,12 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
-    public async Task<List<User>?> GetAllAsync(bool disableTracking = true, bool include = false)
+    public async Task<List<Tag>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
+        IQueryable<Tag> query = _context.Tags.Where(t => !t.IsDeleted);
+
+        if (include)
+            query = query.Include(t => t.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -149,10 +152,13 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
-    public User? GetById(Guid id, bool disableTracking = true, bool include = false)
+    public Tag? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users
-            .Where(c => c.Id == id && !c.IsDeleted);
+        IQueryable<Tag> query = _context.Tags
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(t => t.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -162,10 +168,13 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
-    public async Task<User?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
+    public async Task<Tag?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users
-            .Where(c => c.Id == id && !c.IsDeleted);
+        IQueryable<Tag> query = _context.Tags
+                .Where(c => c.Id == id && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(t => t.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -175,7 +184,7 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
-    public void Update(User entity)
+    public void Update(Tag entity)
     {
         _logger.LogInformation($"{nameof(Update)}");
 
@@ -194,12 +203,12 @@ public class UserRepository : IUserRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Users.Update(entityDb);
+        _context.Tags.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public async Task UpdateAsync(User entity)
+    public async Task UpdateAsync(Tag entity)
     {
         _logger.LogInformation($"{nameof(UpdateAsync)}");
 
@@ -217,15 +226,20 @@ public class UserRepository : IUserRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
+
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Users.Update(entityDb);
+        _context.Tags.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
-    public async Task<User?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
+    public async Task<Tag?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
+        IQueryable<Tag> query = _context.Tags
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(t => t.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -235,11 +249,15 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
-    public User? GetByName(string name, bool disableTracking = true, bool include = false)
+    public Tag? GetByName(string name, bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users.Where(u => !u.IsDeleted);
+        IQueryable<Tag> query = _context.Tags
+                .Where(c => c.Name == name && !c.IsDeleted);
 
-        if (disableTracking) 
+        if (include)
+            query = query.Include(t => t.Resources);
+
+        if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
@@ -247,11 +265,11 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
-    public Task<User?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
+    public Task<Tag?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
-    public User? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+    public Tag? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetCount()"/>
@@ -265,9 +283,13 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
-    public List<User>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public List<Tag>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users.AsQueryable();
+        IQueryable<Tag> query = _context.Tags.AsQueryable();
+
+        if (include)
+            query = query
+                .Include(t => t.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -280,9 +302,13 @@ public class UserRepository : IUserRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
-    public async Task<List<User>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async Task<List<Tag>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<User> query = _context.Users.AsQueryable();
+        IQueryable<Tag> query = _context.Tags.AsQueryable();
+
+        if (include)
+            query = query
+                .Include(t => t.Resources);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -292,16 +318,17 @@ public class UserRepository : IUserRepository
             .Take(pageSize)
             .ToListAsync();
     }
-
-
-
+    
     /// <summary> Обновить данные экземпляра каегории. </summary>
-    /// <param name="sourse"> Источник. </param>
+    /// <param name="source"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private User UpdateCurrentEntity(User sourse, User recipient)
+    private Tag UpdateCurrentEntity(Tag source, Tag recipient)
     {
-        recipient.IsDeleted = sourse.IsDeleted;
+        recipient.Resources = source.Resources;
+        recipient.Name = source.Name;
+        recipient.IsDeleted = source.IsDeleted;
+
         return recipient;
     }
 }

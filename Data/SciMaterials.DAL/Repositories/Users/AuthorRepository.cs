@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Entities;
+using SciMaterials.DAL.Contracts.Repositories;
+using SciMaterials.DAL.Contracts.Repositories.Users;
 
-namespace SciMaterials.RepositoryLib.Repositories.FilesRepositories;
+namespace SciMaterials.DAL.Repositories.Users;
 
-/// <summary> Интерфейс репозитория для <see cref="Comment"/>. </summary>
-public interface ICommentRepository : IRepository<Comment> { }
-
-/// <summary> Репозиторий для <see cref="Comment"/>. </summary>
-public class CommentRepository : ICommentRepository
+/// <summary> Репозиторий для <see cref="Author"/>. </summary>
+public class AuthorRepository : IAuthorRepository
 {
     private readonly ISciMaterialsContext _context;
     private readonly ILogger _logger;
@@ -17,18 +17,18 @@ public class CommentRepository : ICommentRepository
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
-    public CommentRepository(
+    public AuthorRepository(
         ISciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogTrace($"Логгер встроен в {nameof(CommentRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(AuthorRepository)}");
         _context = context;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Add"/>
-    public void Add(Comment entity)
+    public void Add(Author entity)
     {
         _logger.LogInformation($"{nameof(Add)}");
 
@@ -38,12 +38,12 @@ public class CommentRepository : ICommentRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        _context.Comments.Add(entity);
+        _context.Authors.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public async Task AddAsync(Comment entity)
+    public async Task AddAsync(Author entity)
     {
         _logger.LogInformation($"{nameof(AddAsync)}");
 
@@ -53,12 +53,12 @@ public class CommentRepository : ICommentRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        await _context.Comments.AddAsync(entity);
+        await _context.Authors.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
-    public void Delete(Comment entity)
+    public void Delete(Author entity)
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
@@ -74,7 +74,7 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
-    public async Task DeleteAsync(Comment entity)
+    public async Task DeleteAsync(Author entity)
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
@@ -94,7 +94,7 @@ public class CommentRepository : ICommentRepository
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
-        var entityDb = _context.Comments.FirstOrDefault(c => c.Id == id);
+        var entityDb = _context.Authors.FirstOrDefault(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -102,7 +102,7 @@ public class CommentRepository : ICommentRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Comments.Remove(entityDb);
+        _context.Authors.Remove(entityDb);
     }
 
     ///
@@ -111,7 +111,7 @@ public class CommentRepository : ICommentRepository
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
-        var entityDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
+        var entityDb = await _context.Authors.FirstOrDefaultAsync(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -119,18 +119,20 @@ public class CommentRepository : ICommentRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Comments.Remove(entityDb);
+        _context.Authors.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
-    public List<Comment>? GetAll(bool disableTracking = true, bool include = false)
+    public List<Author>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
-        
+        IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
+
         if (include)
-            query = query.Include(c => c.Resource)
-                .Include(c => c.Author);
+            query = query.Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -140,13 +142,15 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
-    public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true, bool include = false)
+    public async Task<List<Author>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
+        IQueryable<Author> query = _context.Authors.Where(a => !a.IsDeleted);
 
         if (include)
-            query = query.Include(c => c.Resource)
-                .Include(c => c.Author);
+            query = query.Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -156,14 +160,16 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
-    public Comment? GetById(Guid id, bool disableTracking = true, bool include = false)
+    public Author? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments
+        IQueryable<Author> query = _context.Authors
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(c => c.Resource)
-                .Include(c => c.Author);
+            query = query.Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -173,14 +179,16 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
-    public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
+    public async Task<Author?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments
+        IQueryable<Author> query = _context.Authors
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(c => c.Resource)
-                .Include(c => c.Author);
+            query = query.Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -190,7 +198,7 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
-    public void Update(Comment entity)
+    public void Update(Author entity)
     {
         _logger.LogInformation($"{nameof(Update)}");
 
@@ -209,12 +217,12 @@ public class CommentRepository : ICommentRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Comments.Update(entityDb);
+        _context.Authors.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public async Task UpdateAsync(Comment entity)
+    public async Task UpdateAsync(Author entity)
     {
         _logger.LogInformation($"{nameof(UpdateAsync)}");
 
@@ -233,24 +241,54 @@ public class CommentRepository : ICommentRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Comments.Update(entityDb);
+        _context.Authors.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
-    public Task<Comment?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
+    public async Task<Author?> GetByNameAsync(string name, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Author> query = _context.Authors
+                .Where(c => c.Name == name && !c.IsDeleted);
+        
+        if (include)
+            query = query.Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query.FirstOrDefaultAsync();
+    }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
-    public Comment? GetByName(string name, bool disableTracking = true, bool include = false) => null;
+    public Author? GetByName(string name, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Author> query = _context.Authors
+                .Where(c => c.Name == name && !c.IsDeleted);
+
+        if (include)
+            query = query.Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query.FirstOrDefault();
+    }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
-    public Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
+    public Task<Author?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
-    public Comment? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+    public Author? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetCount()"/>
@@ -264,14 +302,16 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
-    public List<Comment>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public List<Author>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments.AsQueryable();
+        IQueryable<Author> query = _context.Authors.AsQueryable();
 
         if (include)
             query = query
-                .Include(c => c.Resource)
-                .Include(c => c.Author);
+                .Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -284,14 +324,16 @@ public class CommentRepository : ICommentRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
-    public async Task<List<Comment>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async Task<List<Author>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Comment> query = _context.Comments.AsQueryable();
+        IQueryable<Author> query = _context.Authors.AsQueryable();
 
         if (include)
             query = query
-                .Include(c => c.Resource)
-                .Include(c => c.Author);
+                .Include(u => u.Comments)
+                .Include(u => u.Resources)
+                .Include(u => u.Ratings)
+                .Include(u => u.User);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -302,21 +344,23 @@ public class CommentRepository : ICommentRepository
             .ToListAsync();
     }
 
-
     /// <summary> Обновить данные экземпляра каегории. </summary>
     /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Comment UpdateCurrentEntity(Comment sourse, Comment recipient)
+    private Author UpdateCurrentEntity(Author sourse, Author recipient)
     {
-        recipient.CreatedAt = sourse.CreatedAt;
-        recipient.ResourceId = sourse.ResourceId;
-        recipient.Resource = sourse.Resource;
-        recipient.ParentId = sourse.ParentId;
-        recipient.Text = sourse.Text;
-        recipient.Author = sourse.Author;
-        recipient.AuthorId = sourse.AuthorId;
+        recipient.Name = sourse.Name;
         recipient.IsDeleted = sourse.IsDeleted;
+
+        recipient.Email = sourse.Email;
+        recipient.UserId = sourse.UserId;
+        recipient.Phone = sourse.Phone;
+        recipient.Surname = sourse.Surname;
+        recipient.User = sourse.User;
+        recipient.Comments = sourse.Comments;
+        recipient.Resources = sourse.Resources;
+        recipient.Ratings = sourse.Ratings;
 
         return recipient;
     }

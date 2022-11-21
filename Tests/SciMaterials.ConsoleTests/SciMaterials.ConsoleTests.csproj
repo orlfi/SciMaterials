@@ -52,7 +52,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.Data.MySqlMigrations\SciMaterials.Data.MySqlMigrations.csproj" />
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj" />
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.PostgresqlMigrations\SciMaterials.PostgresqlMigrations.csproj" />

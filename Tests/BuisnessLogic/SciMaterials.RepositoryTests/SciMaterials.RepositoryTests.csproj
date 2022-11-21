@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Common\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
     <ProjectReference Include="..\..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
   </ItemGroup>
 

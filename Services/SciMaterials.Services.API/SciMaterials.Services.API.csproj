@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\SciMaterials.RepositoryLib\SciMaterials.RepositoryLib.csproj" />
     <ProjectReference Include="..\..\Data\SciMaterials.DAL.AUTH\SciMaterials.DAL.AUTH.csproj" />
     <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />

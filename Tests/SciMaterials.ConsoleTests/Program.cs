@@ -12,7 +12,6 @@ using SciMaterials.Contracts.Database.Initialization;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;
 using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.Services.Database.Services.DbInitialization;
 using SciMaterials.Services.ShortLinks;
