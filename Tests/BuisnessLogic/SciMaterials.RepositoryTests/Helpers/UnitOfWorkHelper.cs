@@ -14,7 +14,7 @@ public static class UnitOfWorkHelper
     {
         var context = new SciMateralsContextHelper().Context;
         ILoggerFactory loggerFactory = new LoggerFactory();
-        var logger = new Logger<UnitOfWork<SciMaterialsContext>>(loggerFactory);
+        var logger = new Logger<SciMaterialsFilesUnitOfWork>(loggerFactory);
 
         var unitOfWork = new Mock<IUnitOfWork<SciMaterialsContext>>();
         unitOfWork.Setup(x => x.GetRepository<Category>()).Returns(new CategoryRepository(context, logger));

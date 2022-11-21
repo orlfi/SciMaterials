@@ -11,14 +11,14 @@ namespace SciMaterials.DAL.Repositories.Files;
 /// <summary> Репозиторий для <see cref="Tag"/>. </summary>
 public class TagRepository : ITagRepository
 {
-    private readonly ISciMaterialsContext _context;
+    private readonly SciMaterialsContext _context;
     private readonly ILogger _logger;
 
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
     public TagRepository(
-        ISciMaterialsContext context,
+        SciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;

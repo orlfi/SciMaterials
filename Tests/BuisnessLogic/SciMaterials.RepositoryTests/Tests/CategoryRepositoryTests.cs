@@ -21,7 +21,7 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
     {
         _context = new SciMateralsContextHelper().Context;
         ILoggerFactory loggerFactory = new LoggerFactory();
-        var logger = new Logger<UnitOfWork<SciMaterialsContext>>(loggerFactory);
+        var logger = new Logger<SciMaterialsFilesUnitOfWork>(loggerFactory);
 
         _categoryRepository = new CategoryRepository(_context, logger);
     }

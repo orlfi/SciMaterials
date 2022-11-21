@@ -20,7 +20,7 @@ public class ContentTypeRepositoryTests
     {
         _context = new SciMateralsContextHelper().Context;
         ILoggerFactory loggerFactory = new LoggerFactory();
-        var logger = new Logger<UnitOfWork<SciMaterialsContext>>(loggerFactory);
+        var logger = new Logger<SciMaterialsFilesUnitOfWork>(loggerFactory);
 
         _contentTypeRepository = new ContentTypeRepository(_context, logger);
     }

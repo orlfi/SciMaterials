@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
@@ -13,10 +12,10 @@ using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.UnitOfWork;
 
-public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
+public class SciMaterialsFilesUnitOfWork : IUnitOfWork<SciMaterialsContext>
 {
-    private readonly ILogger<UnitOfWork<TContext>> _logger;
-    private readonly TContext _context;
+    private readonly ILogger<SciMaterialsFilesUnitOfWork> _logger;
+    private readonly SciMaterialsContext _context;
 
     private bool disposed;
     private Dictionary<Type, object>? _repositories = new();
@@ -25,12 +24,12 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <param name="logger"></param>
     /// <param name="context"></param>
     /// <exception cref="ArgumentException"></exception>
-    public UnitOfWork(
-        ILogger<UnitOfWork<TContext>> logger,
-        TContext context)
+    public SciMaterialsFilesUnitOfWork(
+        ILogger<SciMaterialsFilesUnitOfWork> logger,
+        SciMaterialsContext context)
     {
         _logger = logger;
-        _logger.LogDebug($"Логгер встроен в {nameof(UnitOfWork)}.");
+        _logger.LogDebug($"Логгер встроен в {nameof(SciMaterialsFilesUnitOfWork)}.");
 
         _context = context ?? throw new ArgumentException(nameof(context));
 
@@ -41,7 +40,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <inheritdoc cref="IUnitOfWork{T}.GetRepository{TEntity}"/>
     public IRepository<T> GetRepository<T>() where T : class
     {
-        _logger.LogDebug($"{nameof(UnitOfWork)} >>> {nameof(GetRepository)}.");
+        _logger.LogDebug($"{nameof(SciMaterialsFilesUnitOfWork)} >>> {nameof(GetRepository)}.");
 
         if (_repositories == null)
             _repositories = new Dictionary<Type, object>();
@@ -55,14 +54,14 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <inheritdoc cref="IUnitOfWork{T}.SaveContext()"/>
     public int SaveContext()
     {
-        _logger.LogInformation($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}.");
+        _logger.LogInformation($"{nameof(SciMaterialsFilesUnitOfWork)} >>> {nameof(SaveContext)}.");
         try
         {
             return _context.SaveChanges();
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContext)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
+            _logger.LogError($"{nameof(SciMaterialsFilesUnitOfWork)} >>> {nameof(SaveContext)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message}");
             return 0;
         }
     }
@@ -71,14 +70,14 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
     /// <inheritdoc cref="IUnitOfWork{T}.SaveContextAsync()"/>
     public async Task<int> SaveContextAsync()
     {
-        _logger.LogInformation($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}.");
+        _logger.LogInformation($"{nameof(SciMaterialsFilesUnitOfWork)} >>> {nameof(SaveContextAsync)}.");
         try
         {
             return await _context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
-            _logger.LogError($"{nameof(UnitOfWork)} >>> {nameof(SaveContextAsync)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message} >>> {ex.InnerException?.Message ?? ""}");
+            _logger.LogError($"{nameof(SciMaterialsFilesUnitOfWork)} >>> {nameof(SaveContextAsync)}. Ошибка при попытке сохранений изменений контекста. >>> {ex.Message} >>> {ex.InnerException?.Message ?? ""}");
             return 0;
         }
     }
@@ -105,16 +104,16 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
 
     private void Initialise()
     {
-        _repositories!.Add(typeof(User), new AuthorRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(File), new FileRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Category), new CategoryRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Comment), new CommentRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(ContentType), new ContentTypeRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(FileGroup), new FileGroupRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Rating), new RatingRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Tag), new TagRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Author), new AuthorRepository((ISciMaterialsContext)_context, _logger));
-        _repositories!.Add(typeof(Url), new UrlRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(User), new AuthorRepository(_context, _logger));
+        _repositories!.Add(typeof(File), new FileRepository(_context, _logger));
+        _repositories!.Add(typeof(Category), new CategoryRepository(_context, _logger));
+        _repositories!.Add(typeof(Comment), new CommentRepository(_context, _logger));
+        _repositories!.Add(typeof(ContentType), new ContentTypeRepository(_context, _logger));
+        _repositories!.Add(typeof(FileGroup), new FileGroupRepository(_context, _logger));
+        _repositories!.Add(typeof(Rating), new RatingRepository(_context, _logger));
+        _repositories!.Add(typeof(Tag), new TagRepository(_context, _logger));
+        _repositories!.Add(typeof(Author), new AuthorRepository(_context, _logger));
+        _repositories!.Add(typeof(Url), new UrlRepository(_context, _logger));
     }
 
     #region Dispose
@@ -136,8 +135,6 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
             disposed = true;
         }
     }
-
-
 
     #endregion
 }

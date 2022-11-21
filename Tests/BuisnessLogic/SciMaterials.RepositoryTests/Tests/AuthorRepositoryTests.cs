@@ -23,7 +23,7 @@ public class AuthorRepositoryTests
     {
         _context = new SciMateralsContextHelper().Context;
         ILoggerFactory loggerFactory = new LoggerFactory();
-        var logger = new Logger<UnitOfWork<SciMaterialsContext>>(loggerFactory);
+        var logger = new Logger<SciMaterialsFilesUnitOfWork>(loggerFactory);
 
         _authorRepository = new AuthorRepository(_context, logger);
     }

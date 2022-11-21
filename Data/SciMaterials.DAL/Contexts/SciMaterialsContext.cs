@@ -7,7 +7,7 @@ using File = SciMaterials.DAL.Contracts.Entities.File;
 
 namespace SciMaterials.DAL.Contexts;
 
-public class SciMaterialsContext : DbContext, ISciMaterialsContext
+public class SciMaterialsContext : DbContext
 {
     public SciMaterialsContext(DbContextOptions<SciMaterialsContext> options)
         : base(options)
