@@ -4,8 +4,8 @@ using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
-using SciMaterials.Contracts.Identity.API.DTO.Users;
-using SciMaterials.Contracts.Identity.Clients.Clients;
+using SciMaterials.Contracts.Identity.API;
+using SciMaterials.Contracts.Identity.API.Requests.Users;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;

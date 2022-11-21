@@ -6,5 +6,9 @@
         <Nullable>enable</Nullable>
         <RootNamespace>SciMaterials.Contracts.Identity.API</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
+    </ItemGroup>
     
 </Project>

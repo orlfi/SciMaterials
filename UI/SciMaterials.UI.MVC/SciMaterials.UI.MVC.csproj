@@ -34,7 +34,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.Postgres.Auth.Migrations\SciMaterials.Postgres.Auth.Migrations.csproj" />
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.SqlLite.Auth.Migrations\SciMaterials.SqlLite.Auth.Migrations.csproj" />
-    <ProjectReference Include="..\..\Services\SciMaterials.Contracts.Identity.Clients\SciMaterials.Contracts.Identity.Clients.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\..\Services\SciMaterials.Services.API\SciMaterials.Services.API.csproj" />

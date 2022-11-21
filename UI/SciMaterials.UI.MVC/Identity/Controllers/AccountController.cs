@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.DAL.AUTH.Contracts;
 using SciMaterials.Contracts.Enums;
-using SciMaterials.Contracts.Identity.API.DTO.Roles;
-using SciMaterials.Contracts.Identity.API.DTO.Users;
-using SciMaterials.Contracts.Identity.Clients.Clients.Responses.DTO;
-using SciMaterials.Contracts.Identity.Clients.Clients.Responses.Roles;
-using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
+using SciMaterials.Contracts.Identity.API.Requests.Roles;
+using SciMaterials.Contracts.Identity.API.Requests.Users;
+using SciMaterials.Contracts.Identity.API.Responses.DTO;
+using SciMaterials.Contracts.Identity.API.Responses.Roles;
+using SciMaterials.Contracts.Identity.API.Responses.User;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 

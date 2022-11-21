@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.Identity.API.DTO.Roles;
-using SciMaterials.Contracts.Identity.API.DTO.Users;
-using SciMaterials.Contracts.Identity.Clients.Clients;
+using SciMaterials.Contracts.Identity.API;
+using SciMaterials.Contracts.Identity.API.Requests.Roles;
+using SciMaterials.Contracts.Identity.API.Requests.Users;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 

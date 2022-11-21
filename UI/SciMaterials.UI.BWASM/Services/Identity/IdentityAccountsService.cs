@@ -1,4 +1,4 @@
-﻿using SciMaterials.Contracts.Identity.Clients.Clients;
+﻿using SciMaterials.Contracts.Identity.API;
 using SciMaterials.UI.BWASM.Models;
 
 namespace SciMaterials.UI.BWASM.Services.Identity;

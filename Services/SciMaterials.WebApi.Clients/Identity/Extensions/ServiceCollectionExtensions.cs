@@ -1,7 +1,8 @@
 using System.Security.Cryptography.X509Certificates;
 
 using Microsoft.Extensions.DependencyInjection;
-using SciMaterials.Contracts.Identity.Clients.Clients;
+
+using SciMaterials.Contracts.Identity.API;
 
 namespace SciMaterials.WebApi.Clients.Identity.Extensions
 {

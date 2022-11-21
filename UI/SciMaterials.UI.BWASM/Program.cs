@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 using MudBlazor.Services;
 
-using SciMaterials.Contracts.Identity.Clients.Clients;
+using SciMaterials.Contracts.Identity.API;
 using SciMaterials.Contracts.WebApi.Clients.Authors;
 using SciMaterials.UI.BWASM;
 using SciMaterials.UI.BWASM.Extensions;

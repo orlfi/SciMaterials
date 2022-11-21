@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.Identity.API.DTO.Users;
-using SciMaterials.Contracts.Identity.Clients.Clients.Responses.User;
+using SciMaterials.Contracts.Identity.API.Requests.Users;
+using SciMaterials.Contracts.Identity.API.Responses.User;
 using SciMaterials.DAL.AUTH.Context;
 using SciMaterials.DAL.Contexts;
 
