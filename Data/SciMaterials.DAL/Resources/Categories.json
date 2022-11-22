@@ -2,11 +2,20 @@
 	{
 		"Id": "12A1DA97-D125-2461-C7E1-44A1426F01C4",
 		"ParentId": "",
-		"Description": "Загруженный ресурс будет содержаться во всех категориях",
-		"CreatedAt": "2022-07-18 23:18:58",
-		"Name": "Все категории",
+		"Description": "Категория с архивами",
+		"CreatedAt": "2021-10-10 22:28:29",
+		"Name": "Архивы",
 		"IsDeleted": false,
-		"ResourceId": "553191C4-3EF8-3313-24A3-BA3ECAA2F966"
+		"ResourceId": "617A2479-3590-2B2D-3725-88A03A0BCC63"
+	},
+	{
+		"Id": "6A90A2A3-8812-841F-584C-A79CEA7B3DCC",
+		"ParentId": "",
+		"Description": "Категория программирования",
+		"CreatedAt": "2023-03-27 07:07:17",
+		"Name": "Программирование",
+		"IsDeleted": false,
+		"ResourceId": "9A6A3CE2-6574-DD4B-4DFD-C90AD104B4A8"
 	},
 	{
 		"Id": "95B24213-7458-A856-12CC-523D2EB4C539",
@@ -34,15 +43,6 @@
 		"Name": "Статьи",
 		"IsDeleted": false,
 		"ResourceId": "AADB6519-4354-CC31-CA22-985FDD5CBC21"
-	},
-	{
-		"Id": "BDE2B78E-2282-6B3E-198F-BB3482B3679F",
-		"ParentId": "12A1DA97-D125-2461-C7E1-44A1426F01C4",
-		"Description": "Категория с архивами",
-		"CreatedAt": "2021-10-10 22:28:29",
-		"Name": "Архивы",
-		"IsDeleted": false,
-		"ResourceId": "617A2479-3590-2B2D-3725-88A03A0BCC63"
 	},
 	{
 		"Id": "8F23AECC-B676-5BAF-74EA-214143FB62A6",
@@ -88,15 +88,6 @@
 		"Name": "Скрипты",
 		"IsDeleted": false,
 		"ResourceId": "9918B17E-DD75-47E9-CA15-93A1BAED1176"
-	},
-	{
-		"Id": "6A90A2A3-8812-841F-584C-A79CEA7B3DCC",
-		"ParentId": "",
-		"Description": "Категория программирования",
-		"CreatedAt": "2023-03-27 07:07:17",
-		"Name": "Программирование",
-		"IsDeleted": false,
-		"ResourceId": "9A6A3CE2-6574-DD4B-4DFD-C90AD104B4A8"
 	},
 	{
 		"Id": "C6949798-4E4A-E68C-7893-54E1386741DD",

@@ -1,10 +1,15 @@
 ﻿using System.Text;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Models.Base;
 using SciMaterials.DAL.Properties;
+
 using File = SciMaterials.DAL.Models.File;
 
 namespace SciMaterials.DAL.Services;
@@ -178,6 +183,21 @@ public static class DataSeeder
                 throw;
             }
         }
+
+        var categories = await db.Categories.Where(c => c.ParentId == null).ToListAsync();
+        var resourceCount = await db.Resources.CountAsync();
+        var skip = 0;
+        foreach (Category category in categories)
+        {
+            category.Resources = new List<Resource>();
+            foreach (var resource in await db.Resources.Skip(skip).Take(resourceCount / categories.Count).ToListAsync())
+            {
+                if (resource is { })
+                    category.Resources.Add(resource);
+            }
+            skip += resourceCount / categories.Count;
+        }
+        await db.SaveChangesAsync(Cancel);
 
         await transaction.CommitAsync(Cancel);
     }
