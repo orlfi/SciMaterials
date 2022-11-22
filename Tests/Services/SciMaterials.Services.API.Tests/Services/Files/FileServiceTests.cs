@@ -52,7 +52,9 @@ public class FileServiceTests
                Id = file.Id,
            });
 
-        api_settings_mock.Setup(s => s.BasePath).Returns("path");
+        // is this stub model must be mocked?
+        api_settings_mock.SetupProperty(s => s.BasePath, "path");
+        api_settings_mock.SetupProperty(s => s.Separator, ",");
 
         db_mock.Setup(s => s.GetRepository<File>()).Returns(file_repository.Object);
 
