@@ -7,9 +7,8 @@ using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts;
 using SciMaterials.DAL.Models;
-using Microsoft.AspNetCore.Mvc;
-using NLog.LayoutRenderers;
 using SciMaterials.RepositoryLib.Repositories.FilesRepositories;
+using SciMaterials.RepositoryLib.Repositories;
 
 namespace SciMaterials.Services.API.Services.Categories;
 
@@ -33,22 +32,39 @@ public class CategoryService : ApiServiceBase, ICategoryService
         return (result, totalCount);
     }
 
-    public async Task<Result<IEnumerable<CategoryWithResourcesTreeNode>>> GetCategoryWithResourcesTreeAsync(Guid? id, CancellationToken Cancel = default)
+    public async Task<Result<CategoryTree>> GetCategoryWithResourcesTreeAsync(Guid? id, CancellationToken Cancel = default)
     {
         var repository = (ICategoryRepository)_unitOfWork.GetRepository<Category>();
-        var categories = await repository.GetByParentIdAsync(id, true, true);
-        var result = new List<CategoryWithResourcesTreeNode>();
-        foreach (var category in categories)
+        IEnumerable<CategoryTreeInfo> subCategories;
+        IEnumerable<CategoryTreeResource> resources;
+        string name = "root";
+
+        if (id.HasValue)
         {
-            var children = category.Children?.Select(c => new CategoryTreeNode() { Id = c.Id, Name = c.Name });
-            result.Add(new CategoryWithResourcesTreeNode()
+            Category? category = await repository.GetByIdAsync(id.Value, true, true);
+            if (category is not { })
             {
-                Id = category.Id,
-                Name = category.Name,
-                Children = children,
-                Resources = category.Resources.Select(r => new CategoryTreeResource(r.Id, r.Name))
-            });
+                return LoggedError<CategoryTree>(
+                    Errors.Api.Category.NotFound,
+                    "Category with ID {id} is not found",
+                    id);
+            }
+            name = category.Name;
+
+            subCategories = category.Children?.Select(c => new CategoryTreeInfo(c.Id, c.Name))
+                ?? Enumerable.Empty<CategoryTreeInfo>();
+
+            resources = category.Resources?.Select(r => new CategoryTreeResource(r.Id, r.Name))
+                ?? Enumerable.Empty<CategoryTreeResource>();
         }
+        else
+        {
+            var childrenCategories = await repository.GetByParentIdAsync(id, false, false);
+            subCategories = childrenCategories.Select(c => new CategoryTreeInfo(c.Id, c.Name));
+            resources = Enumerable.Empty<CategoryTreeResource>();
+        }
+
+        var result = new CategoryTree(id, name, subCategories, resources);
         return result;
     }
 
@@ -58,7 +74,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
         {
             return LoggedError<GetCategoryResponse>(
                 Errors.Api.Category.NotFound,
-                "Category with ID {id} not found",
+                "Category with ID {id} is not found",
                 id);
         }
 

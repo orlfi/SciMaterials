@@ -155,27 +155,13 @@ public class CategoryRepository : ICategoryRepository
 
         if (include)
             query = query
-                .Include(c => c.Resources);
+                .Include(c => c.Resources)
+                .Include(c => c.Children);
 
         if (disableTracking)
             query = query.AsNoTracking();
 
         return query.FirstOrDefault();
-    }
-
-    public async Task<IEnumerable<Category>> GetByParentIdAsync(Guid? parentId, bool disableTracking = true, bool include = false)
-    {
-        var query = _context.Categories
-                .Where(c => c.ParentId == parentId && !c.IsDeleted);
-
-        if (include)
-            query = query
-                .Include(c => c.Resources).Include(c=>c.Children);
-
-        if (disableTracking)
-            query = query.AsNoTracking();
-
-        return await query.ToListAsync();
     }
 
     ///
@@ -186,12 +172,30 @@ public class CategoryRepository : ICategoryRepository
                  .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(c => c.Resources);
+            query = query
+                .Include(c => c.Resources)
+                .Include(c => c.Children);
 
         if (disableTracking)
             query = query.AsNoTracking();
 
         return await query.FirstOrDefaultAsync();
+    }
+
+    public async Task<IEnumerable<Category>> GetByParentIdAsync(Guid? parentId, bool disableTracking = true, bool include = false)
+    {
+        var query = _context.Categories
+                .Where(c => c.ParentId == parentId && !c.IsDeleted);
+
+        if (include)
+            query = query
+                .Include(c => c.Resources)
+                .Include(c => c.Children);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query.ToListAsync();
     }
 
     ///
