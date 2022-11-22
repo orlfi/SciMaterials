@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\SciMaterials.Contracts\SciMaterials.Contracts.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
   </ItemGroup>
 
