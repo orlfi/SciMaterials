@@ -184,18 +184,20 @@ public static class DataSeeder
             }
         }
 
-        var categories = await db.Categories.Where(c => c.ParentId == null).ToListAsync();
-        var resourceCount = await db.Resources.CountAsync();
+        var rootCategories = await db.Categories.Where(c => c.ParentId == null).ToListAsync(Cancel);
+        var resourceCount = await db.Resources.CountAsync(Cancel);
         var skip = 0;
-        foreach (Category category in categories)
+        var resourceInCategoryCount = resourceCount / rootCategories.Count;
+        foreach (Category category in rootCategories)
         {
-            category.Resources = new List<Resource>();
-            foreach (var resource in await db.Resources.Skip(skip).Take(resourceCount / categories.Count).ToListAsync())
+            foreach (var resource in await db.Resources.Skip(skip).Take(resourceInCategoryCount).ToListAsync(Cancel))
             {
                 if (resource is { })
+                {
                     category.Resources.Add(resource);
+                }
             }
-            skip += resourceCount / categories.Count;
+            skip += resourceInCategoryCount;
         }
         await db.SaveChangesAsync(Cancel);
 
