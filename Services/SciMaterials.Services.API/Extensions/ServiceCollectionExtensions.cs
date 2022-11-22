@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SciMaterials.Contracts.API.Extensions;
+
+using SciMaterials.Contracts.API.Mapping;
 using SciMaterials.Contracts.API.Services.Categories;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.API.Services.Authors;
