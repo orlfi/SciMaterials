@@ -32,7 +32,7 @@ public class FileProfile : Profile
     {
         private readonly string _separator;
 
-        public FileTagResolver(IApiSettings apiSettings) => _separator = apiSettings.Separator;
+        public FileTagResolver(ApiSettings apiSettings) => _separator = apiSettings.Separator;
 
         public string Resolve(File source, GetFileResponse destination, string destMember, ResolutionContext context)
             => string.Join(_separator, source.Tags.Select(t => t.Name));
@@ -43,7 +43,7 @@ public class FileProfile : Profile
     {
         private readonly string _separator;
 
-        public FileCategoryResolver(IApiSettings apiSettings) => _separator = apiSettings.Separator;
+        public FileCategoryResolver(ApiSettings apiSettings) => _separator = apiSettings.Separator;
 
         public string Resolve(File source, GetFileResponse destination, string destMember, ResolutionContext context)
             => string.Join(_separator, source.Categories.Select(c => c.Id));

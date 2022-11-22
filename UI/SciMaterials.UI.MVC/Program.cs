@@ -1,4 +1,4 @@
-using SciMaterials.Services.API.Configuration;
+using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
 using SciMaterials.UI.MVC.API.Extensions;

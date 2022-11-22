@@ -28,7 +28,7 @@ public class FileServiceTests
 
         var expected_file_id = Guid.NewGuid();
 
-        var api_settings_mock = new Mock<IApiSettings>();
+        var api_settings_mock = new Mock<ApiSettings>();
         var file_store_mock = new Mock<IFileStore>();
         var db_mock = new Mock<IUnitOfWork<SciMaterialsContext>>();
         var linkReplace_mock = new Mock<ILinkReplaceService>();

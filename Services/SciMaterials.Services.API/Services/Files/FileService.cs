@@ -25,7 +25,7 @@ public class FileService : ApiServiceBase, IFileService
     private readonly string _separator;
 
     public FileService(
-        IApiSettings apiSettings,
+        ApiSettings apiSettings,
         IFileStore fileStore,
         ILinkReplaceService linkReplaceService,
         ILinkShortCutService linkShortCutService,

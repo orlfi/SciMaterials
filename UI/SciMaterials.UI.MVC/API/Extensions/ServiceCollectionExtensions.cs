@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Options;
 using SciMaterials.Contracts.API.Settings;
-using SciMaterials.Services.API.Configuration;
 using SciMaterials.UI.MVC.API.Filters;
 
 namespace SciMaterials.UI.MVC.API.Extensions;
@@ -24,7 +23,7 @@ public static class ServiceCollectionExtensions
 
         services
            .Configure<ApiSettings>(api_settings)
-           .AddSingleton<IApiSettings, ApiSettings>(s => s.GetRequiredService<IOptions<ApiSettings>>().Value);
+           .AddSingleton<ApiSettings>(s => s.GetRequiredService<IOptions<ApiSettings>>().Value);
 
         services.Configure<FormOptions>(options =>
         {
