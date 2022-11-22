@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
 using SciMaterials.DAL.Resources.Contracts.Repositories;
 using SciMaterials.DAL.Resources.Contracts.Repositories.Users;
 
-namespace SciMaterials.DAL.Repositories.Users;
+namespace SciMaterials.DAL.Resources.Repositories.Users;
 
 /// <summary> Репозиторий для <see cref="Author"/>. </summary>
 public class AuthorRepository : IAuthorRepository

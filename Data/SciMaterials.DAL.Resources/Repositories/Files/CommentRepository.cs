@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
 using SciMaterials.DAL.Resources.Contracts.Repositories;
-using SciMaterials.DAL.Resources.Contracts.Repositories.Ratings;
+using SciMaterials.DAL.Resources.Contracts.Repositories.Files;
 
-namespace SciMaterials.DAL.Repositories.Ratings;
+namespace SciMaterials.DAL.Resources.Repositories.Files;
 
-/// <summary> Репозиторий для <see cref="Rating"/>. </summary>
-public class RatingRepository : IRatingRepository
+/// <summary> Репозиторий для <see cref="Comment"/>. </summary>
+public class CommentRepository : ICommentRepository
 {
     private readonly SciMaterialsContext _context;
     private readonly ILogger _logger;
@@ -17,18 +17,18 @@ public class RatingRepository : IRatingRepository
     /// <summary> ctor. </summary>
     /// <param name="context"></param>
     /// <param name="logger"></param>
-    public RatingRepository(
+    public CommentRepository(
         SciMaterialsContext context,
         ILogger logger)
     {
         _logger = logger;
-        _logger.LogTrace($"Логгер встроен в {nameof(RatingRepository)}");
+        _logger.LogTrace($"Логгер встроен в {nameof(CommentRepository)}");
         _context = context;
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Add"/>
-    public void Add(Rating entity)
+    public void Add(Comment entity)
     {
         _logger.LogInformation($"{nameof(Add)}");
 
@@ -38,12 +38,12 @@ public class RatingRepository : IRatingRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        _context.Ratings.Add(entity);
+        _context.Comments.Add(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.AddAsync(T)"/>
-    public async Task AddAsync(Rating entity)
+    public async Task AddAsync(Comment entity)
     {
         _logger.LogInformation($"{nameof(AddAsync)}");
 
@@ -53,12 +53,12 @@ public class RatingRepository : IRatingRepository
             throw new ArgumentNullException(nameof(entity));
         }
 
-        await _context.Ratings.AddAsync(entity);
+        await _context.Comments.AddAsync(entity);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.Delete(T)"/>
-    public void Delete(Rating entity)
+    public void Delete(Comment entity)
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
@@ -74,7 +74,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.DeleteAsync(T)"/>
-    public async Task DeleteAsync(Rating entity)
+    public async Task DeleteAsync(Comment entity)
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
@@ -94,7 +94,7 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogInformation($"{nameof(Delete)}");
 
-        var entityDb = _context.Ratings.FirstOrDefault(c => c.Id == id);
+        var entityDb = _context.Comments.FirstOrDefault(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -102,7 +102,7 @@ public class RatingRepository : IRatingRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Ratings.Remove(entityDb);
+        _context.Comments.Remove(entityDb);
     }
 
     ///
@@ -111,7 +111,7 @@ public class RatingRepository : IRatingRepository
     {
         _logger.LogInformation($"{nameof(DeleteAsync)}");
 
-        var entityDb = await _context.Ratings.FirstOrDefaultAsync(c => c.Id == id);
+        var entityDb = await _context.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
         if (entityDb is null)
         {
@@ -119,18 +119,18 @@ public class RatingRepository : IRatingRepository
             throw new ArgumentNullException(nameof(entityDb));
         }
 
-        _context.Ratings.Remove(entityDb);
+        _context.Comments.Remove(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAll(bool, bool)"/>
-    public List<Rating>? GetAll(bool disableTracking = true, bool include = false)
+    public List<Comment>? GetAll(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
-
+        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
+        
         if (include)
-            query = query.Include(r => r.Resource)
-                .Include(r => r.User);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -140,13 +140,13 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetAllAsync(bool, bool)"/>
-    public async Task<List<Rating>?> GetAllAsync(bool disableTracking = true, bool include = false)
+    public async Task<List<Comment>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings.Where(r => !r.IsDeleted);
+        IQueryable<Comment> query = _context.Comments.Where(c => !c.IsDeleted);
 
         if (include)
-            query = query.Include(r => r.Resource)
-                .Include(r => r.User);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -156,14 +156,14 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetById(Guid, bool, bool)"/>
-    public Rating? GetById(Guid id, bool disableTracking = true, bool include = false)
+    public Comment? GetById(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings
+        IQueryable<Comment> query = _context.Comments
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(r => r.Resource)
-            .Include(r => r.User);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -173,14 +173,14 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByIdAsync(Guid, bool, bool)"/>
-    public async Task<Rating?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
+    public async Task<Comment?> GetByIdAsync(Guid id, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings
+        IQueryable<Comment> query = _context.Comments
                 .Where(c => c.Id == id && !c.IsDeleted);
 
         if (include)
-            query = query.Include(r => r.Resource)
-            .Include(r => r.User);
+            query = query.Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -190,7 +190,7 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.Update"/>
-    public void Update(Rating entity)
+    public void Update(Comment entity)
     {
         _logger.LogInformation($"{nameof(Update)}");
 
@@ -209,12 +209,12 @@ public class RatingRepository : IRatingRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Ratings.Update(entityDb);
+        _context.Comments.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.UpdateAsync(T)"/>
-    public async Task UpdateAsync(Rating entity)
+    public async Task UpdateAsync(Comment entity)
     {
         _logger.LogInformation($"{nameof(UpdateAsync)}");
 
@@ -233,24 +233,24 @@ public class RatingRepository : IRatingRepository
         }
 
         entityDb = UpdateCurrentEntity(entity, entityDb);
-        _context.Ratings.Update(entityDb);
+        _context.Comments.Update(entityDb);
     }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
-    public Task<Rating?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
+    public Task<Comment?> GetByNameAsync(string name, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByName(string, bool, bool)"/>
-    public Rating? GetByName(string name, bool disableTracking = true, bool include = false) => null;
+    public Comment? GetByName(string name, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHashAsync(string, bool, bool)"/>
-    public Task<Rating?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
+    public Task<Comment?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false) => null!;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByHash(string, bool, bool)"/>
-    public Rating? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
+    public Comment? GetByHash(string hash, bool disableTracking = true, bool include = false) => null;
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetCount()"/>
@@ -264,14 +264,14 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPage(int, int, bool, bool)"/>
-    public List<Rating>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public List<Comment>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings.AsQueryable();
+        IQueryable<Comment> query = _context.Comments.AsQueryable();
 
         if (include)
             query = query
-                .Include(r => r.Resource)
-                .Include(r => r.User);
+                .Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -284,14 +284,14 @@ public class RatingRepository : IRatingRepository
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetPageAsync(int, int, bool, bool)"/>
-    public async Task<List<Rating>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async Task<List<Comment>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
-        IQueryable<Rating> query = _context.Ratings.AsQueryable();
+        IQueryable<Comment> query = _context.Comments.AsQueryable();
 
         if (include)
             query = query
-                .Include(r => r.Resource)
-                .Include(r => r.User);
+                .Include(c => c.Resource)
+                .Include(c => c.Author);
 
         if (disableTracking)
             query = query.AsNoTracking();
@@ -302,18 +302,21 @@ public class RatingRepository : IRatingRepository
             .ToListAsync();
     }
 
+
     /// <summary> Обновить данные экземпляра каегории. </summary>
-    /// <param name="source"> Источник. </param>
+    /// <param name="sourse"> Источник. </param>
     /// <param name="recipient"> Получатель. </param>
     /// <returns> Обновленный экземпляр. </returns>
-    private Rating UpdateCurrentEntity(Rating source, Rating recipient)
+    private Comment UpdateCurrentEntity(Comment sourse, Comment recipient)
     {
-        recipient.ResourceId = source.ResourceId;
-        recipient.AuthorId = source.AuthorId;
-        recipient.RatingValue = source.RatingValue;
-        recipient.Resource = source.Resource;
-        recipient.User = source.User;
-        recipient.IsDeleted = source.IsDeleted;
+        recipient.CreatedAt = sourse.CreatedAt;
+        recipient.ResourceId = sourse.ResourceId;
+        recipient.Resource = sourse.Resource;
+        recipient.ParentId = sourse.ParentId;
+        recipient.Text = sourse.Text;
+        recipient.Author = sourse.Author;
+        recipient.AuthorId = sourse.AuthorId;
+        recipient.IsDeleted = sourse.IsDeleted;
 
         return recipient;
     }

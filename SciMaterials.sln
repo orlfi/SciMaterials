@@ -5,8 +5,6 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{FABBD061-7E69-4818-A8A6-122E1EC79804}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.DAL", "Data\SciMaterials.DAL\SciMaterials.DAL.csproj", "{E214A966-AAB7-4170-BBEE-7324362BFB2C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.MsSqlServerMigrations", "Data\Migrations\SciMaterials.MsSqlServerMigrations\SciMaterials.MsSqlServerMigrations.csproj", "{576D750E-1AEC-42F4-B358-CF15B9EDF67D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.PostgresqlMigrations", "Data\Migrations\SciMaterials.PostgresqlMigrations\SciMaterials.PostgresqlMigrations.csproj", "{D448DEBD-E25A-46F5-BA93-14861228D219}"
@@ -93,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Services.Datab
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.Contracts.API.Mapping", "Services\SciMaterials.Contracts.API.Mapping\SciMaterials.Contracts.API.Mapping.csproj", "{0D022006-A14A-4981-A1BD-C9D8C361F156}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.DAL.Resources", "Data\SciMaterials.DAL.Resources\SciMaterials.DAL.Resources.csproj", "{CC1E8DCE-1141-4ED8-A851-610D724B118A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SciMaterials.DAL.Resources", "Data\SciMaterials.DAL.Resources\SciMaterials.DAL.Resources.csproj", "{552D8DC5-6D54-4520-9579-B7D728C16150}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,10 +99,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E214A966-AAB7-4170-BBEE-7324362BFB2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E214A966-AAB7-4170-BBEE-7324362BFB2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E214A966-AAB7-4170-BBEE-7324362BFB2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E214A966-AAB7-4170-BBEE-7324362BFB2C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{576D750E-1AEC-42F4-B358-CF15B9EDF67D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{576D750E-1AEC-42F4-B358-CF15B9EDF67D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{576D750E-1AEC-42F4-B358-CF15B9EDF67D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -225,16 +219,15 @@ Global
 		{0D022006-A14A-4981-A1BD-C9D8C361F156}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D022006-A14A-4981-A1BD-C9D8C361F156}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D022006-A14A-4981-A1BD-C9D8C361F156}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CC1E8DCE-1141-4ED8-A851-610D724B118A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CC1E8DCE-1141-4ED8-A851-610D724B118A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CC1E8DCE-1141-4ED8-A851-610D724B118A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CC1E8DCE-1141-4ED8-A851-610D724B118A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{552D8DC5-6D54-4520-9579-B7D728C16150}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{552D8DC5-6D54-4520-9579-B7D728C16150}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{552D8DC5-6D54-4520-9579-B7D728C16150}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{552D8DC5-6D54-4520-9579-B7D728C16150}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E214A966-AAB7-4170-BBEE-7324362BFB2C} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
 		{576D750E-1AEC-42F4-B358-CF15B9EDF67D} = {B4E3FF22-0421-42D5-9F32-86D6BE0867BF}
 		{D448DEBD-E25A-46F5-BA93-14861228D219} = {B4E3FF22-0421-42D5-9F32-86D6BE0867BF}
 		{B4E3FF22-0421-42D5-9F32-86D6BE0867BF} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
@@ -269,7 +262,7 @@ Global
 		{023F7945-16E3-44D4-A5E6-02FBDE631F59} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
 		{48386436-00B4-4FF5-A013-68AB13C05B9D} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
 		{0D022006-A14A-4981-A1BD-C9D8C361F156} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
-		{CC1E8DCE-1141-4ED8-A851-610D724B118A} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
+		{552D8DC5-6D54-4520-9579-B7D728C16150} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}

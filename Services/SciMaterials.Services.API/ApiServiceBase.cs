@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.UnitOfWork;
+
+using SciMaterials.DAL.Resources.Contexts;
+using SciMaterials.DAL.Resources.UnitOfWork;
 
 
 namespace SciMaterials.Services.API;

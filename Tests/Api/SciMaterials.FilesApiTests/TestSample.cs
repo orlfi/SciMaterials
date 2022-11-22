@@ -6,11 +6,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-
-using SciMaterials.DAL.Contexts;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using SciMaterials.DAL.AUTH.Context;
+using SciMaterials.DAL.Resources.Contexts;
 
 namespace SciMaterials.FilesApiTests;
 

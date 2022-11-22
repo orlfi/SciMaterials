@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 using SciMaterials.DAL.Resources.Contracts.Repositories;
 
-namespace SciMaterials.DAL.UnitOfWork;
+namespace SciMaterials.DAL.Resources.UnitOfWork;
 
 /// <summary> Интерфейс UnitOfWork. </summary>
 /// <typeparam name="TContext"> Контекст. </typeparam>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using SciMaterials.DAL.Contexts;
+
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.RepositoryTests.Helpers.ModelsHelpers;
 
 namespace SciMaterials.RepositoryTests.Helpers;

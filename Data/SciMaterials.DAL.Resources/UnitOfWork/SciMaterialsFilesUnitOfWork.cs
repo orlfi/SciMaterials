@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
-using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Repositories.Files;
-using SciMaterials.DAL.Repositories.Ratings;
-using SciMaterials.DAL.Repositories.Users;
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
 using SciMaterials.DAL.Resources.Contracts.Repositories;
+using SciMaterials.DAL.Resources.Repositories.Files;
+using SciMaterials.DAL.Resources.Repositories.Ratings;
+using SciMaterials.DAL.Resources.Repositories.Users;
 
 using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
-namespace SciMaterials.DAL.UnitOfWork;
+namespace SciMaterials.DAL.Resources.UnitOfWork;
 
 public class SciMaterialsFilesUnitOfWork : IUnitOfWork<SciMaterialsContext>
 {

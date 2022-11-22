@@ -4,9 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using SciMaterials.DAL.AUTH.Contracts;
-using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Configuration;
 using SciMaterials.DAL.Contracts.Initialization;
+using SciMaterials.DAL.Resources.Contexts;
 
 namespace SciMaterials.Services.Database.Extensions;
 

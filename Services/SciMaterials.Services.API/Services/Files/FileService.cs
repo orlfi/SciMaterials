@@ -1,5 +1,5 @@
 using AutoMapper;
-using SciMaterials.DAL.Contexts;
+
 using Microsoft.Extensions.Logging;
 using SciMaterials.Contracts.API.Services.Files;
 using SciMaterials.Contracts.API.DTO.Files;
@@ -9,8 +9,9 @@ using SciMaterials.Contracts.API.Models;
 using System.Text.Json;
 using SciMaterials.Contracts;
 using SciMaterials.Contracts.ShortLinks;
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
-using SciMaterials.DAL.UnitOfWork;
+using SciMaterials.DAL.Resources.UnitOfWork;
 
 using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 

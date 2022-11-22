@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
 using SciMaterials.DAL.Resources.Contracts.Repositories;
 using SciMaterials.DAL.Resources.Contracts.Repositories.Files;
 
-namespace SciMaterials.DAL.Repositories.Files;
+namespace SciMaterials.DAL.Resources.Repositories.Files;
 
 /// <summary> Репозиторий для <see cref="FileGroup"/>. </summary>
 public class FileGroupRepository : IFileGroupRepository

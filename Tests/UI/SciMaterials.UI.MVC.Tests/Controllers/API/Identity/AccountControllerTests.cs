@@ -7,13 +7,12 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Win32;
 
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.Identity.API.Requests.Users;
 using SciMaterials.Contracts.Identity.API.Responses.User;
 using SciMaterials.DAL.AUTH.Context;
-using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Resources.Contexts;
 
 namespace SciMaterials.UI.MVC.Tests.Controllers.API.Identity;
 

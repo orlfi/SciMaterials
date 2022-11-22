@@ -19,7 +19,7 @@ using SciMaterials.Services.Database.Extensions;
 using SciMaterials.Contracts.API.Services.Urls;
 using SciMaterials.Services.API.Services.Urls;
 using SciMaterials.Contracts.ShortLinks;
-using SciMaterials.DAL;
+using SciMaterials.DAL.Resources;
 using SciMaterials.Services.ShortLinks;
 
 namespace SciMaterials.Services.API.Extensions;

@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-using SciMaterials.DAL.Contexts;
-using SciMaterials.DAL.Repositories.Users;
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
 using SciMaterials.DAL.Resources.Contracts.Repositories.Users;
-using SciMaterials.DAL.UnitOfWork;
+using SciMaterials.DAL.Resources.Repositories.Users;
+using SciMaterials.DAL.Resources.UnitOfWork;
 using SciMaterials.RepositoryTests.Helpers;
 using SciMaterials.RepositoryTests.Helpers.ModelsHelpers;
 

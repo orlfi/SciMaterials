@@ -11,7 +11,7 @@ using SciMaterials.Contracts;
 using SciMaterials.Contracts.Result;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Contracts.ShortLinks.Settings;
-using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Resources.Contexts;
 
 namespace SciMaterials.Services.ShortLinks;
 

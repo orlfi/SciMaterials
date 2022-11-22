@@ -8,10 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SciMaterials.DAL.Properties {
-    using System;
-    
-    
+namespace SciMaterials.DAL.Resources.Properties {
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>

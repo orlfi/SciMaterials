@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-using SciMaterials.DAL.Contexts;
+using SciMaterials.DAL.Resources.Contexts;
 
 namespace SciMaterials.MsSqlServerMigrations;
 

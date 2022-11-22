@@ -1,14 +1,17 @@
 ﻿using System.Text;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using Newtonsoft.Json;
-using SciMaterials.DAL.Contexts;
+
+using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
 
-using ProjectResources = SciMaterials.DAL.Properties.Resources;
+using ProjectResources = SciMaterials.DAL.Resources.Properties.Resources;
 using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
-namespace SciMaterials.DAL.Services;
+namespace SciMaterials.DAL.Resources.Services;
 
 public static class DataSeeder
 {

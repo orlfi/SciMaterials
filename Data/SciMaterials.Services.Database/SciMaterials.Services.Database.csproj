@@ -17,7 +17,6 @@
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.PostgresqlMigrations\SciMaterials.PostgresqlMigrations.csproj" />
     <ProjectReference Include="..\..\Data\Migrations\SciMaterials.SQLiteMigrations\SciMaterials.SQLiteMigrations.csproj" />
     <ProjectReference Include="..\..\Data\SciMaterials.DAL.AUTH.Contracts\SciMaterials.DAL.AUTH.Contracts.csproj" />
-    <ProjectReference Include="..\..\Data\SciMaterials.DAL\SciMaterials.DAL.csproj" />
   </ItemGroup>
 
 </Project>

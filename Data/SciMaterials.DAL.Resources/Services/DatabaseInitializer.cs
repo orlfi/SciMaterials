@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Contracts.Initialization;
+using SciMaterials.DAL.Resources.Contexts;
 
-namespace SciMaterials.DAL.Services;
+namespace SciMaterials.DAL.Resources.Services;
 
 public class DatabaseInitializer : IDatabaseInitializer
 {

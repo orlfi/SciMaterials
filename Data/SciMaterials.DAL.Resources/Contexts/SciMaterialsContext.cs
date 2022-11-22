@@ -4,7 +4,7 @@ using SciMaterials.DAL.Resources.Contracts.Entities;
 
 using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
-namespace SciMaterials.DAL.Contexts;
+namespace SciMaterials.DAL.Resources.Contexts;
 
 public class SciMaterialsContext : DbContext
 {

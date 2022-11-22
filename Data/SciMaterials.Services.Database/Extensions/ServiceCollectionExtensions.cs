@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using SciMaterials.DAL.Contracts.Configuration;
 using SciMaterials.DAL.Contracts.Initialization;
-using SciMaterials.DAL.Services;
+using SciMaterials.DAL.Resources.Services;
 using SciMaterials.Data.MySqlMigrations;
 using SciMaterials.MsSqlServerMigrations;
 using SciMaterials.PostgresqlMigrations;
