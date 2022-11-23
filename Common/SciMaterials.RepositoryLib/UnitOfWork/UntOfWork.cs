@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models;
+using SciMaterials.DAL.Models.Base;
 using SciMaterials.DAL.UnitOfWork;
 using SciMaterials.RepositoryLib.Repositories;
 using SciMaterials.RepositoryLib.Repositories.FilesRepositories;
@@ -117,6 +118,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbCon
         _repositories!.Add(typeof(Tag), new TagRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(Author), new AuthorRepository((ISciMaterialsContext)_context, _logger));
         _repositories!.Add(typeof(Url), new UrlRepository((ISciMaterialsContext)_context, _logger));
+        _repositories!.Add(typeof(Resource), new ResourceRepository((ISciMaterialsContext)_context, _logger));
     }
 
     #region Dispose
