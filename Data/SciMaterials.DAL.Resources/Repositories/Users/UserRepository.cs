@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
@@ -11,11 +10,11 @@ namespace SciMaterials.DAL.Resources.Repositories.Users;
 /// <summary> Репозиторий для <see cref="User"/>. </summary>
 public class UserRepository : Repository<User>, IUserRepository
 {
-    public UserRepository(SciMaterialsContext context, ILogger<UserRepository> logger) : base(context, logger) { }
+    public UserRepository(SciMaterialsContext context, ILogger<UserRepository> Logger) : base(context, Logger) { }
 
     ///
     /// <inheritdoc cref="IRepository{T}.GetByNameAsync(string, bool, bool)"/>
-    public async Task<User?> GetByNameAsync(string name)
+    public override Task<User?> GetByNameAsync(string name)
     {
         throw new NotImplementedException();
         //return await base.GetByNameAsync(name); // throw exception

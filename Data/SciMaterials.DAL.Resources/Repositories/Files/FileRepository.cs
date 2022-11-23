@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Resources.Contexts;
-using SciMaterials.DAL.Resources.Contracts.Repositories;
 using SciMaterials.DAL.Resources.Contracts.Repositories.Files;
 
 using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
@@ -12,7 +11,7 @@ namespace SciMaterials.DAL.Resources.Repositories.Files;
 /// <summary> Репозиторий для <see cref="File"/>. </summary>
 public class FileRepository : Repository<File>, IFileRepository
 {
-    public FileRepository(SciMaterialsContext context, ILogger<FileRepository> logger) : base(context, logger) { }
+    public FileRepository(SciMaterialsContext context, ILogger<FileRepository> Logger) : base(context, Logger) { }
 
     protected override IQueryable<File> GetIncludeQuery(IQueryable<File> query) => query
        .Include(f => f.ContentType)

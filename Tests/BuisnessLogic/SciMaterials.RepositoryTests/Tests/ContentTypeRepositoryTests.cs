@@ -461,8 +461,11 @@ public class ContentTypeRepositoryTests
     [Trait("ContentTypeRepositoryTests", nameof(ContentType))]
     public async void UpdateAsync_ItShould_properties_updated()
     {
+        _ContentTypeRepository.NoTracking = false;
+
+
         //arrange
-        var expected_name = "new content type name";
+        const string expected_name = "new content type name";
 
         var category = ContentTypeHelper.GetOne();
         await _ContentTypeRepository.AddAsync(category);
@@ -476,16 +479,18 @@ public class ContentTypeRepositoryTests
         var category_db = await _ContentTypeRepository.GetByIdAsync(category.Id);
 
         //assert
-        Assert.Equal(category.Id, category_db!.Id);
-        Assert.Equal(category.Name, expected_name);
+        Assert.Equal(category_db!.Id, category.Id);
+        Assert.Equal(expected_name, category.Name);
     }
 
     [Fact]
     [Trait("ContentTypeRepositoryTests", nameof(ContentType))]
     public void Update_ItShould_properties_updated()
     {
+        _ContentTypeRepository.NoTracking = false;
+
         //arrange
-        var expected_name = "new content type name";
+        const string expected_name = "new content type name";
 
         var category = ContentTypeHelper.GetOne();
         _ContentTypeRepository.Add(category);
@@ -505,33 +510,29 @@ public class ContentTypeRepositoryTests
 
     #endregion
 
-    #region GetByHash данные методы в репозитории не реализованы
+    [Fact(Skip = "Не реализован метод")]
+    [Trait("ContentTypeRepositoryTests", nameof(ContentType))]
+    public async void GetByHashAsync_ItShould_null()
+    {
+        //arrange
 
-    //[Fact]
-    //[Trait("ContentTypeRepositoryTests", nameof(ContentType))]
-    //public async void GetByHashAsync_ItShould_null()
-    //{
-    //    //arrange
+        //act
+        var categoryDb = await _ContentTypeRepository.GetByHashAsync(String.Empty);
 
-    //    //act
-    //    var categoryDb = await _contentTypeRepository.GetByHashAsync(String.Empty);
+        //assert
+        Assert.Null(categoryDb);
+    }
 
-    //    //assert
-    //    Assert.Null(categoryDb);
-    //}
+    [Fact(Skip = "Не реализован метод")]
+    [Trait("ContentTypeRepositoryTests", nameof(ContentType))]
+    public void GetByHash_ItShould_null()
+    {
+        //arrange
 
-    //[Fact]
-    //[Trait("ContentTypeRepositoryTests", nameof(ContentType))]
-    //public void GetByHash_ItShould_null()
-    //{
-    //    //arrange
+        //act
+        var categoryDb = _ContentTypeRepository.GetByHash(String.Empty);
 
-    //    //act
-    //    var categoryDb = _contentTypeRepository.GetByHash(String.Empty);
-
-    //    //assert
-    //    Assert.Null(categoryDb);
-    //}
-
-    #endregion
+        //assert
+        Assert.Null(categoryDb);
+    }
 }

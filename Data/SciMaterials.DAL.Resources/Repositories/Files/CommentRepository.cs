@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
-using SciMaterials.DAL.Resources.Contracts.Repositories;
 using SciMaterials.DAL.Resources.Contracts.Repositories.Files;
 
 namespace SciMaterials.DAL.Resources.Repositories.Files;
@@ -11,7 +10,7 @@ namespace SciMaterials.DAL.Resources.Repositories.Files;
 /// <summary>Репозиторий для <see cref="Comment"/></summary>
 public class CommentRepository : Repository<Comment>, ICommentRepository
 {
-    public CommentRepository(SciMaterialsContext context, ILogger<CommentRepository> logger) : base(context, logger) { }
+    public CommentRepository(SciMaterialsContext context, ILogger<CommentRepository> Logger) : base(context, Logger) { }
 
     protected override IQueryable<Comment> GetIncludeQuery(IQueryable<Comment> query) => query
        .Include(c => c.Author)

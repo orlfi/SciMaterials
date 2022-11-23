@@ -455,10 +455,12 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
     [Trait("CategoryRepositoryTests", nameof(Category))]
     public async void UpdateAsync_ItShould_properties_updated()
     {
+        _CategoryRepository.NoTracking = false;
+
         //arrange
-        var expected_created_at = DateTime.Now.AddDays(1);
-        var expected_description = "new category description";
-        var expected_name = "new category name";
+        var          expected_created_at  = DateTime.Now.AddDays(1);
+        const string expected_description = "new category description";
+        const string expected_name        = "new category name";
 
         var category = CategoryHelper.GetOne();
         await _CategoryRepository.AddAsync(category);
@@ -484,10 +486,12 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
     [Trait("CategoryRepositoryTests", nameof(Category))]
     public void Update_ItShould_properties_updated()
     {
+        _CategoryRepository.NoTracking = false;
+
         //arrange
-        var expected_created_at = DateTime.Now.AddDays(1);
-        var expected_description = "new category description";
-        var expected_name = "new category name";
+        var          expected_created_at  = DateTime.Now.AddDays(1);
+        const string expected_description = "new category description";
+        const string expected_name        = "new category name";
 
         var category = CategoryHelper.GetOne();
         _CategoryRepository.Add(category);
@@ -513,27 +517,27 @@ public class CategoryRepositoryTests : IClassFixture<UnitOfWorkFixture>
 
     #region GetByHash
 
-    [Fact]
+    [Fact(Skip = "Не реализован метод")]
     [Trait("CategoryRepositoryTests", nameof(Category))]
     public void GetByHashAsync_ItShould_null()
     {
         //arrange
 
         //act
-        var category_db = _CategoryRepository.GetByHashAsync(String.Empty);
+        var category_db = _CategoryRepository.GetByHashAsync(string.Empty);
 
         //assert
         Assert.Null(category_db);
     }
 
-    [Fact]
+    [Fact(Skip = "Не реализован метод")]
     [Trait("CategoryRepositoryTests", nameof(Category))]
     public void GetByHash_ItShould_null()
     {
         //arrange
 
         //act
-        var category_db = _CategoryRepository.GetByHash(String.Empty);
+        var category_db = _CategoryRepository.GetByHash(string.Empty);
 
         //assert
         Assert.Null(category_db);

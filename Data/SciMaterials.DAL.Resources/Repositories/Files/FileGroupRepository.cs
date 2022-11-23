@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 
 using SciMaterials.DAL.Resources.Contexts;
 using SciMaterials.DAL.Resources.Contracts.Entities;
-using SciMaterials.DAL.Resources.Contracts.Repositories;
 using SciMaterials.DAL.Resources.Contracts.Repositories.Files;
 
 namespace SciMaterials.DAL.Resources.Repositories.Files;
@@ -11,7 +10,7 @@ namespace SciMaterials.DAL.Resources.Repositories.Files;
 /// <summary> Репозиторий для <see cref="FileGroup"/>. </summary>
 public class FileGroupRepository : Repository<FileGroup>, IFileGroupRepository
 {
-    public FileGroupRepository(SciMaterialsContext context, ILogger<FileGroupRepository> logger) : base(context, logger) { }
+    public FileGroupRepository(SciMaterialsContext context, ILogger<FileGroupRepository> Logger) : base(context, Logger) { }
 
     protected override IQueryable<FileGroup> GetIncludeQuery(IQueryable<FileGroup> query) => query
        .Include(fg => fg.Files)

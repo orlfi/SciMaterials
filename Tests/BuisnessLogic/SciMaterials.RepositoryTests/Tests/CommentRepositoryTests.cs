@@ -394,6 +394,8 @@ public class CommentRepositoryTests
     [Trait("CommentRepositoryTests", nameof(Comment))]
     public async void UpdateAsync_ItShould_properties_updated()
     {
+        _ComentRepository.NoTracking = false;
+
         //arrange
         var expected_created_at = DateTime.Now.AddDays(1);
         var expected_text = "new some text";
@@ -420,6 +422,8 @@ public class CommentRepositoryTests
     [Trait("CommentRepositoryTests", nameof(Comment))]
     public void Update_ItShould_properties_updated()
     {
+        _ComentRepository.NoTracking = false;
+
         //arrange
         var expected_created_at = DateTime.Now.AddDays(1);
         var expected_text = "new some text";

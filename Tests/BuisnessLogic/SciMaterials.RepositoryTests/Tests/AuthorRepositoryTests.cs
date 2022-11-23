@@ -48,6 +48,8 @@ public class AuthorRepositoryTests
     [Trait("AuthorRepositoryTests", nameof(Author))]
     public void GetAll_Tracking_ItShould_contains_category_1()
     {
+        _AuthorRepository.NoTracking = false;
+
         //arrange
         const int         expected       = 1;
         const EntityState expected_state = EntityState.Unchanged;
@@ -58,7 +60,8 @@ public class AuthorRepositoryTests
 
         //assert
         Assert.Equal(expected, count);
-        Assert.Equal(expected_state, _Context.Entry(authors[0]).State);
+        var entity_state = _Context.Entry(authors[0]).State;
+        Assert.Equal(expected_state, entity_state);
     }
 
     #endregion
@@ -86,6 +89,8 @@ public class AuthorRepositoryTests
     [Trait("AuthorRepositoryTests", nameof(Author))]
     public async void GetAllAsync_Tracking_ItShould_contains_category_1()
     {
+        _AuthorRepository.NoTracking = false;
+
         //arrange
         const int         expected       = 1;
         const EntityState expected_state = EntityState.Unchanged;
@@ -233,6 +238,8 @@ public class AuthorRepositoryTests
     [Trait("AuthorRepositoryTests", nameof(Author))]
     public async void GetByIdAsync_Tracking_ItShould_tracking()
     {
+        _AuthorRepository.NoTracking = false;
+
         //arrange
         const EntityState expected_state = EntityState.Unchanged;
         var               author       = AuthorHelper.GetOne();
@@ -271,7 +278,7 @@ public class AuthorRepositoryTests
     [Trait("AuthorRepositoryTests", nameof(Author))]
     public void GetById_Tracking_ItShould_unchanged()
     {
-        _AuthorRepository.Include = true;
+        _AuthorRepository.NoTracking = false;
 
         //arrange
         const EntityState expected_state = EntityState.Unchanged;
@@ -504,6 +511,7 @@ public class AuthorRepositoryTests
     [Trait("AuthorRepositoryTests", nameof(Author))]
     public async void UpdateAsync_ItShould_properties_updated()
     {
+        _AuthorRepository.NoTracking = false;
         _AuthorRepository.Include = true;
 
         //arrange
@@ -555,6 +563,7 @@ public class AuthorRepositoryTests
     public void Update_ItShould_properties_updated()
     {
         _AuthorRepository.Include = true;
+        _AuthorRepository.NoTracking = false;
 
         //arrange
         var expected_name      = "new name";
@@ -568,7 +577,7 @@ public class AuthorRepositoryTests
         var author = new Author
         {
             Id        = Guid.NewGuid(),
-            Name      = expected_name,
+            Name      = "old_name",
             Surname   = expected_surname,
             Email     = expected_email,
             Phone     = expected_phone,
@@ -604,7 +613,7 @@ public class AuthorRepositoryTests
 
     #region GetByHash
 
-    [Fact]
+    [Fact(Skip = "Не реализован метод")]
     [Trait("AuthorRepositoryTests", nameof(Author))]
     public void GetByHashAsync_ItShould_null()
     {
@@ -619,7 +628,7 @@ public class AuthorRepositoryTests
         Assert.Null(author_db);
     }
 
-    [Fact]
+    [Fact(Skip = "Не реализован метод")]
     [Trait("AuthorRepositoryTests", nameof(Author))]
     public void GetByHash_ItShould_null()
     {
