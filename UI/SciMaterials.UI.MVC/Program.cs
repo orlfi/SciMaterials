@@ -1,13 +1,9 @@
 using SciMaterials.Contracts.API.Settings;
-using SciMaterials.Services.API.Extensions;
 using SciMaterials.UI.MVC.API.Middlewares;
-using SciMaterials.UI.MVC.API.Extensions;
-using SciMaterials.Services.Database.Extensions;
-using SciMaterials.UI.MVC.Identity.Extensions;
 using SciMaterials.WebApi.Clients.Identity.Extensions;
 using SciMaterials.Contracts.ShortLinks;
-using SciMaterials.Services.ShortLinks;
 using SciMaterials.DAL.AUTH.InitializationDb;
+using SciMaterials.UI.MVC;
 
 var builder = WebApplication.CreateBuilder(args);
 
