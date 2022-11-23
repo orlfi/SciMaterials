@@ -85,6 +85,8 @@ public class IdentityDatabaseManager : IDatabaseManager
             _Logger.LogInformation("Migrations not supported by provider. Database created.");
         }
 
+        await SeedDatabaseAsync(Cancel);
+
         _Logger.Log(LogLevel.Information,"Initialize auth database stop {Time}", DateTime.Now);
     }
 

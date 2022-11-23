@@ -41,9 +41,11 @@ var app = builder.Build();
 // TODO
 await app.InitializeDbAsync(config);
 
-await using var scope = app.Services.CreateAsyncScope();
-var authDb = scope.ServiceProvider.GetRequiredService<IdentityDatabaseManager>();
-await authDb.InitializeDatabaseAsync();
+await using(var scope = app.Services.CreateAsyncScope())
+{
+    var auth_db = scope.ServiceProvider.GetRequiredService<IdentityDatabaseManager>();
+    await auth_db.InitializeDatabaseAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
