@@ -67,13 +67,14 @@ public class IdentityDatabaseManager : IDatabaseManager
             _Logger.LogInformation("Pending migrations {0}:  {1}", pending_migrations.Length, string.Join(",", pending_migrations));
             _Logger.LogInformation("Applied migrations {0}:  {1}", pending_migrations.Length, string.Join(",", applied_migrations));
 
-            if (pending_migrations.Length > 0) // если есть неприменённые миграции, то их надо применить
+            // если есть неприменённые миграции, то их надо применить
+            if (pending_migrations.Length > 0) 
             {
                 await _db.Database.MigrateAsync(Cancel);
                 _Logger.LogInformation("Migrate database successfully");
             }
-            else if
-                (applied_migrations.Length == 0) // если не было неприменённых миграций, и нет ни одной применённой миграции, то это значит, что системы миграций вообще нет для этого поставщика БД. Надо просто создать БД.
+            // если не было неприменённых миграций, и нет ни одной применённой миграции, то это значит, что системы миграций вообще нет для этого поставщика БД.Надо просто создать БД.
+            else if (applied_migrations.Length == 0)
             {
                 await _db.Database.EnsureCreatedAsync(Cancel);
                 _Logger.LogInformation("Migrations not supported by provider. Database created.");
@@ -104,7 +105,7 @@ public class IdentityDatabaseManager : IDatabaseManager
         await CheckRoleAsync("admin").ConfigureAwait(false);
         await CheckRoleAsync("user");
 
-        var admin_settings = _Configuration.GetSection("AuthApiSettings:AdminSettings");
+        var admin_settings = _Configuration.GetSection("IdentitySettings:AdminSettings");
         var admin_email = admin_settings["login"];
         var admin_password = admin_settings["password"];
 

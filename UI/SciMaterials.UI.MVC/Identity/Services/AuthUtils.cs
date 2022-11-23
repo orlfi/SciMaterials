@@ -29,7 +29,7 @@ public class AuthUtils : IAuthUtils
     /// <returns>Возращает токен</returns>
     public string CreateSessionToken(IdentityUser User, IList<string> Roles)
     {
-        var config = _Configuration.GetSection("AuthApiSettings:SecretTokenKey");
+        var config = _Configuration.GetSection("IdentitySettings:SecretTokenKey");
         _SecretKey = config["key"];
         
         var jwt_security_token_handler = new JwtSecurityTokenHandler();
@@ -80,7 +80,7 @@ public class AuthUtils : IAuthUtils
     /// <returns></returns>
     public bool CheckToDeleteSAInRoleAdmin(IdentityUser User, string RoleName)
     {
-        if (User.Email.Equals(_Configuration.GetSection("AuthApiSettings:AdminSettings:login").Value) &&
+        if (User.Email.Equals(_Configuration.GetSection("IdentitySettings:AdminSettings:login").Value) &&
             RoleName.Equals(AuthApiRoles.Admin)) return false;
 
         return true;
@@ -93,7 +93,7 @@ public class AuthUtils : IAuthUtils
     /// <returns></returns>
     public bool CheckToDeleteSA(IdentityUser User)
     {
-        if (User.Email.Equals(_Configuration.GetSection("AuthApiSettings:AdminSettings:login").Value)) return false;
+        if (User.Email.Equals(_Configuration.GetSection("IdentitySettings:AdminSettings:login").Value)) return false;
 
         return true;
     }

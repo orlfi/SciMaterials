@@ -7,7 +7,7 @@ namespace SciMaterials.MsSqlServerMigrations;
 
 public static class Registrator
 {
-    public static IServiceCollection AddSciMaterialsContextSqlServer(this IServiceCollection services, string connectionString) =>
+    public static void AddSciMaterialsContextSqlServer(this IServiceCollection services, string connectionString) =>
         services.AddDbContext<SciMaterialsContext>(
             opt => opt.UseSqlServer(
                 connectionString,
