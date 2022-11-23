@@ -32,9 +32,7 @@ namespace SciMaterials.DAL.Resources.Properties {
         internal Resources() {
         }
         
-        /// <summary>
-        ///   Returns the cached ResourceManager instance used by this class.
-        /// </summary>
+        /// <summary>Returns the cached ResourceManager instance used by this class.</summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
@@ -60,9 +58,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Authors {
             get {
                 object obj = ResourceManager.GetObject("Authors", resourceCulture);
@@ -70,9 +66,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Categories {
             get {
                 object obj = ResourceManager.GetObject("Categories", resourceCulture);
@@ -80,9 +74,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Comments {
             get {
                 object obj = ResourceManager.GetObject("Comments", resourceCulture);
@@ -90,9 +82,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] ContentTypes {
             get {
                 object obj = ResourceManager.GetObject("ContentTypes", resourceCulture);
@@ -100,9 +90,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] FileGroups {
             get {
                 object obj = ResourceManager.GetObject("FileGroups", resourceCulture);
@@ -110,9 +98,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Files {
             get {
                 object obj = ResourceManager.GetObject("Files", resourceCulture);
@@ -120,9 +106,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Links {
             get {
                 object obj = ResourceManager.GetObject("Links", resourceCulture);
@@ -130,9 +114,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Ratings {
             get {
                 object obj = ResourceManager.GetObject("Ratings", resourceCulture);
@@ -140,9 +122,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Tags {
             get {
                 object obj = ResourceManager.GetObject("Tags", resourceCulture);
@@ -150,9 +130,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Urls {
             get {
                 object obj = ResourceManager.GetObject("Urls", resourceCulture);
@@ -160,9 +138,7 @@ namespace SciMaterials.DAL.Resources.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
+        /// <summary>Looks up a localized resource of type System.Byte[].</summary>
         internal static byte[] Users {
             get {
                 object obj = ResourceManager.GetObject("Users", resourceCulture);
