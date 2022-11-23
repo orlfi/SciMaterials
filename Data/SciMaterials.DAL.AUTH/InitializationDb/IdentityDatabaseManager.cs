@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.AUTH.Context;
-using SciMaterials.DAL.AUTH.Contracts;
+using SciMaterials.DAL.Contracts.Services;
 
 namespace SciMaterials.DAL.AUTH.InitializationDb;
 
-public class AuthDbInitializer : IAuthDbInitializer
+public class IdentityDatabaseManager : IDatabaseManager
 {
     private readonly AuthDbContext _db;
     private readonly UserManager<IdentityUser> _UserManager;
@@ -15,7 +15,7 @@ public class AuthDbInitializer : IAuthDbInitializer
     private readonly IConfiguration _Configuration;
     private readonly ILogger<AuthDbContext> _Logger;
 
-    public AuthDbInitializer(
+    public IdentityDatabaseManager(
         AuthDbContext DBContext, 
         UserManager<IdentityUser> UserManager, 
         RoleManager<IdentityRole> RoleManager, 
@@ -29,7 +29,7 @@ public class AuthDbInitializer : IAuthDbInitializer
         _Logger = Logger;
     }
 
-    public async Task<bool> DeleteDbAsync(CancellationToken Cancel = default)
+    public async Task DeleteDatabaseAsync(CancellationToken Cancel = default)
     {
         _Logger.LogInformation("Deleting a database...");
 
@@ -38,7 +38,10 @@ public class AuthDbInitializer : IAuthDbInitializer
         try
         {
             var result = await _db.Database.EnsureDeletedAsync(Cancel).ConfigureAwait(false);
-            return result;
+            if (result)
+                _Logger.LogInformation("Database was removed successfully");
+            else
+                _Logger.LogInformation("Database not removed because it not exists");
         }
         catch (OperationCanceledException e)
         {
@@ -52,18 +55,9 @@ public class AuthDbInitializer : IAuthDbInitializer
         }
     }
 
-    public async Task InitializeAsync(bool RemoveAtStart = false, CancellationToken Cancel = default)
+    public async Task InitializeDatabaseAsync(CancellationToken Cancel = default)
     {
         _Logger.Log(LogLevel.Information,"Initialize auth database start {Time}", DateTime.Now);
-
-        if (RemoveAtStart)
-        {
-            _Logger.LogInformation("Need to remove database at begging of initialization process");
-            if (await DeleteDbAsync(Cancel).ConfigureAwait(false))
-                _Logger.LogInformation("Database was removed successfully");
-            else
-                _Logger.LogInformation("Database not removed because it not exists");
-        }
 
         if (_db.Database.IsRelational())
         {
@@ -91,9 +85,12 @@ public class AuthDbInitializer : IAuthDbInitializer
             _Logger.LogInformation("Migrations not supported by provider. Database created.");
         }
 
-        await InitializeRolesAsync();
-
         _Logger.Log(LogLevel.Information,"Initialize auth database stop {Time}", DateTime.Now);
+    }
+
+    public async Task SeedDatabaseAsync(CancellationToken Cancel = default)
+    {
+        await InitializeRolesAsync().ConfigureAwait(false);
     }
 
     /// <summary>
@@ -102,7 +99,7 @@ public class AuthDbInitializer : IAuthDbInitializer
     /// </summary>
     /// <param name="UserManager"></param>
     /// <param name="RoleManager"></param>
-    public async Task InitializeRolesAsync()
+    private async Task InitializeRolesAsync()
     {
         await CheckRoleAsync("admin").ConfigureAwait(false);
         await CheckRoleAsync("user");

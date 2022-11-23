@@ -130,7 +130,7 @@ public static class AuthServiceCollectionExtensions
     /// <returns>Коллекция сервисов</returns>
     public static IServiceCollection AddAuthDbInitializer(this IServiceCollection Services)
     {
-        return Services.AddScoped<IAuthDbInitializer, AuthDbInitializer>();
+        return Services.AddScoped<IdentityDatabaseManager>();
     }
 
     /// <summary>

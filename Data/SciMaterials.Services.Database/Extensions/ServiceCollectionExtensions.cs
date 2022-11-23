@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using SciMaterials.DAL.Contracts.Configuration;
-using SciMaterials.DAL.Contracts.Initialization;
+using SciMaterials.DAL.Contracts.Services;
 using SciMaterials.DAL.Resources.Services;
 using SciMaterials.Data.MySqlMigrations;
 using SciMaterials.MsSqlServerMigrations;
@@ -44,5 +44,5 @@ public static class ServiceCollectionExtensions
     }
 
     public static IServiceCollection AddDatabaseServices(this IServiceCollection services) =>
-       services.AddTransient<IDatabaseInitializer, DatabaseInitializer>();
+       services.AddTransient<IDatabaseManager, ResourcesDatabaseManager>();
 }

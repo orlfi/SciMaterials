@@ -1,23 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-using SciMaterials.DAL.Contracts.Initialization;
+using SciMaterials.DAL.Contracts.Services;
 using SciMaterials.DAL.Resources.Contexts;
 
 namespace SciMaterials.DAL.Resources.Services;
 
-public class DatabaseInitializer : IDatabaseInitializer
+public class ResourcesDatabaseManager : IDatabaseManager
 {
     private readonly SciMaterialsContext _db;
     private readonly ILogger<SciMaterialsContext> _Logger;
 
-    public DatabaseInitializer(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
+    public ResourcesDatabaseManager(SciMaterialsContext db, ILogger<SciMaterialsContext> logger)
     {
         _db = db;
         _Logger = logger;
     }
 
-    public async Task<bool> DeleteDatabaseAsync(CancellationToken Cancel = default)
+    public async Task DeleteDatabaseAsync(CancellationToken Cancel = default)
     {
         _Logger.LogInformation("Deleting a database...");
 
@@ -26,7 +26,10 @@ public class DatabaseInitializer : IDatabaseInitializer
         try
         {
             var result = await _db.Database.EnsureDeletedAsync(Cancel).ConfigureAwait(false);
-            return result;
+            if (result)
+                _Logger.LogInformation("Database was removed successfully");
+            else
+                _Logger.LogInformation("Database not removed because it not exists");
         }
         catch (OperationCanceledException e)
         {
@@ -40,7 +43,7 @@ public class DatabaseInitializer : IDatabaseInitializer
         }
     }
 
-    public async Task InitializeDatabaseAsync(bool RemoveAtStart = false, bool UseDataSeeder = false, CancellationToken Cancel = default)
+    public async Task InitializeDatabaseAsync(CancellationToken Cancel = default)
     {
         _Logger.LogInformation("Database initialization...");
 
@@ -48,15 +51,6 @@ public class DatabaseInitializer : IDatabaseInitializer
 
         try
         {
-            if (RemoveAtStart)
-            {
-                _Logger.LogInformation("Need to remove database at begging of initialization process");
-                if (await DeleteDatabaseAsync(Cancel).ConfigureAwait(false))
-                    _Logger.LogInformation("Database was removed successfully");
-                else
-                    _Logger.LogInformation("Database not removed because it not exists");
-            }
-
             if (_db.Database.IsRelational())
             {
                 var pending_migrations = (await _db.Database.GetPendingMigrationsAsync(Cancel).ConfigureAwait(false)).ToArray();
@@ -65,13 +59,14 @@ public class DatabaseInitializer : IDatabaseInitializer
                 _Logger.LogInformation("Pending migrations {0}:  {1}", pending_migrations.Length, string.Join(",", pending_migrations));
                 _Logger.LogInformation("Applied migrations {0}:  {1}", pending_migrations.Length, string.Join(",", applied_migrations));
 
-                if (pending_migrations.Length > 0) // если есть неприменённые миграции, то их надо применить
+                // если есть неприменённые миграции, то их надо применить
+                if (pending_migrations.Length > 0) 
                 {
                     await _db.Database.MigrateAsync(Cancel);
                     _Logger.LogInformation("Migrate database successfully");
                 }
-                else if
-                    (applied_migrations.Length == 0) // если не было неприменённых миграций, и нет ни одной применённой миграции, то это значит, что системы миграций вообще нет для этого поставщика БД. Надо просто создать БД.
+                // если не было неприменённых миграций, и нет ни одной применённой миграции, то это значит, что системы миграций вообще нет для этого поставщика БД. Надо просто создать БД.
+                else if (applied_migrations.Length == 0) 
                 {
                     await _db.Database.EnsureCreatedAsync(Cancel);
                     _Logger.LogInformation("Migrations not supported by provider. Database created.");
@@ -82,10 +77,6 @@ public class DatabaseInitializer : IDatabaseInitializer
                 await _db.Database.EnsureCreatedAsync(Cancel);
                 _Logger.LogInformation("Migrations not supported by provider. Database created.");
             }
-
-
-            if (UseDataSeeder)
-                await InitializeDatabaseAsync(Cancel).ConfigureAwait(false);
         }
         catch (OperationCanceledException e)
         {
@@ -99,7 +90,7 @@ public class DatabaseInitializer : IDatabaseInitializer
         }
     }
 
-    private async Task InitializeDatabaseAsync(CancellationToken Cancel = default)
+    public async Task SeedDatabaseAsync(CancellationToken Cancel = default)
     {
         await DataSeeder.SeedAsync(_db, _Logger, Cancel).ConfigureAwait(false);
     }

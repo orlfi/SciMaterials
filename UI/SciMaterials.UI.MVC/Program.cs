@@ -7,6 +7,7 @@ using SciMaterials.UI.MVC.Identity.Extensions;
 using SciMaterials.WebApi.Clients.Identity.Extensions;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Services.ShortLinks;
+using SciMaterials.DAL.AUTH.InitializationDb;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +42,12 @@ services.AddAuthJwtAndSwaggerApiServices(builder.Configuration);
 
 var app = builder.Build();
 
+// TODO
 await app.InitializeDbAsync(config);
+
+await using var scope = app.Services.CreateAsyncScope();
+var authDb = scope.ServiceProvider.GetRequiredService<IdentityDatabaseManager>();
+await authDb.InitializeDatabaseAsync();
 
 if (app.Environment.IsDevelopment())
 {
