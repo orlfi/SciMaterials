@@ -7,17 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Authors.json" />
-    <EmbeddedResource Include="Resources\Categories.json" />
-    <EmbeddedResource Include="Resources\Comments.json" />
-    <EmbeddedResource Include="Resources\ContentTypes.json" />
-    <EmbeddedResource Include="Resources\FileGroups.json" />
-    <EmbeddedResource Include="Resources\Files.json" />
-    <EmbeddedResource Include="Resources\Links.json" />
-    <EmbeddedResource Include="Resources\Ratings.json" />
-    <EmbeddedResource Include="Resources\Tags.json" />
-    <EmbeddedResource Include="Resources\Urls.json" />
-    <EmbeddedResource Include="Resources\Users.json" />
+    <EmbeddedResource Include="TestData\Authors.json" />
+    <EmbeddedResource Include="TestData\Categories.json" />
+    <EmbeddedResource Include="TestData\Comments.json" />
+    <EmbeddedResource Include="TestData\ContentTypes.json" />
+    <EmbeddedResource Include="TestData\FileGroups.json" />
+    <EmbeddedResource Include="TestData\Files.json" />
+    <EmbeddedResource Include="TestData\Links.json" />
+    <EmbeddedResource Include="TestData\Ratings.json" />
+    <EmbeddedResource Include="TestData\Tags.json" />
+    <EmbeddedResource Include="TestData\Urls.json" />
+    <EmbeddedResource Include="TestData\Users.json" />
   </ItemGroup>
 
   <ItemGroup>
