@@ -14,9 +14,7 @@ using SciMaterials.Contracts.Identity.API.Responses.User;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 
-/// <summary>
-/// Контроллер для регистрации и авторизации в системе аутентификации
-/// </summary>
+/// <summary>Контроллер для регистрации и авторизации в системе аутентификации</summary>
 [ApiController]
 [Route(AuthApiRoute.AuthControllerName)]
 public class AccountController : Controller
@@ -44,9 +42,7 @@ public class AccountController : Controller
         _authUtilits = authUtilits;
     }
 
-    /// <summary>
-    /// Метод регистрации пользователя
-    /// </summary>
+    /// <summary>Метод регистрации пользователя</summary>
     /// <param name="RegisterRequest">Запрос пользователя</param>
     /// <returns>Status 200 OK.</returns>
     [AllowAnonymous]
@@ -96,9 +92,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод авторизации пользователя
-    /// </summary>
+    /// <summary>Метод авторизации пользователя</summary>
     /// <param name="LoginRequest">Запрос пользователя</param>
     /// <returns>Status 200 OK.</returns>
     [AllowAnonymous]
@@ -153,9 +147,7 @@ public class AccountController : Controller
         });
     }
 
-    /// <summary>
-    /// Метод выхода пользователя из системы
-    /// </summary>
+    /// <summary>Метод выхода пользователя из системы</summary>
     /// <returns>Status 200 OK.</returns>
     [HttpPost(AuthApiRoute.Logout)]
     public async Task<IActionResult> LogoutAsync()
@@ -175,9 +167,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод смены пароля пользователя
-    /// </summary>
+    /// <summary>Метод смены пароля пользователя</summary>
     /// <param name="ChangePasswordRequest">Запрос на смену пароля</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -228,9 +218,7 @@ public class AccountController : Controller
         }
     }
     
-    /// <summary>
-    /// Метод обновления токена пользователя
-    /// </summary>
+    /// <summary>Метод обновления токена пользователя</summary>
     /// <returns>Status 200 OK.</returns>
     [HttpGet(AuthApiRoute.RefreshToken)]
     public async Task<IActionResult> GetRefreshTokenAsync()
@@ -275,9 +263,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод подтверждения почты пользователя, когда пользователь проходит по сформированной ссылке
-    /// </summary>
+    /// <summary>Метод подтверждения почты пользователя, когда пользователь проходит по сформированной ссылке</summary>
     /// <param name="UserId">Идентификатор пользователя в системе</param>
     /// <param name="ConfirmToken">Токен подтверждения</param>
     /// <returns>Status 200 OK.</returns>
@@ -324,9 +310,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод создания роли для пользователя
-    /// </summary>
+    /// <summary>Метод создания роли для пользователя</summary>
     /// <param name="CreateRoleRequest">Запроc на создание роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -361,9 +345,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод получения всех ролей в системе
-    /// </summary>
+    /// <summary>Метод получения всех ролей в системе</summary>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet(AuthApiRoute.GetAllRoles)]
@@ -401,9 +383,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод получения роли по идентификатору
-    /// </summary>
+    /// <summary>Метод получения роли по идентификатору</summary>
     /// <param name="RoleId">Идентификатор роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -441,9 +421,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод редактирования роли по идентификатору
-    /// </summary>
+    /// <summary>Метод редактирования роли по идентификатору</summary>
     /// <param name="EditRoleRequest">Запрос на редактирование роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -480,9 +458,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод удаления роли по идентификатору
-    /// </summary>
+    /// <summary>Метод удаления роли по идентификатору</summary>
     /// <param name="RoleId">Запрос на удаление роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -532,9 +508,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод добавления роли к пользователю
-    /// </summary>
+    /// <summary>Метод добавления роли к пользователю</summary>
     /// <param name="AddRoleToUserRequest">Запрос на добавление роли</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -588,9 +562,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод удаления роли у пользователя
-    /// </summary>
+    /// <summary>Метод удаления роли у пользователя</summary>
     /// <param name="Email">Почта</param>
     /// <param name="RoleName">Название роли</param>
     /// <returns>Status 200 OK.</returns>
@@ -648,9 +620,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод получения всех ролей пользователя
-    /// </summary>
+    /// <summary>Метод получения всех ролей пользователя</summary>
     /// <param name="Email">Почта</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -710,9 +680,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод создания пользователя админом
-    /// </summary>
+    /// <summary>Метод создания пользователя админом</summary>
     /// <param name="CreateUserRequest">Запрос админа</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -742,9 +710,7 @@ public class AccountController : Controller
         });
     }
 
-    /// <summary>
-    /// Метод получения информации о пользователе
-    /// </summary>
+    /// <summary>Метод получения информации о пользователе</summary>
     /// <param name="Email">Почта</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -782,9 +748,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод получения всех пользователей в системе админом
-    /// </summary>
+    /// <summary>Метод получения всех пользователей в системе админом</summary>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet(AuthApiRoute.GetAllUsers)]
@@ -825,9 +789,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод редактирования информации о пользователе
-    /// </summary>
+    /// <summary>Метод редактирования информации о пользователе</summary>
     /// <param name="EditUserRequest">Запрос админа</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -881,9 +843,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод удаления пользователя
-    /// </summary>
+    /// <summary>Метод удаления пользователя</summary>
     /// <param name="Email">Почта пользователя</param>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
@@ -933,9 +893,7 @@ public class AccountController : Controller
         }
     }
 
-    /// <summary>
-    /// Метод удаления пользователей без регистрации (для очистки БД)
-    /// </summary>
+    /// <summary>Метод удаления пользователей без регистрации (для очистки БД)</summary>
     /// <returns>Status 200 OK.</returns>
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpDelete(AuthApiRoute.DeleteUserWithoutConfirm)]

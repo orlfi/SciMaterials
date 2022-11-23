@@ -23,9 +23,7 @@ namespace SciMaterials.UI.MVC;
 
 public static class IdentityRegister
 {
-    /// <summary>
-    /// Метод расширения по установке сервисов БД Identity
-    /// </summary>
+    /// <summary>Метод расширения по установке сервисов БД Identity</summary>
     /// <param name="Services">Сервисы</param>
     /// <param name="Configuration">Конфигурации</param>
     /// <returns>Коллекция сервисов</returns>
@@ -65,9 +63,7 @@ public static class IdentityRegister
         return Services;
     }
 
-    /// <summary>
-    /// Метод расширения по установке сервисов для JWT и Swagger
-    /// </summary>
+    /// <summary>Метод расширения по установке сервисов для JWT и Swagger</summary>
     /// <param name="Services">Сервисы</param>
     /// <param name="Configuration">Конфигурации</param>
     /// <returns>Коллекция сервисов</returns>
