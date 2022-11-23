@@ -26,9 +26,7 @@ public class IdentityClient : IIdentityClient
         _logger = logger;
     }
 
-    /// <summary>
-    /// Метод клиента для регистрации пользователя в Identity
-    /// </summary>
+    /// <summary>Метод клиента для регистрации пользователя в Identity</summary>
     /// <param name="RegisterRequest">Запрос на регистрацию</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -46,9 +44,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для авторизации пользователя в Identity
-    /// </summary>
+    /// <summary>Метод клиента для авторизации пользователя в Identity</summary>
     /// <param name="loginRegister">Запрос на авторизацию</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -70,9 +66,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для выхода пользователя из системы Identity
-    /// </summary>
+    /// <summary>Метод клиента для выхода пользователя из системы Identity</summary>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
     public async Task<ClientLogoutResponse> LogoutUserAsync(CancellationToken Cancel = default)
@@ -90,9 +84,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для смены пароля в Identity
-    /// </summary>
+    /// <summary>Метод клиента для смены пароля в Identity</summary>
     /// <param name="ChangePasswordRequest">Запрос на смену пароля</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -112,9 +104,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для создания роли пользователя в Identity
-    /// </summary>
+    /// <summary>Метод клиента для создания роли пользователя в Identity</summary>
     /// <param name="CreateRoleRequest">Запрос на создание роли</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -134,9 +124,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
     
-    /// <summary>
-    /// Метод клиента для получения инф. о всех ролях в Identity
-    /// </summary>
+    /// <summary>Метод клиента для получения инф. о всех ролях в Identity</summary>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
     public async Task<ClientGetAllRolesResponse> GetAllRolesAsync(CancellationToken Cancel = default)
@@ -153,9 +141,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для получения инф. о роли по идентификатору в Identity
-    /// </summary>
+    /// <summary>Метод клиента для получения инф. о роли по идентификатору в Identity</summary>
     /// <param name="roleRequest">Запрос на получение инф. о роли по идентификатору</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -174,9 +160,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для редактирования роли по идентификатору в Identity
-    /// </summary>
+    /// <summary>Метод клиента для редактирования роли по идентификатору в Identity</summary>
     /// <param name="roleRequest">Запрос на редактирование роли по идентификатору</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -196,9 +180,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента на удаление роли по идентификатору в Identity
-    /// </summary>
+    /// <summary>Метод клиента на удаление роли по идентификатору в Identity</summary>
     /// <param name="roleRequest">Запрос на удаление роли по идентификатору</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -217,9 +199,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для добавления роли к пользователю в Identity
-    /// </summary>
+    /// <summary>Метод клиента для добавления роли к пользователю в Identity</summary>
     /// <param name="roleRequest">Запрос на добавление роли</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -239,9 +219,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
     
-    /// <summary>
-    /// Метод клиента для удаления роли пользователя по email в Identity
-    /// </summary>
+    /// <summary>Метод клиента для удаления роли пользователя по email в Identity</summary>
     /// <param name="roleRequest">Запрос на удаление роли по email</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -261,9 +239,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для получения информации о всех ролях в системе в Identity
-    /// </summary>
+    /// <summary>Метод клиента для получения информации о всех ролях в системе в Identity</summary>
     /// <param name="roleRequest">Запрос на получение информации о всех пользователях</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -282,9 +258,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
     
-    /// <summary>
-    /// Метод клиента для создания нового пользователя (админом) в Identity
-    /// </summary>
+    /// <summary>Метод клиента для создания нового пользователя (админом) в Identity</summary>
     /// <param name="registerRequest">Запрос на создание пользователя</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -304,9 +278,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для получения информации о пользователе по email в Identity
-    /// </summary>
+    /// <summary>Метод клиента для получения информации о пользователе по email в Identity</summary>
     /// <param name="registerRequest">Запрос на получение информации о пользователе</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -325,9 +297,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для получения информации о всех пользователях в Identity
-    /// </summary>
+    /// <summary>Метод клиента для получения информации о всех пользователях в Identity</summary>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
     public async Task<ClientGetAllUsersResponse> GetAllUsersAsync(CancellationToken Cancel = default)
@@ -344,9 +314,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для изменения имени (ник нейма) пользователя в Identity
-    /// </summary>
+    /// <summary>Метод клиента для изменения имени (ник нейма) пользователя в Identity</summary>
     /// <param name="editUserNameByEmailRequest">Запрос на изменение имени</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -367,9 +335,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для удаления пользователя по email в Identity
-    /// </summary>
+    /// <summary>Метод клиента для удаления пользователя по email в Identity</summary>
     /// <param name="registerRequest">Запрос на удаление</param>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
@@ -388,9 +354,7 @@ public class IdentityClient : IIdentityClient
         return result;
     }
 
-    /// <summary>
-    /// Метод клиента для удаления незарегистрированных пользователей в Identity
-    /// </summary>
+    /// <summary>Метод клиента для удаления незарегистрированных пользователей в Identity</summary>
     /// <param name="Cancel">Токен отмены</param>
     /// <returns>IdentityClientResponse</returns>
     public async Task<ClientDeleteUsersWithOutConfirmResponse> DeleteUsersWithOutConfirmAsync(CancellationToken Cancel = default)

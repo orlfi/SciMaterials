@@ -8,9 +8,7 @@ using SciMaterials.DAL.AUTH.Contracts;
 
 namespace SciMaterials.UI.MVC.Identity.Services;
 
-/// <summary>
-/// Утилиты по работе с jwt токенами
-/// </summary>
+/// <summary>Утилиты по работе с jwt токенами</summary>
 public class AuthUtils : IAuthUtils
 {
     private readonly IConfiguration _Configuration;
@@ -21,9 +19,7 @@ public class AuthUtils : IAuthUtils
         _Configuration = configuration;
     }
     
-    /// <summary>
-    /// Метод создает jwt токен сессии
-    /// </summary>
+    /// <summary>Метод создает jwt токен сессии</summary>
     /// <param name="User">Пользователь</param>
     /// <param name="Roles">Список ролей в системе</param>
     /// <returns>Возращает токен</returns>
@@ -60,9 +56,7 @@ public class AuthUtils : IAuthUtils
         return jwt_security_token_handler.WriteToken(security_token);
     }
 
-    /// <summary>
-    /// Метод проверки ролей админа и пользователя, которые удалять нельзя
-    /// </summary>
+    /// <summary>Метод проверки ролей админа и пользователя, которые удалять нельзя</summary>
     /// <param name="Role">Роль</param>
     /// <returns></returns>
     public bool CheckToDeleteAdminOrUserRoles(IdentityRole Role)
@@ -72,9 +66,7 @@ public class AuthUtils : IAuthUtils
         return true;
     }
 
-    /// <summary>
-    /// Метод проверки супер админа в роли админа, которого удалять нельзя
-    /// </summary>
+    /// <summary>Метод проверки супер админа в роли админа, которого удалять нельзя</summary>
     /// <param name="User">Пользователь</param>
     /// <param name="RoleName">Название роли</param>
     /// <returns></returns>
@@ -86,9 +78,7 @@ public class AuthUtils : IAuthUtils
         return true;
     }
 
-    /// <summary>
-    /// Метод проверки супер админа, которого удалять нельзя
-    /// </summary>
+    /// <summary>Метод проверки супер админа, которого удалять нельзя</summary>
     /// <param name="User">Пользователь</param>
     /// <returns></returns>
     public bool CheckToDeleteSA(IdentityUser User)

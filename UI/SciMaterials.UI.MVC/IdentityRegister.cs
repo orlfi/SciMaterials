@@ -20,9 +20,7 @@ namespace SciMaterials.UI.MVC;
 
 public static class IdentityRegister
 {
-    /// <summary>
-    /// Метод расширения по установке сервисов БД Identity
-    /// </summary>
+    /// <summary>Метод расширения по установке сервисов БД Identity</summary>
     /// <param name="Services">Сервисы</param>
     /// <param name="Configuration">Конфигурации</param>
     /// <returns>Коллекция сервисов</returns>
@@ -65,9 +63,7 @@ public static class IdentityRegister
         return Services;
     }
 
-    /// <summary>
-    /// Метод расширения по установке сервисов для JWT и Swagger
-    /// </summary>
+    /// <summary>Метод расширения по установке сервисов для JWT и Swagger</summary>
     /// <param name="Services">Сервисы</param>
     /// <param name="Configuration">Конфигурации</param>
     /// <returns>Коллекция сервисов</returns>
@@ -130,9 +126,7 @@ public static class IdentityRegister
         return Services;
     }
 
-    /// <summary>
-    /// Метод расширения по установке инициализатора БД Identity
-    /// </summary>
+    /// <summary>Метод расширения по установке инициализатора БД Identity</summary>
     /// <param name="Services">Сервисы</param>
     /// <returns>Коллекция сервисов</returns>
     public static IServiceCollection AddAuthDbInitializer(this IServiceCollection Services)
@@ -140,9 +134,7 @@ public static class IdentityRegister
         return Services.AddScoped<IdentityDatabaseManager>();
     }
 
-    /// <summary>
-    /// Метод расширения по установке утилит для работы с Identity
-    /// </summary>
+    /// <summary>Метод расширения по установке утилит для работы с Identity</summary>
     /// <param name="Services">Сервисы</param>
     /// <returns>Коллекция сервисов</returns>
     public static IServiceCollection AddAuthUtils(this IServiceCollection Services)
@@ -150,14 +142,10 @@ public static class IdentityRegister
         return Services.AddSingleton<IAuthUtils, AuthUtils>();
     }
 
-    /// <summary>
-    /// Статический класс по формированию строк подключения к БД
-    /// </summary>
+    /// <summary>Статический класс по формированию строк подключения к БД</summary>
     public static class AuthConnectionStrings
     {
-        /// <summary>
-        /// Метод формирует строку подключения для БД MYSQL
-        /// </summary>
+        /// <summary>Метод формирует строку подключения для БД MYSQL</summary>
         /// <param name="configuration">Конфигурация</param>
         /// <returns>Сформированную строку подключения</returns>
         public static string MySql(IConfiguration configuration)
@@ -175,9 +163,7 @@ public static class IdentityRegister
             return connection_string;
         }
 
-        /// <summary>
-        /// Метод формирует строку подключения для БД SQLITE
-        /// </summary>
+        /// <summary>Метод формирует строку подключения для БД SQLITE</summary>
         /// <param name="configuration">Конфигурация</param>
         /// <returns>Сформированную строку подключения</returns>
         public static string Sqlite(IConfiguration configuration)
@@ -191,9 +177,7 @@ public static class IdentityRegister
             return connection_string;
         }
 
-        /// <summary>
-        /// Метод формирует строку подключения для БД POSTGRESSQL
-        /// </summary>
+        /// <summary>Метод формирует строку подключения для БД POSTGRESSQL</summary>
         /// <param name="configuration">Конфигурация</param>
         /// <returns>Сформированную строку подключения</returns>
         public static string PostgresSql(IConfiguration configuration)
