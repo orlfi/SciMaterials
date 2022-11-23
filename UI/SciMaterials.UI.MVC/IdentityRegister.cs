@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using System.Text;
+﻿using System.Text;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -93,9 +92,7 @@ public static class IdentityRegister
         });
     }
 
-    /// <summary>
-    /// Метод расширения по установке утилит для работы с Identity
-    /// </summary>
+    /// <summary>Метод расширения по установке утилит для работы с Identity</summary>
     /// <param name="Services">Сервисы</param>
     /// <returns>Коллекция сервисов</returns>
     public static IServiceCollection AddIdentityServices(this IServiceCollection Services, IConfiguration Configuration)
@@ -126,7 +123,7 @@ public static class IdentityRegister
 
         return Services.AddSingleton<IAuthUtils, AuthUtils>();
     }
-
+    
     public static IServiceCollection AddIdentityClients(this IServiceCollection services, string serverUrl)
     {
         services.AddHttpClient<IIdentityClient, IdentityClient>("IdentityClient", c =>
