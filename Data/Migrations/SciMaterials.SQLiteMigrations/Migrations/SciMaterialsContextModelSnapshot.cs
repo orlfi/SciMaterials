@@ -104,6 +104,9 @@ namespace SciMaterials.SQLiteMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ResourceType")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ShortInfo")
                         .HasColumnType("TEXT");
 

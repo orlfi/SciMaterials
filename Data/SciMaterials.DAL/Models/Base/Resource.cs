@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using SciMaterials.Domain.Enums;
+
 namespace SciMaterials.DAL.Models.Base;
 
 [Table("Resources")]
@@ -10,6 +12,7 @@ public class Resource : NamedModel
     public Guid AuthorId { get; set; }
     public DateTime CreatedAt { get; set; }
     public Author Author { get; set; } = null!;
+    public ResourceTypes ResourceType { get; set; }
 
     public ICollection<Comment>? Comments { get; set; } = new HashSet<Comment>();
     public ICollection<Tag>? Tags { get; set; } = new HashSet<Tag>();

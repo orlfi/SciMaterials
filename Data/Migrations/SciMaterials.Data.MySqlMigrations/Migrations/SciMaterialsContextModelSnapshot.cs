@@ -106,6 +106,9 @@ namespace SciMaterials.Data.MySqlMigrations.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("ResourceType")
+                        .HasColumnType("int");
+
                     b.Property<string>("ShortInfo")
                         .HasColumnType("longtext");
 

@@ -13,7 +13,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-08-14 09:43:16",
-		"ShortLink": "https://host/link/flf39"
+		"ShortLink": "https://host/link/flf39",
+		"ResourceType": 0
 	},
 	{
 		"Id": "5A6CDAAA-28F9-3C64-73FF-743EED2AC150",
@@ -29,7 +30,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2023-03-26 04:49:57",
-		"ShortLink": "https://host/link/sar44"
+		"ShortLink": "https://host/link/sar44",
+		"ResourceType": 0
 	},
 	{
 		"Id": "67B29206-9460-A3A4-1A41-DCBEC56EC06E",
@@ -45,7 +47,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-05-11 19:59:16",
-		"ShortLink": "https://host/link/fkf34"
+		"ShortLink": "https://host/link/fkf34",
+		"ResourceType": 0
 	},
 	{
 		"Id": "E7D627EE-014C-4CF7-7377-69F6728C170C",
@@ -61,7 +64,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-09-02 22:35:03",
-		"ShortLink": "https://host/link/ljk43"
+		"ShortLink": "https://host/link/ljk43",
+		"ResourceType": 0
 	},
 	{
 		"Id": "A79D8495-3557-205E-25C6-16255343D976",
@@ -77,7 +81,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-09-04 22:49:44",
-		"ShortLink": "http://host/link/bcg28"
+		"ShortLink": "http://host/link/bcg28",
+		"ResourceType": 0
 	},
 	{
 		"Id": "F4B62FAB-DDCE-B866-EB87-14CEC7B29937",
@@ -93,7 +98,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2023-04-26 23:26:00",
-		"ShortLink": "http://host/link/kfd90"
+		"ShortLink": "http://host/link/kfd90",
+		"ResourceType": 0
 	},
 	{
 		"Id": "D42D7131-738F-B371-D448-7D661368443C",
@@ -109,7 +115,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-05-08 04:33:28",
-		"ShortLink": "https://host/link/ewq78"
+		"ShortLink": "https://host/link/ewq78",
+		"ResourceType": 0
 	},
 	{
 		"Id": "41C28DF4-30BC-8BA2-2C37-BFDF5022D200",
@@ -125,7 +132,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2023-01-03 22:08:41",
-		"ShortLink": "http://host/link/ide80"
+		"ShortLink": "http://host/link/ide80",
+		"ResourceType": 0
 	},
 	{
 		"Id": "48107C7D-76FE-6DCE-B55E-6D56B16B184A",
@@ -141,7 +149,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2021-11-08 04:17:47",
-		"ShortLink": "http://host/link/eiq08"
+		"ShortLink": "http://host/link/eiq08",
+		"ResourceType": 0
 	},
 	{
 		"Id": "51706ED3-48C3-E764-EAC2-5EA3F4782467",
@@ -157,7 +166,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-10-07 02:43:18",
-		"ShortLink": "https://host/link/ide56"
+		"ShortLink": "https://host/link/ide56",
+		"ResourceType": 0
 	},
 	{
 		"Id": "91E3FB4C-D42B-4336-C25E-84D5C204EEA4",
@@ -173,7 +183,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-06-11 13:14:31",
-		"ShortLink": "http://host/link/ghy89"
+		"ShortLink": "http://host/link/ghy89",
+		"ResourceType": 0
 	},
 	{
 		"Id": "E8AA9481-C6CD-1298-2B34-7077D85A98AA",
@@ -189,7 +200,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2023-09-27 08:34:13",
-		"ShortLink": "https://host/link/bcg28"
+		"ShortLink": "https://host/link/bcg28",
+		"ResourceType": 0
 	},
 	{
 		"Id": "EE43DBD9-9974-8E7E-A2E1-CD567A7E5829",
@@ -205,7 +217,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-02-16 17:18:33",
-		"ShortLink": "https://host/link/qcz01"
+		"ShortLink": "https://host/link/qcz01",
+		"ResourceType": 0
 	},
 	{
 		"Id": "2CAC3937-6483-E2A6-A605-8C20B2AD0BD2",
@@ -221,7 +234,8 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-10-10 14:44:44",
-		"ShortLink": "http://host/link/wer32"
+		"ShortLink": "http://host/link/wer32",
+		"ResourceType": 0
 	},
 	{
 		"Id": "4982ADD2-F5A8-C18F-637D-2CF73E1106C4",
@@ -237,6 +251,7 @@
 		"IsDeleted": "false",
 		"AntivirusScanStatus": 0,
 		"AntivirusScanDate": "2022-09-07 06:39:21",
-		"ShortLink": "https://host/link/kfd90"
+		"ShortLink": "https://host/link/kfd90",
+		"ResourceType": 0
 	}
 ]
