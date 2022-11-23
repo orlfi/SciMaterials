@@ -6,9 +6,7 @@ using SciMaterials.Contracts.Identity.API.Requests.Users;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 
-/// <summary>
-/// Тестовый контроллер с IdentityClient
-/// </summary>
+/// <summary>Тестовый контроллер с IdentityClient</summary>
 [ApiController]
 [Route("account_test/")]
 public class AccountTestController : Controller
