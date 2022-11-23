@@ -97,8 +97,6 @@ public class IdentityDatabaseManager : IDatabaseManager
     /// Инициализация базы данных с созданием ролей "супер админ" и "пользователь"
     /// Создание одной учетной записи "админа"
     /// </summary>
-    /// <param name="UserManager"></param>
-    /// <param name="RoleManager"></param>
     private async Task InitializeRolesAsync()
     {
         await CheckRoleAsync("admin").ConfigureAwait(false);
