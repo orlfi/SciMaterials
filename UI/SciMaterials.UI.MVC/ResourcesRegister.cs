@@ -31,6 +31,12 @@ using SciMaterials.Services.API.Services.Urls;
 using SciMaterials.Services.ShortLinks;
 using SciMaterials.UI.MVC.API.Filters;
 using SciMaterials.DAL.Resources.Contexts;
+using SciMaterials.DAL.Resources.Contracts.Entities;
+using SciMaterials.DAL.Resources.Contracts.Repositories;
+using SciMaterials.DAL.Resources.Contracts.Repositories.Files;
+using SciMaterials.DAL.Resources.Contracts.Repositories.Ratings;
+using SciMaterials.DAL.Resources.Contracts.Repositories.Users;
+using SciMaterials.DAL.Resources.Repositories.Files;
 using SciMaterials.DAL.Resources.Services;
 using SciMaterials.DAL.Resources.UnitOfWork;
 using SciMaterials.Data.MySqlMigrations;
@@ -44,6 +50,9 @@ using SciMaterials.WebApi.Clients.Files;
 using SciMaterials.WebApi.Clients.Tags;
 using SciMaterials.WebApi.Clients.Urls;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using SciMaterials.DAL.Resources.Repositories.Ratings;
+using SciMaterials.DAL.Resources.Repositories.Users;
+using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
 namespace SciMaterials.UI.MVC;
 
@@ -108,6 +117,18 @@ public static class ResourcesRegister
 
     public static IServiceCollection AddResourcesDataLayer(this IServiceCollection services)
     {
+        services
+           .AddScoped<IRepository<Category>, CategoryRepository>()
+           .AddScoped<IRepository<Comment>, CommentRepository>()
+           .AddScoped<IRepository<ContentType>, ContentTypeRepository>()
+           .AddScoped<IRepository<FileGroup>, FileGroupRepository>()
+           .AddScoped<IRepository<File>, FileRepository>()
+           .AddScoped<IRepository<Tag>, TagRepository>()
+           .AddScoped<IRepository<Url>, UrlRepository>()
+           .AddScoped<IRepository<Rating>, RatingRepository>()
+           .AddScoped<IRepository<Author>, AuthorRepository>()
+           .AddScoped<IRepository<User>, UserRepository>();
+
         services
             .AddScoped<ResourcesDatabaseManager>()
             .AddScoped<IUnitOfWork<SciMaterialsContext>, SciMaterialsFilesUnitOfWork>();
