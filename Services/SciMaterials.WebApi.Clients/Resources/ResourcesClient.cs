@@ -6,10 +6,10 @@ using SciMaterials.Contracts.WebApi.Clients.Tags;
 
 namespace SciMaterials.WebApi.Clients.Tags;
 
-public class TagsClient :
-    ApiModifiedClientWithAddBase<Guid, GetTagResponse, AddTagRequest, EditTagRequest>,
-    ITagsClient
+public class ResourcesClient :
+    ApiReadonlyClientBase<Guid, GetTagResponse>,
+    IResourcesClient
 {
-    public TagsClient(HttpClient httpClient, ILogger<TagsClient> logger) : base(httpClient, logger)
+    public ResourcesClient(HttpClient httpClient, ILogger<ResourcesClient> logger) : base(httpClient, logger)
         => _webApiRoute = WebApiRoute.Tags;
 }
