@@ -10,7 +10,7 @@ public static class FilesStorageActions
     public record struct DeleteFileResultAction(Guid Id);
 
     public static LoadFilesAction LoadFiles() => new();
-    public static LoadFilesResultAction LoadFilesResult(ImmutableArray<FileStorageState> files = default) => new(files);
+    public static LoadFilesResultAction LoadFilesResult(ImmutableArray<FileStorageState> files) => new(files);
     public static DeleteFileAction DeleteFile(Guid id) => new(id);
     public static DeleteFileResultAction DeleteFileResult(Guid id) => new(id);
 }

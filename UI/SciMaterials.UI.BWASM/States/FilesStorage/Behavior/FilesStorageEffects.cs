@@ -21,7 +21,7 @@ public class FilesStorageEffects
         var result = await _filesClient.GetAllAsync();
         if (!result.Succeeded)
         {
-            dispatcher.Dispatch(FilesStorageActions.LoadFilesResult());
+            dispatcher.Dispatch(FilesStorageActions.LoadFilesResult(ImmutableArray<FileStorageState>.Empty));
             return;
         }
 
