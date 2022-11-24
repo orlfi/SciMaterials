@@ -1,22 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.DTO.Urls;
-using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.API.Services.Urls;
 using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
-/// <summary> Service for working with authors. </summary>
+/// <summary> Service for working with urls. </summary>
 [ApiController]
 [Route(WebApiRoute.Urls)]
 public class UrlsController : ApiBaseController<UrlsController>
 {
-    private readonly IUrlService _authorService;
+    private readonly IUrlService _urlService;
 
-    public UrlsController(IUrlService authorService)
+    public UrlsController(IUrlService urlService)
     {
-        _authorService = authorService;
+        _urlService = urlService;
     }
 
     /// <summary> Get All Urls. </summary>
@@ -25,7 +24,7 @@ public class UrlsController : ApiBaseController<UrlsController>
     [ProducesDefaultResponseType(typeof(Result<IEnumerable<GetUrlResponse>>))]
     public async Task<IActionResult> GetAllAsync()
     {
-        var result = await _authorService.GetAllAsync();
+        var result = await _urlService.GetAllAsync();
         return Ok(result);
     }
 
@@ -35,7 +34,7 @@ public class UrlsController : ApiBaseController<UrlsController>
     [ProducesDefaultResponseType(typeof(Result<GetUrlResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var result = await _authorService.GetByIdAsync(id);
+        var result = await _urlService.GetByIdAsync(id);
         return Ok(result);
     }
 
@@ -46,7 +45,7 @@ public class UrlsController : ApiBaseController<UrlsController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> AddAsync([FromBody] AddUrlRequest request)
     {
-        var result = await _authorService.AddAsync(request);
+        var result = await _urlService.AddAsync(request);
         return Ok(result);
     }
 
@@ -57,7 +56,7 @@ public class UrlsController : ApiBaseController<UrlsController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> EditAsync([FromBody] EditUrlRequest request)
     {
-        var result = await _authorService.EditAsync(request);
+        var result = await _urlService.EditAsync(request);
         return Ok(result);
     }
 
@@ -68,7 +67,7 @@ public class UrlsController : ApiBaseController<UrlsController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var result = await _authorService.DeleteAsync(id);
+        var result = await _urlService.DeleteAsync(id);
         return Ok(result);
     }
 }

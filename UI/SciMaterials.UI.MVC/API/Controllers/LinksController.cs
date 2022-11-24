@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.ShortLinks;
-using SciMaterials.DAL.Models;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 

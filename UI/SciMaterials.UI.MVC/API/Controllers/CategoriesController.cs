@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
 using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.API.DTO.Categories;
 using SciMaterials.Contracts.API.Services.Categories;

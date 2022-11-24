@@ -7,16 +7,16 @@ using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
-/// <summary> Service for working with authors. </summary>
+/// <summary> Service for working with content types. </summary>
 [ApiController]
 [Route(WebApiRoute.ContentTypes)]
 public class ContentTypesController : ApiBaseController<ContentTypesController>
 {
-    private readonly IContentTypeService _authorService;
+    private readonly IContentTypeService _contentTypeService;
 
     public ContentTypesController(IContentTypeService authorService)
     {
-        _authorService = authorService;
+        _contentTypeService = authorService;
     }
 
     /// <summary> Get All ContentTypes. </summary>
@@ -25,7 +25,7 @@ public class ContentTypesController : ApiBaseController<ContentTypesController>
     [ProducesDefaultResponseType(typeof(Result<IEnumerable<GetContentTypeResponse>>))]
     public async Task<IActionResult> GetAllAsync()
     {
-        var result = await _authorService.GetAllAsync();
+        var result = await _contentTypeService.GetAllAsync();
         return Ok(result);
     }
 
@@ -35,7 +35,7 @@ public class ContentTypesController : ApiBaseController<ContentTypesController>
     [ProducesDefaultResponseType(typeof(Result<GetContentTypeResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var result = await _authorService.GetByIdAsync(id);
+        var result = await _contentTypeService.GetByIdAsync(id);
         return Ok(result);
     }
 
@@ -46,7 +46,7 @@ public class ContentTypesController : ApiBaseController<ContentTypesController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> AddAsync([FromBody] AddContentTypeRequest request)
     {
-        var result = await _authorService.AddAsync(request);
+        var result = await _contentTypeService.AddAsync(request);
         return Ok(result);
     }
 
@@ -57,7 +57,7 @@ public class ContentTypesController : ApiBaseController<ContentTypesController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> EditAsync([FromBody] EditContentTypeRequest request)
     {
-        var result = await _authorService.EditAsync(request);
+        var result = await _contentTypeService.EditAsync(request);
         return Ok(result);
     }
 
@@ -68,7 +68,7 @@ public class ContentTypesController : ApiBaseController<ContentTypesController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var result = await _authorService.DeleteAsync(id);
+        var result = await _contentTypeService.DeleteAsync(id);
         return Ok(result);
     }
 }

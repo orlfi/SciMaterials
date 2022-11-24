@@ -1,22 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.Authors;
 using SciMaterials.Contracts.API.DTO.Tags;
 using SciMaterials.Contracts.API.Services.Tags;
 using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.UI.MVC.API.Controllers;
 
-/// <summary> Service for working with authors. </summary>
+/// <summary> Service for working with tags. </summary>
 [ApiController]
 [Route(WebApiRoute.Tags)]
 public class TagsController : ApiBaseController<TagsController>
 {
-    private readonly ITagService _authorService;
+    private readonly ITagService _tagService;
 
-    public TagsController(ITagService authorService)
+    public TagsController(ITagService tagService)
     {
-        _authorService = authorService;
+        _tagService = tagService;
     }
 
     /// <summary> Get All Tags. </summary>
@@ -25,7 +24,7 @@ public class TagsController : ApiBaseController<TagsController>
     [ProducesDefaultResponseType(typeof(Result<IEnumerable<GetTagResponse>>))]
     public async Task<IActionResult> GetAllAsync()
     {
-        var result = await _authorService.GetAllAsync();
+        var result = await _tagService.GetAllAsync();
         return Ok(result);
     }
 
@@ -35,7 +34,7 @@ public class TagsController : ApiBaseController<TagsController>
     [ProducesDefaultResponseType(typeof(Result<GetTagResponse>))]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
     {
-        var result = await _authorService.GetByIdAsync(id);
+        var result = await _tagService.GetByIdAsync(id);
         return Ok(result);
     }
 
@@ -46,7 +45,7 @@ public class TagsController : ApiBaseController<TagsController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> AddAsync([FromBody] AddTagRequest request)
     {
-        var result = await _authorService.AddAsync(request);
+        var result = await _tagService.AddAsync(request);
         return Ok(result);
     }
 
@@ -57,7 +56,7 @@ public class TagsController : ApiBaseController<TagsController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> EditAsync([FromBody] EditTagRequest request)
     {
-        var result = await _authorService.EditAsync(request);
+        var result = await _tagService.EditAsync(request);
         return Ok(result);
     }
 
@@ -68,7 +67,7 @@ public class TagsController : ApiBaseController<TagsController>
     [ProducesDefaultResponseType(typeof(Guid))]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var result = await _authorService.DeleteAsync(id);
+        var result = await _tagService.DeleteAsync(id);
         return Ok(result);
     }
 }

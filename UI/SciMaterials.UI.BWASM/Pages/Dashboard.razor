@@ -29,13 +29,13 @@
 
 @code {
 
-	//[Inject] private IResourceClient UrlsClient { get; set; }
+	[Inject] private IResourceClient UrlsClient { get; set; }
 
 	private int _selected = 1;
 	private IEnumerable<GetResourceResponse> _data;
 
-	//private async Task ServerLoad()
-	//{
-	//	_data 
-	//}
+	private async Task LoadAsync()
+	{
+		_data 
+	}
 }

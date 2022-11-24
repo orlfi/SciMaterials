@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddHttpClient<IContentTypesClient, ContentTypesClient>("ContentTypesClient", c => c.BaseAddress = apiAddress);
         services.AddHttpClient<ITagsClient, TagsClient>("TagsClient", c => c.BaseAddress = apiAddress);
         services.AddHttpClient<IUrlsClient, UrlsClient>("UrlsClient", c => c.BaseAddress = apiAddress);
+        services.AddHttpClient<IResourcesClient, ResourcesClient>("ResourcesClient", c => c.BaseAddress = apiAddress);
         return services;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SciMaterials.Contracts.API.Constants;
-using SciMaterials.Contracts.API.DTO.Authors;
 using SciMaterials.Contracts.API.DTO.Comments;
 using SciMaterials.Contracts.API.Services.Comments;
 using SciMaterials.Contracts.Result;
