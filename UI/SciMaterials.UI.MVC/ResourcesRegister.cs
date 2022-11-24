@@ -11,6 +11,7 @@ using SciMaterials.Contracts.API.Services.Tags;
 using SciMaterials.Contracts.API.Services.Urls;
 using SciMaterials.Contracts.API.Settings;
 using SciMaterials.Contracts.ShortLinks;
+using SciMaterials.Contracts.ShortLinks.Settings;
 using SciMaterials.Contracts.WebApi.Clients.Categories;
 using SciMaterials.Contracts.WebApi.Clients.Comments;
 using SciMaterials.Contracts.WebApi.Clients.ContentTypes;
@@ -41,6 +42,8 @@ using SciMaterials.WebApi.Clients.ContentTypes;
 using SciMaterials.WebApi.Clients.Files;
 using SciMaterials.WebApi.Clients.Tags;
 
+using Swashbuckle.AspNetCore.SwaggerGen;
+
 namespace SciMaterials.UI.MVC;
 
 public static class ResourcesRegister
@@ -54,20 +57,13 @@ public static class ResourcesRegister
         services.AddHttpClient<ITagsClient, TagsClient>("FilesClient", c => c.BaseAddress = apiAddress);
         return services;
     }
-    public static IServiceCollection AddRepositoryServices(this IServiceCollection services)
-    {
-        services.AddScoped<IUnitOfWork<SciMaterialsContext>, SciMaterialsFilesUnitOfWork>();
-        return services;
-    }
 
-    public static IServiceCollection AddDatabaseProviders(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddResourcesDatabaseProviders(this IServiceCollection services, IConfiguration configuration)
     {
-        var dbSettings = configuration.GetSection("DbSettings")
-            .Get<DatabaseSettings>();
+        var dbSettings = configuration.GetSection("ResourcesDatabase").Get<DatabaseSettings>();
 
         var providerName = dbSettings.GetProviderName();
-        var connectionString = configuration.GetSection("DbSettings").GetConnectionString(dbSettings.Provider);
+        var connectionString = configuration.GetSection("ResourcesDatabase").GetConnectionString(dbSettings.Provider);
 
         switch (providerName.ToLower())
         {
@@ -90,14 +86,13 @@ public static class ResourcesRegister
         return services;
     }
 
-    public static IServiceCollection AddDatabaseServices(this IServiceCollection services) =>
-        services.AddTransient<IDatabaseManager, ResourcesDatabaseManager>();
-
-    public static async Task InitializeDbAsync(this IApplicationBuilder app, IConfiguration configuration)
+    public static async Task InitializeResourcesDatabaseAsync(this IApplicationBuilder app)
     {
         await using var scope = app.ApplicationServices.CreateAsyncScope();
 
-        var db_setting = configuration.GetSection("DbSettings").Get<DatabaseSettings>();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+
+        var db_setting = configuration.GetSection("ResourcesDatabase").Get<DatabaseSettings>();
 
         var manager = scope.ServiceProvider.GetRequiredService<IDatabaseManager>();
 
@@ -108,39 +103,47 @@ public static class ResourcesRegister
         if (db_setting.UseDataSeeder) await manager.SeedDatabaseAsync();
     }
 
-    public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddResourcesDataLayer(this IServiceCollection services)
     {
-        services.AddScoped<IFileStore, FileSystemStore>();
-        services.AddScoped<IFileService, FileService>();
+        services
+            .AddScoped<ResourcesDatabaseManager>()
+            .AddScoped<IUnitOfWork<SciMaterialsContext>, SciMaterialsFilesUnitOfWork>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddResourcesApiServices(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddMappings();
+
+        services
+            .Configure<LinkShortCutOptions>(configuration.GetSection(LinkShortCutOptions.SectionName))
+            .AddScoped<ILinkShortCutService, LinkShortCutService>()
+            .AddScoped<ILinkReplaceService, LinkReplaceService>();
+
+        services
+            .AddScoped<IFileStore, FileSystemStore>()
+            .AddScoped<IFileService, FileService>();
+
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IAuthorService, AuthorService>();
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IContentTypeService, ContentTypeService>();
         services.AddScoped<ITagService, TagService>();
+
         services.AddScoped<IUrlService, UrlService>();
-        services.AddScoped<IUrlService, UrlService>();
-        services.AddScoped<ILinkReplaceService, LinkReplaceService>();
-        services.AddScoped<ILinkShortCutService, LinkShortCutService>();
-        services.AddRepositoryServices();
-        services.AddDatabaseServices();
-        services.AddMappings();
 
         return services;
     }
 
-    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    public static void AddFileUploadFilter(this SwaggerGenOptions options)
     {
-        services.AddSwaggerGen(options =>
-        {
-            options.OperationFilter<FileUploadFilter>();
-        });
-
-        return services;
+        options.OperationFilter<FileUploadFilter>();
     }
 
-    public static IServiceCollection ConfigureApplication(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection ConfigureFilesUploadSupport(this IServiceCollection services, IConfiguration config)
     {
-        var api_settings = config.GetSection(ApiSettings.SectionName);
+        var api_settings = config.GetSection("FilesApiSettings");
 
         services
             .Configure<ApiSettings>(api_settings)

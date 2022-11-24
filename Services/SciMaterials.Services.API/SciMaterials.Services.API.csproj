@@ -16,7 +16,6 @@
   </PropertyGroup>-->
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\SciMaterials.Services.Database\SciMaterials.Services.Database.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts.API.Mapping\SciMaterials.Contracts.API.Mapping.csproj" />
     <ProjectReference Include="..\SciMaterials.Contracts.API\SciMaterials.Contracts.API.csproj" />
     <ProjectReference Include="..\SciMaterials.Services.ShortLinks\SciMaterials.Services.ShortLinks.csproj" />
