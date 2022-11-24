@@ -30,7 +30,9 @@ using SciMaterials.WebApi.Clients.Comments;
 using SciMaterials.Contracts.WebApi.Clients.ContentTypes;
 using SciMaterials.WebApi.Clients.ContentTypes;
 using SciMaterials.Contracts.WebApi.Clients.Tags;
+using SciMaterials.Contracts.WebApi.Clients.Urls;
 using SciMaterials.WebApi.Clients.Tags;
+using SciMaterials.WebApi.Clients.Urls;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -53,6 +55,7 @@ builder.Services
     .AddApiClient<IContentTypesClient, ContentTypesClient>(apiRoot)
     .AddApiClient<ITagsClient, TagsClient>(apiRoot)
     .AddApiClient<IAuthorsClient, AuthorsClient>(apiRoot)
+    .AddApiClient<IUrlsClient, UrlsClient>(apiRoot)
 
     .AddApiClient<IIdentityClient, IdentityClient>(apiRoot, ClientConfiguration)
     .AddApiClient<IUserClient, IdentityClient>(apiRoot, ClientConfiguration)
