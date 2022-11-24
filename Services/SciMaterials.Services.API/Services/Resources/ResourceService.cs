@@ -10,9 +10,9 @@ using SciMaterials.DAL.Models.Base;
 
 namespace SciMaterials.Services.API.Services.Resources;
 
-public class ResourcesService : ApiServiceBase, IResourceService
+public class ResourceService : ApiServiceBase, IResourceService
 {
-    public ResourcesService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<ResourcesService> logger)
+    public ResourceService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<ResourceService> logger)
         : base(unitOfWork, mapper, logger) { }
 
     public async Task<Result<IEnumerable<GetResourceResponse>>> GetAllAsync(CancellationToken Cancel = default)

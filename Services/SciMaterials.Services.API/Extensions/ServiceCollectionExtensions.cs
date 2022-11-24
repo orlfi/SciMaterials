@@ -20,6 +20,7 @@ using SciMaterials.Contracts.API.Services.Urls;
 using SciMaterials.Services.API.Services.Urls;
 using SciMaterials.Contracts.ShortLinks;
 using SciMaterials.Services.ShortLinks;
+using SciMaterials.Services.API.Services.Resources;
 
 namespace SciMaterials.Services.API.Extensions;
 
@@ -38,6 +39,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUrlService, UrlService>();
         services.AddScoped<ILinkReplaceService, LinkReplaceService>();
         services.AddScoped<ILinkShortCutService, LinkShortCutService>();
+        services.AddScoped<IResourceService, ResourceService>();
         services.AddRepositoryServices();
         services.AddDatabaseServices();
         services.AddMappings();

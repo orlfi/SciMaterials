@@ -1,14 +1,17 @@
 using Microsoft.Extensions.DependencyInjection;
+
 using SciMaterials.Contracts.WebApi.Clients.Categories;
 using SciMaterials.Contracts.WebApi.Clients.Comments;
 using SciMaterials.Contracts.WebApi.Clients.ContentTypes;
 using SciMaterials.Contracts.WebApi.Clients.Files;
+using SciMaterials.Contracts.WebApi.Clients.Resources;
 using SciMaterials.Contracts.WebApi.Clients.Tags;
 using SciMaterials.Contracts.WebApi.Clients.Urls;
 using SciMaterials.WebApi.Clients.Categories;
 using SciMaterials.WebApi.Clients.Comments;
 using SciMaterials.WebApi.Clients.ContentTypes;
 using SciMaterials.WebApi.Clients.Files;
+using SciMaterials.WebApi.Clients.Resources;
 using SciMaterials.WebApi.Clients.Tags;
 using SciMaterials.WebApi.Clients.Urls;
 

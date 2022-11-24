@@ -1,7 +1,7 @@
-﻿using SciMaterials.Contracts.API.DTO.Tags;
+﻿using SciMaterials.Contracts.API.DTO.Resources;
 
-namespace SciMaterials.Contracts.WebApi.Clients.Tags;
+namespace SciMaterials.Contracts.WebApi.Clients.Resources;
 
-public interface IResourcesClient : IApiReadonlyClient<Guid, GetTagResponse>
+public interface IResourcesClient : IApiReadonlyClient<Guid, GetResourceResponse>
 {
 }

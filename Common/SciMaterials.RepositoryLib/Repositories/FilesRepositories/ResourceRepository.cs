@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models.Base;
 
@@ -24,55 +25,42 @@ public class ResourceRepository : IResourceRepository
         _logger.LogTrace($"Логгер встроен в {nameof(ResourceRepository)}");
         _context = context;
     }
-
-    public void Add(Resource entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task AddAsync(Resource entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Delete(Resource entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Delete(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(Resource entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(Guid id)
-    {
-        throw new NotImplementedException();
-    }
-
     public List<Resource>? GetAll(bool disableTracking = true, bool include = false)
     {
-        throw new NotImplementedException();
+        var query = _context.Set<Resource>()
+            .Where(f => !f.IsDeleted);
+
+        if (include)
+            query = query
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return query.ToList();
     }
 
-    public Task<List<Resource>?> GetAllAsync(bool disableTracking = true, bool include = false)
+    public async Task<List<Resource>?> GetAllAsync(bool disableTracking = true, bool include = false)
     {
-        throw new NotImplementedException();
-    }
+        var query = _context.Set<Resource>()
+            .Where(f => !f.IsDeleted);
 
-    public Resource? GetByHash(string hash, bool disableTracking = true, bool include = false)
-    {
-        throw new NotImplementedException();
-    }
+        if (include)
+            query = query              
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
 
-    public Task<Resource?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false)
-    {
-        throw new NotImplementedException();
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query.ToListAsync();
     }
 
     public Resource? GetById(Guid id, bool disableTracking = true, bool include = false)
@@ -105,12 +93,70 @@ public class ResourceRepository : IResourceRepository
         throw new NotImplementedException();
     }
 
-    public List<Resource>? GetPage(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public List<Resource>? GetPage(int pageNumber, int pageSize, bool disableTracking = true, bool include = false)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<Resource>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async  Task<List<Resource>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    {
+        IQueryable<Resource> query = _context.Set<Resource>()
+            .Where(f => !f.IsDeleted);
+
+        if (include)
+            query = query
+                .Include(f => f.Categories)
+                .Include(f => f.Author)
+                .Include(f => f.Comments)
+                .Include(f => f.Tags)
+                .Include(f => f.Ratings);
+
+        if (disableTracking)
+            query = query.AsNoTracking();
+
+        return await query
+            .Skip((pageNumb - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+    }
+
+
+    public void Add(Resource entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task AddAsync(Resource entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Delete(Resource entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Delete(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(Resource entity)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Resource? GetByHash(string hash, bool disableTracking = true, bool include = false)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Resource?> GetByHashAsync(string hash, bool disableTracking = true, bool include = false)
     {
         throw new NotImplementedException();
     }

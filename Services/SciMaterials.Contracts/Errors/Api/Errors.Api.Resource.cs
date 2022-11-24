@@ -11,6 +11,7 @@ public static partial class Errors
         public static class Resource
         {
             public static readonly Error NotFound = new("API700", "Resource not found");
+            public static readonly Error PageParametersValidationError = new("API713", "Resource page parameters are not valid");
         }
     }
 }

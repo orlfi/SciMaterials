@@ -1,41 +1,76 @@
 ﻿@page "/dashboard"
 @using SciMaterials.Contracts.API.DTO.Resources;
+@using SciMaterials.Contracts.WebApi.Clients.Resources;
 @*<div id="unique_id_scroll_section" class="ma-0" style="height:800px;overflow: auto;">*@
+@if (_data is null)
+{
+    <p>Loading...</p>
+}
+else
+{
 <MudGrid Spacing="3" Justify="Justify.FlexStart" Class="pb-5">
-	@for (int i = 0; i < 20; i++)
+	@foreach (GetResourceResponse item in _data)
 	{
-		<MudItem>
+		<MudItem xs=12 sm=6 md=4 lg=3 xl=2>
 			<MudCard>
 				<MudCardHeader>
 					<CardHeaderContent>
-						<MudText Typo="Typo.h6">The Story</MudText>
+							<div class="d-flex gap-1">
+								<MudText Class="flex-1 d-flex" Typo="Typo.h6">@item.Name</MudText>
+								@switch(item.ResourceType)
+								{
+									case Domain.Enums.ResourceType.File:
+										<MudIcon Class="flex-none d-flex" Icon="@Icons.Material.Filled.FilePresent" Title = "File" />
+										break;
+									case Domain.Enums.ResourceType.Url:
+										<MudIcon Class = "flex-none d-flex" Icon = "@Icons.Material.Filled.Link" Title = "Url" />
+										break;
+									case Domain.Enums.ResourceType.FileGroup:
+										<MudIcon Class = "flex-none d-flex" Icon = "@Icons.Material.Filled.Collections" Title = "File group" />
+										break;
+								}
+							</div>
 					</CardHeaderContent>
-					<CardHeaderActions>
+@*					<CardHeaderActions>
 						<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
 					</CardHeaderActions>
-				</MudCardHeader>
-				<MudCardContent>
-					<MudText>This day everything happend.</MudText>
-					<MudText Class="w-30" Typo="Typo.body2">The quick, brown fox jumps over a lazy dog.</MudText>
+*@				</MudCardHeader>
+					<MudCardContent>
+						<MudText class="resource-card-description">@item.ShortInfo+"csdds dsiv sdv woirowi oi  or boer boier ober ob eor bo   bioerobi erob jeroi movoiweviwn o voiw voiwevowe   voiwjeoivweoijvoiwejvijwei wovi weovjwoeiv we"</MudText>
+						@*<MudText Class="w-30" Typo="Typo.body2"></MudText>*@
 				</MudCardContent>
 				<MudCardActions>
+			        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default" />
+					<MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
+					<MudSpacer />
 					<MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
 				</MudCardActions>
 			</MudCard>
 		</MudItem>
 	}
 </MudGrid>
-<MudPagination Color="Color.Primary" Count="4" @bind-Selected="@_selected" Class="d-flex justify-center" />
+	<MudPagination Color="Color.Primary" Count="4" @bind-Selected="@_selected" Class="d-flex justify-center pb-5" />
+}
 
 @code {
 
-	[Inject] private IResourceClient UrlsClient { get; set; }
-
+	[Inject] private IResourcesClient ResourcesClient { get; set; }
+	private const int m_pageSize = 30;
 	private int _selected = 1;
 	private IEnumerable<GetResourceResponse> _data;
 
 	private async Task LoadAsync()
 	{
-		_data 
+		var result = await ResourcesClient.GetAllAsync();
+		if (result.Succeeded && result.Data is { })
+		{
+			_data = result.Data;
+		}
+
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await LoadAsync();
 	}
 }
