@@ -97,7 +97,7 @@ public static class ResourcesRegister
 
         var db_setting = configuration.GetSection("ResourcesDatabase").Get<DatabaseSettings>();
 
-        var manager = scope.ServiceProvider.GetRequiredService<IDatabaseManager>();
+        var manager = scope.ServiceProvider.GetRequiredService<ResourcesDatabaseManager>();
 
         if (db_setting.RemoveAtStart) await manager.DeleteDatabaseAsync();
 
