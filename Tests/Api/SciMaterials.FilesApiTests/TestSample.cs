@@ -28,6 +28,7 @@ public class TestSample : IAsyncLifetime
                        .AddDbContext<SciMaterialsContext>(opt => opt
                            .UseInMemoryDatabase("SciMaterialDB")
                            .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning))
+                           .EnableSensitiveDataLogging()
                         )
                        .RemoveAll<AuthDbContext>()
                        .RemoveAll<DbContextOptions<AuthDbContext>>()

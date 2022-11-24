@@ -12,27 +12,27 @@ namespace SciMaterials.Services.API.Services.Categories;
 
 public class CategoryService : ApiServiceBase, ICategoryService
 {
-    public CategoryService(IUnitOfWork<SciMaterialsContext> unitOfWork, IMapper mapper, ILogger<CategoryService> logger)
-        : base(unitOfWork, mapper, logger) { }
+    public CategoryService(IUnitOfWork<SciMaterialsContext> Database, IMapper mapper, ILogger<CategoryService> logger)
+        : base(Database, mapper, logger) { }
 
     public async Task<Result<IEnumerable<GetCategoryResponse>>> GetAllAsync(CancellationToken Cancel = default)
     {
-        var categories = await _unitOfWork.GetRepository<Category>().GetAllAsync();
-        var result = _mapper.Map<List<GetCategoryResponse>>(categories);
+        var categories = await Database.GetRepository<Category>().GetAllAsync();
+        var result = _Mapper.Map<List<GetCategoryResponse>>(categories);
         return result;
     }
 
-    public async Task<PageResult<GetCategoryResponse>> GetPageAsync(int pageNumber, int pageSize, CancellationToken Cancel = default)
+    public async Task<PageResult<GetCategoryResponse>> GetPageAsync(int PageNumber, int PageSize, CancellationToken Cancel = default)
     {
-        var categories = await _unitOfWork.GetRepository<Category>().GetPageAsync(pageNumber, pageSize);
-        var totalCount = await _unitOfWork.GetRepository<Category>().GetCountAsync();
-        var result = _mapper.Map<List<GetCategoryResponse>>(categories);
+        var categories = await Database.GetRepository<Category>().GetPageAsync(PageNumber, PageSize);
+        var totalCount = await Database.GetRepository<Category>().GetCountAsync();
+        var result = _Mapper.Map<List<GetCategoryResponse>>(categories);
         return (result, totalCount);
     }
 
     public async Task<Result<GetCategoryResponse>> GetByIdAsync(Guid id, CancellationToken Cancel = default)
     {
-        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is not { } Category)
+        if (await Database.GetRepository<Category>().GetByIdAsync(id) is not { } Category)
         {
             return LoggedError<GetCategoryResponse>(
                 Errors.Api.Category.NotFound,
@@ -40,16 +40,16 @@ public class CategoryService : ApiServiceBase, ICategoryService
                 id);
         }
 
-        var result = _mapper.Map<GetCategoryResponse>(Category);
+        var result = _Mapper.Map<GetCategoryResponse>(Category);
         return result;
     }
 
     public async Task<Result<Guid>> AddAsync(AddCategoryRequest request, CancellationToken Cancel = default)
     {
-        var Category = _mapper.Map<Category>(request);
-        await _unitOfWork.GetRepository<Category>().AddAsync(Category);
+        var Category = _Mapper.Map<Category>(request);
+        await Database.GetRepository<Category>().AddAsync(Category);
 
-        if (await _unitOfWork.SaveContextAsync() == 0)
+        if (await Database.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
                 Errors.Api.Category.Add,
@@ -62,7 +62,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
 
     public async Task<Result<Guid>> EditAsync(EditCategoryRequest request, CancellationToken Cancel = default)
     {
-        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(request.Id) is not { } existedCategory)
+        if (await Database.GetRepository<Category>().GetByIdAsync(request.Id) is not { } existedCategory)
         {
             return LoggedError<Guid>(
                 Errors.Api.Category.NotFound,
@@ -70,10 +70,10 @@ public class CategoryService : ApiServiceBase, ICategoryService
                 request.Name);
         }
 
-        var Category = _mapper.Map(request, existedCategory);
-        await _unitOfWork.GetRepository<Category>().UpdateAsync(Category);
+        var Category = _Mapper.Map(request, existedCategory);
+        await Database.GetRepository<Category>().UpdateAsync(Category);
 
-        if (await _unitOfWork.SaveContextAsync() == 0)
+        if (await Database.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
                 Errors.Api.Category.Update,
@@ -86,7 +86,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
 
     public async Task<Result<Guid>> DeleteAsync(Guid id, CancellationToken Cancel = default)
     {
-        if (await _unitOfWork.GetRepository<Category>().GetByIdAsync(id) is not { } Category)
+        if (await Database.GetRepository<Category>().GetByIdAsync(id) is not { } Category)
         {
             return LoggedError<Guid>(
                 Errors.Api.Category.NotFound,
@@ -94,9 +94,9 @@ public class CategoryService : ApiServiceBase, ICategoryService
                 id);
         }
 
-        await _unitOfWork.GetRepository<Category>().DeleteAsync(Category);
+        await Database.GetRepository<Category>().DeleteAsync(Category);
 
-        if (await _unitOfWork.SaveContextAsync() == 0)
+        if (await Database.SaveContextAsync() == 0)
         {
             return LoggedError<Guid>(
                 Errors.Api.Category.Delete,

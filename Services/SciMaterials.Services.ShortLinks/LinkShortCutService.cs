@@ -65,7 +65,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         }
 
         var shortLink = await GetMinShortLinkAsync(link.Hash, _hashLength, Cancel);
-        _logger.LogInformation("ShortLink {shortLink} for adress {sourceAddress} added", shortLink, sourceAddress);
+        _Logger.LogInformation("ShortLink {shortLink} for adress {sourceAddress} added", shortLink, sourceAddress);
         return shortLink;
     }
 
@@ -78,7 +78,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         var hash = shortLink[(shortLink.LastIndexOf('/') + 1)..];
         if (hash.Length < _hashLength)
         {
-            _logger.LogError("Short link {shortLink} hash length must be greater than or equal to {hashLength}", shortLink, _hashLength);
+            _Logger.LogError("Short link {shortLink} hash length must be greater than or equal to {hashLength}", shortLink, _hashLength);
             return Result<String>.Failure(Errors.ShortLink.HashNotFound);
 
         }
@@ -86,7 +86,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
         var link = await _db.Links.SingleOrDefaultAsync(l => l.Hash.StartsWith(hash));
         if (link is not { })
         {
-            _logger.LogError("Short link hash {hash} not found", hash);
+            _Logger.LogError("Short link hash {hash} not found", hash);
             return Result<String>.Failure(Errors.ShortLink.HashNotFound);
         }
 
@@ -123,7 +123,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
             }
             catch (DbUpdateConcurrencyException e)
             {
-                _logger.LogWarning(
+                _Logger.LogWarning(
                     "Error {0} of concurrent write access to the database when updating the record with id: {linkId}",
                     i + 1, id);
 
@@ -131,14 +131,14 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
             }
             catch (Exception ex)
             {
-                _logger.LogError(
+                _Logger.LogError(
                     ex,
                     "Register link with id {id} error",
                     id);
                 return Result.Failure(Errors.ShortLink.RegisterLinkAccess);
             }
         }
-        _logger.LogError("Link with id {linkId} concurrent update try count expired", id);
+        _Logger.LogError("Link with id {linkId} concurrent update try count expired", id);
         return Result.Failure(Errors.ShortLink.СoncurrentTryCountExpired);
     }
 
@@ -157,7 +157,7 @@ public class LinkShortCutService : ServiceBase, ILinkShortCutService
                     hash);
             case 1:
                 var address = _linkGenerator.GetUriByAction(_httpContext, "GetById", "Links", new { hash = shortLink }, _httpContext.Request.Scheme);
-                _logger.LogDebug("Found short link with minimal length: {address}", address);
+                _Logger.LogDebug("Found short link with minimal length: {address}", address);
                 return address;
         }
 
