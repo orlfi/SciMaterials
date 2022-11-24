@@ -32,7 +32,9 @@ public class SciMaterialsContext : DbContext
         modelBuilder.Entity<Link>(link =>
         {
             link.Property(e => e.AccessCount).IsConcurrencyToken();
-            link.Property(e => e.LastAccess).IsConcurrencyToken();
+            link.Property(e => e.LastAccess)
+                .HasColumnType("datetime")
+                .IsConcurrencyToken();
             link.Property(e => e.RowVersion).IsRowVersion();
         });
 
