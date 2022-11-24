@@ -1,5 +1,5 @@
-﻿using System.Buffers.Text;
-using System.Buffers;
+﻿using System.Buffers;
+using System.Buffers.Text;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using SciMaterials.DAL.Resources.Contracts.Entities;
 using File = SciMaterials.DAL.Resources.Contracts.Entities.File;
 
-namespace SciMaterials.DAL.Resources.Resources;
+namespace SciMaterials.DAL.Resources.TestData;
 
 internal static class AssemblyResources
 {

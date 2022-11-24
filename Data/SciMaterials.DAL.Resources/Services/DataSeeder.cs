@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SciMaterials.DAL.Resources.Contexts;
-using SciMaterials.DAL.Resources.Resources;
+using SciMaterials.DAL.Resources.TestData;
 
 namespace SciMaterials.DAL.Resources.Services;
 
