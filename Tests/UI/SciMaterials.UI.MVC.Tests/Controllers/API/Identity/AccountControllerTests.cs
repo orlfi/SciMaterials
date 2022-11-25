@@ -7,8 +7,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-
-using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.Identity.API;
 using SciMaterials.Contracts.Identity.API.Requests.Users;
 using SciMaterials.Contracts.Identity.API.Responses.User;
 using SciMaterials.DAL.AUTH.Context;

@@ -1,4 +1,4 @@
-namespace SciMaterials.Contracts.API.Constants;
+namespace SciMaterials.Contracts.Identity.API;
 
 /// <summary>Маршруты AuthApi</summary>
 public static class AuthApiRoute

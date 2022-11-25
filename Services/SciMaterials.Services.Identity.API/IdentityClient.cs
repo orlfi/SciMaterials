@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using SciMaterials.Contracts.API.Constants;
 using SciMaterials.Contracts.Identity.API;
 using SciMaterials.Contracts.Identity.API.Requests.Roles;
 using SciMaterials.Contracts.Identity.API.Requests.Users;

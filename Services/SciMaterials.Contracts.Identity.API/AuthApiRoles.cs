@@ -1,4 +1,4 @@
-namespace SciMaterials.Contracts.API.Constants;
+namespace SciMaterials.Contracts.Identity.API;
 
 /// <summary>Названия ролей в системе аутентификации</summary>
 public static class AuthApiRoles

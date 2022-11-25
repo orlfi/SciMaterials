@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using SciMaterials.Contracts.API.Constants;
+using SciMaterials.Contracts.Identity.API;
 using SciMaterials.DAL.AUTH.Contracts;
 
 namespace SciMaterials.UI.MVC.Identity.Services;
