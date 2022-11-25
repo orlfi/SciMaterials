@@ -92,7 +92,7 @@ public class IdentityAuthenticationService : IAuthenticationService
     public async Task<bool> IsCurrentUser(string userEmail)
     {
         var currentAuthenticationState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        var identifier = currentAuthenticationState.User.FindFirstValue(ClaimTypes.Email);
+        var identifier = currentAuthenticationState.User.FindFirst(ClaimTypes.Email)?.Value;
         return userEmail == identifier;
     }
 
