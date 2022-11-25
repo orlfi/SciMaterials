@@ -1,76 +1,23 @@
 ﻿@page "/dashboard"
-@using SciMaterials.Contracts.API.DTO.Resources;
-@using SciMaterials.Contracts.WebApi.Clients.Resources;
-@*<div id="unique_id_scroll_section" class="ma-0" style="height:800px;overflow: auto;">*@
-@if (_data is null)
-{
-    <p>Loading...</p>
-}
-else
-{
-<MudGrid Spacing="3" Justify="Justify.FlexStart" Class="pb-5">
-	@foreach (GetResourceResponse item in _data)
-	{
-		<MudItem xs=12 sm=6 md=4 lg=3 xl=2>
-			<MudCard>
-				<MudCardHeader>
-					<CardHeaderContent>
-							<div class="d-flex gap-1">
-								<MudText Class="flex-1 d-flex" Typo="Typo.h6">@item.Name</MudText>
-								@switch(item.ResourceType)
-								{
-									case Domain.Enums.ResourceType.File:
-										<MudIcon Class="flex-none d-flex" Icon="@Icons.Material.Filled.FilePresent" Title = "File" />
-										break;
-									case Domain.Enums.ResourceType.Url:
-										<MudIcon Class = "flex-none d-flex" Icon = "@Icons.Material.Filled.Link" Title = "Url" />
-										break;
-									case Domain.Enums.ResourceType.FileGroup:
-										<MudIcon Class = "flex-none d-flex" Icon = "@Icons.Material.Filled.Collections" Title = "File group" />
-										break;
-								}
-							</div>
-					</CardHeaderContent>
-@*					<CardHeaderActions>
-						<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default" />
-					</CardHeaderActions>
-*@				</MudCardHeader>
-					<MudCardContent>
-						<MudText class="resource-card-description">@item.ShortInfo+"csdds dsiv sdv woirowi oi  or boer boier ober ob eor bo   bioerobi erob jeroi movoiweviwn o voiw voiwevowe   voiwjeoivweoijvoiwejvijwei wovi weovjwoeiv we"</MudText>
-						@*<MudText Class="w-30" Typo="Typo.body2"></MudText>*@
-				</MudCardContent>
-				<MudCardActions>
-			        <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Default" />
-					<MudIconButton Icon="@Icons.Material.Filled.Share" Color="Color.Default" />
-					<MudSpacer />
-					<MudButton Variant="Variant.Text" Color="Color.Primary">Read More</MudButton>
-				</MudCardActions>
-			</MudCard>
-		</MudItem>
-	}
-</MudGrid>
-	<MudPagination Color="Color.Primary" Count="4" @bind-Selected="@_selected" Class="d-flex justify-center pb-5" />
-}
-
+@using SciMaterials.UI.BWASM.Components.Resources
+<ResurcesGridView @ref="_resurcesGridView" PageNumber="@_resourcesPageNumber" TotalPagesCountChanged="OnTotalPagesCountChanged" />
+<MudPagination Color="Color.Primary" @bind-Count="_totalPagesCount" SelectedChanged="PageChanged" Class="d-flex justify-center pb-5" />
+<MudText Align="Align.Center">Total pages: @_totalPagesCount</MudText>
 @code {
 
-	[Inject] private IResourcesClient ResourcesClient { get; set; }
-	private const int m_pageSize = 30;
-	private int _selected = 1;
-	private IEnumerable<GetResourceResponse> _data;
-
-	private async Task LoadAsync()
+	private int _resourcesPageNumber { get; set; } = 1;
+	private int _totalPagesCount = 0;
+	private ResurcesGridView _resurcesGridView;
+	
+	private async Task PageChanged(int pageNumber)
 	{
-		var result = await ResourcesClient.GetAllAsync();
-		if (result.Succeeded && result.Data is { })
-		{
-			_data = result.Data;
-		}
-
+		_resourcesPageNumber = pageNumber;
+		await _resurcesGridView.ServerLoadAsync();
 	}
-
-	protected override async Task OnInitializedAsync()
+	
+	private void OnTotalPagesCountChanged(int count)
 	{
-		await LoadAsync();
+		_totalPagesCount=count;
+		StateHasChanged();
 	}
 }

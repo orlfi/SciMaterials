@@ -27,7 +27,7 @@ public class ResourceService : ApiServiceBase, IResourceService
         var resources = await _unitOfWork.GetRepository<Resource>().GetPageAsync(pageNumber, pageSize);
         var totalCount = await _unitOfWork.GetRepository<Resource>().GetCountAsync();
         var result = _mapper.Map<List<GetResourceResponse>>(resources);
-        return (result, totalCount);
+        return PageResult<GetResourceResponse>.Success(result, totalCount, pageNumber, pageSize);
     }
 
     public async Task<Result<GetResourceResponse>> GetByIdAsync(Guid id, CancellationToken Cancel = default)

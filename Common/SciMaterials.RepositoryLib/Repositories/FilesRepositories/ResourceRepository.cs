@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using SciMaterials.DAL.Contexts;
 using SciMaterials.DAL.Models.Base;
 
@@ -50,7 +51,7 @@ public class ResourceRepository : IResourceRepository
             .Where(f => !f.IsDeleted);
 
         if (include)
-            query = query              
+            query = query
                 .Include(f => f.Categories)
                 .Include(f => f.Author)
                 .Include(f => f.Comments)
@@ -88,9 +89,10 @@ public class ResourceRepository : IResourceRepository
         throw new NotImplementedException();
     }
 
-    public Task<int> GetCountAsync()
+    public async Task<int> GetCountAsync()
     {
-        throw new NotImplementedException();
+        var result = await _context.Set<Resource>().CountAsync();
+        return result;
     }
 
     public List<Resource>? GetPage(int pageNumber, int pageSize, bool disableTracking = true, bool include = false)
@@ -98,7 +100,7 @@ public class ResourceRepository : IResourceRepository
         throw new NotImplementedException();
     }
 
-    public async  Task<List<Resource>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
+    public async Task<List<Resource>?> GetPageAsync(int pageNumb, int pageSize, bool disableTracking = true, bool include = false)
     {
         IQueryable<Resource> query = _context.Set<Resource>()
             .Where(f => !f.IsDeleted);
