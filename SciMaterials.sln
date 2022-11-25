@@ -95,6 +95,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Identity", "Identity", "{FD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{8D15183D-07CF-4657-A4CA-09C383F266FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SciMaterials.Services.Identity.API", "Services\SciMaterials.Services.Identity.API\SciMaterials.Services.Identity.API.csproj", "{9024956A-6A4D-4135-934D-47C4A9560E95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -221,6 +223,10 @@ Global
 		{552D8DC5-6D54-4520-9579-B7D728C16150}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{552D8DC5-6D54-4520-9579-B7D728C16150}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{552D8DC5-6D54-4520-9579-B7D728C16150}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9024956A-6A4D-4135-934D-47C4A9560E95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9024956A-6A4D-4135-934D-47C4A9560E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9024956A-6A4D-4135-934D-47C4A9560E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9024956A-6A4D-4135-934D-47C4A9560E95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -262,6 +268,7 @@ Global
 		{552D8DC5-6D54-4520-9579-B7D728C16150} = {0C1B56A8-FB6A-405A-9990-D7B76E56411F}
 		{FDDBF4C8-9922-47DE-AD7F-9409740DA947} = {B4E3FF22-0421-42D5-9F32-86D6BE0867BF}
 		{8D15183D-07CF-4657-A4CA-09C383F266FE} = {B4E3FF22-0421-42D5-9F32-86D6BE0867BF}
+		{9024956A-6A4D-4135-934D-47C4A9560E95} = {7E25424F-B3C1-4CB5-B034-36AF7169CCAA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69CA7005-2892-4D9A-9575-8BCEC07E43F2}

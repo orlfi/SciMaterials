@@ -10,7 +10,7 @@ using SciMaterials.Contracts.Identity.API.Requests.Users;
 using SciMaterials.Contracts.Identity.API.Responses.Roles;
 using SciMaterials.Contracts.Identity.API.Responses.User;
 
-namespace SciMaterials.WebApi.Clients.Identity;
+namespace SciMaterials.Services.Identity.API;
 
 public class IdentityClient : IIdentityClient
 {

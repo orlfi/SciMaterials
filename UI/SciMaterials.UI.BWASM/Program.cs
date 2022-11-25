@@ -20,7 +20,6 @@ using SciMaterials.UI.BWASM.Services;
 using SciMaterials.UI.BWASM.Services.Identity;
 using SciMaterials.UI.BWASM.States.UploadFilesForm;
 using SciMaterials.WebApi.Clients.Authors;
-using SciMaterials.WebApi.Clients.Identity;
 using SciMaterials.Contracts.WebApi.Clients.Files;
 using SciMaterials.WebApi.Clients.Files;
 using SciMaterials.Contracts.WebApi.Clients.Categories;
@@ -31,6 +30,7 @@ using SciMaterials.Contracts.WebApi.Clients.ContentTypes;
 using SciMaterials.WebApi.Clients.ContentTypes;
 using SciMaterials.Contracts.WebApi.Clients.Tags;
 using SciMaterials.Contracts.WebApi.Clients.Urls;
+using SciMaterials.Services.Identity.API;
 using SciMaterials.WebApi.Clients.Tags;
 using SciMaterials.WebApi.Clients.Urls;
 

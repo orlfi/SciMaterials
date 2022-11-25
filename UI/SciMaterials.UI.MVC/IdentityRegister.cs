@@ -12,10 +12,9 @@ using SciMaterials.DAL.AUTH.InitializationDb;
 using SciMaterials.DAL.Contracts.Configuration;
 using SciMaterials.MySql.Auth.Migrations;
 using SciMaterials.Postgres.Auth.Migrations;
+using SciMaterials.Services.Identity.API;
 using SciMaterials.SqlLite.Auth.Migrations;
 using SciMaterials.UI.MVC.Identity.Services;
-using SciMaterials.WebApi.Clients.Identity;
-
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SciMaterials.UI.MVC;
