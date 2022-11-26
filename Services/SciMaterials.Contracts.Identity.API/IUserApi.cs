@@ -5,7 +5,7 @@ using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.Contracts.Identity.API;
 
-public interface IUserApi
+public interface IUsersApi
 {
     Task<Result<RegisterUserResponse>> RegisterUserAsync(RegisterRequest RegisterRequest, CancellationToken cancel = default);
     

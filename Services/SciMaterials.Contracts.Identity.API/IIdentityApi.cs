@@ -1,4 +1,4 @@
 namespace SciMaterials.Contracts.Identity.API;
 
-public interface IIdentityApi : IUserApi, IRolesApi
+public interface IIdentityApi : IUsersApi, IRolesApi
 { }
