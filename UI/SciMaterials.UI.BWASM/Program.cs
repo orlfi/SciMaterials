@@ -57,9 +57,10 @@ builder.Services
     .AddApiClient<IAuthorsClient, AuthorsClient>(apiRoot)
     .AddApiClient<IUrlsClient, UrlsClient>(apiRoot)
 
-    .AddApiClient<IIdentityApi, IdentityClient>(apiRoot, ClientConfiguration)
-    .AddApiClient<IUsersApi, IdentityClient>(apiRoot, ClientConfiguration)
-    .AddApiClient<IRolesApi, IdentityClient>(apiRoot, ClientConfiguration);
+    .AddApiClient<IdentityClient>(apiRoot, ClientConfiguration)
+    .AddScoped<IIdentityApi, IdentityClientOperationDecorator>()
+    .AddScoped<IUsersApi, IdentityClientOperationDecorator>()
+    .AddScoped<IRolesApi, IdentityClientOperationDecorator>();
 
 // Authentication
 builder.Services
