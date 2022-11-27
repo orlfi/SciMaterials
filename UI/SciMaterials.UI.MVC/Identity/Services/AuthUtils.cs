@@ -12,7 +12,6 @@ namespace SciMaterials.UI.MVC.Identity.Services;
 public class AuthUtils : IAuthUtils
 {
     private readonly IConfiguration _Configuration;
-    private string _SecretKey;
 
     public AuthUtils(IConfiguration configuration)
     {
@@ -25,12 +24,11 @@ public class AuthUtils : IAuthUtils
     /// <returns>Возращает токен</returns>
     public string CreateSessionToken(IdentityUser User, IList<string> Roles)
     {
-        var config = _Configuration.GetSection("IdentitySettings:SecretTokenKey");
-        _SecretKey = config["key"];
+        var secretKey = _Configuration.GetValue<string>("IdentitySettings:SecretTokenKey");
         
         var jwt_security_token_handler = new JwtSecurityTokenHandler();
         
-        var key = Encoding.ASCII.GetBytes(_SecretKey);
+        var key = Encoding.ASCII.GetBytes(secretKey);
 
         //Claims
         var claims = new List<Claim>
