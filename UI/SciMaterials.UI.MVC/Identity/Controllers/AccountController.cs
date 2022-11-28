@@ -51,8 +51,13 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_user = new IdentityUser { Email = RegisterRequest.Email, UserName = RegisterRequest.NickName };
             var identity_result = await _UserManager.CreateAsync(identity_user, RegisterRequest.Password);
+
+            Cancel.ThrowIfCancellationRequested();
+
             if (identity_result.Succeeded)
             {
                 await _UserManager.AddToRoleAsync(identity_user, AuthApiRoles.User);
@@ -68,15 +73,20 @@ public class AccountController : Controller, IIdentityApi
             }
 
             var errors = identity_result.Errors.Select(e => e.Description).ToArray();
-            _Logger.Log(LogLevel.Information, "Не удалось зарегистрировать пользователя {Email}: {errors}",
+            _Logger.LogInformation(
+                "Не удалось зарегистрировать пользователя {Email}: {errors}",
                 RegisterRequest.Email,
                 string.Join(",", errors));
 
             return Result<RegisterUserResponse>.Failure(Errors.Identity.Register.Fail);
         }
+        catch (OperationCanceledException)
+        {
+            return Result<RegisterUserResponse>.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Пользователя не удалось зарегистрировать {Ex}", ex);
+            _Logger.LogError("Пользователя не удалось зарегистрировать {Ex}", ex);
             return Result<RegisterUserResponse>.Failure(Errors.Identity.Register.Unhandled);
         }
     }
@@ -90,25 +100,27 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_user = await _UserManager.FindByEmailAsync(LoginRequest.Email);
             if (identity_user is null)
             {
-                _Logger.Log(
-                    LogLevel.Information,
+                _Logger.LogWarning(
                     "Некорректно введены данные {Email}, {Password}",
                     LoginRequest.Email,
                     LoginRequest.Password);
                 return Result<LoginUserResponse>.Failure(Errors.Identity.Login.UserNotFound);
             }
 
+            Cancel.ThrowIfCancellationRequested();
+
             if (!await CheckIsEmailConfirmedAsync(identity_user))
             {
-                _Logger.Log(
-                    LogLevel.Information,
-                    "Email не подтверждён {Email}",
-                    LoginRequest.Email);
+                _Logger.LogWarning("Email не подтверждён {Email}", LoginRequest.Email);
                 return Result<LoginUserResponse>.Failure(Errors.Identity.Login.EmailNotConfirmed);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             var sign_in_result = await _SignInManager.PasswordSignInAsync(
             userName: identity_user.UserName,
@@ -123,12 +135,16 @@ public class AccountController : Controller, IIdentityApi
                 return Result<LoginUserResponse>.Success(new LoginUserResponse(session_token));
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось авторизовать пользователя {Email}", LoginRequest.Email);
+            _Logger.LogWarning("Не удалось авторизовать пользователя {Email}", LoginRequest.Email);
             return Result<LoginUserResponse>.Failure(Errors.Identity.Login.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<LoginUserResponse>.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Не удалось авторизовать пользователя {Ex}", ex);
+            _Logger.LogError("Не удалось авторизовать пользователя {Ex}", ex);
             return Result<LoginUserResponse>.Failure(Errors.Identity.Login.Unhandled);
         }
     }
@@ -140,12 +156,18 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             await _SignInManager.SignOutAsync();
             return Result.Success();
         }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Не удалось выйти из системы {Ex}", ex);
+            _Logger.LogError("Не удалось выйти из системы {Ex}", ex);
             return Result.Failure(Errors.Identity.Logout.Unhandled);
         }
     }
@@ -162,30 +184,28 @@ public class AccountController : Controller, IIdentityApi
             var current_user_name = _ContextAccessor.HttpContext?.User.Identity?.Name;
             if (current_user_name is not { Length: > 0 })
             {
-                _Logger.Log(
-                    LogLevel.Warning,
-                    "Change password request called without authorization data");
+                _Logger.LogWarning("Change password request called without authorization data");
                 return Result.Failure(Errors.Identity.ChangePassword.MissAuthorizationData);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             var identity_user = await _UserManager.FindByNameAsync(current_user_name);
             if (identity_user is null)
             {
-                _Logger.Log(
-                    LogLevel.Information,
-                    "Некорректно введены данные {Email}",
-                    current_user_name);
+                _Logger.LogWarning("Некорректно введены данные {Email}", current_user_name);
                 return Result.Failure(Errors.Identity.ChangePassword.NotFound);
             }
 
+            Cancel.ThrowIfCancellationRequested();
+
             if (!await CheckIsEmailConfirmedAsync(identity_user))
             {
-                _Logger.Log(
-                    LogLevel.Information,
-                    "Email не подтверждён {Email}",
-                    identity_user.Email);
+                _Logger.LogWarning("Email не подтверждён {Email}", identity_user.Email);
                 return Result.Failure(Errors.Identity.ChangePassword.EmailNotConfirmed);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             var identity_result = await _UserManager.ChangePasswordAsync(
                 identity_user,
@@ -199,16 +219,19 @@ public class AccountController : Controller, IIdentityApi
                 return Result.Success();
             }
 
-            _Logger.Log(
-                LogLevel.Information,
+            _Logger.LogWarning(
                 "Не удалось изменить пароль {CurrentPassword}, {NewPassword}",
                 ChangePasswordRequest.CurrentPassword,
                 ChangePasswordRequest.NewPassword);
             return Result.Failure(Errors.Identity.ChangePassword.Fail);
         }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при смене пароля {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при смене пароля {Ex}", ex);
             return Result.Failure(Errors.Identity.ChangePassword.Unhandled);
         }
     }
@@ -220,6 +243,8 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             // TODO: Не обращай внимание, я тут буду править.
             var headersAuthorization = (string?)_ContextAccessor.HttpContext?.Request.Headers.Authorization;
             // TODO: validation
@@ -230,8 +255,13 @@ public class AccountController : Controller, IIdentityApi
             var userEmail = (string)token.Payload.First(x => x.Key.Equals("email")).Value;
             // TODO: validation
 
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_user = await _UserManager.FindByEmailAsync(userEmail);
             // TODO: validation
+
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_roles = await _UserManager.GetRolesAsync(identity_user);
             var new_session_token = _authUtilits.CreateSessionToken(identity_user, identity_roles);
 
@@ -240,12 +270,16 @@ public class AccountController : Controller, IIdentityApi
                 return Result<RefreshTokenResponse>.Success(new RefreshTokenResponse(new_session_token));
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось обновить токен пользователя");
+            _Logger.LogWarning("Не удалось обновить токен пользователя");
             return Result<RefreshTokenResponse>.Failure(Errors.Identity.GetRefreshToken.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<RefreshTokenResponse>.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Не удалось обновить токен пользователя {Ex}", ex);
+            _Logger.LogError("Не удалось обновить токен пользователя {Ex}", ex);
             return Result<RefreshTokenResponse>.Failure(Errors.Identity.GetRefreshToken.Unhandled);
         }
     }
@@ -260,18 +294,24 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_result = await _RoleManager.CreateAsync(new IdentityRole(CreateRoleRequest.RoleName.ToLower()));
             if (identity_result.Succeeded)
             {
                 return Result.Success();
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось создать роль");
+            _Logger.LogWarning("Не удалось создать роль");
             return Result.Failure(Errors.Identity.CreateRole.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при создании роли {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при создании роли {Ex}", ex);
             return Result.Failure(Errors.Identity.CreateRole.Unhandled);
         }
     }
@@ -284,7 +324,7 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
-            var identity_roles_list = await _RoleManager.Roles.ToListAsync();
+            var identity_roles_list = await _RoleManager.Roles.ToListAsync(cancellationToken: Cancel);
             var roles = identity_roles_list
                .Select(role => new AuthRole()
                {
@@ -295,9 +335,13 @@ public class AccountController : Controller, IIdentityApi
 
             return Result<IEnumerable<AuthRole>>.Success(roles);
         }
+        catch (OperationCanceledException)
+        {
+            return Result<IEnumerable<AuthRole>>.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при запросе ролей {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при запросе ролей {Ex}", ex);
             return Result<IEnumerable<AuthRole>>.Failure(Errors.Identity.GetAllRoles.Unhandled);
         }
     }
@@ -311,19 +355,25 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_role = await _RoleManager.FindByIdAsync(RoleId);
             if (identity_role is null)
             {
-                _Logger.Log(LogLevel.Information, "Не удалось получить роль");
+                _Logger.LogWarning("Не удалось получить роль");
                 return Result<AuthRole>.Failure(Errors.Identity.GetRoleById.NotFound);
             }
 
             var role = new AuthRole { Id = identity_role.Id, RoleName = identity_role.Name };
             return Result<AuthRole>.Success(role);
         }
+        catch (OperationCanceledException)
+        {
+            return Result<AuthRole>.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при запросе роли {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при запросе роли {Ex}", ex);
             return Result<AuthRole>.Failure(Errors.Identity.GetRoleById.Unhandled);
         }
     }
@@ -337,15 +387,19 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_role = await _RoleManager.FindByIdAsync(EditRoleRequest.RoleId);
             if (identity_role is null)
             {
-                _Logger.Log(LogLevel.Warning, "Не удалось найти роль {RoleId}", EditRoleRequest.RoleId);
+                _Logger.LogWarning("Не удалось найти роль {RoleId}", EditRoleRequest.RoleId);
                 return Result.Failure(Errors.Identity.EditRoleNameById.NotFound);
             }
 
             identity_role.Name = EditRoleRequest.RoleName.ToLower();
             identity_role.NormalizedName = EditRoleRequest.RoleName.ToUpper();
+
+            Cancel.ThrowIfCancellationRequested();
 
             var identity_result = await _RoleManager.UpdateAsync(identity_role);
             if (identity_result.Succeeded)
@@ -353,12 +407,16 @@ public class AccountController : Controller, IIdentityApi
                 return Result.Success();
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось изменить роль");
+            _Logger.LogWarning("Не удалось изменить роль");
             return Result.Failure(Errors.Identity.EditRoleNameById.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при редактировании роли {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при редактировании роли {Ex}", ex);
             return Result.Failure(Errors.Identity.EditRoleNameById.Unhandled);
         }
     }
@@ -372,19 +430,25 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_role = await _RoleManager.FindByIdAsync(RoleId);
             if (identity_role is null)
             {
-                _Logger.Log(LogLevel.Warning, "Не удалось найти роль");
+                _Logger.LogWarning("Не удалось найти роль");
                 return Result.Failure(Errors.Identity.DeleteRoleById.NotFound);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             // check that user not try to delete ADMIN or USER roles
             if (!_authUtilits.CheckToDeleteAdminOrUserRoles(identity_role))
             {
-                _Logger.Log(LogLevel.Warning, "Не удалось найти роль");
+                _Logger.LogWarning("Не удалось найти роль");
                 return Result.Failure(Errors.Identity.DeleteRoleById.TryToDeleteSystemRoles);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             var identity_result = await _RoleManager.DeleteAsync(identity_role);
             if (identity_result.Succeeded)
@@ -392,12 +456,16 @@ public class AccountController : Controller, IIdentityApi
                 return Result.Success();
             }
 
-            _Logger.Log(LogLevel.Warning, "Не удалось удалить роль");
+            _Logger.LogWarning("Не удалось удалить роль");
             return Result.Failure(Errors.Identity.DeleteRoleById.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Error, "Произошла ошибка при удалении роли {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при удалении роли {Ex}", ex);
             return Result.Failure(Errors.Identity.DeleteRoleById.Unhandled);
         }
     }
@@ -413,24 +481,28 @@ public class AccountController : Controller, IIdentityApi
         {
             var normalized_role_name = AddRoleToUserRequest.RoleName.ToLowerInvariant();
 
-            if (await _RoleManager.Roles.AnyAsync(x => x.Name == normalized_role_name))
+            if (await _RoleManager.Roles.AnyAsync(x => x.Name == normalized_role_name, cancellationToken: Cancel))
             {
-                _Logger.Log(LogLevel.Warning, "Роль не зарегистрированна {Role}", AddRoleToUserRequest.RoleName);
+                _Logger.LogWarning("Роль не зарегистрированна {Role}", AddRoleToUserRequest.RoleName);
                 return Result.Failure(Errors.Identity.AddRoleToUser.RoleNotFound);
             }
 
             var identity_user = await _UserManager.FindByEmailAsync(AddRoleToUserRequest.Email);
             if (identity_user is null)
             {
-                _Logger.Log(LogLevel.Warning, "Пользователь не найден {User}", AddRoleToUserRequest.Email);
+                _Logger.LogWarning("Пользователь не найден {User}", AddRoleToUserRequest.Email);
                 return Result.Failure(Errors.Identity.AddRoleToUser.UserNotFound);
             }
 
+            Cancel.ThrowIfCancellationRequested();
+
             if (await _UserManager.IsInRoleAsync(identity_user, normalized_role_name))
             {
-                _Logger.Log(LogLevel.Warning, "Пользователь {User} уже имеет данную роль {Role}", AddRoleToUserRequest.Email, AddRoleToUserRequest.RoleName);
+                _Logger.LogWarning("Пользователь {User} уже имеет данную роль {Role}", AddRoleToUserRequest.Email, AddRoleToUserRequest.RoleName);
                 return Result.Failure(Errors.Identity.AddRoleToUser.UserAlreadyInRole);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             var role_added_result = await _UserManager.AddToRoleAsync(identity_user, normalized_role_name);
             if (role_added_result.Succeeded)
@@ -439,12 +511,16 @@ public class AccountController : Controller, IIdentityApi
                 return Result.Success();
             }
 
-            _Logger.Log(LogLevel.Warning, "Произошла ошибка при присвоении роли пользователю");
+            _Logger.LogWarning("Произошла ошибка при присвоении роли пользователю");
             return Result.Failure(Errors.Identity.AddRoleToUser.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Error, "Произошла ошибка при присвоении роли пользователю {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при присвоении роли пользователю {Ex}", ex);
             return Result.Failure(Errors.Identity.AddRoleToUser.Unhandled);
         }
     }
@@ -460,31 +536,37 @@ public class AccountController : Controller, IIdentityApi
         try
         {
             var normalized_role_name = RoleName.ToLowerInvariant();
-            if (await _RoleManager.Roles.AnyAsync(x => x.Name == normalized_role_name))
+            if (await _RoleManager.Roles.AnyAsync(x => x.Name == normalized_role_name, cancellationToken: Cancel))
             {
-                _Logger.Log(LogLevel.Warning, "Роль не зарегистрированна {Role}", RoleName);
+                _Logger.LogWarning("Роль не зарегистрированна {Role}", RoleName);
                 return Result.Failure(Errors.Identity.RemoveRoleFromUserByEmail.RoleNotFound);
             }
 
             var identity_user = await _UserManager.FindByEmailAsync(Email);
             if (identity_user is null)
             {
-                _Logger.Log(LogLevel.Warning, "Пользователь не найден {User}", Email);
+                _Logger.LogWarning("Пользователь не найден {User}", Email);
                 return Result.Failure(Errors.Identity.RemoveRoleFromUserByEmail.UserNotFound);
             }
 
+            Cancel.ThrowIfCancellationRequested();
+
             if (!await _UserManager.IsInRoleAsync(identity_user, normalized_role_name))
             {
-                _Logger.Log(LogLevel.Warning, "Пользователь {User} не имеет данную роль {Role}", Email, RoleName);
+                _Logger.LogWarning("Пользователь {User} не имеет данную роль {Role}", Email, RoleName);
                 return Result.Failure(Errors.Identity.RemoveRoleFromUserByEmail.UserNotInRole);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             // check that user not trying to remove super admin from admin role
             if (!_authUtilits.CheckToDeleteSAInRoleAdmin(identity_user, RoleName.ToLower()))
             {
-                _Logger.Log(LogLevel.Warning, "Попытка понизить супер админа в должности");
+                _Logger.LogWarning("Попытка понизить супер админа в должности");
                 return Result.Failure(Errors.Identity.RemoveRoleFromUserByEmail.TryToDownSuperAdmin);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             var role_removed_result = await _UserManager.RemoveFromRoleAsync(identity_user, RoleName.ToLower());
             if (role_removed_result.Succeeded)
@@ -493,15 +575,16 @@ public class AccountController : Controller, IIdentityApi
                 return Result.Success();
             }
 
-            _Logger.Log(
-                LogLevel.Warning,
-                "Некорректно введены данные {Email}, {RoleName}",
-                Email, RoleName);
+            _Logger.LogWarning("Некорректно введены данные {Email}, {RoleName}", Email, RoleName);
             return Result.Failure(Errors.Identity.RemoveRoleFromUserByEmail.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Error, "Произошла ошибка при удалении роли пользователю {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при удалении роли пользователю {Ex}", ex);
             return Result.Failure(Errors.Identity.RemoveRoleFromUserByEmail.Unhandled);
         }
     }
@@ -515,20 +598,26 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_user = await _UserManager.FindByEmailAsync(Email);
             if (identity_user is null)
             {
-                _Logger.Log(LogLevel.Warning, "Пользователь не найден {User}", Email);
+                _Logger.LogWarning("Пользователь не найден {User}", Email);
                 return Result<IEnumerable<AuthRole>>.Failure(Errors.Identity.GetUserRoles.UserNotFound);
             }
-
-            var roles = await GetUserRolesAsync(identity_user);
+            
+            var roles = await GetUserRolesAsync(identity_user, Cancel);
 
             return Result<IEnumerable<AuthRole>>.Success(roles);
         }
+        catch (OperationCanceledException)
+        {
+            return Result<IEnumerable<AuthRole>>.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Error, "Произошла ошибка при получении списка ролей пользователя {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при получении списка ролей пользователя {Ex}", ex);
             return Result<IEnumerable<AuthRole>>.Failure(Errors.Identity.GetUserRoles.Unhandled);
         }
     }
@@ -542,14 +631,16 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_user = await _UserManager.FindByEmailAsync(Email);
             if (identity_user is null)
             {
-                _Logger.Log(LogLevel.Information, "Не удалось получить информации о пользователе");
+                _Logger.LogWarning("Не удалось получить информации о пользователе");
                 return Result<AuthUser>.Failure(Errors.Identity.GetUserByEmail.NotFound);
             }
 
-            var roles = await GetUserRolesAsync(identity_user);
+            var roles = await GetUserRolesAsync(identity_user, Cancel);
 
             AuthUser user = new()
             {
@@ -560,9 +651,13 @@ public class AccountController : Controller, IIdentityApi
             };
             return Result<AuthUser>.Success(user);
         }
+        catch (OperationCanceledException)
+        {
+            return Result<AuthUser>.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при получении пользователей {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при получении пользователей {Ex}", ex);
             return Result<AuthUser>.Failure(Errors.Identity.GetUserByEmail.Unhandled);
         }
     }
@@ -575,11 +670,11 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
-            var list_of_all_users = await _UserManager.Users.ToListAsync();
-            var users = new List<AuthUser>();
+            var list_of_all_users = await _UserManager.Users.ToListAsync(cancellationToken: Cancel);
+            var users             = new List<AuthUser>();
             foreach (var user in list_of_all_users)
             {
-                var roles = await GetUserRolesAsync(user);
+                var roles = await GetUserRolesAsync(user, Cancel);
                 users.Add(new AuthUser
                 {
                     Id = user.Id,
@@ -591,9 +686,13 @@ public class AccountController : Controller, IIdentityApi
 
             return Result<IEnumerable<AuthUser>>.Success(users);
         }
+        catch (OperationCanceledException)
+        {
+            return Result<IEnumerable<AuthUser>>.Failure(Errors.App.OperationCanceled);
+        }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при получении списка пользователей {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при получении списка пользователей {Ex}", ex);
             return Result<IEnumerable<AuthUser>>.Failure(Errors.Identity.GetAllUsers.Unhandled);
         }
     }
@@ -607,14 +706,18 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_user = await _UserManager.FindByEmailAsync(EditUserRequest.UserEmail);
             if (identity_user is null)
             {
-                _Logger.Log(LogLevel.Warning, "Не удалось найти пользователя {Email}", EditUserRequest.UserEmail);
+                _Logger.LogWarning("Не удалось найти пользователя {Email}", EditUserRequest.UserEmail);
                 return Result<EditUserNameResponse>.Failure(Errors.Identity.EditUserName.NotFound);
             }
 
             identity_user.UserName = EditUserRequest.EditUserNickName;
+
+            Cancel.ThrowIfCancellationRequested();
 
             var identity_result = await _UserManager.UpdateAsync(identity_user);
             if (identity_result.Succeeded)
@@ -626,12 +729,16 @@ public class AccountController : Controller, IIdentityApi
                 return Result<EditUserNameResponse>.Success(new EditUserNameResponse(new_token));
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось обновить информацию пользователя");
+            _Logger.LogWarning("Не удалось обновить информацию пользователя");
             return Result<EditUserNameResponse>.Failure(Errors.Identity.EditUserName.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<EditUserNameResponse>.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при изменении имени пользователя {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при изменении имени пользователя {Ex}", ex);
             return Result<EditUserNameResponse>.Failure(Errors.Identity.EditUserName.Unhandled);
         }
     }
@@ -645,12 +752,16 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var identity_user = await _UserManager.FindByEmailAsync(Email.ToLower());
             if (identity_user is null)
             {
-                _Logger.Log(LogLevel.Information, "Не удалось получить информацию о пользователе {Email}", Email);
+                _Logger.LogWarning("Не удалось получить информацию о пользователе {Email}", Email);
                 return Result.Failure(Errors.Identity.DeleteUser.NotFound);
             }
+
+            Cancel.ThrowIfCancellationRequested();
 
             if (_authUtilits.CheckToDeleteSA(identity_user))
             {
@@ -661,12 +772,16 @@ public class AccountController : Controller, IIdentityApi
                 }
             }
 
-            _Logger.Log(LogLevel.Information, "Не удалось удалить пользователя {Email}", Email);
+            _Logger.LogWarning("Не удалось удалить пользователя {Email}", Email);
             return Result.Failure(Errors.Identity.DeleteUser.Fail);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure(Errors.App.OperationCanceled);
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Information, "Произошла ошибка при удалении пользователя {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при удалении пользователя {Ex}", ex);
             return Result.Failure(Errors.Identity.DeleteUser.Unhandled);
         }
     }
@@ -675,6 +790,8 @@ public class AccountController : Controller, IIdentityApi
     {
         try
         {
+            Cancel.ThrowIfCancellationRequested();
+
             var user_roles = (await _UserManager.GetRolesAsync(IdentityUser)).ToHashSet();
             var roles = await _RoleManager.Roles
                .Where(x => user_roles.Contains(x.Name))
@@ -688,7 +805,7 @@ public class AccountController : Controller, IIdentityApi
         }
         catch (Exception ex)
         {
-            _Logger.Log(LogLevel.Error, "Произошла ошибка при получении списка ролей пользователей {Ex}", ex);
+            _Logger.LogError("Произошла ошибка при получении списка ролей пользователей {Ex}", ex);
             throw;
         }
     }
