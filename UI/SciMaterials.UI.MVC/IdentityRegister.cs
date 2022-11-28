@@ -125,7 +125,7 @@ public static class IdentityRegister
     
     public static IServiceCollection AddIdentityClients(this IServiceCollection services, string serverUrl)
     {
-        services.AddHttpClient<IIdentityClient, IdentityClient>("IdentityClient", c =>
+        services.AddHttpClient<IIdentityApi, IdentityClient>("IdentityApi", c =>
         {
             c.BaseAddress = new Uri(serverUrl);
         });
