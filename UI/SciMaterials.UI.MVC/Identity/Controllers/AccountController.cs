@@ -14,7 +14,7 @@ using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.UI.MVC.Identity.Controllers;
 
-/// <summary>Контроллер для регистрации и авторизации в системе аутентификации</summary>
+/// <summary> Контроллер для регистрации и авторизации в системе аутентификации </summary>
 [ApiController]
 [Route(AuthApiRoute.AuthControllerName)]
 public class AccountController : Controller, IIdentityApi
@@ -41,10 +41,7 @@ public class AccountController : Controller, IIdentityApi
         _ContextAccessor = ContextAccessor;
         _authUtilits = authUtilits;
     }
-
-    /// <summary>Метод регистрации пользователя</summary>
-    /// <param name="RegisterRequest">Запрос пользователя</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [AllowAnonymous]
     [HttpPost(AuthApiRoute.Register)]
     public async Task<Result<RegisterUserResponse>> RegisterUserAsync([FromBody] RegisterRequest RegisterRequest, CancellationToken Cancel = default)
@@ -90,10 +87,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<RegisterUserResponse>.Failure(Errors.Identity.Register.Unhandled);
         }
     }
-
-    /// <summary>Метод авторизации пользователя</summary>
-    /// <param name="LoginRequest">Запрос пользователя</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [AllowAnonymous]
     [HttpPost(AuthApiRoute.Login)]
     public async Task<Result<LoginUserResponse>> LoginUserAsync([FromBody] LoginRequest? LoginRequest, CancellationToken Cancel = default)
@@ -148,9 +142,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<LoginUserResponse>.Failure(Errors.Identity.Login.Unhandled);
         }
     }
-
-    /// <summary>Метод выхода пользователя из системы</summary>
-    /// <returns>Status 200 OK.</returns>
+    
     [HttpPost(AuthApiRoute.Logout)]
     public async Task<Result> LogoutUserAsync(CancellationToken Cancel = default)
     {
@@ -171,10 +163,7 @@ public class AccountController : Controller, IIdentityApi
             return Result.Failure(Errors.Identity.Logout.Unhandled);
         }
     }
-
-    /// <summary>Метод смены пароля пользователя</summary>
-    /// <param name="ChangePasswordRequest">Запрос на смену пароля</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpPost(AuthApiRoute.ChangePassword)]
     public async Task<Result> ChangePasswordAsync([FromBody] ChangePasswordRequest ChangePasswordRequest, CancellationToken Cancel = default)
@@ -235,9 +224,7 @@ public class AccountController : Controller, IIdentityApi
             return Result.Failure(Errors.Identity.ChangePassword.Unhandled);
         }
     }
-
-    /// <summary>Метод обновления токена пользователя</summary>
-    /// <returns>Status 200 OK.</returns>
+    
     [HttpGet(AuthApiRoute.RefreshToken)]
     public async Task<Result<RefreshTokenResponse>> GetRefreshTokenAsync(CancellationToken Cancel = default)
     {
@@ -284,10 +271,7 @@ public class AccountController : Controller, IIdentityApi
         }
     }
 
-
-    /// <summary>Метод создания роли для пользователя</summary>
-    /// <param name="CreateRoleRequest">Запроc на создание роли</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpPost(AuthApiRoute.CreateRole)]
     public async Task<Result> CreateRoleAsync([FromBody] CreateRoleRequest CreateRoleRequest, CancellationToken Cancel = default)
@@ -315,9 +299,7 @@ public class AccountController : Controller, IIdentityApi
             return Result.Failure(Errors.Identity.CreateRole.Unhandled);
         }
     }
-
-    /// <summary>Метод получения всех ролей в системе</summary>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet(AuthApiRoute.GetAllRoles)]
     public async Task<Result<IEnumerable<AuthRole>>> GetAllRolesAsync(CancellationToken Cancel = default)
@@ -345,10 +327,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<IEnumerable<AuthRole>>.Failure(Errors.Identity.GetAllRoles.Unhandled);
         }
     }
-
-    /// <summary>Метод получения роли по идентификатору</summary>
-    /// <param name="RoleId">Идентификатор роли</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet($"{AuthApiRoute.GetRoleById}/" + "{RoleId}")]
     public async Task<Result<AuthRole>> GetRoleByIdAsync([FromRoute] string RoleId, CancellationToken Cancel = default)
@@ -377,10 +356,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<AuthRole>.Failure(Errors.Identity.GetRoleById.Unhandled);
         }
     }
-
-    /// <summary>Метод редактирования роли по идентификатору</summary>
-    /// <param name="EditRoleRequest">Запрос на редактирование роли</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpPut(AuthApiRoute.EditRoleNameById)]
     public async Task<Result> EditRoleNameByIdAsync([FromBody] EditRoleNameByIdRequest EditRoleRequest, CancellationToken Cancel = default)
@@ -420,10 +396,7 @@ public class AccountController : Controller, IIdentityApi
             return Result.Failure(Errors.Identity.EditRoleNameById.Unhandled);
         }
     }
-
-    /// <summary>Метод удаления роли по идентификатору</summary>
-    /// <param name="RoleId">Запрос на удаление роли</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpDelete($"{AuthApiRoute.DeleteRoleById}/" + "{RoleId}")]
     public async Task<Result> DeleteRoleByIdAsync([FromRoute] string RoleId, CancellationToken Cancel = default)
@@ -469,10 +442,7 @@ public class AccountController : Controller, IIdentityApi
             return Result.Failure(Errors.Identity.DeleteRoleById.Unhandled);
         }
     }
-
-    /// <summary>Метод добавления роли к пользователю</summary>
-    /// <param name="AddRoleToUserRequest">Запрос на добавление роли</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpPost(AuthApiRoute.AddRoleToUser)]
     public async Task<Result> AddRoleToUserAsync([FromBody] AddRoleToUserRequest AddRoleToUserRequest, CancellationToken Cancel = default)
@@ -524,11 +494,7 @@ public class AccountController : Controller, IIdentityApi
             return Result.Failure(Errors.Identity.AddRoleToUser.Unhandled);
         }
     }
-
-    /// <summary>Метод удаления роли у пользователя</summary>
-    /// <param name="Email">Почта</param>
-    /// <param name="RoleName">Название роли</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpDelete($"{AuthApiRoute.DeleteUserRoleByEmail}/" + "{Email}/{RoleName}")]
     public async Task<Result> DeleteUserRoleByEmailAsync([FromRoute] string Email, [FromRoute] string RoleName, CancellationToken Cancel = default)
@@ -588,10 +554,7 @@ public class AccountController : Controller, IIdentityApi
             return Result.Failure(Errors.Identity.RemoveRoleFromUserByEmail.Unhandled);
         }
     }
-
-    /// <summary>Метод получения всех ролей пользователя</summary>
-    /// <param name="Email">Почта</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet($"{AuthApiRoute.GetAllUserRolesByEmail}/" + "{Email}")]
     public async Task<Result<IEnumerable<AuthRole>>> GetUserRolesAsync([FromRoute] string Email, CancellationToken Cancel = default)
@@ -621,10 +584,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<IEnumerable<AuthRole>>.Failure(Errors.Identity.GetUserRoles.Unhandled);
         }
     }
-
-    /// <summary>Метод получения информации о пользователе</summary>
-    /// <param name="Email">Почта</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet($"{AuthApiRoute.GetUserByEmail}/" + "{Email}")]
     public async Task<Result<AuthUser>> GetUserByEmailAsync([FromRoute] string Email, CancellationToken Cancel = default)
@@ -661,9 +621,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<AuthUser>.Failure(Errors.Identity.GetUserByEmail.Unhandled);
         }
     }
-
-    /// <summary>Метод получения всех пользователей в системе админом</summary>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpGet(AuthApiRoute.GetAllUsers)]
     public async Task<Result<IEnumerable<AuthUser>>> GetAllUsersAsync(CancellationToken Cancel = default)
@@ -696,10 +654,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<IEnumerable<AuthUser>>.Failure(Errors.Identity.GetAllUsers.Unhandled);
         }
     }
-
-    /// <summary>Метод редактирования информации о пользователе</summary>
-    /// <param name="EditUserRequest">Запрос админа</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpPut(AuthApiRoute.EditUserByEmail)]
     public async Task<Result<EditUserNameResponse>> EditUserNameByEmailAsync([FromBody] EditUserNameByEmailRequest EditUserRequest, CancellationToken Cancel = default)
@@ -742,10 +697,7 @@ public class AccountController : Controller, IIdentityApi
             return Result<EditUserNameResponse>.Failure(Errors.Identity.EditUserName.Unhandled);
         }
     }
-
-    /// <summary>Метод удаления пользователя</summary>
-    /// <param name="Email">Почта пользователя</param>
-    /// <returns>Status 200 OK.</returns>
+    
     [Authorize(Roles = AuthApiRoles.Admin)]
     [HttpDelete($"{AuthApiRoute.DeleteUserByEmail}/" + "{Email}")]
     public async Task<Result> DeleteUserByEmailAsync([FromRoute] string Email, CancellationToken Cancel = default)

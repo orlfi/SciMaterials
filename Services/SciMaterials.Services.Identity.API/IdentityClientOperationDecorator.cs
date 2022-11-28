@@ -10,6 +10,10 @@ using SciMaterials.Contracts.Result;
 
 namespace SciMaterials.Services.Identity.API;
 
+/// <summary>
+/// Decorator that cover every IdentityClient method with try catch
+/// to handle Cancellation and Unhandled exceptions throws
+/// </summary>
 public class IdentityClientOperationDecorator : IIdentityApi
 {
     private readonly ILogger<IdentityClientOperationDecorator> _Logger;
