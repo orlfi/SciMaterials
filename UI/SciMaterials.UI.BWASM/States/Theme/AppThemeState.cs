@@ -1,5 +1,7 @@
 ﻿using System.Collections.Immutable;
+
 using Fluxor;
+
 using MudBlazor;
 
 namespace SciMaterials.UI.BWASM.States.Theme;
@@ -16,80 +18,88 @@ public record AppThemeState
         {
             Palette = new Palette
             {
-                White = "#fff",
-                Black = "#000",
+                White = AppColors.Gray0,
+                Black = AppColors.Gray900,
 
-                Primary = "#fff",
-                PrimaryDarken = "#fff",
-                PrimaryLighten = "#fff",
-                PrimaryContrastText = "#fff",
+                Primary             = AppColors.Primary_Main,
+                PrimaryDarken       = AppColors.Primary_Dark,
+                PrimaryLighten      = AppColors.Primary_Light,
+                PrimaryContrastText = AppColors.Primary_Contrast_Text,
 
-                Secondary = "#fff",
-                SecondaryDarken = "#fff",
-                SecondaryLighten = "#fff",
-                SecondaryContrastText = "#fff",
+                Secondary             = AppColors.Secondary_Main,
+                SecondaryDarken       = AppColors.Secondary_Dark,
+                SecondaryLighten      = AppColors.Secondary_Light,
+                SecondaryContrastText = AppColors.Secondary_Contrast_Text,
 
-                Tertiary = "#fff",
-                TertiaryDarken = "#fff",
-                TertiaryLighten = "#fff",
-                TertiaryContrastText = "#fff",
+                Tertiary             = AppColors.Secondary_Main,
+                TertiaryDarken       = AppColors.Secondary_Dark,
+                TertiaryLighten      = AppColors.Secondary_Light,
+                TertiaryContrastText = AppColors.Secondary_Contrast_Text,
 
-                Info = "#fff",
-                InfoDarken = "#fff",
-                InfoLighten = "#fff",
-                InfoContrastText = "#fff",
+                Info             = AppColors.Info_Main,
+                InfoDarken       = AppColors.Info_Dark,
+                InfoLighten      = AppColors.Info_Light,
+                InfoContrastText = AppColors.Info_Contrast_Text,
 
-                Success = "#fff",
-                SuccessDarken = "#fff",
-                SuccessLighten = "#fff",
-                SuccessContrastText = "#fff",
+                Success             = AppColors.Success_Main,
+                SuccessDarken       = AppColors.Success_Dark,
+                SuccessLighten      = AppColors.Success_Light,
+                SuccessContrastText = AppColors.Success_Contrast_Text,
 
-                Warning = "#fff",
-                WarningDarken = "#fff",
-                WarningLighten = "#fff",
-                WarningContrastText = "#fff",
+                Warning             = AppColors.Warning_Main,
+                WarningDarken       = AppColors.Warning_Dark,
+                WarningLighten      = AppColors.Warning_Light,
+                WarningContrastText = AppColors.Warning_Contrast_Text,
 
-                Error = "#fff",
-                ErrorDarken = "#fff",
-                ErrorLighten = "#fff",
-                ErrorContrastText = "#fff",
+                Error             = AppColors.Error_Main,
+                ErrorDarken       = AppColors.Error_Dark,
+                ErrorLighten      = AppColors.Error_Light,
+                ErrorContrastText = AppColors.Error_Contrast_Text,
 
-                Dark = "#fff",
-                DarkDarken = "#fff",
-                DarkLighten = "#fff",
-                DarkContrastText = "#fff",
+                Dark             = AppColors.Gray800,
+                DarkDarken       = AppColors.Gray900,
+                DarkLighten      = AppColors.Gray700,
+                DarkContrastText = AppColors.Gray0,
 
-                HoverOpacity = 0,
+                HoverOpacity = 0.16,
 
-                GrayDefault = "#fff",
-                GrayLight = "#fff",
-                GrayLighter = "#fff",
-                GrayDark = "#fff",
-                GrayDarker = "#fff",
-                OverlayDark = "#fff",
-                OverlayLight = "#fff",
+                GrayDefault  = AppColors.Gray300,
+                GrayLight    = AppColors.Gray200,
+                GrayLighter  = AppColors.Gray100,
+                GrayDark     = AppColors.Gray600,
+                GrayDarker   = AppColors.Gray700,
+                OverlayDark  = AppColors.Gray500_24.ToString(),
+                OverlayLight = AppColors.Gray500_12.ToString(),
 
-                TextPrimary = "#fff",
-                TextSecondary = "#fff",
-                TextDisabled = "#fff",
-                ActionDefault = "#fff",
-                ActionDisabled = "#fff",
-                ActionDisabledBackground = "#fff",
-                Background = "#fff",
-                BackgroundGrey = "#fff",
-                Surface = "#fff",
-                DrawerBackground = "#fff",
-                DrawerText = "#fff",
-                DrawerIcon = "#fff",
-                AppbarBackground = "#fff",
-                AppbarText = "#fff",
-                LinesDefault = "#fff",
-                LinesInputs = "#fff",
-                TableLines = "#fff",
-                TableStriped = "#fff",
-                TableHover = "#fff",
-                Divider = "#fff",
-                DividerLight = "#fff",
+                TextPrimary              = AppColors.Gray600,
+                TextSecondary            = AppColors.Gray700,
+                TextDisabled             = AppColors.Gray400,
+
+                ActionDefault            = AppColors.Gray500,
+                ActionDisabled           = AppColors.Gray300,
+                ActionDisabledBackground = AppColors.Gray300,
+
+                Background               = AppColors.Gray100,
+                BackgroundGrey           = AppColors.Gray300,
+
+                Surface                  = AppColors.Gray100,
+
+                DrawerBackground = AppColors.Gray100,
+                DrawerText       = AppColors.Gray600,
+                DrawerIcon       = AppColors.Gray600,
+
+                AppbarBackground = AppColors.Gray200,
+                AppbarText       = AppColors.Gray900,
+
+                LinesDefault = AppColors.Gray400,
+                LinesInputs  = AppColors.Gray500,
+
+                TableLines   = AppColors.Gray500,
+                TableStriped = AppColors.Gray500_16,
+                TableHover   = AppColors.Gray500_32,
+
+                Divider      = AppColors.Gray300,
+                DividerLight = AppColors.Gray700,
             }
         })
     }.ToImmutableDictionary(p => p.Key, p => p.Value);
