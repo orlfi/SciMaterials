@@ -1,5 +1,6 @@
-﻿@using SciMaterials.Contracts.API.DTO.Resources;
-@using SciMaterials.Contracts.WebApi.Clients.Resources;
+﻿@using SciMaterials.Contracts.Enums;
+@using SciMaterials.Contracts.API.DTO.Resources;
+@using SciMaterials.Contracts.WebApi.Clients.Resources; 
 @if (_resources is null)
 {
     <p>Loading...</p>
@@ -17,13 +18,13 @@ else
 								<MudText Class="flex-1 d-flex" Typo="Typo.h6">@resource.Name</MudText>
 								@switch(resource.ResourceType)
 								{
-									case Domain.Enums.ResourceType.File:
+									case ResourceType.File:
 										<MudIcon Class="flex-none d-flex" Icon="@Icons.Material.Filled.FilePresent" Title = "File" />
 										break;
-									case Domain.Enums.ResourceType.Url:
+									case ResourceType.Url:
 										<MudIcon Class = "flex-none d-flex" Icon = "@Icons.Material.Filled.Link" Title = "Url" />
 										break;
-									case Domain.Enums.ResourceType.FileGroup:
+									case ResourceType.FileGroup:
 										<MudIcon Class = "flex-none d-flex" Icon = "@Icons.Material.Filled.Collections" Title = "File group" />
 										break;
 								}
