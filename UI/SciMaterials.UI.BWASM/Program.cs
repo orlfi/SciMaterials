@@ -88,6 +88,10 @@ builder.Services
 builder.Services
     .AddSingleton<FileUploadScheduleService>();
 
+// MessageBus
+builder.Services
+    .AddSingleton<ISimpleMessageBus, SimpleMessageBus>();
+
 // State management
 builder.Services.AddFluxor(options =>
 {
