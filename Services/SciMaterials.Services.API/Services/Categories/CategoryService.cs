@@ -45,9 +45,9 @@ public class CategoryService : ApiServiceBase, ICategoryService
         return result;
     }
 
-    public async Task<Result<CategoryTree>> GetTreeAsync(Guid? id, CancellationToken Cancel = default)
+    public async Task<Result<IEnumerable<CategoryTreeNode>>> GetTreeAsync(Guid? id, CancellationToken Cancel = default)
     {
-        var repository = Database.GetRepository<Category>() as ICategoryRepository;
+        var repository = (ICategoryRepository)Database.GetRepository<Category>();
 
         string name = "root";
 
@@ -56,7 +56,7 @@ public class CategoryService : ApiServiceBase, ICategoryService
             Category? category = await repository.GetByIdAsync(id.Value);
             if (category is not { })
             {
-                return LoggedError<CategoryTree>(
+                return LoggedError<IEnumerable<CategoryTreeNode>>(
                     Errors.Api.Category.NotFound,
                     "Category with ID {id} is not found",
                     id);
@@ -66,10 +66,10 @@ public class CategoryService : ApiServiceBase, ICategoryService
 
 
         var categories = await repository.GetByParentIdAsync(id);
-        var subCategoriesInfo = categories.Select(c => new CategoryTreeInfo(c.Id, c.Name));
+        var treeNodes = categories.Select(c => new CategoryTreeNode(c.Id, c.Name, c.Children.Count > 0)).ToArray();
 
-        var result = new CategoryTree(id, name, subCategoriesInfo);
-        return result;
+        //var result = new CategoryTree(id, name, subCategoriesInfo);
+        return treeNodes;
     }
 
     public async Task<Result<Guid>> AddAsync(AddCategoryRequest request, CancellationToken Cancel = default)

@@ -39,8 +39,8 @@ public class CategoriesController : ApiBaseController<CategoriesController>
     }
 
     [HttpGet("tree/{id?}")]
-    [ProducesDefaultResponseType(typeof(Result<CategoryTree>))]
-    public async Task<IActionResult> GetCategoryTree(Guid? id = null)
+    [ProducesDefaultResponseType(typeof(Result<IEnumerable<CategoryTreeNode>>))]
+    public async Task<IActionResult> GetCategoryTree([FromRoute] Guid? id = null)
     {
         var result = await _сategoryService.GetTreeAsync(id);
         return Ok(result);

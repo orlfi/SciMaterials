@@ -44,7 +44,7 @@ public class CategoryRepository : Repository<Category>, ICategoryRepository
             .Include(C => C.Children)
             .AsNoTracking();
 
-        var items = await ItemsNotDeleted.ToListAsync();
+        var items = await query.ToListAsync();
         return items;
     }
 }
