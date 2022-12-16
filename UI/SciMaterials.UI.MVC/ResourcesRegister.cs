@@ -164,6 +164,11 @@ public static class ResourcesRegister
         options.OperationFilter<FileUploadFilter>();
     }
 
+    public static void AddOptionalRouteParameterOperationFilter(this SwaggerGenOptions options)
+    {
+        options.OperationFilter<ReApplyOptionalRouteParameterOperationFilter>();
+    }
+
     public static IServiceCollection ConfigureFilesUploadSupport(this IServiceCollection services, IConfiguration config)
     {
         var api_settings = config.GetSection("FilesApiSettings");
